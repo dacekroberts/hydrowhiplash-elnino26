@@ -1,0 +1,29 @@
+---
+title: "What past El Niños suggest for the 2027 fire season"
+---
+
+<!-- Skeleton for the explainer page. Fill each section as its phase finishes;
+     figures come from ../results/. Preview with: quarto preview site -->
+
+## Two pathways from one El Niño
+
+<!-- Mechanism diagram: PNW/BC dry winter → low snowpack → long fire season;
+     SoCal wet winter → grass growth → big grass fires. Any time. -->
+
+## What El Niño does to winter rain
+
+<!-- Winter rainfall map (El Niño precipitation dipole). After Phase 1. -->
+
+## What happened after past El Niño winters
+
+<!-- Per region: every fire season since 1984, El Niño years highlighted,
+     with an empty 2027 slot. After Phase 4. -->
+
+## Tracking the 2026–27 winter
+
+<!-- Live tracker: this winter's precipitation and snowpack vs past El Niño
+     winters, updated monthly. Nov 2026 → spring 2027. -->
+
+## How the prediction held up
+
+<!-- Verification panel. Fall 2027. -->

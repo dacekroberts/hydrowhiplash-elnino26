@@ -1,0 +1,20 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "El Niño and the 2027 fire season"
+  page-footer: "Text and figures © 2026 Dace Roberts, all rights reserved. Code: MIT licence."
+  navbar:
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: methods.qmd
+        text: Methods and limitations
+
+author: "Dace Roberts"
+
+format:
+  html:
+    theme: cosmo
+    toc: true

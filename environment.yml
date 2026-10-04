@@ -1,0 +1,33 @@
+name: whiplash
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  # gridded climate data
+  - xarray
+  - dask
+  - netcdf4
+  - cdsapi
+  - xclim            # SPEI / SPI / PET
+  # spatial
+  - geopandas>=1.0    # union_all()
+  - pyogrio
+  - shapely
+  - regionmask
+  - rioxarray
+  - cartopy
+  # analysis + plotting
+  - pandas
+  - numpy
+  - scipy
+  - statsmodels
+  - matplotlib
+  - plotly           # interactive charts for the site
+  # explainer site
+  - quarto>=1.4       # inline Python expressions
+  # notebooks
+  - jupyterlab
+  - ipykernel
+  - requests
+  - pytest
+  - pyyaml           # daily-log frontmatter

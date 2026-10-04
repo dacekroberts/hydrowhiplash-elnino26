@@ -1,0 +1,22 @@
+Copyright (c) 2026 Dace Roberts. All rights reserved.
+
+This notice covers the written content and figures in this repository, which
+are NOT covered by the MIT licence in LICENSE:
+
+- Prose in Markdown and Quarto files (README.md, ACTION_PLAN.md,
+  ANALYSIS_PLAN.md, DECISIONS.md, PROJECT_INSTRUCTIONS.md, logs/*.md,
+  site/*.qmd and
+  any write-up or preprint draft), including the text of the published site
+- Markdown and narrative cells in notebooks
+- Figures, maps and tables in results/ and on the published site
+
+These may not be copied, modified or redistributed without the prior written
+permission of the copyright holder, except as permitted by applicable law
+(for example, quoting short passages with attribution).
+
+The source code (Python files in src/, tests/ and scripts/, code cells in
+notebooks, and configuration files) is licensed separately under the MIT
+licence; see LICENSE.
+
+Third-party data used by this project remains under its publishers' own
+terms; see DATA_SOURCES.md.

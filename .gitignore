@@ -1,0 +1,30 @@
+# data is downloaded by scripts, never committed
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# large outputs
+*.nc
+*.zarr/
+*.zip
+
+# python / jupyter
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# secrets
+.cdsapirc
+.env
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# daily-log exports are regenerated on demand
+logs/export/
+
+# quarto build output
+site/_site/
+site/.quarto/

@@ -1,0 +1,61 @@
+---
+title: "Methods and limitations"
+---
+
+<!-- Structure adapted from link-station-commercial: limitations are grouped by
+     the claim each one constrains, not listed flat, and each one says what the
+     data actually measures versus what a reader might assume, quantified where
+     possible. Numbers come from ../results/ via inline Python, never typed. -->
+
+## Method
+
+<!-- Plain-language summary of the analysis plan: data, years, regions, the
+     four headline methods. Link to ANALYSIS_PLAN.md and its commit date. -->
+
+## Data sources and attribution
+
+<!-- One line per source from DATA_SOURCES.md, plus every required notice,
+     verbatim. -->
+
+## What was filtered out
+
+<!-- Fires under 405 ha, months outside each fire window, and why. -->
+
+## Limitations
+
+<!-- One group per claim. For each: what the data measures, what a reader
+     might assume, the size of the gap, and what was done about it. -->
+
+### "El Niño years differ from the rest" (H1, H2)
+
+<!-- Small sample: about 10 El Niño years in the fire record. -->
+
+### "El Niño strength drives burned area" (H3)
+
+<!-- Total vs direct effect; trend control; fire suppression and land-use
+     change are not modelled. -->
+
+### "The north responds differently from California" (H4)
+
+<!-- US and Canadian fire records come from different agencies. -->
+
+### "Wet years set up later fires" (H5)
+
+<!-- A lagged association is evidence for the mechanism, not proof of it. -->
+
+### "The 2027 forecast"
+
+<!-- Prediction intervals and their past coverage; what would make the
+     forecast wrong. -->
+
+## Every test, including nulls
+
+<!-- Table of all pre-registered tests: effect, CI, raw p, corrected p. -->
+
+## What a fuller version would add
+
+<!-- La Niña, a prediction model, more regions. -->
+
+## AI use
+
+<!-- How AI tools were used, and what was verified by hand. -->
