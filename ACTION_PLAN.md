@@ -20,15 +20,15 @@ deliverable so you always know when you're done.
 
 ## Session 0 — Setup (tomorrow, ~1–2 hours)
 
-- [ ] Install **Miniforge** for Windows (https://github.com/conda-forge/miniforge)
+- [x] Install **Miniforge** for Windows (https://github.com/conda-forge/miniforge)
       and open the **Miniforge Prompt**
-- [ ] `mamba env create -f environment.yml`, then `conda activate whiplash`
-- [ ] Create a **private** GitHub repo named `hydrowhiplash-elnino26` and push
+- [x] `mamba env create -f environment.yml`, then `conda activate whiplash`
+- [x] Create a **private** GitHub repo named `hydrowhiplash-elnino26` and push
       these starter files
 - [ ] Register for a **Copernicus Climate Data Store** account
       (https://cds.climate.copernicus.eu), accept the ERA5-Land licence on the
       dataset page, and create `C:\Users\<you>\.cdsapirc` (see README)
-- [ ] `git init`, commit the starter files, and push to the private GitHub
+- [x] `git init`, commit the starter files, and push to the private GitHub
       repo. The freeze gate relies on dated commits, so commit from day one.
 - [ ] Run `python -m src.download_oni` and review the winters it lists. This
       list is **provisional**: final analog years are locked at the freeze
