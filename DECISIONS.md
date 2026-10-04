@@ -17,6 +17,46 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Working setup
+
+- **Decided to work in local Claude Code only and drop the claude.ai
+  project.** Planning and code both happen in Claude Code, so the repo is the
+  single record and CLAUDE.md the single set of instructions.
+  `PROJECT_INSTRUCTIONS.md` (the claude.ai copy of CLAUDE.md) was deleted and
+  its references removed. Rejected planning in claude.ai with code here: two
+  instruction sets drift apart, and claude.ai work leaves no trace in the
+  repo unless a summary is pasted in by hand. The daily-log skill's rule for
+  pasted claude.ai sessions was kept for occasional use. Files: `CLAUDE.md`,
+  `ACTION_PLAN.md`, `LICENSE-CONTENT`, `PROJECT_INSTRUCTIONS.md` (deleted).
+- **Decided to defer the Claude Code Project (coordinator plus parallel cloud
+  threads, public beta) to the start of Phase 4.** Until the freeze gate and
+  Phase 3 the work is sequential and data-heavy (downloads, regridding, SPEI,
+  fire clipping) and has to run on this machine, so cloud threads would add
+  overhead without speed. Phase 4 splits into independent tasks (H1-H5, site
+  pages, methods page) that suit parallel threads, PR-reviewed changes after
+  the freeze document that the pre-registered tests were followed, and the
+  live 2026-27 tracker fits a monthly routine. Exception: set it up earlier if
+  two or more queued tasks don't need local data. The Project created on
+  2026-10-04 is on standby. Rejected using it from Session 0. Files:
+  `docs/claude_code_project_setup.md`, `ACTION_PLAN.md` (freeze gate).
+- **Decided to keep region x year tables in `data/processed/` and have the
+  same code write a committed copy to `results/tables/`.** Cloud threads see
+  only committed files and `data/` is never committed, so the Project needs
+  the tables in `results/`. Writing both from one function keeps them
+  identical, and `data/processed/` stays the working location that CLAUDE.md
+  already names. The licence of every source behind a table must be read
+  before its first commit, since the repo may go public. Rejected moving the
+  tables to `results/tables/` only (changes an established convention for no
+  gain) and deciding at the freeze gate (the Phase 2 table would be built
+  without a target). Files: `CLAUDE.md` (scope guard), `ACTION_PLAN.md`
+  (Phase 2 and Phase 3 "Done when").
+- **Decided, with the owner's approval, to edit `LICENSE-CONTENT`'s file list:
+  dropped `PROJECT_INSTRUCTIONS.md` and added `docs/*.md`.** The list names
+  specific files, so the new `docs/` folder would otherwise have been
+  ambiguous. No other licence wording changed. Rejected leaving the list
+  unchanged (it would name a deleted file and omit `docs/`). Files:
+  `LICENSE-CONTENT`.
+
 ### 2026-10-04 - Session 0 setup
 
 - **Decided to normalise line endings to LF in the repo with a

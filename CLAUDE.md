@@ -8,8 +8,6 @@ PNW (WA/OR/ID), BC and Alberta, contrasted with NorCal and SoCal. Target: the
 - `ANALYSIS_PLAN.md`: pre-registered hypotheses and tests (frozen once committed)
 - `DECISIONS.md`: reasoning trail for judgment calls
 
-`PROJECT_INSTRUCTIONS.md` mirrors this context for the claude.ai project.
-
 ## Required every session: daily log
 
 At the end of every work session, before the final commit, write today's log
@@ -103,7 +101,9 @@ parses it.
 La Niña and a prediction model are planned later extensions. Don't build
 either unless asked. Keep `phase` labels intact, and save analysis outputs as
 tidy region x year tables in `data/processed/`, so both can be added later
-without rework.
+without rework. The same code also writes a committed copy to
+`results/tables/` (cloud threads only see committed files); before the first
+such commit, read the licence of every source behind the table.
 
 ## Licensing
 

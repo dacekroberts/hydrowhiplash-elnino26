@@ -38,8 +38,6 @@ deliverable so you always know when you're done.
       be resumed)
 - [ ] `python scripts/log.py new` to start the day's log, then end the session
       by filling it in (the 2026-10-03 log shows the format)
-- [ ] Paste `PROJECT_INSTRUCTIONS.md` into your Claude project instructions;
-      `CLAUDE.md` covers Claude Code automatically
 
 **Done when:** the environment works, the ONI table is saved, and ERA5 is downloading.
 
@@ -69,7 +67,8 @@ the El Niño precipitation dipole.
 - [ ] Plot whiplash and SWE as full time series with El Niño years highlighted
 
 **Done when:** you have a table of regions × all years with whiplash, SWE and
-the ENSO phase label for each year.
+the ENSO phase label for each year, saved in `data/processed/` with a
+committed copy in `results/tables/`.
 
 ## Gate — freeze the analysis plan (end of week 2)
 
@@ -77,6 +76,9 @@ the ENSO phase label for each year.
       **before any fire data is downloaded or opened.** Climate data can be
       looked at freely; the fire outcomes can't, or the tests could end up
       chosen after seeing results. The dated commit is the proof.
+- [ ] Consider setting up the Claude Code Project here. First commit
+      analysis-ready tables to `results/tables/`; checklist in
+      `docs/claude_code_project_setup.md`.
 
 ## Phase 3 — Fire data (week 3)
 
@@ -89,7 +91,8 @@ the ENSO phase label for each year.
 - [ ] Record dataset versions in `DATA_SOURCES.md`
 
 **Done when:** you have a table of regions × all years with area burned,
-season length and ENSO phase.
+season length and ENSO phase, saved in `data/processed/` with a committed
+copy in `results/tables/`.
 
 ## Phase 4 — Historical analysis with inferential statistics (weeks 4–6)
 
