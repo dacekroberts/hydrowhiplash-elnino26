@@ -49,6 +49,9 @@ parses it.
 
 ## Measurement rules (silent-bug territory)
 
+Units, measurement methods and traps for every dataset and derived variable:
+`docs/data_dictionary.md`.
+
 - **Area:** measure burned area only via `src.geo.area_ha`, which projects to
   the equal-area CRS (`CRS_EQUAL_AREA`, ESRI:102008). Never measure area or
   distance in EPSG:4326, and don't use sources' own area fields. EPSG:4326 is
