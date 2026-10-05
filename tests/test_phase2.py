@@ -28,3 +28,13 @@ def test_build_table_rejects_disagreeing_enso_columns():
     s.loc[1, "phase"] = "neutral"
     with pytest.raises(ValueError):
         phase2.build_table(w, s)
+
+
+def test_write_tables_writes_both_copies(tmp_path, monkeypatch):
+    monkeypatch.setattr(phase2, "OUT", tmp_path / "processed" / "t.csv")
+    monkeypatch.setattr(phase2, "COMMITTED", tmp_path / "results" / "tables" / "t.csv")
+    w, s = tables()
+    phase2.write_tables(phase2.build_table(w, s))
+    a = (tmp_path / "processed" / "t.csv").read_bytes()
+    assert a == (tmp_path / "results" / "tables" / "t.csv").read_bytes()
+    assert b"\r\n" not in a  # LF, matching .gitattributes
