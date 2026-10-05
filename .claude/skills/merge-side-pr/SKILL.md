@@ -30,7 +30,9 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    - hard-codes a value that belongs in `src/config.py`, or measures area or
      regional means outside `src.geo`;
    - has no session block in its description (ask the side session for it;
-     never write one on its behalf).
+     never write one on its behalf);
+   - gives a new deviation a real D number instead of a placeholder (see
+     step 5; PRs opened before the placeholder rule may keep theirs).
 3. **Pre-screen the whole queue, merged, before anyone approves.** Decide the
    merge order (dependencies first; a PR that adds tooling the others use goes
    first), then run, from the main checkout:
@@ -43,9 +45,10 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    touching `site/`, `results/figures/`, `src/figures.py`,
    `src/diagrams.py` or `src/winter_figures.py`) `check_site.py` after each merge, applies the known
    fix-ups it lists, and prints a report: CLEAN, CLEAN after fix-up, or
-   UNEXPECTED with the reason. What gets approved is then exactly what was
-   tested, including clashes between PRs (a D number used twice, a check
-   that fails only after an earlier PR). For changes under `src/`, also run
+   UNEXPECTED with the reason, plus the deviation numbers each PR's
+   placeholders receive in this order. What gets approved is then exactly
+   what was tested, numbers included, along with clashes between PRs (a D
+   number used twice, a check that fails only after an earlier PR). For changes under `src/`, also run
    `/code-review low` on each PR. Tests that need `data/` can't run there
    (data is never committed); say so instead of skipping silently.
 4. **Report to the owner, or go ahead.** Show the report, the step 2 rule
@@ -77,7 +80,23 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    merges both logs entry by entry (newest date first, deviations by number;
    on the same date the PR's entries go above main's, so the latest merge
    ends on top), keeps every entry of both sides, and refuses if an old entry
-   was edited or a D number is used twice. Repeat any fix-up the report
+   was edited or a D number is used twice.
+   **Deviation numbers are given here.** Side sessions never pick a D
+   number: a new entry is titled `### D?a · Title` (then `D?b`, `D?c`,
+   unique within the PR), and the same token marks every reference to it
+   (`DECISIONS.md`, `[mid-project: D?a]` plan markers, code comments, the
+   session block). Before merging the logs, the script gives each
+   placeholder the next free number after the highest D on either side,
+   oldest entry first (bottom of the newest-first log up), rewrites every
+   reference in the files the PR changes, and prints
+   `numbered: D?a -> D40, ...`. It does this even when the branch already
+   contains main (then commit the renumbering as an ordinary commit). It
+   refuses when a placeholder is defined twice, is referenced but never
+   defined, or is left anywhere in the tree. The numbers must match the
+   pre-screen report; if they differ (main moved), stop and re-screen. In
+   Markdown prose, a backslash before the `?` makes a literal mention that
+   is not numbered. The main session keeps numbering its own entries
+   directly. Repeat any fix-up the report
    listed for this PR, run the same checks, review with `git diff`, `git add`
    the files it names, commit and push. The result must
    match the report: if anything differs, stop and ask. This step is the
@@ -114,6 +133,9 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
      `hours` counts the owner's hands-on time. Merge its `tags`;
    - copy its decisions under `## Decisions` and its files under
      `## Files changed`, each marked "(PR #<N>)";
+   - replace every deviation placeholder in the folded block with the
+     number step 5 printed (`D?a` becomes `D40`): the log carries the
+     assigned numbers, never placeholders;
    - add a bullet to the current main session's block: "Merged PR #<N>
      (<title>), squash commit <hash>".
 9. **Clean up.** `git worktree remove ../_pr-<N>` and `git branch -D pr-<N>`.

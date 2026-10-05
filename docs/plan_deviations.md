@@ -27,6 +27,24 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (Phase 2)
 
+### D?a · Side-session deviation numbers given at merge
+- **Plan:** `docs/session3_kickoff.md` and `docs/session4_kickoff.md` split
+  the D numbers into agreed ranges per session (session 3: main D36-D39,
+  side session D40 onward), with a new split agreed at each session start.
+- **Actual:** side sessions no longer pick a number. A new entry is titled
+  with a placeholder (D\?a, D\?b...), and `scripts/merge_append_only.py`
+  gives it the next free number when main is merged into the PR (merge-side-pr
+  step 5), rewriting every reference in the PR's files;
+  `scripts/prescreen_prs.py` reports the numbers before approval. The main
+  session numbers its own entries directly. This entry is the first to use
+  the rule. Owner's decision, 2026-10-05, relayed by the main session.
+- **Why:** ranges needed agreeing every session and a message whenever one
+  ran out; numbering at merge can't clash and leaves no gaps.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Deviation numbers given at merge".
+- **Plan doc:** `.claude/skills/merge-side-pr/SKILL.md` updated; the
+  kickoff documents left as written; `CLAUDE.md` wording proposed in the PR
+  for the main session to add.
+
 ### D39 · Data guide page refreshed at the end of every session
 - **Plan:** `CLAUDE.md` "Required every session" names the daily log only;
   the data dictionary is the record of data types.

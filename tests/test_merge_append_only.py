@@ -248,3 +248,111 @@ def test_clean_merge_is_checked_too(tmp_path, capsys):
     assert _git(repo, "merge", "--no-commit", "--no-ff", "main").returncode == 0  # no conflict
     assert mao.main([], cwd=repo) == 1
     assert "D17 is used by two entries" in capsys.readouterr().out
+
+
+# Deviation placeholders: side sessions write D?a, the merge gives the number.
+
+PH_DEV = DEV_PRE + "### D39 · Main's newest\n- **Plan:** p.\n\n" + D16
+
+
+def test_placeholders_numbered_oldest_first():
+    # The log is newest first, so the entry at the bottom was written first.
+    log = (DEV_PRE + "### D?b · Newer\n- **Plan:** p.\n\n"
+           "### D?a · Older\n- **Plan:** p.\n\n" + D16)
+    assert mao.number_placeholders(log, 39) == {"D?a": "D40", "D?b": "D41"}
+
+
+def test_placeholder_defined_twice_is_refused():
+    log = DEV_PRE + "### D?a · One\n- **Plan:** p.\n\n### D?a · Two\n- **Plan:** p.\n\n" + D16
+    with pytest.raises(mao.Refusal, match=r"D\?a defined by two entries"):
+        mao.number_placeholders(log, 39)
+
+
+def test_literal_mention_is_not_a_placeholder():
+    # Markdown renders D\?a as D?a; the backslash keeps it out of the numbering.
+    text = r"Write D\?a in prose; see D?a and [mid-project: D?a]. NOD?a stays."
+    assert mao.apply_numbers(text, {"D?a": "D40"}) == (
+        r"Write D\?a in prose; see D40 and [mid-project: D40]. NOD?a stays.")
+
+
+def _placeholder_repo(tmp_path, pr_files, main_files=None, merge=True):
+    """Base with D39 on main; a PR branch and (optionally) a main commit; merge open."""
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _git(repo, "init", "-q", "-b", "main")
+    _git(repo, "config", "core.autocrlf", "false")
+    base = {"DECISIONS.md": dec(), "docs/plan_deviations.md": PH_DEV,
+            "ANALYSIS_PLAN.md": "# Plan\n\nRegions: PNW.\n", "README.md": "readme\n"}
+
+    def write(files):
+        for path, text in files.items():
+            p = repo / path
+            p.parent.mkdir(parents=True, exist_ok=True)
+            p.write_bytes(text.encode("utf-8"))
+    write(base)
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-qm", "base")
+    _git(repo, "switch", "-qc", "pr")
+    write(pr_files)
+    _git(repo, "add", "-A")
+    _git(repo, "commit", "-qm", "pr")
+    _git(repo, "switch", "-q", "main")
+    if main_files:
+        write(main_files)
+        _git(repo, "add", "-A")
+        _git(repo, "commit", "-qm", "main")
+    _git(repo, "switch", "-q", "pr")
+    if merge:
+        _git(repo, "merge", "--no-commit", "--no-ff", "main")
+    return repo
+
+
+TWO_PLACEHOLDERS = {
+    "docs/plan_deviations.md": DEV_PRE + "### D?b · Second\n- **Plan:** see D?a.\n\n"
+                               "### D?a · First\n- **Plan:** p.\n\n"
+                               "### D39 · Main's newest\n- **Plan:** p.\n\n" + D16,
+    "DECISIONS.md": dec(section("2026-10-05", "Rule", "Decided A (D?a).", "Decided B (D?b).")),
+    "ANALYSIS_PLAN.md": "# Plan\r\n\r\nRegions: PNW, AK [mid-project: D?b].\r\n",
+}
+
+
+def test_pr_placeholders_numbered_across_files(tmp_path, capsys):
+    main_dev = PH_DEV.replace("### D39", "### D40 · Main's next\n- **Plan:** p.\n\n### D39", 1)
+    repo = _placeholder_repo(tmp_path, TWO_PLACEHOLDERS,
+                             {"docs/plan_deviations.md": main_dev})
+    assert mao.main(["--against", "main"], cwd=repo) == 0
+    out = capsys.readouterr().out
+    assert "numbered: D?a -> D41, D?b -> D42" in out          # after main's D40
+    dev_text = (repo / "docs/plan_deviations.md").read_text(encoding="utf-8")
+    assert "### D42 · Second\n- **Plan:** see D41." in dev_text
+    assert dev_text.index("### D42") < dev_text.index("### D41") < dev_text.index("### D40")
+    assert "Decided A (D41)." in (repo / "DECISIONS.md").read_text(encoding="utf-8")
+    # Other files keep their own line endings.
+    assert (repo / "ANALYSIS_PLAN.md").read_bytes() == (
+        b"# Plan\r\n\r\nRegions: PNW, AK [mid-project: D42].\r\n")
+    assert "ANALYSIS_PLAN.md" in out.split("Next:")[1]
+
+
+def test_dangling_placeholder_is_refused(tmp_path, capsys):
+    pr = {"ANALYSIS_PLAN.md": "# Plan\n\nRegions: PNW [mid-project: D?c].\n"}
+    repo = _placeholder_repo(tmp_path, pr, {"README.md": "readme, main\n"})
+    assert mao.main([], cwd=repo) == 1
+    out = capsys.readouterr().out
+    assert "ANALYSIS_PLAN.md: D?c is referenced but no entry" in out
+    assert "nothing written" in out
+
+
+def test_leftover_placeholder_from_main_is_refused(tmp_path, capsys):
+    repo = _placeholder_repo(tmp_path, {"README.md": "readme, pr\n"},
+                             {"ANALYSIS_PLAN.md": "# Plan\n\nRegions: PNW [mid-project: D?a].\n"})
+    assert mao.main([], cwd=repo) == 1
+    assert "placeholder D?a left in the merged tree, not from this PR" in capsys.readouterr().out
+
+
+def test_placeholders_numbered_when_already_up_to_date(tmp_path, capsys):
+    # A PR branched from current main opens no merge, but still needs numbers.
+    repo = _placeholder_repo(tmp_path, TWO_PLACEHOLDERS, merge=False)
+    assert mao.main(["--against", "main"], cwd=repo) == 0
+    out = capsys.readouterr().out
+    assert "numbered: D?a -> D40, D?b -> D41" in out and "and commit" in out
+    assert "### D41 · Second" in (repo / "docs/plan_deviations.md").read_text(encoding="utf-8")

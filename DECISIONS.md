@@ -17,6 +17,40 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Deviation numbers given at merge
+
+- **Decided (owner, relayed by the main session) that side sessions write
+  placeholder deviation numbers and the merge assigns the real ones.**
+  Deviation D?a. A new side-session entry is titled with a placeholder (D\?a, then D\?b,
+  unique within the PR), used for every reference to it. When main is merged
+  into the PR, `scripts/merge_append_only.py` gives each placeholder the
+  next number after the highest real D on either side and rewrites the
+  references in the files the PR changes; `scripts/prescreen_prs.py` does
+  the same in its rehearsal, in queue order, and lists the numbers in its
+  report so the owner approves the final ones. Replaces the per-session
+  ranges (session 3: main D36-D39, side D40 onward). Rejected keeping ranges
+  (agreed anew every session, with gaps when a range goes unused). The main
+  session keeps numbering its own entries directly. Files:
+  `scripts/merge_append_only.py`, `scripts/prescreen_prs.py`,
+  `.claude/skills/merge-side-pr/SKILL.md`, both tests.
+
+- **Decided to number a PR's placeholders oldest entry first, from the bottom
+  of the deviations log up.** The log is newest first, so numbering in
+  reading order would put D40 above D41 and break the descending order the
+  log and the merge's ordering rely on. The request said "in order of
+  appearance"; read here as the order the entries were written.
+
+- **Decided how the merge tells a placeholder from a mention of one.** The
+  token is D, a question mark and lower-case letters, standing alone. In
+  Markdown prose a backslash before the question mark makes a literal mention
+  (it renders the same and is not numbered), as in the bullet above. The
+  script, the pre-screen, their tests and the merge-side-pr skill describe
+  the rule, so they are skipped (`LITERAL_PLACEHOLDERS`). The leftover check
+  covers every other tracked file: a placeholder from main's side, or one a
+  PR references without defining, stops the merge. Rejected matching only
+  inside the two logs, which would miss `[mid-project: ...]` markers and code
+  comments.
+
 ### 2026-10-05 - Data guide page, refreshed every session
 
 - **Decided (owner) to keep a private data guide page listing every data

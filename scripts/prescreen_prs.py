@@ -6,7 +6,9 @@ worktree, exactly as merge-side-pr will do it for real:
 
   for each PR, in the given order:
     merge current (simulated) main into the PR head;
-    resolve DECISIONS.md / docs/plan_deviations.md with merge_append_only.py;
+    resolve DECISIONS.md / docs/plan_deviations.md with merge_append_only.py,
+    which also gives the PR's deviation placeholders (D?a, D?b...) the next
+    free numbers, so a queue numbers them in merge order;
     run pytest and the em-dash check, plus check_site.py when the PR touches
     the site; apply a known fix-up if a known test asks for one;
     squash the result onto simulated main for the next PR.
@@ -17,7 +19,9 @@ is in). Nothing is pushed; the worktree and its refs are removed at the end,
 or kept for inspection when something unexpected happens.
 
 Verdicts per PR: CLEAN; CLEAN after a listed fix-up; UNEXPECTED (with the
-reason), which stops the queue there, since later PRs depend on it. Exit code
+reason), which stops the queue there, since later PRs depend on it. The
+report lists the deviation numbers each PR receives, so the owner approves
+the final numbers; they hold only for the screened order. Exit code
 0 only when every PR is clean. The report ends with the main and PR head
 commits it holds for: if either moves (other than by this queue's own
 merges), screen again.
@@ -90,6 +94,7 @@ class Result:
     fixups: list[str] = field(default_factory=list)
     checks: str = ""
     unexpected: str = ""
+    numbers: str = ""          # deviation placeholders numbered, e.g. "D?a -> D40"
 
     @property
     def verdict(self) -> str:
@@ -205,23 +210,30 @@ def _screen_one(work: Path, main_tip: str, head: str, item: Item, res: Result,
     # touch the same lines, which can still leave one D number used twice.
     merged = run(["git", *IDENTITY, "merge", "--no-commit", "--no-ff", main_tip], work,
                  check=False)
-    if "Already up to date" in merged.stdout:
-        res.resolution = "already up to date with main"
-    else:
+    up_to_date = "Already up to date" in merged.stdout
+    if not up_to_date:
         res.conflicts = git("diff", "--name-only", "--diff-filter=U", cwd=work).split()
         if merged.returncode and not res.conflicts:
             raise Unexpected(f"merging main failed: {merged.stdout.strip()[-300:]}")
         others = [f for f in res.conflicts if f not in APPEND_ONLY]
         if others:
             raise Unexpected(f"conflicts outside the append-only logs: {', '.join(others)}")
-        script = work / "scripts" / "merge_append_only.py"
-        script = script if script.exists() else ROOT / "scripts" / "merge_append_only.py"
-        out = run([sys.executable, str(script)], work, check=False)
-        if out.returncode:
-            raise Unexpected(f"merge_append_only.py refused: {out.stdout.strip()}")
-        present = [f for f in APPEND_ONLY if (work / f).exists()]
-        if present:
-            git("add", *present, cwd=work)
+    # The script also gives the PR's deviation placeholders their numbers, in
+    # queue order, since simulated main already holds the earlier PRs' numbers.
+    script = work / "scripts" / "merge_append_only.py"
+    script = script if script.exists() else ROOT / "scripts" / "merge_append_only.py"
+    out = run([sys.executable, str(script), "--against", main_tip], work, check=False)
+    if out.returncode:
+        raise Unexpected(f"merge_append_only.py refused: {out.stdout.strip()}")
+    numbered = re.search(r"^numbered: (.+)$", out.stdout, re.M)
+    if numbered and numbered.group(1) != "none":
+        res.numbers = numbered.group(1)
+    git("add", "-u", cwd=work)                     # the logs and any renumbered file
+    if up_to_date:
+        if git("diff", "--cached", "--name-only", cwd=work).strip():
+            git(*IDENTITY, "commit", "-q", "-m", "prescreen: number placeholders", cwd=work)
+        res.resolution = "already up to date with main"
+    else:
         git(*IDENTITY, "commit", "-q", "--no-edit", cwd=work)
         res.resolution = ("resolved by merge_append_only.py" if res.conflicts
                           else "clean merge; logs checked by merge_append_only.py")
@@ -245,12 +257,13 @@ def _screen_one(work: Path, main_tip: str, head: str, item: Item, res: Result,
 def report(results: list[Result], base_label: str, base_sha: str, total: int,
            kept: Path | None) -> str:
     lines = [f"## Pre-screen: {total} PR(s) onto {base_label} at {base_sha[:7]}", "",
-             "| Order | PR | Head | Merging main | Fix-ups | Checks | Verdict |",
-             "|---|---|---|---|---|---|---|"]
+             "| Order | PR | Head | Merging main | Deviation numbers | Fix-ups | Checks "
+             "| Verdict |",
+             "|---|---|---|---|---|---|---|---|"]
     for i, r in enumerate(results, 1):
         merging = (f"conflicts in {', '.join(r.conflicts)}; {r.resolution}" if r.conflicts
                    else r.resolution or "")
-        lines.append(f"| {i} | {r.label} | {r.head} | {merging} | "
+        lines.append(f"| {i} | {r.label} | {r.head} | {merging} | {r.numbers or 'none'} | "
                      f"{'; '.join(r.fixups) or 'none'} | {r.checks or '-'} | **{r.verdict}** |")
     lines.append("")
     bad = next((r for r in results if r.unexpected), None)
@@ -267,6 +280,9 @@ def report(results: list[Result], base_label: str, base_sha: str, total: int,
         lines.append(f"**ALL CLEAN.** Merge in this order: {order}. Holds while main is "
                      f"{base_sha[:7]} and the heads are as listed; any listed fix-up must be "
                      f"repeated in the real merge.")
+        numbered = [f"{r.label.split()[0]} {r.numbers}" for r in results if r.numbers]
+        if numbered:
+            lines.append(f"Deviation numbers, valid for this order only: {'; '.join(numbered)}.")
     return "\n".join(lines)
 
 
