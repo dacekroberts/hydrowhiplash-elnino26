@@ -38,7 +38,7 @@ title: "Methods and limitations"
 ERA5-Land is licensed under
 [CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Changes made: the
 monthly fields (total precipitation, 2 m air temperature, snow depth water
-equivalent) were subset to the study domain, converted to millimetres and
+equivalent) were subset to the study domains, converted to millimetres and
 degrees Celsius, averaged over each study region with cos(latitude) area
 weights, and aggregated into seasonal totals, means and anomalies.
 

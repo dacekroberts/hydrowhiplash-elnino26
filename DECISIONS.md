@@ -33,6 +33,13 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   site takes numbers only from `results/`. Needs updating when new
   ERA5-Land products are published (SPEI, the winter rainfall map).
   Rejected leaving a placeholder.
+- **Decided to say "study domains" (plural) and to leave glacier exclusion
+  out of the changes-made statement for now.** Main's Phase 1 work added a
+  second ERA5-Land download domain for Alaska and Yukon (D20).
+  `DATA_SOURCES.md` lists glacier exclusion among the changes to state, but
+  main applies none yet (it is the planned Phase 2 fix for snow water
+  equivalent, which no published output uses); stating it now would describe
+  a change not made. Add it when Phase 2 snowpack outputs are published.
 - **Decided to leave out the ONI/RONI 17 U.S.C. 403 statement for now.**
   `DATA_SOURCES.md` requires it only when a published table or figure
   consists predominantly of CPC index values, and none does yet; an HTML
