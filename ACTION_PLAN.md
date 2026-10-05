@@ -219,6 +219,12 @@ aren't worth building yet:
     projections to ask whether whiplash and its fire effects grow or shrink
     over the coming decades, which was the original question behind this
     project.
+  - *Compounding with climate change* [mid-project: D38]: whether warming
+    amplifies El Niño's effects on snowpack and fire (the same El Niño
+    warmth on a warmer baseline pushes more terrain past the rain-snow
+    line). The historical part, an El Niño × time test, is a pre-freeze
+    item in `ANALYSIS_PLAN.md`; the projection part belongs with the CMIP6
+    direction above.
   Builds on Phases 2–4, so start it once the historical analysis is solid.
 
 ---

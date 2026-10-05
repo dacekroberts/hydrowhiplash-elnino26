@@ -27,6 +27,25 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (Phase 2)
 
+### D38 · Climate change and compounding added as a pre-freeze item
+- **Plan:** `ANALYSIS_PLAN.md` "Data and years" handles the trend for
+  burned area only (a `year` term; `burn_detr`); `ACTION_PLAN.md` "Later
+  extensions" has CMIP6 long-term trends but no historical test of whether
+  El Niño's effects change as the climate warms.
+- **Actual:** owner asked (2026-10-05, session 3) to mark the compounding
+  effect of climate change for analysis. Added a pre-freeze item "Trend and
+  climate change" (trend handling for the climate variables; an El Niño ×
+  time test, pre-registered or exploratory) and a "Compounding with climate
+  change" bullet under Later extensions.
+- **Why:** the station check found the PNW strong-winter snowpack loss
+  concentrated at low and mid elevations (low third -42, high third +3
+  points of normal), where warming acts first; the choice has to be made
+  before the freeze to count as pre-registered.
+- **Substantial:** yes (owner's choice); both plans edited with the marker
+  `[mid-project: D38]`.
+- **Recorded:** this entry; the decision itself is open.
+- **Plan doc:** `ANALYSIS_PLAN.md` and `ACTION_PLAN.md` updated.
+
 ### D37 · Station SWE index starts 1960-1975 in the north and ends 2025 in Alberta
 - **Plan:** `ANALYSIS_PLAN.md` "Data and years": climate tests including
   SWE use "winters 1950–51 to present".

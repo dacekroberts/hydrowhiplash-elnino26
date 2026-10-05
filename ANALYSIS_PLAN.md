@@ -49,6 +49,18 @@ decisions.
       precipitation may not be lower there), and whether Alaska stays one
       region or splits Interior from coast (different biomes; fire is almost
       all Interior). Fire window Apr-Sep is provisional in `config.py`.
+- [ ] **Trend and climate change** [mid-project: D38]. Trend handling below
+      covers burned area only. Decide (a) whether the climate variables
+      (SWE, snowfall fraction, whiplash, winter precipitation) are compared
+      across ENSO phases raw or detrended, by the same one-method rule; and
+      (b) whether to test a compounding effect: does the El Niño snowpack or
+      burned-area effect grow over time (an El Niño × year interaction, or
+      early vs late halves), as a warmer baseline pushes more terrain past
+      the rain-snow line? Session 3 found the PNW strong-winter snowpack loss
+      concentrated at low and mid-elevation stations (−42 points of normal in
+      the lowest third, +3 in the highest). Also decide whether the ONI/RONI
+      choice above is reported as the trend-adjusted index for this purpose.
+      Pre-register it here or label it exploratory.
 
 **Data rules**
 
