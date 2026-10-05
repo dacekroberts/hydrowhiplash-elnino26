@@ -68,6 +68,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   GitHub Pages) and `embed-resources` (inlines Bootstrap into every page,
   poorly supported for websites). Files: `site/index.qmd`,
   `site/.gitignore`.
+- **Decided to add a narrow (phone) layout of the diagram,
+  `mechanism_narrow.svg`, shown below 576 px, at the owner's request.** At
+  375 px the wide layout's text rendered at about 6 px; the narrow one
+  (4.6 x 7.8 in, wrapped labels, two-line column headers) renders at about
+  11 px and keeps the two columns side by side, so the north-south contrast
+  survives. Switched with Bootstrap's own `d-none d-sm-block` / `d-sm-none`
+  classes, which the cosmo theme already ships, so no CSS file or
+  `_quarto.yml` change. Checked in the browser: at 375 px only the narrow
+  image shows (324 px wide), at 1024 px only the wide one. Box text is now
+  placed line by line at a fixed spacing (matplotlib's multi-line text
+  spaced a descender-free line visibly closer). Rejected a fully stacked
+  phone layout (loses the side-by-side comparison) and Quarto's lightbox
+  (tap-to-enlarge still opens at phone width). Files: `src/figures.py`,
+  `site/index.qmd`, `results/figures/mechanism_narrow.*`.
+- **Decided to write SVGs with LF line endings on every platform.**
+  `savefig` to a path wrote CRLF on Windows while `.gitattributes`
+  (`* text=auto eol=lf`) checks files out with LF, so a regenerated figure
+  would never byte-match the committed one. Now rendered to a string and
+  written with `newline="\n"`; tested. Files: `src/figures.py`,
+  `tests/test_figures.py`.
 
 ### 2026-10-04 - Side worktree session
 

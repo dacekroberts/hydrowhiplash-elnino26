@@ -144,7 +144,7 @@ L 615.6 208.656
    </g>
    <g id="text_1">
     <!-- El Niño: warm water in the central-eastern tropical Pacific -->
-    <g style="fill: #0b0b0b" transform="translate(119.198242 43.881523) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(119.198242 45.181328) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-Bold-28" d="M 588 4666 
 L 3834 4666 
@@ -671,7 +671,7 @@ z
    </g>
    <g id="text_2">
     <!-- Pacific jet stream extends east and shifts south -->
-    <g style="fill: #0b0b0b" transform="translate(176.039062 114.329219) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(176.039062 115.629023) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-33" d="M 1259 4147 
 L 1259 2394 
@@ -1139,7 +1139,7 @@ z
    </g>
    <g id="text_3">
     <!-- North: PNW · BC · AB -->
-    <g style="fill: #0b0b0b" transform="translate(85.795781 197.677266) scale(0.14 -0.14)">
+    <g style="fill: #0b0b0b" transform="translate(85.795781 199.259375) scale(0.14 -0.14)">
      <defs>
       <path id="DejaVuSans-Bold-3a" d="M 191 4666 
 L 1344 4666 
@@ -1258,7 +1258,7 @@ z
    </g>
    <g id="text_4">
     <!-- Drier, milder winter -->
-    <g style="fill: #0b0b0b" transform="translate(107.370625 266.102461) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(107.370625 266.829023) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-27" d="M 1259 4147 
 L 1259 519 
@@ -1346,7 +1346,7 @@ z
    </g>
    <g id="text_5">
     <!-- Less snow, earlier melt -->
-    <g style="fill: #0b0b0b" transform="translate(96.398945 341.702461) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(96.398945 342.429023) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-2f" d="M 628 4666 
 L 1259 4666 
@@ -1395,7 +1395,7 @@ z
    </g>
    <g id="text_6">
     <!-- Earlier or longer fire season -->
-    <g style="fill: #0b0b0b" transform="translate(81.813984 416.729219) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(81.813984 418.029023) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-28" d="M 628 4666 
 L 3578 4666 
@@ -1489,7 +1489,7 @@ z
    </g>
    <g id="text_7">
     <!-- South: SoCal -->
-    <g style="fill: #0b0b0b" transform="translate(429.010625 197.677266) scale(0.14 -0.14)">
+    <g style="fill: #0b0b0b" transform="translate(429.010625 199.259375) scale(0.14 -0.14)">
      <defs>
       <path id="DejaVuSans-Bold-36" d="M 3834 4519 
 L 3834 3531 
@@ -1562,7 +1562,7 @@ z
    </g>
    <g id="text_8">
     <!-- Wetter winter -->
-    <g style="fill: #0b0b0b" transform="translate(436.885234 266.740156) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(436.885234 266.829023) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-3a" d="M 213 4666 
 L 850 4666 
@@ -1608,7 +1608,7 @@ z
    </g>
    <g id="text_9">
     <!-- More grass growth -->
-    <g style="fill: #0b0b0b" transform="translate(421.428203 341.129219) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(421.428203 342.429023) scale(0.125 -0.125)">
      <defs>
       <path id="DejaVuSans-30" d="M 628 4666 
 L 1569 4666 
@@ -1658,7 +1658,7 @@ z
    </g>
    <g id="text_10">
     <!-- More fine fuel once grass cures, -->
-    <g style="fill: #0b0b0b" transform="translate(379.744609 408.604219) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(379.744609 409.904023) scale(0.125 -0.125)">
      <use xlink:href="#DejaVuSans-30"/>
      <use xlink:href="#DejaVuSans-52" transform="translate(86.28125 0)"/>
      <use xlink:href="#DejaVuSans-55" transform="translate(147.46875 0)"/>
@@ -1691,8 +1691,10 @@ z
      <use xlink:href="#DejaVuSans-56" transform="translate(1512.53125 0)"/>
      <use xlink:href="#DejaVuSans-f" transform="translate(1564.625 0)"/>
     </g>
+   </g>
+   <g id="text_11">
     <!-- larger grass fires -->
-    <g style="fill: #0b0b0b" transform="translate(426.789531 424.854219) scale(0.125 -0.125)">
+    <g style="fill: #0b0b0b" transform="translate(426.789531 426.154023) scale(0.125 -0.125)">
      <use xlink:href="#DejaVuSans-4f"/>
      <use xlink:href="#DejaVuSans-44" transform="translate(27.78125 0)"/>
      <use xlink:href="#DejaVuSans-55" transform="translate(89.0625 0)"/>
@@ -1712,7 +1714,7 @@ z
      <use xlink:href="#DejaVuSans-56" transform="translate(791.59375 0)"/>
     </g>
    </g>
-   <g id="text_11">
+   <g id="text_12">
     <!-- Expected pathways, tested in this study. -->
     <g style="fill: #52514e" transform="translate(217.71375 464.477344) scale(0.105 -0.105)">
      <defs>
