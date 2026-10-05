@@ -17,6 +17,33 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Append-only merge script
+
+- **Decided to resolve `DECISIONS.md` and `docs/plan_deviations.md` merge
+  conflicts with a script, `scripts/merge_append_only.py`, run from
+  `merge-side-pr` step 5, instead of by hand.** Every side-session PR adds
+  entries at the top of both files, so each merge after the first conflicts
+  there (PRs #1-#3 all do). The idea of a checked, mechanical resolution
+  comes from expanded-heatmap's script of the same name (its 2026-09-22
+  near-miss: rebuilding from one side nearly dropped an entry git had merged
+  outside the conflict markers); the code was written for this repo rather
+  than copied. Differences: it rebuilds each file from git's three stages
+  (base, ours, theirs) instead of editing conflict regions, so that near-miss
+  can't happen; in `DECISIONS.md` the unit is the bullet (one per decision)
+  under its dated topic, so two branches adding bullets to one topic merge,
+  and both list styles found in the file (blank lines between bullets or not)
+  are kept; in `plan_deviations.md` the unit is the whole `D<n>` entry,
+  ordered by number, and a D number used twice is refused; a version that
+  doesn't parse and render back byte for byte is refused; there is no archive
+  or index handling (neither exists here). It refuses whenever an old entry
+  was edited, removed or moved. 13 tests, including a round trip of both
+  live files and a real conflicted git merge. Rejected `merge=union` in
+  `.gitattributes` (stacks both sides in arbitrary order, duplicates lines
+  when an entry is edited, and GitHub's merge button ignores it) and
+  per-entry files (restructures both documents). Files:
+  `scripts/merge_append_only.py`, `tests/test_merge_append_only.py`,
+  `.claude/skills/merge-side-pr/SKILL.md`.
+
 ### 2026-10-04 - Side worktree session
 
 - **Decided to write a `merge-side-pr` skill before the first side-session

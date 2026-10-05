@@ -47,9 +47,15 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    merge on GitHub instead; then skip to step 7 once it's merged.
 5. **Resolve conflicts on the PR branch, not on main.** Expected spots:
    the top of `DECISIONS.md` and `docs/plan_deviations.md` (both newest
-   first). In `../_pr-<N>`: `git merge origin/main`, keep both entries, newest
-   date first (same date: keep main's entry above the PR's), commit, push,
-   re-run step 3's checks.
+   first). In `../_pr-<N>`: `git merge origin/main`, then
+   `python scripts/merge_append_only.py`, which resolves both files
+   entry by entry (newest date first; same date, the later commit on top,
+   which puts main's squash commit above the PR's entry), keeps every entry
+   of both sides, and refuses if an old entry was edited or a D number is
+   used twice. Review with `git diff`, `git add` the files, resolve anything
+   else by hand, commit, push, re-run step 3's checks. If it refuses, resolve
+   that file by hand: keep every entry of both sides, never one side's whole
+   file.
 6. **Merge.** `gh pr merge <N> --squash --delete-branch`. Squash gives one
    commit per task on `main`; the PR keeps the detailed history.
 7. **Update the main checkout.** `git status` first: if it has uncommitted
