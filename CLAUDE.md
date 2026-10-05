@@ -53,6 +53,13 @@ never committed), so worktree sessions take only tasks that need no data.
 - Log every departure from the planning docs (estimates, assumptions,
   procedures, scope) in `docs/plan_deviations.md` as it's found, including
   stale wording left as written.
+- Side sessions never pick a deviation number: they title a new entry
+  with a placeholder (D\?a, then D\?b), use the same token for every
+  reference to it (`DECISIONS.md`, plan markers, code comments, the
+  session block), and the merge (`merge-side-pr` step 5) assigns the
+  number. In Markdown prose, write a backslash before the question mark
+  for a literal mention. The main session numbers its own entries
+  directly, from the next free number.
 - Record every control, cap, filter, threshold and exclusion in
   `docs/methods_register.md` when it's added or re-measured (value, code
   location, why, measured effect), for the methods section.

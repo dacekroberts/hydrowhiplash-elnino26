@@ -1,12 +1,13 @@
 # Session 4 kickoff: pre-freeze decisions
 
-Written at the end of session 3 (2026-10-05, 01:45-10:20 with a pause).
+Written at the end of session 3 (2026-10-05, 01:45-11:50 with a pause);
+updated at 11:50 with the merges of PRs #16 and #17.
 Part 1 is the handoff: the state the next session starts from. Part 2 is the
 prompt to paste into a new Claude Code session in the main checkout.
 
 ## Part 1 · Handoff
 
-**Where things stand (main at c22575b or later).**
+**Where things stand (main at 91aa1ea or later).**
 
 - Phase 2 done. Gridded: SPEI-3, whiplash, April 1 SWE (ERA5-Land hourly,
   glacier cells excluded). Stations: `src/stations.py` cleans NRCS, BC,
@@ -15,7 +16,8 @@ prompt to paste into a new Claude Code session in the main checkout.
   ERA5-Land in `results/tables/station_swe_region_year.csv`. New ERA5-Land
   columns: snowfall fraction (Nov-Mar, ratio of regional totals) and JJA soil
   moisture (0-28 cm) in `results/tables/snow_soil_region_year.csv`
-  (`src/snow_soil.py`). Notebook 03 and three figures. pytest 154 passed.
+  (`src/snow_soil.py`). Notebook 03 and three figures. pytest 171 passed
+  (after PR #17).
 - Committed tables now: `whiplash_swe_region_year.csv`,
   `station_swe_region_year.csv`, `snow_soil_region_year.csv` (532 rows each,
   7 regions, 1951-2026). Notices for outputs carrying station values are
@@ -28,11 +30,24 @@ prompt to paste into a new Claude Code session in the main checkout.
   z; 20 of 30 years; at least 5 stations per region-year (owner may widen
   this for AB and YT). Index starts PNW and BC 1951, AK 1960, AB 1963, YT
   1975; AB ends 2025 (D37).
-- Side PRs #10-#15 merged (option drafts, log rule, Alberta source
+- Side PRs #10-#17 merged (option drafts, log rule, Alberta source
   research, notebook 01 on `src.winter_figures`, expansion table, add-region
-  skill). Side blocks now go in the merge day's log.
-- Deviations: main used D36-D38 and has D39 left; the side session holds
-  D40 onward. Agree a new split at the start of session 4.
+  skill, site-check trigger, numbering at merge). Side blocks go in the
+  merge day's log. The side worktree
+  (`.claude/worktrees/compassionate-tesla-8a3554`) is detached and idle;
+  nothing of its is open.
+- Climate change: a new pre-freeze item "Trend and climate change" in
+  `ANALYSIS_PLAN.md` and a "Compounding with climate change" bullet under
+  Later extensions in `ACTION_PLAN.md` (D38; owner's request).
+- Every main-checkout session now ends by refreshing the private data
+  guide artifact, https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P
+  (`CLAUDE.md`; D39). Roadmap artifact at v8 (same URL as before), next
+  step set to session 4.
+- Deviations: up to D40 used (main D36-D39 in session 3; D40 is PR #17's).
+  No more ranges: main numbers its own entries directly from the next free
+  number (D41 now); side sessions write placeholders that the merge numbers
+  (PR #17, merged 91aa1ea; `CLAUDE.md` and `merge-side-pr` steps 5, 8, 10,
+  including `merge_append_only.py --check-log` after folding a block).
 
 **Descriptive results that bear on the freeze** (ONI; no tests).
 
@@ -76,10 +91,8 @@ prompt to paste into a new Claude Code session in the main checkout.
 - 111 north region cells with no SPEI fit: not investigated.
 - Done in PR #16 (3362e18): `src/winter_figures.py` now triggers the
   site check in `prescreen_prs.py` and `merge-side-pr` step 3.
-- Numbering at merge for side-session deviation entries (owner,
-  2026-10-05): the side session is building it as its own PR; until it
-  merges, main sets a new block in session 4 (side has used no number
-  from D40 up).
+- Done in PR #17 (91aa1ea): side-session deviation numbers given at
+  merge, with the post-fold log check.
 - D28: the 1997-98 map's hard-coded extent and title wording (owner's call).
 - Freeze target about 18 October. At the freeze, the reminder to set up the
   Claude Code Project is due (memory note).
@@ -98,9 +111,9 @@ Session 4 for hydrowhiplash-elnino26: pre-freeze decisions (gate before Phase 3)
    docs/plan_deviations.md D36-D38 and the top of DECISIONS.md. Then read
    the roadmap artifact with the Artifact tool (action "read"):
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
-   Tell me in 3-4 lines what this session covers, then continue. Agree the
-   deviation-number split with me first (main has D39 left; the side
-   session holds D40 onward).
+   Tell me in 3-4 lines what this session covers, then continue. Main
+   numbers its own deviations from the next free number (D41 as of
+   91aa1ea); side PRs use placeholders that the merge numbers.
 
 2. Explain each data type and concept as it comes up (memory note
    "explain-data-types"), and keep docs/data_dictionary.md current.
