@@ -27,6 +27,20 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-04 (Phase 1)
 
+### D26 · Side PRs pre-screened as a merged queue
+- **Plan:** `merge-side-pr` tested each PR head alone and asked for the
+  owner's yes before main was merged in; `merge_append_only.py` ran only on
+  conflicted files. `ACTION_PLAN.md` "Later tooling" has no merge tooling.
+- **Actual:** `scripts/prescreen_prs.py` merges every queued PR in order onto
+  current main and checks each before any approval; the skill now screens
+  first, then reports or (with a yes for the run) merges, with a written
+  stop rule. The merge script now runs after every merge, conflicts or not,
+  after a replay showed a duplicate D19 passing a clean git merge.
+- **Why:** what the owner approved was not what landed, and clashes between
+  PRs went unseen.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Pre-screening side PRs".
+- **Plan doc:** updated (`merge-side-pr`); `ACTION_PLAN.md` left as written.
+
 ### D20 · Scope: Alaska and Yukon added as regions
 - **Plan:** five regions everywhere: `CLAUDE.md` ("PNW (WA/OR/ID), BC and
   Alberta, contrasted with NorCal and SoCal"), `ACTION_PLAN.md` Phase 1

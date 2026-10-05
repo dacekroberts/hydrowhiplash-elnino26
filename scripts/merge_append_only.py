@@ -40,11 +40,16 @@ entries changed differently on both sides; or a version's layout doesn't
 round-trip (one blank line between blocks, except bullets in a list without
 blank lines, which DECISIONS.md also uses; one newline at the end).
 
-Usage, on a PR branch inside a conflicted `git merge origin/main` (e.g.
-merge-side-pr's throwaway worktree):
+Run it after every merge, not only conflicted ones: git merges these files
+cleanly whenever two branches' additions don't touch the same lines, and a
+clean merge can still hold the same D number twice. Usage, on a PR branch
+(e.g. merge-side-pr's throwaway worktree):
+    git merge --no-commit --no-ff origin/main    # keeps even a clean merge open
     python scripts/merge_append_only.py [FILE ...] [--dry-run]
-With no FILE, resolves every conflicted file listed in LAYOUTS. Then review
-with `git diff`, `git add` the files and commit the merge.
+With no FILE, merges every file in LAYOUTS: conflicted ones from git's stages,
+cleanly merged ones from the merge base, HEAD and MERGE_HEAD (checked, and
+put in order). Then review with `git diff`, `git add` the files it names and
+commit the merge.
 """
 from __future__ import annotations
 
@@ -279,16 +284,39 @@ def git(*args: str, cwd: Path) -> str:
     return out.stdout
 
 
-def resolve(path: str, top: Path, dry_run: bool) -> int:
+def _show(rev: str, path: str, top: Path) -> str | None:
+    out = subprocess.run(["git", "show", f"{rev}:{path}"], cwd=top, capture_output=True,
+                         text=True, encoding="utf-8", errors="replace")
+    return out.stdout if out.returncode == 0 else None
+
+
+def resolve(path: str, top: Path, conflicted: bool,
+            revs: tuple[str, str, str]) -> str | None:
+    """Merge one file from its three versions; return the result (None if skipped).
+
+    A conflicted file is read from git's stages; a file git merged cleanly is
+    read from the merge base, HEAD and MERGE_HEAD, so its result is checked
+    (unique D numbers, no edited entries, every entry kept) and put in order
+    too. A clean merge can't be trusted alone: two branches adding D19 at
+    different lines merge without a conflict.
+    """
     layout = LAYOUTS[path]
-    base, ours, theirs = (git("show", f":{n}:{path}", cwd=top) for n in (1, 2, 3))
-    result = merge_texts(base, ours, theirs, layout, path)
+    if conflicted:
+        versions = [git("show", f":{n}:{path}", cwd=top) for n in (1, 2, 3)]
+    else:
+        versions = [_show(rev, path, top) for rev in revs]
+        if None in versions:
+            print(f"{path}: skipped, not in all three versions")
+            return None
+    base = versions[0]
+    result = merge_texts(*versions, layout, path)
+    current = (top / path).read_text(encoding="utf-8")
     added = len(_leaves(parse(result, layout))) - len(_leaves(parse(base, layout)))
-    print(f"{path}: resolved; {added} entr{'y' if added == 1 else 'ies'} added on either "
+    what = "resolved" if conflicted else ("checked and reordered" if result != current
+                                           else "checked")
+    print(f"{path}: {what}; {added} entr{'y' if added == 1 else 'ies'} added on either "
           f"side since the branches split, all kept")
-    if not dry_run:
-        (top / path).write_text(result, encoding="utf-8", newline="\n")
-    return added
+    return result
 
 
 def main(argv: list[str] | None = None, cwd: Path | None = None) -> int:
@@ -296,31 +324,38 @@ def main(argv: list[str] | None = None, cwd: Path | None = None) -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("files", nargs="*", help="files to resolve (default: every conflicted "
-                                             "file in LAYOUTS)")
+    ap.add_argument("files", nargs="*", help="files to merge (default: every file in "
+                                             "LAYOUTS present in the working tree)")
     ap.add_argument("--dry-run", action="store_true", help="check without writing")
     args = ap.parse_args(argv)
     try:
         top = Path(git("rev-parse", "--show-toplevel", cwd=cwd or Path.cwd()).strip())
         if not (Path(git("rev-parse", "--absolute-git-dir", cwd=top).strip()) / "MERGE_HEAD").exists():
-            raise Refusal("not inside a conflicted git merge (no MERGE_HEAD)")
+            raise Refusal("not inside an open git merge (no MERGE_HEAD); merge with "
+                          "`git merge --no-commit --no-ff` so clean merges stay open too")
+        head = git("rev-parse", "HEAD", cwd=top).strip()
+        other = git("rev-parse", "MERGE_HEAD", cwd=top).strip()
+        revs = (git("merge-base", head, other, cwd=top).strip(), head, other)
         conflicted = git("diff", "--name-only", "--diff-filter=U", cwd=top).split()
-        files = [Path(f).as_posix() for f in args.files] or [f for f in conflicted if f in LAYOUTS]
+        files = ([Path(f).as_posix() for f in args.files]
+                 or [f for f in LAYOUTS if (top / f).exists()])
         for f in files:
             if f not in LAYOUTS:
                 raise Refusal(f"{f}: not an append-only file this script knows")
-            if f not in conflicted:
-                raise Refusal(f"{f}: not conflicted")
-        for f in files:
-            resolve(f, top, args.dry_run)
+        # Every file is merged before any is written, so a refusal writes nothing.
+        results = {f: resolve(f, top, f in conflicted, revs) for f in files}
     except Refusal as err:
         print(f"REFUSED, nothing written: {err}")
         return 1
+    changed = [f for f, text in results.items()
+               if text is not None and text != (top / f).read_text(encoding="utf-8")]
+    if not args.dry_run:
+        for f in changed:
+            (top / f).write_text(results[f], encoding="utf-8", newline="\n")
+    to_add = sorted(set(changed) | {f for f in files if f in conflicted})
+    if to_add and not args.dry_run:
+        print(f"Next: review with `git diff`, then `git add {' '.join(to_add)}`")
     others = [f for f in conflicted if f not in files]
-    if not files:
-        print("no conflicted append-only files")
-    elif not args.dry_run:
-        print(f"Next: review with `git diff`, then `git add {' '.join(files)}`")
     if others:
         print(f"still conflicted, resolve by hand: {', '.join(others)}")
     return 0

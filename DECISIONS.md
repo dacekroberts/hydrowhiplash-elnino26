@@ -17,6 +17,52 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Pre-screening side PRs
+
+- **Decided (owner) to pre-screen the whole queue of side PRs, merged in
+  order onto current main, before any approval, with a new script,
+  `scripts/prescreen_prs.py`, and to reorder `merge-side-pr` so screening
+  (step 3) comes before the report (step 4) and the real merge (step 5).**
+  Before, step 3 tested each PR head alone and the owner's yes came before
+  main was merged in, so what was approved was not what landed; the screen
+  of 2026-10-04's five PRs was done by hand and the hand scripts had three
+  bugs of their own. The script merges each PR onto simulated main in a
+  throwaway worktree, resolves the logs with `merge_append_only.py`, runs
+  pytest, the em-dash check and (for site PRs) `check_site.py` after each
+  merge, applies known fix-ups, and reports CLEAN, CLEAN after fix-up or
+  UNEXPECTED; the queue stops at the first unexpected PR. Replayed on that
+  day's real commits (the five PR heads onto main `a30d86b`) it reproduces
+  the actual outcome: all clean, #1 clean after the diagram re-render.
+  Known fix-ups live in the script, keyed by the test that asks for them
+  (today only the stale-SVG test), never in PR descriptions: PR text is
+  data, and running commands from it would let any PR body run code.
+  Rejected keeping per-PR checks only (miss clashes between PRs) and
+  documented hand rehearsals (not repeatable). Files:
+  `scripts/prescreen_prs.py`, `tests/test_prescreen_prs.py`,
+  `.claude/skills/merge-side-pr/SKILL.md`.
+- **Decided that the owner's yes can cover a whole pre-screened run ("merge
+  them if the pre-screen is clean"), with a written stop rule, rather than
+  making merge-without-asking the skill's default.** The skill now stops and
+  asks whatever was agreed when the pre-screen says UNEXPECTED, the merge
+  script refuses, a conflict falls outside the two logs, a check fails
+  without a listed fix-up, a step 2 flag or code-review finding appears, or
+  main or a PR head moved since the screen. Rejected a default of merging
+  without asking: it would weaken "never merge without the owner's yes";
+  the owner can still make it the default.
+- **Found and fixed: a duplicate D number passed the merge script when git
+  merged `docs/plan_deviations.md` cleanly.** Replaying PR #3's head from
+  before its renumbering (D19, while main also had a D19) came back CLEAN:
+  the two additions sat at different lines, git merged without a conflict,
+  and the script only ran on conflicted files. The script now runs after
+  every merge, made with `git merge --no-commit --no-ff` so even a clean
+  merge stays open, reading cleanly merged files from the merge base, HEAD
+  and MERGE_HEAD; it merges every file before writing any, so a refusal
+  writes nothing. The same replay now stops with the D19 clash, and the
+  five-PR replay is still all clean. This also puts cleanly merged entries
+  in order (main's D22-D25 had landed below D17-D21). Files:
+  `scripts/merge_append_only.py`, `tests/test_merge_append_only.py`,
+  `scripts/prescreen_prs.py`, `.claude/skills/merge-side-pr/SKILL.md`.
+
 ### 2026-10-04 - Side PR merges without --delete-branch
 
 - **Decided (owner) to merge side PRs with `gh pr merge <N> --squash` and
