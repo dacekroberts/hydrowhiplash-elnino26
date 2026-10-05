@@ -36,8 +36,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   ordered by number, and a D number used twice is refused; a version that
   doesn't parse and render back byte for byte is refused; there is no archive
   or index handling (neither exists here). It refuses whenever an old entry
-  was edited, removed or moved. 13 tests, including a round trip of both
-  live files and a real conflicted git merge. Rejected `merge=union` in
+  was edited, removed or moved. Order: each side's own order is kept and the
+  two are interleaved newest first by heading date and D number, the PR's
+  entries above main's on the same date, so the latest merge ends on top.
+  Rejected dating entries by commit time, heatmap's approach: a first version
+  did, and a simulation on the five open PR branches showed it reorders
+  entries main had already settled (a squash commit's time is the merge
+  time) and sorted D17-D19 ascending once a PR had merged main in before;
+  merging main into a PR once or after every merge then gave different
+  files. Without commit times both give byte-identical files (re-run on the
+  same branches: 34 decision bullets and 20 deviations, each once). 16 tests,
+  including a round trip of both live files, the once-or-repeatedly
+  equivalence and a real conflicted git merge. Rejected `merge=union` in
   `.gitattributes` (stacks both sides in arbitrary order, duplicates lines
   when an entry is edited, and GitHub's merge button ignores it) and
   per-entry files (restructures both documents). Files:

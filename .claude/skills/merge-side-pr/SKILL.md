@@ -49,10 +49,13 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    the top of `DECISIONS.md` and `docs/plan_deviations.md` (both newest
    first). In `../_pr-<N>`: `git merge origin/main`, then
    `python scripts/merge_append_only.py`, which resolves both files
-   entry by entry (newest date first; same date, the later commit on top,
-   which puts main's squash commit above the PR's entry), keeps every entry
-   of both sides, and refuses if an old entry was edited or a D number is
-   used twice. Review with `git diff`, `git add` the files, resolve anything
+   entry by entry (newest date first, deviations by number; on the same date
+   the PR's entries go above main's, so the latest merge ends on top), keeps
+   every entry of both sides, and refuses if an old entry was edited or a D
+   number is used twice. The result is the same whether main was merged in
+   once or after every earlier merge, so a side session may also keep its
+   own PRs updated; agree who does it, so two sessions don't push to one
+   branch. Review with `git diff`, `git add` the files, resolve anything
    else by hand, commit, push, re-run step 3's checks. If it refuses, resolve
    that file by hand: keep every entry of both sides, never one side's whole
    file.

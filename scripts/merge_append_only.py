@@ -20,21 +20,28 @@ Structure, both files: preamble, "## " groups, "### " entries.
   docs/plan_deviations.md  "## YYYY-MM-DD (...)" > "### D<n> · Title". The whole
                            entry is the unit, and D numbers must stay unique.
 
-Order: new items stay where their branch put them. Several new items in one
-place are ordered newest first at the top of a list (by the date in the
-heading, then the D number, then the time of the commit that added them) and
-oldest first anywhere else (bullets appended to an existing topic).
+Order. New items stay where their branch put them, and each side's own order
+is kept; where both sides added items at the same place, the two sequences
+are interleaved:
+  - groups and entries are newest first: by the date in the heading, then the
+    D number; on a tie, ours goes above theirs. Run on a PR branch after
+    merging main in (ours = the PR), so the PR's entries go above main's: the
+    most recently merged PR ends on top, matching main's history;
+  - bullets added at the top of a topic follow the same rule; bullets
+    appended below existing ones go theirs first, then ours.
+The result depends only on the three versions, not on commit times, so
+merging main into a PR once (just before it merges) or after every merge
+gives the same file.
 
 Refuses (exit 1, nothing written) when: an existing entry was edited,
 removed or moved on either side; both sides added the same heading with
 different text, or the same D number for different entries; text outside
-entries changed differently on both sides; a version's layout doesn't
+entries changed differently on both sides; or a version's layout doesn't
 round-trip (one blank line between blocks, except bullets in a list without
-blank lines, which DECISIONS.md also uses; one newline at the end); or a new
-entry can't be dated from git history.
+blank lines, which DECISIONS.md also uses; one newline at the end).
 
-Usage, inside a conflicted `git merge` (e.g. merge-side-pr's throwaway
-worktree):
+Usage, on a PR branch inside a conflicted `git merge origin/main` (e.g.
+merge-side-pr's throwaway worktree):
     python scripts/merge_append_only.py [FILE ...] [--dry-run]
 With no FILE, resolves every conflicted file listed in LAYOUTS. Then review
 with `git diff`, `git add` the files and commit the merge.
@@ -47,7 +54,6 @@ import subprocess
 import sys
 from dataclasses import dataclass, field, replace
 from pathlib import Path
-from typing import Callable
 
 
 @dataclass(frozen=True)
@@ -75,6 +81,7 @@ class Node:
     text: str                 # own text: heading plus intro, or the whole leaf
     children: list[Node] = field(default_factory=list)
     leaf: bool = False
+    bullet: bool = False
     # DECISIONS.md mixes both list styles: a bullet is "tight" when the next
     # bullet follows on the very next line rather than after a blank line.
     tight: bool = False
@@ -110,7 +117,8 @@ def parse(text: str, layout: Layout) -> Node:
             entry = Node(key=lines[0], text=body, leaf=not layout.split_bullets)
             (group or root).children.append(entry)
         else:
-            entry.children.append(Node(key=body, text=body, leaf=True, tight=lines[-1] != ""))
+            entry.children.append(Node(key=body, text=body, leaf=True, bullet=True,
+                                       tight=lines[-1] != ""))
     return root
 
 
@@ -126,18 +134,24 @@ def render(node: Node, top: bool = True) -> str:
 
 # Merging
 
-@dataclass
-class Context:
-    when: Callable[[Node], int]     # commit time that introduced a new node
-    where: str = ""
-
-
-def _newness(node: Node, ctx: Context) -> tuple:
+def _rank(node: Node) -> tuple:
+    """Newness from the heading: its date, then its D number."""
     first = node.key.split("\n", 1)[0]
-    date = DATE.search(first)
-    number = DEVIATION_NO.match(first)
-    return (date.group(0) if date else "", int(number.group(1)) if number else -1,
-            ctx.when(node))
+    date, number = DATE.search(first), DEVIATION_NO.match(first)
+    return (date.group(0) if date else "", int(number.group(1)) if number else -1)
+
+
+def _interleave(ours: list[Node], theirs: list[Node], appended: bool) -> list[Node]:
+    """Merge two sides' new items, keeping each side's own order."""
+    if appended:                       # bullets added below existing ones
+        return theirs + ours
+    out, i, j = [], 0, 0
+    while i < len(ours) and j < len(theirs):
+        if _rank(ours[i]) >= _rank(theirs[j]):     # newest first; ties: ours on top
+            out.append(ours[i]); i += 1
+        else:
+            out.append(theirs[j]); j += 1
+    return out + ours[i:] + theirs[j:]
 
 
 def _short(key: str) -> str:
@@ -153,66 +167,65 @@ def _merge_text(base: str, ours: str, theirs: str, where: str) -> str:
                   f"sides; resolve by hand")
 
 
-def _merge_existing(b: Node, o: Node, t: Node, ctx: Context) -> Node:
-    where = f"{ctx.where} > {_short(b.key)}" if b.key else ctx.where
+def _merge_existing(b: Node, o: Node, t: Node, where: str) -> Node:
+    here = f"{where} > {_short(b.key)}" if b.key else where
     if b.leaf:
         if o.text != b.text or t.text != b.text:
             side = "ours" if o.text != b.text else "theirs"
-            raise Refusal(f"{where}: existing entry edited on {side}; old entries "
+            raise Refusal(f"{here}: existing entry edited on {side}; old entries "
                           f"are never edited, so resolve by hand")
         return b
-    sub = Context(ctx.when, where)
-    return Node(b.key, _merge_text(b.text, o.text, t.text, where),
-                _merge_lists(b.children, o.children, t.children, sub), b.leaf)
+    return Node(b.key, _merge_text(b.text, o.text, t.text, here),
+                _merge_lists(b.children, o.children, t.children, here), b.leaf)
 
 
-def _merge_new(o: Node, t: Node, ctx: Context) -> Node:
+def _merge_new(o: Node, t: Node, where: str) -> Node:
     """The same heading added on both sides."""
-    where = f"{ctx.where} > {_short(o.key)}"
+    here = f"{where} > {_short(o.key)}"
     if render(o, False) == render(t, False):
         return o
     if o.leaf or o.text != t.text:
-        raise Refusal(f"{where}: added on both sides with different text; resolve by hand")
-    return Node(o.key, o.text, _merge_lists([], o.children, t.children,
-                                            Context(ctx.when, where)), o.leaf)
+        raise Refusal(f"{here}: added on both sides with different text; resolve by hand")
+    return Node(o.key, o.text, _merge_lists([], o.children, t.children, here), o.leaf)
 
 
 def _merge_lists(base: list[Node], ours: list[Node], theirs: list[Node],
-                 ctx: Context) -> list[Node]:
+                 where: str) -> list[Node]:
     base_keys = [n.key for n in base]
     for side, nodes in (("ours", ours), ("theirs", theirs)):
         keys = [n.key for n in nodes]
         if len(set(keys)) != len(keys):
-            raise Refusal(f"{ctx.where}: duplicate heading or entry on {side}")
+            raise Refusal(f"{where}: duplicate heading or entry on {side}")
         missing = [k for k in base_keys if k not in keys]
         if missing:
-            raise Refusal(f"{ctx.where}: existing entry removed or edited on {side}: "
+            raise Refusal(f"{where}: existing entry removed or edited on {side}: "
                           f"{_short(missing[0])!r}; old entries are never edited")
         if [k for k in keys if k in base_keys] != base_keys:
-            raise Refusal(f"{ctx.where}: existing entries reordered on {side}")
+            raise Refusal(f"{where}: existing entries reordered on {side}")
 
     by = [{n.key: n for n in nodes} for nodes in (base, ours, theirs)]
-    gaps: dict[int, list[Node]] = {i: [] for i in range(-1, len(base))}
-    theirs_new = {n.key for n in theirs if n.key not in by[0]}
+    # New items per side, grouped by the existing item they follow (-1 = top).
+    gaps = {i: ([], []) for i in range(-1, len(base))}
     for side, nodes in ((1, ours), (2, theirs)):
         gap = -1
         for n in nodes:
             if n.key in by[0]:
                 gap = base_keys.index(n.key)
-            elif side == 1 and n.key in theirs_new:
-                gaps[gap].append(replace(_merge_new(n, by[2][n.key], ctx), side=1))
+            elif side == 1 and n.key in by[2]:
+                gaps[gap][0].append(replace(_merge_new(n, by[2][n.key], where), side=1))
             elif side == 2 and n.key in by[1]:
-                continue                       # already placed from ours
+                continue                       # added on both sides; placed from ours
             else:
-                gaps[gap].append(replace(n, side=side))
+                gaps[gap][side - 1].append(replace(n, side=side))
 
     out: list[Node] = []
     for gap in range(-1, len(base)):
         if gap >= 0:
             k = base_keys[gap]
-            out.append(_merge_existing(by[0][k], by[1][k], by[2][k], ctx))
-        # Newest first at the top of a list, oldest first when appended.
-        out.extend(sorted(gaps[gap], key=lambda n: _newness(n, ctx), reverse=(gap == -1)))
+            out.append(_merge_existing(by[0][k], by[1][k], by[2][k], where))
+        new_ours, new_theirs = gaps[gap]
+        appended = gap >= 0 and any(n.bullet for n in new_ours + new_theirs)
+        out.extend(_interleave(new_ours, new_theirs, appended))
     # An existing bullet followed by a new one keeps the spacing of the side
     # that added the new one (tight or blank-line list).
     for i in range(len(out) - 1):
@@ -228,8 +241,7 @@ def _leaves(node: Node, path: tuple = ()) -> set[tuple]:
     return set().union(*(_leaves(c, here) for c in node.children))
 
 
-def merge_texts(base: str, ours: str, theirs: str, layout: Layout,
-                when: Callable[[Node], int], name: str = "file") -> str:
+def merge_texts(base: str, ours: str, theirs: str, layout: Layout, name: str = "file") -> str:
     """Merge three versions of an append-only file; raise Refusal if unsafe."""
     trees = []
     for side, text in (("base", base), ("ours", ours), ("theirs", theirs)):
@@ -240,7 +252,7 @@ def merge_texts(base: str, ours: str, theirs: str, layout: Layout,
         trees.append(tree)
     b, o, t = trees
     merged = Node("", _merge_text(b.text, o.text, t.text, name),
-                  _merge_lists(b.children, o.children, t.children, Context(when, name)))
+                  _merge_lists(b.children, o.children, t.children, name))
 
     if layout.unique_id:
         seen: dict[str, str] = {}
@@ -267,30 +279,10 @@ def git(*args: str, cwd: Path) -> str:
     return out.stdout
 
 
-def _dater(path: str, base: str, tips: tuple[str, str], cwd: Path) -> Callable[[Node], int]:
-    cache: dict[str, int] = {}
-
-    def when(node: Node) -> int:
-        needle = node.key.split("\n", 1)[0]
-        if needle not in cache:
-            times = [int(t) for tip in tips for t in
-                     git("log", "--format=%ct", "-S", needle, f"{base}..{tip}", "--",
-                         path, cwd=cwd).split()]
-            if not times:
-                raise Refusal(f"{path}: can't date {needle[:60]!r} from git history; "
-                              f"resolve by hand")
-            cache[needle] = min(times)
-        return cache[needle]
-    return when
-
-
 def resolve(path: str, top: Path, dry_run: bool) -> int:
     layout = LAYOUTS[path]
     base, ours, theirs = (git("show", f":{n}:{path}", cwd=top) for n in (1, 2, 3))
-    head = git("rev-parse", "HEAD", cwd=top).strip()
-    other = git("rev-parse", "MERGE_HEAD", cwd=top).strip()
-    fork = git("merge-base", head, other, cwd=top).strip()
-    result = merge_texts(base, ours, theirs, layout, _dater(path, fork, (head, other), top), path)
+    result = merge_texts(base, ours, theirs, layout, path)
     added = len(_leaves(parse(result, layout))) - len(_leaves(parse(base, layout)))
     print(f"{path}: resolved; {added} entr{'y' if added == 1 else 'ies'} added on either "
           f"side since the branches split, all kept")
