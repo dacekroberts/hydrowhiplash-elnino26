@@ -17,6 +17,27 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Methods-page data notices
+
+- **Decided to add the ERA5-Land notices to `site/methods.qmd` verbatim from
+  `DATA_SOURCES.md`, with the publisher's placeholders filled: `<YYYY_2>` as
+  2026 and the accessed date as 04-OCT-2026.** 2026 is the year of the first
+  download; to be changed if the Copernicus guidance defines the year
+  differently. DOIs are linked without changing their text. Checked by
+  script: all three quoted notices appear word for word. Files:
+  `site/methods.qmd`.
+- **Decided to draft the CC-BY 4.0 "changes made" statement as one factual
+  sentence, at the owner's request:** subset to the study domain, unit
+  conversion to mm and °C, cos(latitude)-weighted regional means, seasonal
+  totals, means and anomalies. Gives no domain bounds or years, because the
+  site takes numbers only from `results/`. Needs updating when new
+  ERA5-Land products are published (SPEI, the winter rainfall map).
+  Rejected leaving a placeholder.
+- **Decided to leave out the ONI/RONI 17 U.S.C. 403 statement for now.**
+  `DATA_SOURCES.md` requires it only when a published table or figure
+  consists predominantly of CPC index values, and none does yet; an HTML
+  comment on the methods page marks where it goes.
+
 ### 2026-10-04 - Side worktree session
 
 - **Decided to write a `merge-side-pr` skill before the first side-session

@@ -17,6 +17,35 @@ title: "Methods and limitations"
 <!-- One line per source from DATA_SOURCES.md, plus every required notice,
      verbatim. -->
 
+### Required notices
+
+**ERA5-Land (Copernicus Climate Change Service, ECMWF)**
+
+> Generated using or contains modified Copernicus Climate Change Service
+> information 2026. Neither the European Commission nor ECMWF is responsible
+> for any use that may be made of the Copernicus information or data it
+> contains.
+
+- Copernicus Climate Change Service (2022): ERA5-Land monthly averaged data
+  from 1950 to present. Copernicus Climate Change Service (C3S) Climate Data
+  Store (CDS). DOI: [10.24381/cds.68d2bb30](https://doi.org/10.24381/cds.68d2bb30)
+  (Accessed on 04-OCT-2026)
+- Muñoz Sabater, J. (2019): ERA5-Land monthly averaged data from 1950 to
+  present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS).
+  DOI: [10.24381/cds.68d2bb30](https://doi.org/10.24381/cds.68d2bb30)
+  (Accessed on 04-OCT-2026)
+
+ERA5-Land is licensed under
+[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/). Changes made: the
+monthly fields (total precipitation, 2 m air temperature, snow depth water
+equivalent) were subset to the study domain, converted to millimetres and
+degrees Celsius, averaged over each study region with cos(latitude) area
+weights, and aggregated into seasonal totals, means and anomalies.
+
+<!-- ONI/RONI (NOAA CPC): no credit line required. Add the 17 U.S.C. 403
+     statement (DATA_SOURCES.md, notice 1) once a published table or figure
+     consists predominantly of CPC index values. -->
+
 ## What was filtered out
 
 <!-- Fires under 405 ha, months outside each fire window, and why. -->
