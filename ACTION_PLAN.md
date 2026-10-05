@@ -62,13 +62,13 @@ the El Niño precipitation dipole.
 
 ## Phase 2 — Whiplash index (week 2)
 
-- [ ] `src/whiplash.py`: compute PET (Thornthwaite to start) and **SPEI-3**
+- [x] `src/whiplash.py`: compute PET (Thornthwaite to start) and **SPEI-3**
       with `xclim`, then whiplash = SPEI-3(JJA) − SPEI-3(preceding DJF)
       for **every year**
-- [ ] Average by region to get one time series per region per year
+- [x] Average by region to get one time series per region per year
 - [ ] Add April 1 snowpack: SNOTEL (WA/OR/ID), BC and Alberta snow surveys;
       Alaska SNOTEL and Yukon snow surveys [mid-project: D20]
-- [ ] Gridded snowpack from ERA5-Land SWE (`sd`, already downloaded), with
+- [x] Gridded snowpack from ERA5-Land SWE (`sd`, already downloaded), with
       two fixes before any regional mean:
       - **Exclude glacier cells.** ERA5-Land holds glacier ice at a 10 m
         water-equivalent cap. In 1950, 325 cells (0.65% of land, Coast
@@ -79,14 +79,14 @@ the El Niño precipitation dipole.
         mid-month, after melt has begun at low elevations. Approximate
         April 1 from the March and April means, or download the April 1
         00:00 field from hourly ERA5-Land (77 time steps).
-- [ ] Download ERA5-Land **snowfall** and **volumetric soil water layers 1-2**
+- [x] Download ERA5-Land **snowfall** and **volumetric soil water layers 1-2**
       (0-28 cm) to their own folder (the three-variable download is
       about 3.7 MB per year, so this is cheap). Snowfall over total precipitation shows how much
       of a warm El Niño winter fell as rain, explaining low snowpack beyond
       the precipitation deficit; summer soil moisture is a direct
       fuel-dryness measure alongside SPEI. Descriptive unless
       `ANALYSIS_PLAN.md` adds them before the freeze.
-- [ ] Plot whiplash and SWE as full time series with El Niño years highlighted
+- [x] Plot whiplash and SWE as full time series with El Niño years highlighted
 
 **Done when:** you have a table of regions × all years with whiplash, SWE and
 the ENSO phase label for each year, saved in `data/processed/` with a
