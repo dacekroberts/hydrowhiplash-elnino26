@@ -177,9 +177,8 @@ Session 3 for hydrowhiplash-elnino26: station snowpack cleaning (Phase 2, contin
     commit and push. Offer to update the roadmap artifact at the same URL,
     and write the next session's kickoff the same way.
 
-Optional, if time allows or for the side session: draft the pre-freeze
-"Whiplash timing" and Alaska/Yukon hypothesis options in light of the
-positive northern whiplash; investigate the 111 unfitted north SPEI cells;
-the expansion readiness table and the add-a-region skill (offered on
-2026-10-04, not yet built).
+Optional, if time allows: investigate the 111 north region cells with no
+SPEI fit. (The pre-freeze option drafts, the log-rule fix, the Alberta
+2026-27 source research and the expansion/add-a-region extras are with the
+side session.)
 ```
