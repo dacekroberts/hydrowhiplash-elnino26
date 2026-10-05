@@ -292,7 +292,8 @@ def resolve(path: str, top: Path, dry_run: bool) -> int:
     fork = git("merge-base", head, other, cwd=top).strip()
     result = merge_texts(base, ours, theirs, layout, _dater(path, fork, (head, other), top), path)
     added = len(_leaves(parse(result, layout))) - len(_leaves(parse(base, layout)))
-    print(f"{path}: resolved, {added} new entr{'y' if added == 1 else 'ies'} from both sides kept")
+    print(f"{path}: resolved; {added} entr{'y' if added == 1 else 'ies'} added on either "
+          f"side since the branches split, all kept")
     if not dry_run:
         (top / path).write_text(result, encoding="utf-8", newline="\n")
     return added
