@@ -17,6 +17,24 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Phase 1 figures from code
+
+- **Decided to regenerate the three Phase 1 figures with a new module,
+  `python -m src.winter_figures`, instead of only by running notebook 01**
+  (Phase 1 audit, finding 7; owner's direction via the main session). It
+  repeats notebook 01's cells 7-13 exactly: the same `src.era5` and
+  `src.figures` functions, file names, the ENSO_INDEX table from
+  `data/processed/el_nino_winters.csv` and the ONI/RONI comparison from
+  `download_oni.load_winters`, so `results/figures/` can be rebuilt by code
+  alone. A new module rather than a `__main__` in `src/figures.py`, which
+  the main session was editing (its `_legend` fix); the map's extent and
+  title wording are copied unchanged, pending D28. 3 tests on synthetic
+  data, with the cartopy map stubbed (it downloads Natural Earth layers);
+  not run on the real data here (the worktree has none). Notebook 01 still
+  holds its own copy of these cells; pointing it at the module is the main
+  session's call. Files: `src/winter_figures.py`,
+  `tests/test_winter_figures.py`, `README.md` (run order).
+
 ### 2026-10-05 - Station snowpack downloads
 
 - **Decided to download every station source raw and unfiltered, with all
