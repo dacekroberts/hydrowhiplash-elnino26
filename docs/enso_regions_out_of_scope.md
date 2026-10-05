@@ -40,6 +40,69 @@ year +1) unless stated.
 | 19 | Pacific islands (Hawaii, SW Pacific, Micronesia) | Hawaii drier late fall to spring; Fiji, Vanuatu, Tonga drought; Palau, Marshalls, FSM severe drought early 2016; equatorial Kiribati wetter | **Hawaii only: more fire**; invasive grass grows when wet and dries fast; more than 37,000 acres in 1997-98 [secondary] | Robust for drought, moderate for fire (Hawaii only) | Climate.gov "Drought in the Pacific" [read]; Trauernicht (University of Hawaiʻi), via news [secondary] |
 | 20 | Siberia and boreal East Asia | No robust ENSO signal; SE Siberian fire years follow the preceding Arctic Oscillation | Weak; not ENSO-dominated | Weak | Kim et al. 2020, *Sci. Adv.*, 10.1126/sciadv.aax3308 [search]; *Atmosphere* 2020, 10.3390/atmos11090956 [search] |
 
+## Expansion readiness
+
+Added 2026-10-05 (offered 2026-10-04, owner's request via the session 3
+handoff). For each region above: how much of this project's pipeline would
+carry over if it were added. Planning only; nothing here is downloaded or
+in scope. The project's pieces: ERA5-Land monthly and hourly (CC-BY),
+ONI/RONI DJF (labelled Y, paired with fire season Y), Natural Earth admin-1
+polygons, fire records from MTBS and WFIGS/NIFC (US) and CNFDB (Canada),
+station snowpack from NRCS (US west), BC, Yukon and CanSWE (Canada).
+
+Column notes:
+
+- **Climate:** ERA5-Land covers all land on a 0.1° grid; each new area
+  needs a download box in `config.ERA5_DOMAINS` (about 50 minutes and 77
+  files per box, as the north domain took). Small islands can fall outside
+  its land mask.
+- **ENSO timing:** "fits" if the fire response follows the DJF winter (the
+  project's pairing); "year 0" if fire peaks during the developing El Niño,
+  before that winter, which needs a different index season (e.g. JJA or SON
+  of year 0), not just new data. Regions driven mainly by another mode note
+  it (IOD, Niño 1+2, AMO, AO).
+- **Fire data:** whether the project's planned sources cover it. MTBS's
+  coverage (all US states and Puerto Rico) is from its programme
+  description and its terms are still "to verify" in `DATA_SOURCES.md`.
+  Elsewhere a new source would be needed, e.g. a global satellite
+  burned-area product, with its own licence read.
+- **Snow:** only where snowpack plausibly matters for fire.
+- **Pathway:** the project pathway it resembles: *north* (dry or warm
+  winter, earlier and drier fire season: dryness-limited), *SoCal* (wet
+  year, more fine fuel, fire later: fuel-limited), *reverse* (El Niño wet,
+  less fire), or *none*.
+
+| # | Region | Climate | ENSO timing | Fire data | Snow | Pathway | Readiness |
+|---|---|---|---|---|---|---|---|
+| 1 | Equatorial Asia | ERA5-Land; new box | year 0 (Jul-Nov); IOD | new source | n/a | north-like (peat drought) | Low: new timing and fire source |
+| 2 | Amazon (east, north) | ERA5-Land; new box | year 0 to +1; AMO in the south | new source | n/a | north-like | Low: new timing and fire source |
+| 3 | Northern South America | ERA5-Land; new box | fits (Jan-Apr after onset) | new source | n/a | north-like | Medium-low: fire source only |
+| 4 | Coastal Peru and Ecuador | ERA5-Land; new box | fits for rain | n/a (no fire signal) | n/a | none | Not useful for fire |
+| 5 | SE South America | ERA5-Land; new box | fits (year 0 OND) | new source | n/a | reverse | Low: fire source; opposite sign |
+| 6 | Central Chile | ERA5-Land; new box | partly (JJA winter, summer fire); Niño 1+2 | new source | Andes, no source | SoCal-like (two-step) | Low: index, fire source |
+| 7 | Central America, S Mexico | ERA5-Land; new box | fits (fire Mar-May of year +1) | new source | n/a | north-like | Medium-low: fire source only |
+| 8 | US Southwest, S Plains | ERA5-Land; extend main box | fits | MTBS, WFIGS | SNOTEL (mountains) | reverse | **High**: all sources in hand |
+| 9 | US Southeast, Florida | ERA5-Land; new box | fits (winter-spring fire; window overlaps DJF) | MTBS, WFIGS | n/a | reverse; Florida 1998 whiplash | **High**, fire window to define |
+| 10 | US northern tier, Ohio Valley, Great Lakes | ERA5-Land; new box | fits | MTBS, WFIGS | SNOTEL west only | weak north-like | High data, weak signal |
+| 11 | Canadian Prairies to Atlantic | ERA5-Land; new box | fits | CNFDB | CanSWE | weak (temperature only) | High data, weak signal |
+| 12 | Eastern and northern Australia | ERA5-Land; new box | year 0 (JJA-SON); IOD | new source | n/a | SE north-like; north SoCal-like | Low: index, fire source |
+| 13 | Southern Africa | ERA5-Land; new box | fits (next dry season) | new source | n/a | SoCal-like (fuel-limited, opposite) | Medium-low: fire source only |
+| 14 | East Africa, Horn | ERA5-Land; new box | year 0 OND; IOD | n/a (no fire link found) | n/a | none | Not useful for fire |
+| 15 | Sahel | ERA5-Land; new box | year 0 JAS | new source | n/a | weak | Low |
+| 16 | Indian monsoon | ERA5-Land; new box | year 0 JJAS | n/a (no fire link found) | n/a | none | Not useful for fire |
+| 17 | Mainland SE Asia, Philippines | ERA5-Land; new box | fits (Nov-Apr, year +1) | new source | n/a | north-like (mostly agricultural fire) | Medium-low: fire source; human ignitions |
+| 18 | S China, Japan, Korea | ERA5-Land; new box | fits for rain | n/a (no fire link found) | n/a | none | Not useful for fire |
+| 19 | Pacific islands (Hawaii) | main islands only; atolls may fall outside the land mask | fits (late fall to spring) | MTBS (Hawaii) | n/a | SoCal-like (invasive grass) | **Medium-high** for Hawaii |
+| 20 | Siberia, boreal East Asia | ERA5-Land; new box | weak; AO | new source | none in hand | none (not ENSO-led) | Not useful |
+
+**Reading the table.** Three regions are ready on data alone: the US
+Southwest (8) and Southeast (9), both *reverse* (El Niño wet, less fire,
+the mirror image of PNW/BC/AB), and Hawaii (19), a small *SoCal-like* case.
+Adding 8 or 9 would test the project's mechanism with the sign flipped
+using the same sources; 10 and 11 have the data but a weak signal. Every
+tropical fire region needs a new fire source, and 1, 2 and 12 also a
+year-0 index season, which changes the design, not just the inputs.
+
 ## Global studies
 
 - **van der Werf et al. 2004**, *Science* 303:73, 10.1126/science.1090753:
