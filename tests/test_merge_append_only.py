@@ -179,3 +179,31 @@ def test_end_to_end_conflicted_merge(tmp_path, capsys):
     assert mao.main([], cwd=repo) == 0
     assert f.read_text(encoding="utf-8") == dec(pr, main)
     assert "Next: review" in capsys.readouterr().out
+
+
+def test_clean_merge_is_checked_too(tmp_path, capsys):
+    # Two D17s at different lines: git merges cleanly, the script must refuse.
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _git(repo, "init", "-q", "-b", "main")
+    _git(repo, "config", "core.autocrlf", "false")
+    f = repo / "docs" / "plan_deviations.md"
+    f.parent.mkdir()
+    base = (DEV_PRE + "### D16 · Old\n- **Plan:** p.\n- **Actual:** a.\n- **Why:** w.\n\n"
+            "### D15 · Older\n- **Plan:** p.\n")
+    f.write_text(base, encoding="utf-8", newline="\n")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "base")
+    entry = "### D17 · {}\n- **Plan:** p.\n\n"
+    _git(repo, "switch", "-qc", "pr")
+    f.write_text(base.replace("### D16", entry.format("Diagram") + "### D16", 1),
+                 encoding="utf-8", newline="\n")
+    _git(repo, "commit", "-qam", "pr")
+    _git(repo, "switch", "-q", "main")
+    f.write_text(base.replace("### D15", entry.format("Render check") + "### D15", 1),
+                 encoding="utf-8", newline="\n")
+    _git(repo, "commit", "-qam", "main")
+    _git(repo, "switch", "-q", "pr")
+    assert _git(repo, "merge", "--no-commit", "--no-ff", "main").returncode == 0  # no conflict
+    assert mao.main([], cwd=repo) == 1
+    assert "D17 is used by two entries" in capsys.readouterr().out

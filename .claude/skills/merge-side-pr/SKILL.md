@@ -1,6 +1,6 @@
 ---
 name: merge-side-pr
-description: Review and merge a pull request from a worktree or side-branch session into main, then fold its session block into the day's log. Use in the main-checkout session when a side session reports a PR, or when the owner asks to review or merge one. One PR per run.
+description: Review and merge pull requests from worktree or side-branch sessions into main, then fold each session block into the day's log. Use in the main-checkout session when a side session reports a PR, or when the owner asks to review or merge one or several. Pre-screens the whole queue first, then merges one PR at a time in the screened order.
 ---
 
 # Merge a side-session PR
@@ -31,37 +31,58 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
      regional means outside `src.geo`;
    - has no session block in its description (ask the side session for it;
      never write one on its behalf).
-3. **Test the PR's code without touching the main checkout.** The main
-   checkout may hold uncommitted work, so use a throwaway worktree:
+3. **Pre-screen the whole queue, merged, before anyone approves.** Decide the
+   merge order (dependencies first; a PR that adds tooling the others use goes
+   first), then run, from the main checkout:
+   ```
+   python scripts/prescreen_prs.py <N1> <N2> ...      # in merge order
+   ```
+   It merges every PR in order onto current main in a throwaway worktree,
+   resolves `DECISIONS.md` and `docs/plan_deviations.md` with
+   `merge_append_only.py`, runs pytest, the em-dash check and (for PRs
+   touching `site/`, `results/figures/`, `src/figures.py` or
+   `src/diagrams.py`) `check_site.py` after each merge, applies the known
+   fix-ups it lists, and prints a report: CLEAN, CLEAN after fix-up, or
+   UNEXPECTED with the reason. What gets approved is then exactly what was
+   tested, including clashes between PRs (a D number used twice, a check
+   that fails only after an earlier PR). For changes under `src/`, also run
+   `/code-review low` on each PR. Tests that need `data/` can't run there
+   (data is never committed); say so instead of skipping silently.
+4. **Report to the owner, or go ahead.** Show the report, the step 2 rule
+   flags, anything touching their prose and any code-review findings.
+   - If the owner gave a yes for the run ("merge them if the pre-screen is
+     clean") and the report is ALL CLEAN with no flags or findings, go on to
+     step 5 for each PR in the screened order without asking again.
+   - Otherwise ask for a clear yes. The owner may prefer to merge on GitHub
+     instead; then skip to step 7 once it's merged.
+   **Stop and ask** (whatever was agreed) when anything is unexpected:
+   the pre-screen says UNEXPECTED or `merge_append_only.py` refuses; a
+   conflict outside the two logs; a check fails without a fix-up the report
+   listed; a step 2 flag or code-review finding; or main or a PR head moved
+   since the pre-screen other than by this run's own merges (re-run the
+   pre-screen first).
+5. **Merge main into the PR branch, as screened.** Do it on the PR branch,
+   not on main, in a throwaway worktree (the main checkout may hold
+   uncommitted work):
    ```
    git fetch origin pull/<N>/head:pr-<N>
    git worktree add ../_pr-<N> pr-<N>
    ```
-   In `../_pr-<N>`: `python -m pytest` and
-   `python scripts/check_no_em_dashes.py`. For changes under `src/`, also run
-   `/code-review low` on the PR. If the PR touches `site/`, `results/figures/`,
-   `src/figures.py` or `src/diagrams.py`, also run
-   `python scripts/check_site.py`: it renders a copy of the site and fails on
-   any unrendered page or broken local link (a bare `quarto render` exits 0
-   on both). Tests that need `data/` can't run there (data is never
-   committed); say so instead of skipping silently.
-4. **Report to the owner and wait.** In a few lines: what the PR changes,
-   check results, rule flags, anything touching their prose, merge
-   conflicts. Ask for a clear yes before merging. The owner may prefer to
-   merge on GitHub instead; then skip to step 7 once it's merged.
-5. **Resolve conflicts on the PR branch, not on main.** Expected spots:
-   the top of `DECISIONS.md` and `docs/plan_deviations.md` (both newest
-   first). In `../_pr-<N>`: `git merge origin/main`, then
-   `python scripts/merge_append_only.py`, which resolves both files
-   entry by entry (newest date first, deviations by number; on the same date
-   the PR's entries go above main's, so the latest merge ends on top), keeps
-   every entry of both sides, and refuses if an old entry was edited or a D
-   number is used twice. This step is the main session's job: side sessions
-   don't merge main into their open PRs (the owner's choice, 2026-10-04), so
-   only one session ever pushes merge commits to a PR branch. Review with `git diff`, `git add` the files, resolve anything
-   else by hand, commit, push, re-run step 3's checks. If it refuses, resolve
-   that file by hand: keep every entry of both sides, never one side's whole
-   file.
+   In `../_pr-<N>`: `git merge --no-commit --no-ff origin/main`, then
+   `python scripts/merge_append_only.py`, every time, conflicts or not: git
+   merges the two logs cleanly whenever the additions don't touch the same
+   lines, and a clean merge can still hold one D number twice. The script
+   merges both logs entry by entry (newest date first, deviations by number;
+   on the same date the PR's entries go above main's, so the latest merge
+   ends on top), keeps every entry of both sides, and refuses if an old entry
+   was edited or a D number is used twice. Repeat any fix-up the report
+   listed for this PR, run the same checks, review with `git diff`, `git add`
+   the files it names, commit and push. The result must
+   match the report: if anything differs, stop and ask. This step is the
+   main session's job: side sessions don't merge main into their open PRs
+   (the owner's choice, 2026-10-04), so only one session ever pushes merge
+   commits to a PR branch. If the script refuses, resolve that file by
+   hand: keep every entry of both sides, never one side's whole file.
 6. **Merge.** `gh pr merge <N> --squash` (no `--delete-branch`), then
    delete only the remote branch: `git push origin --delete <branch>`.
    Squash gives one commit per task on `main`; the PR keeps the detailed
@@ -92,7 +113,9 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
 
 ## Rules
 
-- Never merge without the owner's yes in this conversation.
+- Never merge without the owner's yes in this conversation. A yes may cover
+  a whole run of pre-screened PRs (step 4); it never covers anything the
+  pre-screen didn't predict.
 - Never force-push `main` or rewrite its history.
 - If the PR conflicts with work in progress on `main`, stop and ask which
   should give way.
