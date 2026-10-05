@@ -9,6 +9,7 @@ Pipeline:
 
 Units after open_era5 (raw units in docs/data_dictionary.md, section 2):
   tp   mm/month  (raw: monthly mean of daily totals in m/day)
+  sf   mm/month  (raw: m/day, as tp)
   t2m  deg C     (raw: K)
   sd   mm water equivalent, clipped at 0 (raw: m; tiny negatives are noise)
 
@@ -68,6 +69,9 @@ def convert_units(ds: xr.Dataset) -> xr.Dataset:
         days = ds[TIME].dt.days_in_month
         out["tp"] = ds["tp"] * 1000 * days
         out["tp"].attrs = {"long_name": "Total precipitation", "units": "mm/month"}
+    if "sf" in ds:  # same m/day convention as tp (sf/tp <= 0.9996, 2026-10-04)
+        out["sf"] = ds["sf"] * 1000 * ds[TIME].dt.days_in_month
+        out["sf"].attrs = {"long_name": "Snowfall", "units": "mm/month"}
     if "t2m" in ds:
         out["t2m"] = ds["t2m"] - 273.15
         out["t2m"].attrs = {"long_name": "2 m temperature", "units": "degC"}

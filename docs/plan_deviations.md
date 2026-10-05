@@ -25,6 +25,49 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-04 (Phase 2)
+
+### D29 · Methods register added
+- **Plan:** `CLAUDE.md` and `ACTION_PLAN.md` Phase 4 ("Write the Methods
+  and limitations section as you go") name no record of controls; units and
+  traps sit in `docs/data_dictionary.md`, reasoning in `DECISIONS.md`.
+- **Actual:** `docs/methods_register.md` lists every control, cap, filter,
+  threshold and data-handling rule with value, code location, reason,
+  measured effect and status; back-filled from Session 0 and Phase 1 work
+  the same day (about 70 rows). `CLAUDE.md` gained a line requiring it to be
+  kept current.
+- **Why:** owner's request, so the methods section can be written from it.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Methods register".
+- **Plan doc:** `CLAUDE.md` updated; `ACTION_PLAN.md` left as written.
+
+### D28 · Map extent hard-coded; map period worded two ways
+- **Plan:** `CLAUDE.md` "Single source of truth": every tunable value
+  (including domain) lives in `src/config.py`.
+- **Actual:** found by the methods-register sweep. `src/figures.py:116`
+  hard-codes the 1997-98 map extent as (-169, -109, 32, 71.5) instead of
+  deriving it from `ERA5_DOMAINS`; the values match the two domains today.
+  The same map's title (notebook 01, cell 10) says "% of the 1950-2026
+  mean" while its colourbar (`src/figures.py:151`) says "1950-51 to
+  2025-26"; the colourbar is the precise one (76 winters).
+- **Why:** written in Phase 1 before the north domain settled.
+- **Plan doc:** left as written; flagged to the owner, not fixed (outside
+  Phase 2 scope).
+
+### D27 · Glacier exclusion adds a perennial-snow rule
+- **Plan:** `ACTION_PLAN.md` Phase 2 and `ANALYSIS_PLAN.md` "SWE source and
+  definition": exclude glacier cells with the CDS glacier mask or by
+  flagging cells at the 10 m cap in every month.
+- **Actual:** cells at the cap in any month, plus cells keeping more than
+  10 mm of snow at the yearly minimum in at least 90% of 1950-2025, one
+  fixed mask. The perennial rule catches 394 main-domain and 1,146 north
+  cells that hold a steady ~5 m and never reach the cap; with the cap rule
+  alone Alaska's mean April SWE stays at 417 mm instead of 229 mm.
+- **Why:** measured 2026-10-04 before building; owner's choice.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "ERA5-Land SWE: glacier exclusion
+  and April 1"; `docs/methods_register.md`.
+- **Plan doc:** left as written (owner's prose); the chosen rule is in
+  `src/config.py`.
+
 ## 2026-10-04 (Phase 1)
 
 ### D26 · Side PRs pre-screened as a merged queue

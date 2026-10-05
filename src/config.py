@@ -97,6 +97,8 @@ GLACIER_MASK_YEARS = (1950, 2025)  # complete years used to build the fixed mask
 # April 1 SWE: 00:00 UTC on 1 April from hourly ERA5-Land.
 ERA5_HOURLY_DATASET = "reanalysis-era5-land"
 APRIL1_FOLDER_SUFFIX = "_april1"
+# Hourly ERA5-Land publishes about 5 days behind real time; 7 leaves a margin.
+ERA5_HOURLY_LAG_DAYS = 7
 
 # Regions
 NATURAL_EARTH_ADMIN1_URL = ("https://naciscdn.org/naturalearth/10m/cultural/"
