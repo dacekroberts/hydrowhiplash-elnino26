@@ -21,6 +21,15 @@ flagged here instead.
 
 ## 2026-10-04 (Session 0)
 
+### D16 · Parallel worktree session before Phase 4
+- **Plan:** `ACTION_PLAN.md` and `docs/claude_code_project_setup.md`
+  assume one sequential local session until Phase 4.
+- **Actual:** a second local session runs in a git worktree from Phase 1 for
+  data-free tasks (mechanism diagram, methods-page notices), one branch and
+  PR per task; worktree sessions don't edit `logs/`.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Side worktree session".
+- **Plan doc:** updated (`CLAUDE.md` daily-log exception).
+
 ### D15 · ENSO index: RONI is now the official index
 - **Plan:** `src/config.py` defaults to ONI with the RONI URL as a TODO;
   `ANALYSIS_PLAN.md` leaves the ONI/RONI choice to the freeze; the project

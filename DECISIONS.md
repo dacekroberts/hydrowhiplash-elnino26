@@ -17,6 +17,22 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Side worktree session
+
+- **Decided to run a second, local Claude Code session in a git worktree for
+  tasks that need no data, alongside the main line from Phase 1.** First
+  tasks: the site's mechanism diagram and the attribution notices the
+  methods page owes after the 2026-10-04 licence reads. Each task goes on its
+  own branch and lands through a PR the owner reviews. The worktree has no
+  `data/` (never committed), so data work, including `src/whiplash.py`,
+  stays in the main checkout. Worktree sessions don't edit `logs/`: their
+  session block goes in the PR description and the main session adds it to
+  the day's log on merge, avoiding conflicts on one day's file (rule added to
+  `CLAUDE.md`). This is not the Claude Code Project, which stays deferred to
+  Phase 4. Rejected waiting until Phase 4 (the diagram and notices are
+  ready now) and doing them in the main session (they would interleave with
+  Phase 1). Files: `CLAUDE.md`.
+
 ### 2026-10-04 - Plan deviations log
 
 - **Decided to track every departure from the planning documents in a new
