@@ -149,7 +149,7 @@ def test_unknown_failure_gets_no_fixup(repo):
 def test_keep_leaves_the_worktree_after_a_stop(repo):
     a = branch(repo, "a", {"README.md": "changed by a\n"})
     b = branch(repo, "b", {"README.md": "changed by b\n"})
-    results, kept = pre.screen(repo, "main", [a, b], checks=passing)
+    results, kept = pre.screen(repo, "main", [a, b], checks=passing, keep=True)
     assert kept is not None and kept.exists() and len(worktrees(repo)) == 2
     _git(repo, "worktree", "remove", "--force", str(kept))
 
