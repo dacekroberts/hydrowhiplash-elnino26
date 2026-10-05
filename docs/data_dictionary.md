@@ -25,7 +25,7 @@ Status: **have** = downloaded; **planned** = in `ACTION_PLAN.md`.
 | Snow water equivalent (stations) | SNOTEL, BC, Alberta | 2 | planned | inches (SNOTEL), mm (BC, AB) | mm |
 | PET, SPEI-3, whiplash | derived | 2 | planned | mm/month; standardised | as native |
 | Fire perimeters | MTBS, WFIGS/NIFC, CNFDB | 3 | planned (after freeze) | polygons + dates | ha, days |
-| Region boundaries | Natural Earth admin-1 | 1 | planned | degrees (EPSG:4326) | polygons; ha in ESRI:102008 |
+| Region boundaries | Natural Earth admin-1 | 1 | have | degrees (EPSG:4326) | polygons; ha in ESRI:102008 |
 
 ---
 
@@ -89,8 +89,13 @@ Rockies).
 km at 32°N and 5.6 km at 60°N. A cell at 60°N therefore covers about 62 km²
 against about 104 km² at 32°N. An unweighted average over-counts northern
 cells, which is why every regional mean goes through
-`src.geo.regional_mean` with cos(latitude) weights. Project domain: 60.5°N to
-32°N, 140°W to 109°W, 286 × 311 cells. Ocean cells are empty (NaN, 43.7% of
+`src.geo.regional_mean` with cos(latitude) weights. Two download domains
+(`ERA5_DOMAINS`): main, 60.5°N to 32°N, 140°W to 109°W, 286 × 311 cells
+(PNW, BC, AB, California); north, 71.5°N to 51°N, 169°W to 123.5°W (Alaska
+and Yukon, added 2026-10-04), in `data/raw/era5_land_north/`. The two
+overlap south of 60.5°N, where cells agree to float32 rounding (largest
+relative difference 7e-7; SWE identical; land/ocean pattern identical), not
+bit for bit: each request's GRIB packing depends on its area. Ocean cells are empty (NaN, 43.7% of
 the domain): the dataset covers land only.
 
 **Time.** Monthly means, 1950 to about 3 months before today. In the NetCDF
@@ -225,6 +230,15 @@ things, so expect level differences between them.
 
 ### 4d. Other regional climate columns
 
+- `precip_djf_mm` (have, Phase 1): winter (December-February,
+  `WINTER_MONTHS`) precipitation total per region, mm, summed per cell
+  from mm/month and then averaged with cos(latitude) weights. Table:
+  `data/processed/djf_precip_region_year.csv` (`python -m src.era5`), 76
+  winters x 7 regions with `enso_index`, `enso_djf`, `phase`, `strong`.
+  Cells count for a region when their centre lies inside its polygon; the
+  35.5N grid row sits exactly on the NorCal/SoCal split and goes to SoCal
+  (`DECISIONS.md` 2026-10-04, "Phase 1 regions and ERA5 loading").
+
 - `temp_jja`: June-August mean 2 m temperature per region, °C.
 - `precip_anom_*`: winter precipitation anomaly per region; months,
   baseline and units (mm, % of normal or standardised) are fixed at the
@@ -252,7 +266,8 @@ attributes such as fire name, year, type and start date.
   source's own area field. 1 ha = 10,000 m²; 1 acre = 0.4047 ha.
 - **Fires counted:** ≥ 405 ha (`MIN_FIRE_HA`, = 1,000 acres) in every
   region, so US and Canadian records are comparable.
-- **Fire season:** June-October; Alberta April-October
+- **Fire season:** June-October; Alberta April-October; Alaska and Yukon
+  April-September (provisional)
   (`FIRE_SEASON_MONTHS`; California and BC windows are pre-freeze items).
 
 **Derived fire columns.**
@@ -266,12 +281,18 @@ attributes such as fire name, year, type and start date.
   a trend term.
 - Season length: days from the first to the last counted fire's start date.
 
-## 6. Region boundaries, planned (Phase 1)
+## 6. Region boundaries, have (Phase 1)
 
 - **Source:** Natural Earth admin-1 states and provinces, 1:10 million scale
   (`ne_10m_admin_1_states_provinces`), restricted to the US and Canada.
-- **Regions:** PNW = Washington + Oregon + Idaho; BC; AB; California split
-  at 35.5°N (`CA_SPLIT_LAT`) into NorCal and SoCal.
+- **Regions:** PNW = Washington + Oregon + Idaho; BC; AB; AK = Alaska east
+  of 169°W (`ALASKA_WEST_LON`); YT = Yukon; California split at 35.5°N
+  (`CA_SPLIT_LAT`) into NorCal and SoCal. Roles: primary (PNW, BC, AB),
+  north (AK, YT), contrast (NorCal, SoCal).
+- **Areas (ha, ESRI:102008):** PNW 64.23 M, BC 94.56 M, AB 66.37 M, AK
+  149.39 M, YT 48.45 M, NorCal 27.71 M, SoCal 13.26 M. Polygons include
+  inland water but not sea, so they sit between official land and total
+  areas (US totals include coastal water).
 - **Units:** coordinates in degrees, EPSG:4326, for storage and display;
   region areas in ha via ESRI:102008.
 - **Trap:** boundaries are generalised at 1:10 million, so coastlines and
