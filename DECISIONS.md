@@ -22,7 +22,8 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 - **Decided to add `scripts/check_site.py`, which renders the Quarto site and
   fails unless every page was rendered and every local `src`/`href` in the
   output resolves, and to run it from `merge-side-pr` step 3 when a PR
-  touches `site/`, `results/figures/` or `src/figures.py`.** Built in the
+  touches `site/`, `results/figures/`, `src/figures.py` or
+  `src/diagrams.py`.** Built in the
   side session at the owner's request (originally offered to the main
   session). Both failures met while building the mechanism diagram exited
   0: Quarto rendered 0 pages in a worktree (its path contains `.claude\`,
