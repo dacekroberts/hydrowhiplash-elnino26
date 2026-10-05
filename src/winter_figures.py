@@ -6,7 +6,8 @@ Writes to results/figures/, exactly as notebook 01 (cells 7-13) does:
   djf_precip_1997_98_pct_normal.png  winter 1997-98 as % of the all-winter mean
 
 so results/ can be rebuilt from scratch by code alone (Phase 1 audit,
-finding 7). Needs the ERA5-Land files, data/processed/regions.geojson and
+finding 7). Notebook 01 calls the same functions, one per figure, so the
+figure code has one copy. Needs the ERA5-Land files, data/processed/regions.geojson and
 data/processed/el_nino_winters.csv; the RONI table is downloaded once if it
 is missing (download_oni.load_winters).
 
@@ -56,6 +57,32 @@ def map_inputs(table: pd.DataFrame, datasets: dict[str, xr.Dataset],
     return pcts, by_region.loc[winter] / by_region.mean() * 100
 
 
+def series_figure(table: pd.DataFrame, out_dir: Path = figures.FIGURES) -> Path:
+    """Every winter per region, classified by ENSO_INDEX (notebook cell 8)."""
+    return figures.winter_series(table, VALUE, YLABEL, ENSO_INDEX,
+                                 out_dir / f"djf_precip_series_{ENSO_INDEX.lower()}.png")
+
+
+def map_figure(table: pd.DataFrame, datasets: dict[str, xr.Dataset],
+               regions: gpd.GeoDataFrame, out_dir: Path = figures.FIGURES
+               ) -> tuple[Path, pd.Series]:
+    """Winter MAP_WINTER as % of the mean (notebook cell 10); also returns the
+    regional percentages shown on the map."""
+    pcts, region_pct = map_inputs(table, datasets)
+    out = figures.percent_of_normal_map(pcts, regions, region_pct, MAP_TITLE,
+                                        out_dir / MAP_FILE)
+    return out, region_pct
+
+
+def comparison_figure(tables: dict[str, pd.DataFrame],
+                      out_dir: Path = figures.FIGURES) -> Path:
+    """The series classified by each index side by side (notebook cell 13);
+    `tables` from series_by_index."""
+    names = "_vs_".join(name.lower() for name in tables)
+    return figures.winter_series_two_indices(tables, VALUE, YLABEL,
+                                             out_dir / f"djf_precip_series_{names}.png")
+
+
 def make_figures(regions: gpd.GeoDataFrame, datasets: dict[str, xr.Dataset],
                  winters: pd.DataFrame, by_index: dict[str, pd.DataFrame],
                  out_dir: Path = figures.FIGURES) -> list[Path]:
@@ -67,16 +94,9 @@ def make_figures(regions: gpd.GeoDataFrame, datasets: dict[str, xr.Dataset],
     comparison figure, in order (notebook cells 7 and 12).
     """
     table, _ = era5.build_winter_precip_table(regions, winters, datasets)
-    paths = [figures.winter_series(table, VALUE, YLABEL, ENSO_INDEX,
-                                   out_dir / f"djf_precip_series_{ENSO_INDEX.lower()}.png")]
-    pcts, region_pct = map_inputs(table, datasets)
-    paths.append(figures.percent_of_normal_map(pcts, regions, region_pct, MAP_TITLE,
-                                               out_dir / MAP_FILE))
-    names = "_vs_".join(name.lower() for name in by_index)
-    paths.append(figures.winter_series_two_indices(
-        series_by_index(table, by_index), VALUE, YLABEL,
-        out_dir / f"djf_precip_series_{names}.png"))
-    return paths
+    return [series_figure(table, out_dir),
+            map_figure(table, datasets, regions, out_dir)[0],
+            comparison_figure(series_by_index(table, by_index), out_dir)]
 
 
 def main() -> None:
