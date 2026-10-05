@@ -39,7 +39,11 @@ FIRE_FIRST_YEAR = 1984     # fire-perimeter records start (MTBS)
 # 110W and both provinces end at 60N. Half a degree to a degree of buffer.
 ERA5_AREA = [60.5, -140, 32, -109]
 ERA5_DATASET = "reanalysis-era5-land-monthly-means"
-ERA5_VARIABLES = ["total_precipitation", "2m_temperature"]
+# Changing this list after the download needs a full re-download: years already
+# on disk are skipped. SWE added before the first download (DECISIONS.md,
+# 2026-10-04 "ERA5-Land variables").
+ERA5_VARIABLES = ["total_precipitation", "2m_temperature",
+                  "snow_depth_water_equivalent"]
 ERA5_LAG_MONTHS = 3  # months behind real time before a month is safely published
 
 # Regions

@@ -25,18 +25,18 @@ deliverable so you always know when you're done.
 - [x] `mamba env create -f environment.yml`, then `conda activate whiplash`
 - [x] Create a **private** GitHub repo named `hydrowhiplash-elnino26` and push
       these starter files
-- [ ] Register for a **Copernicus Climate Data Store** account
+- [x] Register for a **Copernicus Climate Data Store** account
       (https://cds.climate.copernicus.eu), accept the ERA5-Land licence on the
       dataset page, and create `C:\Users\<you>\.cdsapirc` (see README)
 - [x] `git init`, commit the starter files, and push to the private GitHub
       repo. The freeze gate relies on dated commits, so commit from day one.
-- [ ] Run `python -m src.download_oni` and review the winters it lists. This
+- [x] Run `python -m src.download_oni` and review the winters it lists. This
       list is **provisional**: final analog years are locked at the freeze
       gate, after the ONI vs RONI choice.
-- [ ] Start `python -m src.download_era5` (1950–present, roughly 0.5–1 GB of
+- [x] Start `python -m src.download_era5` (1950–present, roughly 0.5–1 GB of
       monthly data; one file per year, so it can run in the background and
       be resumed)
-- [ ] `python scripts/log.py new` to start the day's log, then end the session
+- [x] `python scripts/log.py new` to start the day's log, then end the session
       by filling it in (the 2026-10-03 log shows the format)
 
 **Done when:** the environment works, the ONI table is saved, and ERA5 is downloading.
@@ -64,6 +64,24 @@ the El Niño precipitation dipole.
       for **every year**
 - [ ] Average by region to get one time series per region per year
 - [ ] Add April 1 snowpack: SNOTEL (WA/OR/ID), BC and Alberta snow surveys
+- [ ] Gridded snowpack from ERA5-Land SWE (`sd`, already downloaded), with
+      two fixes before any regional mean:
+      - **Exclude glacier cells.** ERA5-Land holds glacier ice at a 10 m
+        water-equivalent cap. In 1950, 325 cells (0.65% of land, Coast
+        Mountains and Alaska panhandle) raised the domain's April SWE from
+        233 to 283 mm. Use the CDS glacier mask (Invariant variables) or
+        flag cells at the cap in every month.
+      - **April 1, not April mean.** `sd` is a monthly mean centred
+        mid-month, after melt has begun at low elevations. Approximate
+        April 1 from the March and April means, or download the April 1
+        00:00 field from hourly ERA5-Land (77 time steps).
+- [ ] Download ERA5-Land **snowfall** and **volumetric soil water layers 1-2**
+      (0-28 cm) to their own folder (the three-variable download is
+      about 3.7 MB per year, so this is cheap). Snowfall over total precipitation shows how much
+      of a warm El Niño winter fell as rain, explaining low snowpack beyond
+      the precipitation deficit; summer soil moisture is a direct
+      fuel-dryness measure alongside SPEI. Descriptive unless
+      `ANALYSIS_PLAN.md` adds them before the freeze.
 - [ ] Plot whiplash and SWE as full time series with El Niño years highlighted
 
 **Done when:** you have a table of regions × all years with whiplash, SWE and
@@ -97,7 +115,10 @@ copy in `results/tables/`.
 ## Phase 4 — Historical analysis with inferential statistics (weeks 4–6)
 
 **Before starting:** confirm `ANALYSIS_PLAN.md` was committed at the gate,
-before Phase 3. Any change since then goes in its deviations log.
+before Phase 3. Any change since then goes in its deviations log. Then set up
+the Claude Code Project (on standby since 2026-10-04) using
+`docs/claude_code_project_setup.md`, so H1-H5 and the site pages can run as
+parallel threads.
 
 - [ ] **Full-record view:** fire-season anomaly for every year 1984–present
       (climate variables 1950–present), El Niño years highlighted

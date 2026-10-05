@@ -10,7 +10,12 @@ UNITS (important):
   total_precipitation  monthly mean of daily totals, in metres per day.
                        mm/month = tp * 1000 * days_in_month
   2m_temperature       kelvin. deg C = t2m - 273.15
+  snow_depth_water_equivalent  (sd) metres of water equivalent, monthly mean
+                       of the month, not a first-of-month value. mm = sd * 1000
   In new CDS NetCDF files the time dimension is called "valid_time".
+  The file's tp units attribute reads "m"; the values are m/day (wettest
+  cell, Feb 1950: 25.8 mm/day). Drop the leftover GRIB coordinates expver
+  and number before combining years: expver can differ for recent months.
 Regional means must be area-weighted: use src.geo.regional_mean.
 
 Run:  python -m src.download_era5
@@ -51,6 +56,17 @@ def months_available(year: int, today: date) -> list[int]:
     if year == last_year:
         return list(range(1, last_month + 1))
     return []
+
+
+def is_access_error(err: Exception) -> bool:
+    """True for HTTP 401/403: a bad key or an unaccepted licence.
+
+    These apply to the whole account, so every later year would fail the same
+    way. On 2026-10-04 an unaccepted licence produced 77 identical 403s before
+    this check existed.
+    """
+    response = getattr(err, "response", None)
+    return getattr(response, "status_code", None) in (401, 403)
 
 
 def retrieve(client: cdsapi.Client, year: int, months: list[int], target) -> None:
@@ -94,6 +110,11 @@ def main() -> None:
                 partial.unlink()
         except Exception as err:  # most recent months may not be published yet
             print(f"  {year} failed: {err}")
+            if is_access_error(err):
+                raise SystemExit(
+                    "Stopped: access refused (HTTP 401/403). Check the key in "
+                    ".cdsapirc and that the dataset licence is accepted on the CDS "
+                    "Download tab, then re-run; finished years are skipped.") from err
 
 
 if __name__ == "__main__":

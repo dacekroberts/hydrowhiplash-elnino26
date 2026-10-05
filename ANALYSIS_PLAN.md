@@ -46,6 +46,12 @@ decisions.
 
 - [ ] **SPEI settings.** Calibration period (e.g. 1951-2020), distribution,
       PET method (Thornthwaite) and scale 3, in `config.py`.
+- [ ] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
+      both (one as a check on the other); how April 1 is approximated from
+      monthly means; glacier cells excluded (ERA5-Land caps them at 10 m).
+- [ ] **Snowfall and soil moisture.** Say whether snowfall fraction and
+      summer soil moisture enter any hypothesis (e.g. as mechanism checks
+      for a snowpack or burned-area hypothesis) or are descriptive only.
 - [ ] **Fire windows.** Jun-Oct drops California's Nov-Jan wind-driven fires
       (e.g. Thomas, Dec 2017; Camp and Woolsey, Nov 2018), and northeast BC
       has spring boreal fires like Alberta. Suggested: California through

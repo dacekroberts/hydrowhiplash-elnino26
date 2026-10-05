@@ -17,6 +17,42 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - ERA5-Land variables
+
+- **Decided to add snow depth water equivalent (`sd`) to the ERA5-Land
+  download, before the first download ran.** Gridded SWE covers every region
+  with one method across the US-Canada border, alongside the Phase 2 station
+  surveys (SNOTEL, BC, Alberta), which are sparse in northern Alberta. It is
+  model output, so less accurate at a point than a survey station. The
+  downloader skips years already on disk, so adding it before the run avoided
+  a later re-download. Rejected temperature and precipitation only (snowpack
+  from stations alone) and adding the Penman-Monteith PET inputs (about 4x
+  the download; Thornthwaite remains the draft PET method in
+  `ANALYSIS_PLAN.md`). First file (1950): 3.65 MB for three variables, so
+  the full record is about 280 MB, not the 0.5 to 1 GB estimated on
+  2026-10-03. The same file showed 325 land cells (0.65%), all at
+  55.8-60.5N, 129.6-140W, held at the 10 m glacier cap all year; they raise
+  the domain's cos-lat weighted April 1950 SWE from 233 mm to 283 mm, so
+  Phase 2 needs a glacier exclusion. `sd` is a monthly mean, not an April 1
+  value. Files: `src/config.py`, `src/download_era5.py`.
+- **Decided to stop the ERA5 downloader at the first HTTP 401 or 403.** The
+  first run, before the CC-BY licence was accepted, sent 77 requests
+  (1950-2026) and got 77 identical 403s. Access errors apply to the whole
+  account, so the run now exits with a message after the first one; other
+  errors (e.g. a month not yet published) still skip that year and continue.
+  Covered by three new tests (27 total). Files: `src/download_era5.py`,
+  `tests/test_downloads.py`.
+- **Added ERA5-Land snowfall and soil moisture (volumetric soil water layers
+  1-2) to Phase 2 as a separate download, descriptive unless the analysis
+  plan says otherwise.** Snowfall fraction tests the rain-instead-of-snow
+  part of the El Niño snowpack mechanism; summer soil moisture measures fuel
+  dryness directly, alongside SPEI. A separate folder keeps the main
+  download untouched. Whether either enters a hypothesis is now a pre-freeze
+  item in `ANALYSIS_PLAN.md`, alongside a new SWE source-and-definition item.
+  Rejected adding them to the running download (it had already started) and
+  leaving them out (cheap at about 3.7 MB per year). Files: `ACTION_PLAN.md`,
+  `ANALYSIS_PLAN.md`.
+
 ### 2026-10-04 - Working setup
 
 - **Decided to work in local Claude Code only and drop the claude.ai

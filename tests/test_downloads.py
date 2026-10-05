@@ -30,3 +30,32 @@ def test_classify_winters_columns_and_start():
 ])
 def test_months_available_respects_lag(today, year, expected):
     assert download_era5.months_available(year, today) == expected
+
+
+class _HTTPError(Exception):
+    def __init__(self, status):
+        super().__init__(f"{status} Client Error")
+        self.response = types.SimpleNamespace(status_code=status)
+
+
+class _FakeClient:
+    def __init__(self, status):
+        self.status, self.calls = status, 0
+
+    def retrieve(self, *args):
+        self.calls += 1
+        raise _HTTPError(self.status)
+
+
+@pytest.mark.parametrize("status, stops", [(403, True), (401, True), (500, False)])
+def test_access_errors_stop_the_run(monkeypatch, tmp_path, status, stops):
+    client = _FakeClient(status)
+    monkeypatch.setattr(download_era5, "OUT", tmp_path)
+    monkeypatch.setattr(download_era5.cdsapi, "Client", lambda: client, raising=False)
+    if stops:
+        with pytest.raises(SystemExit):
+            download_era5.main()
+        assert client.calls == 1  # no further years requested
+    else:
+        download_era5.main()  # other errors skip the year and carry on
+        assert client.calls > 1
