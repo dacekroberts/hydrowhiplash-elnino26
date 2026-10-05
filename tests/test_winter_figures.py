@@ -68,6 +68,20 @@ def test_map_inputs_are_percent_of_the_all_winter_mean(inputs):
     assert region_pct["PNW"] == pytest.approx(pnw.loc[1998] / pnw.mean() * 100)
 
 
+def test_notebook_01_uses_the_module_not_its_own_copy():
+    # One copy of the figure code: notebook 01 calls src.winter_figures.
+    import json
+    from pathlib import Path
+    nb = json.loads((Path(__file__).resolve().parents[1] / "notebooks" / "01_explore_era5.ipynb")
+                    .read_text(encoding="utf-8"))
+    code = "\n".join("".join(c["source"]) for c in nb["cells"] if c["cell_type"] == "code")
+    for call in ["series_figure(", "map_figure(", "comparison_figure(", "series_by_index("]:
+        assert f"winter_figures.{call}" in code
+    for copy in ["figures.winter_series(", "figures.percent_of_normal_map(",
+                 "figures.winter_series_two_indices("]:
+        assert copy not in code.replace("winter_figures.", "")
+
+
 def test_comparison_keeps_every_winter_per_index(inputs):
     regions, datasets, oni, by_index = inputs
     table, _ = wf.era5.build_winter_precip_table(regions, oni, datasets)
