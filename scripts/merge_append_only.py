@@ -413,7 +413,8 @@ def resolve(path: str, top: Path, conflicted: bool,
     result = merge_texts(*versions, layout, path)
     current = (top / path).read_text(encoding="utf-8")
     added = len(_leaves(parse(result, layout))) - len(_leaves(parse(base, layout)))
-    what = "resolved" if conflicted else ("checked and reordered" if result != current
+    changes = "numbered" if numbers and PLACEHOLDER.search(current) else "reordered"
+    what = "resolved" if conflicted else (f"checked and {changes}" if result != current
                                            else "checked")
     print(f"{path}: {what}; {added} entr{'y' if added == 1 else 'ies'} added on either "
           f"side since the branches split, all kept")
