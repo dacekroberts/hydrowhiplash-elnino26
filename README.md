@@ -74,6 +74,8 @@ python -m src.download_oni
 python -m src.download_era5
 :: region polygons -> data\processed\regions.geojson
 python -m src.regions
+:: Phase 1 winter precipitation figures -> results\figures\
+python -m src.winter_figures
 :: tests for the statistics, spatial and log helpers
 python -m pytest
 :: style check before committing
