@@ -108,7 +108,7 @@ Session 4 for hydrowhiplash-elnino26: pre-freeze decisions (gate before Phase 3)
    ANALYSIS_PLAN.md (all of it), docs/session4_kickoff.md (Part 1),
    logs/2026-10-05.md ("Next" and the session 3 block),
    docs/prefreeze_options.md, docs/alberta_swe_sources.md,
-   docs/plan_deviations.md D36-D38 and the top of DECISIONS.md. Then read
+   docs/plan_deviations.md D36-D40 and the top of DECISIONS.md. Then read
    the roadmap artifact with the Artifact tool (action "read"):
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers, then continue. Main
