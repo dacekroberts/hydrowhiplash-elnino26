@@ -40,8 +40,8 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    It merges every PR in order onto current main in a throwaway worktree,
    resolves `DECISIONS.md` and `docs/plan_deviations.md` with
    `merge_append_only.py`, runs pytest, the em-dash check and (for PRs
-   touching `site/`, `results/figures/`, `src/figures.py` or
-   `src/diagrams.py`) `check_site.py` after each merge, applies the known
+   touching `site/`, `results/figures/`, `src/figures.py`,
+   `src/diagrams.py` or `src/winter_figures.py`) `check_site.py` after each merge, applies the known
    fix-ups it lists, and prints a report: CLEAN, CLEAN after fix-up, or
    UNEXPECTED with the reason. What gets approved is then exactly what was
    tested, including clashes between PRs (a D number used twice, a check
