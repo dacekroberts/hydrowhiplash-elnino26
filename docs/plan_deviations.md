@@ -21,6 +21,35 @@ flagged here instead.
 
 ## 2026-10-04 (Session 0)
 
+### D18 · Site figures embedded through a Python cell, not an image link
+- **Plan:** `site/index.qmd` skeleton comment: "figures come from
+  ../results/", implying plain image links to `../results/`. The side
+  session's brief: check rendering with `conda run ... quarto render site`.
+- **Actual:** a plain link renders with exit 0 but Quarto does not copy files
+  from outside `site/` into `_site/`, so the image breaks. Figures are now
+  embedded with a hidden Python cell that reads `../results/figures/` at
+  render time. In the worktree, `quarto render site` found 0 input files
+  because the worktree path contains a dot folder (`.claude\`), which Quarto
+  skips, and `conda run` printed nothing; the render was checked on a copy in
+  a short temp path instead. The main checkout is not affected.
+- **Why:** keeps `results/` as the only source and nothing copied by hand.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Mechanism diagram".
+- **Plan doc:** left as written (the comment is still true: figures do come
+  from `../results/`).
+
+### D17 · Mechanism diagram content
+- **Plan:** `ACTION_PLAN.md` "Second goal": "PNW/BC/AB dry → low snowpack →
+  long or early season; SoCal wet → grass → big grass fires". No NorCal, no
+  shared cause.
+- **Actual:** adds the shared cause (warm central-eastern tropical Pacific,
+  jet stream shift); SoCal chain ends "larger grass fires" with no timing;
+  NorCal is named in a footnote with no pathway; an "Expected pathways,
+  tested in this study" footer sits in the figure. Region labels are the
+  `config.REGIONS` keys.
+- **Why:** the SoCal lag and NorCal expectations are open before the freeze.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Mechanism diagram".
+- **Plan doc:** left as written.
+
 ### D16 · Parallel worktree session before Phase 4
 - **Plan:** `ACTION_PLAN.md` and `docs/claude_code_project_setup.md`
   assume one sequential local session until Phase 4.

@@ -17,6 +17,58 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Mechanism diagram
+
+- **Decided to draw the site's mechanism diagram in code, as
+  `src.figures.mechanism_diagram`, writing `results/figures/mechanism.svg`
+  and `.png`.** Shared cause (warm central-eastern tropical Pacific, jet
+  stream extends east and shifts south) above two chains: north (PNW, BC, AB)
+  drier, milder winter, less snow and earlier melt, earlier or longer fire
+  season; south (SoCal) wetter winter, more grass growth, more fine fuel once
+  grass cures and larger grass fires. Colours are slots 1-2 of the dataviz
+  reference palette (orange north, blue south), validated as a pair on a
+  light surface: CVD dE 24.7, normal-vision dE 33.6, both above 3:1 contrast.
+  The SVG is byte-identical between runs (fixed hash salt, no date), tested
+  in `tests/test_figures.py`. Rejected a hand-drawn SVG (breaks "nothing in
+  `results/` is made by hand") and Quarto's Mermaid/Graphviz blocks (the
+  figure would live in the page, not in `results/`). Files: `src/figures.py`,
+  `tests/test_figures.py`, `results/figures/mechanism.*`.
+- **Decided to name NorCal in a footnote instead of drawing a pathway for
+  it.** NorCal sits near the pivot of El Niño's north-south precipitation
+  seesaw and its winters vary between events (1997-98 wet statewide; 2015-16
+  near or above normal in NorCal while SoCal stayed dry), and
+  `ANALYSIS_PLAN.md` still lists NorCal expectations as open before the
+  freeze. Footnote: "NorCal is also analysed, as a contrast region; no
+  pathway is drawn for it because its expected response is not yet set."
+  Built from `config.REGIONS`, so any region outside both pathways is named
+  automatically. Revisit after Phase 4. Rejected omitting NorCal silently
+  (reads as not studied) and a third column (asserts an untested result).
+- **Decided to state no timing for the SoCal chain.** Ends "larger grass
+  fires" rather than "big grass fires the following season", because the lag
+  of the grass effect (H2 sidedness, H5) is open in `ANALYSIS_PLAN.md`.
+- **Decided to label regions with the `config.REGIONS` keys only (PNW, BC,
+  AB, SoCal).** Full names are left to the owner's caption. Rejected adding
+  a `REGION_NAMES` dict to `src/config.py` (a scope addition for now).
+- **Decided to print "Expected pathways, tested in this study." inside the
+  figure**, so the framing travels with the image wherever it is reused.
+  Rejected leaving the framing to the caption alone.
+- **Decided to embed site figures with a hidden Python cell that reads
+  `../results/figures/` at render time, not a Markdown image link.** Quarto
+  only publishes files inside the project folder (`site/`): a plain
+  `![](../results/...)` link rendered with exit 0 but left the image out of
+  `_site/`, so the published page would show a broken image. The cell
+  (`IPython.display.SVG(filename=...)`) runs at render; Quarto writes its
+  output to `_site/index_files/` and keeps the `fig-alt` text. Verified in a
+  rendered copy at desktop and phone widths. Needs the Jupyter kernel at
+  render, which the site already needs for inline numbers. Also committed
+  Quarto's own `site/.gitignore`, which ignores the `*.quarto_ipynb` file the
+  cell creates during render. Rejected a pre-render step copying
+  `results/figures/` into `site/` (a second location for every figure),
+  moving the Quarto project root to the repo root (changes output paths for
+  GitHub Pages) and `embed-resources` (inlines Bootstrap into every page,
+  poorly supported for websites). Files: `site/index.qmd`,
+  `site/.gitignore`.
+
 ### 2026-10-04 - Side worktree session
 
 - **Decided to write a `merge-side-pr` skill before the first side-session

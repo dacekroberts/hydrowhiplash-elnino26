@@ -7,8 +7,13 @@ title: "What past El Niños suggest for the 2027 fire season"
 
 ## Two pathways from one El Niño
 
-<!-- Mechanism diagram: PNW/BC dry winter → low snowpack → long fire season;
-     SoCal wet winter → grass growth → big grass fires. Any time. -->
+```{python}
+#| echo: false
+#| fig-alt: "Flow diagram. El Niño, warm water in the central-eastern tropical Pacific, makes the Pacific jet stream extend east and shift south. North pathway (PNW, BC, AB): a drier, milder winter, then less snow and earlier melt, then an earlier or longer fire season. South pathway (SoCal): a wetter winter, then more grass growth, then more fine fuel once the grass cures and larger grass fires. Footnote: these are expected pathways tested in this study; NorCal is also analysed, as a contrast region, with no pathway drawn because its expected response is not yet set."
+# Read from results/ at render time; Quarto copies the output into _site/.
+from IPython.display import SVG
+SVG(filename="../results/figures/mechanism.svg")
+```
 
 ## What El Niño does to winter rain
 
