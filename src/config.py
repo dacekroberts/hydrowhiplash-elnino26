@@ -36,10 +36,22 @@ STRONG_THRESHOLD = 1.5    # deg C, strong El Nino
 CLIMATE_FIRST_YEAR = 1950  # ERA5-Land and ENSO index start
 FIRE_FIRST_YEAR = 1984     # fire-perimeter records start (MTBS)
 
-# Climate download domain, [N, W, S, E]. BC reaches about 139W at the Alaska
-# panhandle and Haida Gwaii sits near 131-133W; Alberta's eastern border is
-# 110W and both provinces end at 60N. Half a degree to a degree of buffer.
-ERA5_AREA = [60.5, -140, 32, -109]
+# Alaska is clipped at this longitude: west of it lie only the outer Aleutian
+# and Bering Sea islands (1.1 Mha, 0.7% of the state, almost no fire), and the
+# Near Islands cross the antimeridian.
+ALASKA_WEST_LON = -169
+
+# Climate download domains: name -> ([N, W, S, E], folder under data/raw).
+# main: BC reaches about 139W at the Alaska panhandle and Haida Gwaii sits near
+# 131-133W; Alberta's eastern border is 110W and both provinces end at 60N.
+# Half a degree to a degree of buffer.
+# north (added 2026-10-04): Alaska east of ALASKA_WEST_LON (51.2-71.4N) and
+# Yukon (60-69.65N, 141-123.8W). Overlaps main south of 60.5N, where cells
+# agree to float32 rounding (max relative difference 7e-7, measured 2026-10-04).
+ERA5_DOMAINS = {
+    "main": ([60.5, -140, 32, -109], "era5_land"),
+    "north": ([71.5, ALASKA_WEST_LON, 51, -123.5], "era5_land_north"),
+}
 ERA5_DATASET = "reanalysis-era5-land-monthly-means"
 # Changing this list after the download needs a full re-download: years already
 # on disk are skipped. SWE added before the first download (DECISIONS.md,
@@ -48,15 +60,24 @@ ERA5_VARIABLES = ["total_precipitation", "2m_temperature",
                   "snow_depth_water_equivalent"]
 ERA5_LAG_MONTHS = 3  # months behind real time before a month is safely published
 
+# Seasons. A season that crosses the new year is labelled by the year of its
+# last month: (12, 1, 2) labelled Y is Dec of Y-1 plus Jan and Feb of Y.
+WINTER_MONTHS = (12, 1, 2)  # DJF
+
 # Regions
 NATURAL_EARTH_ADMIN1_URL = ("https://naciscdn.org/naturalearth/10m/cultural/"
                             "ne_10m_admin_1_states_provinces.zip")
 PNW_STATES = ["Washington", "Oregon", "Idaho"]
 CA_SPLIT_LAT = 35.5
-REGIONS = {  # name -> role
+# Roles: primary = the dry-winter whiplash regions; north = Alaska and Yukon
+# (added 2026-10-04, own hypothesis family: El Nino acts there mainly through
+# warm springs and early melt); contrast = California.
+REGIONS = {  # name -> role, in display order
     "PNW": "primary",
     "BC": "primary",
     "AB": "primary",
+    "AK": "north",
+    "YT": "north",
     "NorCal": "contrast",
     "SoCal": "contrast",
 }
@@ -67,6 +88,8 @@ FIRE_SEASON_MONTHS = {  # first and last month, inclusive
     "PNW": (6, 10),
     "BC": (6, 10),
     "AB": (4, 10),
+    "AK": (4, 9),  # provisional: Alaska and Yukon statutory season, 1 Apr-30 Sep
+    "YT": (4, 9),
     "NorCal": (6, 10),
     "SoCal": (6, 10),
 }
