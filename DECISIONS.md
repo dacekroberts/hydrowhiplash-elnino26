@@ -17,6 +17,108 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Mechanism diagram
+
+- **Decided to draw the site's mechanism diagram in code, as
+  `src.figures.mechanism_diagram`, writing `results/figures/mechanism.svg`
+  and `.png`.** Shared cause (warm central-eastern tropical Pacific, jet
+  stream extends east and shifts south) above two chains: north (PNW, BC, AB)
+  drier, milder winter, less snow and earlier melt, earlier or longer fire
+  season; south (SoCal) wetter winter, more grass growth, more fine fuel once
+  grass cures and larger grass fires. Colours are slots 1-2 of the dataviz
+  reference palette (orange north, blue south), validated as a pair on a
+  light surface: CVD dE 24.7, normal-vision dE 33.6, both above 3:1 contrast.
+  The SVG is byte-identical between runs (fixed hash salt, no date), tested
+  in `tests/test_figures.py`. Rejected a hand-drawn SVG (breaks "nothing in
+  `results/` is made by hand") and Quarto's Mermaid/Graphviz blocks (the
+  figure would live in the page, not in `results/`). Files: `src/figures.py`,
+  `tests/test_figures.py`, `results/figures/mechanism.*`.
+- **Decided to name NorCal in a footnote instead of drawing a pathway for
+  it.** NorCal sits near the pivot of El Niño's north-south precipitation
+  seesaw and its winters vary between events (1997-98 wet statewide; 2015-16
+  near or above normal in NorCal while SoCal stayed dry), and
+  `ANALYSIS_PLAN.md` still lists NorCal expectations as open before the
+  freeze. Footnote: "NorCal is also analysed, as a contrast region; no
+  pathway is drawn for it because its expected response is not yet set."
+  Built from `config.REGIONS`, so any region outside both pathways is named
+  automatically. Revisit after Phase 4. Rejected omitting NorCal silently
+  (reads as not studied) and a third column (asserts an untested result).
+- **Decided to state no timing for the SoCal chain.** Ends "larger grass
+  fires" rather than "big grass fires the following season", because the lag
+  of the grass effect (H2 sidedness, H5) is open in `ANALYSIS_PLAN.md`.
+- **Decided to label regions with the `config.REGIONS` keys only (PNW, BC,
+  AB, SoCal).** Full names are left to the owner's caption. Rejected adding
+  a `REGION_NAMES` dict to `src/config.py` (a scope addition for now).
+- **Decided to print "Expected pathways, tested in this study." inside the
+  figure**, so the framing travels with the image wherever it is reused.
+  Rejected leaving the framing to the caption alone.
+- **Decided to embed site figures with a hidden Python cell that reads
+  `../results/figures/` at render time, not a Markdown image link.** Quarto
+  only publishes files inside the project folder (`site/`): a plain
+  `![](../results/...)` link rendered with exit 0 but left the image out of
+  `_site/`, so the published page would show a broken image. The cell
+  (`IPython.display.SVG(filename=...)`) runs at render; Quarto writes its
+  output to `_site/index_files/` and keeps the `fig-alt` text. Verified in a
+  rendered copy at desktop and phone widths. Needs the Jupyter kernel at
+  render, which the site already needs for inline numbers. Also committed
+  Quarto's own `site/.gitignore`, which ignores the `*.quarto_ipynb` file the
+  cell creates during render. Rejected a pre-render step copying
+  `results/figures/` into `site/` (a second location for every figure),
+  moving the Quarto project root to the repo root (changes output paths for
+  GitHub Pages) and `embed-resources` (inlines Bootstrap into every page,
+  poorly supported for websites). Files: `site/index.qmd`,
+  `site/.gitignore`.
+- **Decided to add a narrow (phone) layout of the diagram,
+  `mechanism_narrow.svg`, shown below 576 px, at the owner's request.** At
+  375 px the wide layout's text rendered at about 6 px; the narrow one
+  (4.6 x 7.8 in, wrapped labels, two-line column headers) renders at about
+  11 px and keeps the two columns side by side, so the north-south contrast
+  survives. Switched with Bootstrap's own `d-none d-sm-block` / `d-sm-none`
+  classes, which the cosmo theme already ships, so no CSS file or
+  `_quarto.yml` change. Checked in the browser: at 375 px only the narrow
+  image shows (324 px wide), at 1024 px only the wide one. Box text is now
+  placed line by line at a fixed spacing (matplotlib's multi-line text
+  spaced a descender-free line visibly closer). Rejected a fully stacked
+  phone layout (loses the side-by-side comparison) and Quarto's lightbox
+  (tap-to-enlarge still opens at phone width). Files: `src/figures.py`,
+  `site/index.qmd`, `results/figures/mechanism_narrow.*`.
+- **Decided to write SVGs with LF line endings on every platform.**
+  `savefig` to a path wrote CRLF on Windows while `.gitattributes`
+  (`* text=auto eol=lf`) checks files out with LF, so a regenerated figure
+  would never byte-match the committed one. Now rendered to a string and
+  written with `newline="\n"`; tested. Files: `src/figures.py`,
+  `tests/test_figures.py`.
+- **Decided, by the owner, to move the diagram code to `src/diagrams.py`
+  after main's Phase 1 work added its own `src/figures.py`.** Same module
+  name, so the PR would have conflicted in code; main's module holds the
+  data figures, imports geopandas and xarray, and sets global font rcParams
+  on import. The diagram now pins its font to DejaVu Sans (bundled with
+  matplotlib), so those settings can't change it and its SVG stays
+  byte-identical across machines; a new test fails when the committed SVGs
+  no longer match the code and `src/config.py`. Its palette is the same
+  validated orange and blue main's figures use. Rejected merging into
+  `src/figures.py` (needs main's code on the PR branch, against the owner's
+  choice that side sessions don't merge main in; and main's font settings
+  would apply). Files: `src/diagrams.py`, `tests/test_diagrams.py`.
+- **Decided, by the owner, to name Alaska and Yukon in the footnote like
+  NorCal, with no pathway drawn.** Main added them with a new role, `north`,
+  whose hypotheses are still a pre-freeze item (D20) and whose stated
+  mechanism (warm spring, early melt) differs from the north chain's first
+  box. The footnote is now built per role: "AK and YT are also analysed, as
+  northern regions; no pathway is drawn for them because their hypotheses
+  are not yet set." A role without wording stops the diagram with an error.
+  The footnote area grows with its line count. Rejected adding them to the
+  north column and a third column. Files: `src/diagrams.py`,
+  `site/index.qmd` (alt text).
+- **Decided, by the owner, to start the north chain with "Milder winter,
+  often drier" instead of "Drier, milder winter".** Main's Phase 1 found the
+  El Niño minus neutral DJF precipitation difference small in PNW (-5.6%)
+  and BC (-4.8%), with strong El Niño winters not drier there, and clearer
+  in AB (-11.8%) (D19); the temperature path (warm winters, rain instead of
+  snow) is what Phase 2 tests. Rejected keeping "Drier, milder winter" and
+  "Milder winter" alone (drops the dry-winter link the whiplash idea rests
+  on). Files: `src/diagrams.py`.
+
 ### 2026-10-04 - Site render check
 
 - **Decided to add `scripts/check_site.py`, which renders the Quarto site and

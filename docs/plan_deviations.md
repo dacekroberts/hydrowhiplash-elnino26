@@ -103,6 +103,39 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-04 (Session 0)
 
+### D25 · Site figures embedded through a Python cell, not an image link
+- **Plan:** `site/index.qmd` skeleton comment: "figures come from
+  ../results/", implying plain image links to `../results/`. The side
+  session's brief: check rendering with `conda run ... quarto render site`.
+- **Actual:** a plain link renders with exit 0 but Quarto does not copy files
+  from outside `site/` into `_site/`, so the image breaks. Figures are now
+  embedded with a hidden Python cell that reads `../results/figures/` at
+  render time. In the worktree, `quarto render site` found 0 input files
+  because the worktree path contains a dot folder (`.claude\`), which Quarto
+  skips, and `conda run` printed nothing; the render was checked on a copy in
+  a short temp path instead. The main checkout is not affected.
+- **Why:** keeps `results/` as the only source and nothing copied by hand.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Mechanism diagram".
+- **Plan doc:** left as written (the comment is still true: figures do come
+  from `../results/`).
+
+### D24 · Mechanism diagram content
+- **Plan:** `ACTION_PLAN.md` "Second goal": "PNW/BC/AB dry → low snowpack →
+  long or early season; SoCal wet → grass → big grass fires". No NorCal, no
+  shared cause.
+- **Actual:** adds the shared cause (warm central-eastern tropical Pacific,
+  jet stream shift); the north chain starts "Milder winter, often drier",
+  not "dry"; SoCal chain ends "larger grass fires" with no timing; NorCal
+  (contrast) and AK and YT (north, added in D20) are named in a footnote
+  with no pathway; an "Expected pathways, tested in this study" footer sits
+  in the figure. Region labels are the `config.REGIONS` keys.
+- **Why:** the SoCal lag and the NorCal, AK and YT expectations are open
+  before the freeze, and Phase 1 found the El Niño winter drying small in
+  PNW and BC (D19). Numbered D24-D25 because main uses D17-D21 and PRs #5
+  and #3 D22-D23.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Mechanism diagram".
+- **Plan doc:** left as written.
+
 ### D23 · Site render check added ahead of the "Later tooling" plan
 - **Plan:** `ACTION_PLAN.md` "Later tooling" lists a published-numbers
   check, a pre-push hook running `scripts/check_all.py` ("worth it once
