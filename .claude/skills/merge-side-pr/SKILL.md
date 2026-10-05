@@ -39,8 +39,12 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    ```
    In `../_pr-<N>`: `python -m pytest` and
    `python scripts/check_no_em_dashes.py`. For changes under `src/`, also run
-   `/code-review low` on the PR. Tests that need `data/` can't run there
-   (data is never committed); say so instead of skipping silently.
+   `/code-review low` on the PR. If the PR touches `site/`, `results/figures/`,
+   `src/figures.py` or `src/diagrams.py`, also run
+   `python scripts/check_site.py`: it renders a copy of the site and fails on
+   any unrendered page or broken local link (a bare `quarto render` exits 0
+   on both). Tests that need `data/` can't run there (data is never
+   committed); say so instead of skipping silently.
 4. **Report to the owner and wait.** In a few lines: what the PR changes,
    check results, rule flags, anything touching their prose, merge
    conflicts. Ask for a clear yes before merging. The owner may prefer to

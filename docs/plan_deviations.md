@@ -103,6 +103,22 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-04 (Session 0)
 
+### D23 · Site render check added ahead of the "Later tooling" plan
+- **Plan:** `ACTION_PLAN.md` "Later tooling" lists a published-numbers
+  check, a pre-push hook running `scripts/check_all.py` ("worth it once
+  there are three or more checks", after Phase 4) and a drift check. No
+  site render check. `CLAUDE.md` "Checks" lists pytest and the em-dash
+  check only.
+- **Actual:** `scripts/check_site.py` added in Phase 1 and run from
+  `merge-side-pr` for PRs touching the site. It is a third check, which meets
+  the plan's stated threshold for the pre-push hook; the hook is not built
+  (its plan date is after Phase 4). Numbered D23 because main uses D17-D21
+  and PR #5 D22; PR #1 uses D24-D25.
+- **Why:** two silent render failures (exit 0) found while building the
+  mechanism diagram.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Site render check".
+- **Plan doc:** left as written (`ACTION_PLAN.md`, `CLAUDE.md` "Checks").
+
 ### D22 · Append-only merge script added
 - **Plan:** `merge-side-pr` step 5 resolved `DECISIONS.md` and
   `docs/plan_deviations.md` conflicts by hand; `ACTION_PLAN.md` "Later
