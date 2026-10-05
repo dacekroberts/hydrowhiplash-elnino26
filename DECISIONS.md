@@ -88,6 +88,36 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   would never byte-match the committed one. Now rendered to a string and
   written with `newline="\n"`; tested. Files: `src/figures.py`,
   `tests/test_figures.py`.
+- **Decided, by the owner, to move the diagram code to `src/diagrams.py`
+  after main's Phase 1 work added its own `src/figures.py`.** Same module
+  name, so the PR would have conflicted in code; main's module holds the
+  data figures, imports geopandas and xarray, and sets global font rcParams
+  on import. The diagram now pins its font to DejaVu Sans (bundled with
+  matplotlib), so those settings can't change it and its SVG stays
+  byte-identical across machines; a new test fails when the committed SVGs
+  no longer match the code and `src/config.py`. Its palette is the same
+  validated orange and blue main's figures use. Rejected merging into
+  `src/figures.py` (needs main's code on the PR branch, against the owner's
+  choice that side sessions don't merge main in; and main's font settings
+  would apply). Files: `src/diagrams.py`, `tests/test_diagrams.py`.
+- **Decided, by the owner, to name Alaska and Yukon in the footnote like
+  NorCal, with no pathway drawn.** Main added them with a new role, `north`,
+  whose hypotheses are still a pre-freeze item (D20) and whose stated
+  mechanism (warm spring, early melt) differs from the north chain's first
+  box. The footnote is now built per role: "AK and YT are also analysed, as
+  northern regions; no pathway is drawn for them because their hypotheses
+  are not yet set." A role without wording stops the diagram with an error.
+  The footnote area grows with its line count. Rejected adding them to the
+  north column and a third column. Files: `src/diagrams.py`,
+  `site/index.qmd` (alt text).
+- **Decided, by the owner, to start the north chain with "Milder winter,
+  often drier" instead of "Drier, milder winter".** Main's Phase 1 found the
+  El Niño minus neutral DJF precipitation difference small in PNW (-5.6%)
+  and BC (-4.8%), with strong El Niño winters not drier there, and clearer
+  in AB (-11.8%) (D19); the temperature path (warm winters, rain instead of
+  snow) is what Phase 2 tests. Rejected keeping "Drier, milder winter" and
+  "Milder winter" alone (drops the dry-winter link the whiplash idea rests
+  on). Files: `src/diagrams.py`.
 
 ### 2026-10-04 - Side worktree session
 

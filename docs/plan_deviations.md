@@ -21,7 +21,7 @@ flagged here instead.
 
 ## 2026-10-04 (Session 0)
 
-### D18 · Site figures embedded through a Python cell, not an image link
+### D25 · Site figures embedded through a Python cell, not an image link
 - **Plan:** `site/index.qmd` skeleton comment: "figures come from
   ../results/", implying plain image links to `../results/`. The side
   session's brief: check rendering with `conda run ... quarto render site`.
@@ -37,16 +37,20 @@ flagged here instead.
 - **Plan doc:** left as written (the comment is still true: figures do come
   from `../results/`).
 
-### D17 · Mechanism diagram content
+### D24 · Mechanism diagram content
 - **Plan:** `ACTION_PLAN.md` "Second goal": "PNW/BC/AB dry → low snowpack →
   long or early season; SoCal wet → grass → big grass fires". No NorCal, no
   shared cause.
 - **Actual:** adds the shared cause (warm central-eastern tropical Pacific,
-  jet stream shift); SoCal chain ends "larger grass fires" with no timing;
-  NorCal is named in a footnote with no pathway; an "Expected pathways,
-  tested in this study" footer sits in the figure. Region labels are the
-  `config.REGIONS` keys.
-- **Why:** the SoCal lag and NorCal expectations are open before the freeze.
+  jet stream shift); the north chain starts "Milder winter, often drier",
+  not "dry"; SoCal chain ends "larger grass fires" with no timing; NorCal
+  (contrast) and AK and YT (north, added in D20) are named in a footnote
+  with no pathway; an "Expected pathways, tested in this study" footer sits
+  in the figure. Region labels are the `config.REGIONS` keys.
+- **Why:** the SoCal lag and the NorCal, AK and YT expectations are open
+  before the freeze, and Phase 1 found the El Niño winter drying small in
+  PNW and BC (D19). Numbered D24-D25 because main uses D17-D21 and PRs #5
+  and #3 D22-D23.
 - **Recorded:** `DECISIONS.md` 2026-10-04 "Mechanism diagram".
 - **Plan doc:** left as written.
 

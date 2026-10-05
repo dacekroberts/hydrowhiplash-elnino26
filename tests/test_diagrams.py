@@ -1,0 +1,67 @@
+"""Tests for src/diagrams.py: site diagrams are written, reproducible and current."""
+import pytest
+
+from src import diagrams
+from src.config import REGIONS
+
+
+def test_mechanism_writes_both_layouts(tmp_path):
+    paths = diagrams.mechanism_diagram(tmp_path)
+    assert sorted(p.name for p in paths) == [
+        "mechanism.png", "mechanism.svg", "mechanism_narrow.png", "mechanism_narrow.svg"]
+    assert all(p.stat().st_size > 0 for p in paths)
+
+
+def test_mechanism_svg_is_reproducible(tmp_path):
+    # Byte-identical SVG between runs, so committed figures can be drift-checked.
+    first = [p.read_bytes() for p in diagrams.mechanism_diagram(tmp_path / "a") if p.suffix == ".svg"]
+    second = [p.read_bytes() for p in diagrams.mechanism_diagram(tmp_path / "b") if p.suffix == ".svg"]
+    assert first == second
+
+
+def test_mechanism_svg_has_lf_line_endings(tmp_path):
+    # Git checks SVGs out with LF (.gitattributes); CRLF would fail a byte comparison.
+    for p in diagrams.mechanism_diagram(tmp_path):
+        if p.suffix == ".svg":
+            assert b"\r\n" not in p.read_bytes()
+
+
+def test_committed_svgs_match_the_code(tmp_path):
+    # Fails when src/diagrams.py or src/config.py (e.g. a new region) changes
+    # without re-rendering. Fix: python -m src.diagrams, commit results/figures/.
+    for p in diagrams.mechanism_diagram(tmp_path):
+        if p.suffix == ".svg":
+            committed = diagrams.FIGURES / p.name
+            assert committed.exists(), f"{committed} missing: run python -m src.diagrams"
+            assert committed.read_bytes() == p.read_bytes(), (
+                f"{committed.name} is stale: run python -m src.diagrams and commit "
+                f"results/figures/")
+
+
+def test_mechanism_regions_match_config():
+    # Every configured region is either drawn in a pathway or named in the footnote.
+    drawn = diagrams.NORTH_REGIONS + diagrams.SOUTH_REGIONS
+    assert set(drawn) <= set(REGIONS)
+    assert set(drawn) | set(diagrams.UNDRAWN_REGIONS) == set(REGIONS)
+    assert not set(drawn) & set(diagrams.UNDRAWN_REGIONS)
+
+
+def test_footnote_names_every_undrawn_region_by_role(monkeypatch):
+    regions = {"PNW": "primary", "AK": "north", "YT": "north", "NorCal": "contrast",
+               "SoCal": "contrast"}
+    monkeypatch.setattr(diagrams, "REGIONS", regions)
+    monkeypatch.setattr(diagrams, "UNDRAWN_REGIONS", ("AK", "YT", "NorCal"))
+    assert diagrams.footer_lines() == [
+        "Expected pathways, tested in this study.",
+        "AK and YT are also analysed, as northern regions; no pathway is drawn for "
+        "them because their hypotheses are not yet set.",
+        "NorCal is also analysed, as a contrast region; no pathway is drawn for it "
+        "because its expected response is not yet set.",
+    ]
+
+
+def test_new_region_role_needs_wording(monkeypatch):
+    monkeypatch.setattr(diagrams, "REGIONS", {"XX": "arctic"})
+    monkeypatch.setattr(diagrams, "UNDRAWN_REGIONS", ("XX",))
+    with pytest.raises(ValueError, match="No footnote wording"):
+        diagrams.footer_lines()
