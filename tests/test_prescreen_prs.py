@@ -168,3 +168,25 @@ def test_failed_tests_parsed_from_pytest_summary():
            "FAILED tests/test_x.py::test_y - boom\n1 failed, 2 passed in 1.0s\n")
     assert pre.failed_tests(out) == ["test_committed_svgs_match_the_code", "test_y"]
     assert pre.pytest_summary(out) == "1 failed, 2 passed in 1.0s"
+
+
+def test_queue_gives_each_pr_its_own_numbers(repo):
+    # Both PRs write D?a; numbering at merge gives them D17 and D18 in queue order.
+    def pr(title):
+        return {"docs/plan_deviations.md": DEV_PRE + f"### D?a · {title}\n- **Plan:** p.\n\n" + D16,
+                "README.md": f"line\nsee D?a ({title})\n" if title == "A" else "line\n",
+                "DECISIONS.md": PRE + topic(f"{title} (D?a)") + OLD}
+    a = branch(repo, "a", pr("A"))
+    b = branch(repo, "b", pr("B"))
+    results, _ = pre.screen(repo, "main", [a, b], checks=passing)
+    assert [r.verdict for r in results] == ["CLEAN", "CLEAN"], results
+    assert [r.numbers for r in results] == ["D?a -> D17", "D?a -> D18"]
+    text = pre.report(results, "main", "0123456789", 2, None)
+    assert "Deviation numbers, valid for this order only: #a D?a -> D17; #b D?a -> D18." in text
+
+
+def test_dangling_placeholder_stops_the_queue(repo):
+    a = branch(repo, "a", {"README.md": "line\nsee [mid-project: D?b]\n"})
+    results, _ = pre.screen(repo, "main", [a], checks=passing)
+    assert results[0].verdict == "UNEXPECTED"
+    assert "D?b is referenced but no entry" in results[0].unexpected

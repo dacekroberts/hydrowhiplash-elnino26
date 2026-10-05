@@ -40,6 +40,24 @@ entries changed differently on both sides; or a version's layout doesn't
 round-trip (one blank line between blocks, except bullets in a list without
 blank lines, which DECISIONS.md also uses; one newline at the end).
 
+Deviation numbers are given at merge. Side sessions never pick a D number:
+they title a new entry "### D?a · Title" (then D?b, D?c, unique within the
+PR) and write the same token wherever the entry is referenced (DECISIONS.md,
+"[mid-project: D?a]" plan markers, code comments). Before the logs are
+merged, each placeholder defined in the PR's deviations log gets the next
+free number after the highest real one on either side, oldest entry first
+(from the bottom of the newest-first log up, so the log stays in descending
+order), and every reference is rewritten in the files the PR changes.
+Refuses when a placeholder is defined twice, is referenced but never
+defined, or is left anywhere in the merged tree. In Markdown prose, a
+backslash before the question mark makes a literal mention (it renders as
+D?a and is not a placeholder); the files in LITERAL_PLACEHOLDERS describe
+the rule and are skipped. The main session numbers its own entries directly.
+The PR's session block sits in the PR description, outside the tree: after
+folding it into the day's log with the printed numbers (merge-side-pr step
+8), check the log with
+    python scripts/merge_append_only.py --check-log logs/YYYY-MM-DD.md
+
 Run it after every merge, not only conflicted ones: git merges these files
 cleanly whenever two branches' additions don't touch the same lines, and a
 clean merge can still hold the same D number twice. Usage, on a PR branch
@@ -48,11 +66,14 @@ clean merge can still hold the same D number twice. Usage, on a PR branch
     python scripts/merge_append_only.py --against origin/main [FILE ...] [--dry-run]
 With no FILE, merges every file in LAYOUTS: conflicted ones from git's stages,
 cleanly merged ones from the merge base, HEAD and MERGE_HEAD (checked, and
-put in order). Then review with `git diff`, `git add` the files it names and
-commit the merge. When the branch already contains origin/main, git opens no
-merge ("Already up to date"); with --against the script then exits 0 with
-"nothing to check". Without it, or when the branch doesn't contain that ref,
-a missing merge is refused: it means the merge step was skipped.
+put in order). The line "numbered: D?a -> D40, ..." (or "numbered: none")
+reports the numbers given; prescreen_prs.py reads it. Then review with
+`git diff`, `git add` the files it names and commit the merge. When the
+branch already contains origin/main, git opens no merge ("Already up to
+date"); with --against the script then still numbers any placeholders (commit
+the result as an ordinary commit), or exits 0 with "nothing to check" when
+there are none. Without --against, or when the branch doesn't contain that
+ref, a missing merge is refused: it means the merge step was skipped.
 """
 from __future__ import annotations
 
@@ -77,6 +98,17 @@ LAYOUTS = {
 
 DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 DEVIATION_NO = re.compile(r"^### D(\d+)\b")
+DEVIATIONS = "docs/plan_deviations.md"
+# A deviation-number placeholder such as D?a. No match for a backslash before
+# the "?", the Markdown way to mention the token literally.
+PLACEHOLDER = re.compile(r"(?<!\w)D\?[a-z]+(?!\w)")
+PLACEHOLDER_DEF = re.compile(r"^### (D\?[a-z]+)(?!\w)", re.M)
+# Files that describe the placeholder rule, so their tokens are examples.
+LITERAL_PLACEHOLDERS = (
+    "scripts/merge_append_only.py", "scripts/prescreen_prs.py",
+    "tests/test_merge_append_only.py", "tests/test_prescreen_prs.py",
+    ".claude/skills/merge-side-pr/SKILL.md",
+)
 
 
 class Refusal(Exception):
@@ -277,6 +309,94 @@ def merge_texts(base: str, ours: str, theirs: str, layout: Layout, name: str = "
     return render(merged)
 
 
+# Deviation placeholders
+
+def highest_number(*texts: str | None) -> int:
+    """The highest real D number in the given deviation logs (0 if none)."""
+    return max((int(m.group(1)) for t in texts if t
+                for m in re.finditer(r"^### D(\d+)\b", t, re.M)), default=0)
+
+
+def number_placeholders(deviations: str, highest: int) -> dict[str, str]:
+    """Placeholder -> real number, oldest entry first (bottom of the log up)."""
+    defined = PLACEHOLDER_DEF.findall(deviations)
+    twice = sorted({p for p in defined if defined.count(p) > 1})
+    if twice:
+        raise Refusal(f"{DEVIATIONS}: placeholder {', '.join(twice)} defined by two "
+                      f"entries; give each new entry its own letter")
+    return {p: f"D{highest + i}" for i, p in enumerate(reversed(defined), 1)}
+
+
+def apply_numbers(text: str, numbers: dict[str, str]) -> str:
+    return PLACEHOLDER.sub(lambda m: numbers.get(m.group(0), m.group(0)), text)
+
+
+def _read_text(path: Path) -> str | None:
+    """A file's text with its line endings as stored; None if binary or missing."""
+    try:
+        return path.read_bytes().decode("utf-8")
+    except (UnicodeDecodeError, OSError):
+        return None
+
+
+def number_tree(top: Path, revs: tuple[str, str, str]
+                ) -> tuple[dict[str, str], dict[str, str], set[str]]:
+    """Number the PR's placeholders.
+
+    revs is (merge base, PR side, main side). Returns the numbers, the
+    rewritten text of each other file the PR changes (the two logs are
+    numbered in resolve), and the set of files the PR changes.
+    """
+    base, head, other = revs
+    ours, theirs = (_show(rev, DEVIATIONS, top) for rev in (head, other))
+    numbers = number_placeholders(ours or "", highest_number(ours, theirs))
+    pr_files = set(git("diff", "--name-only", "--no-renames", base, head, cwd=top).split())
+    rewritten = {}
+    for f in sorted(pr_files):
+        if f in LAYOUTS or f in LITERAL_PLACEHOLDERS:
+            continue
+        text = _read_text(top / f)
+        if text is not None and apply_numbers(text, numbers) != text:
+            rewritten[f] = apply_numbers(text, numbers)
+    return numbers, rewritten, pr_files
+
+
+def check_no_placeholders(top: Path, texts: dict[str, str], pr_files: set[str]) -> None:
+    """Refuse if a placeholder is left in any tracked file (texts override disk)."""
+    for f in sorted(set(git("ls-files", cwd=top).split())):
+        if f in LITERAL_PLACEHOLDERS:
+            continue
+        found = PLACEHOLDER.search(texts[f] if f in texts else _read_text(top / f) or "")
+        if not found:
+            continue
+        if f in pr_files:
+            raise Refusal(f"{f}: {found.group(0)} is referenced but no entry in "
+                          f"{DEVIATIONS} defines it; add the entry or fix the reference")
+        raise Refusal(f"{f}: placeholder {found.group(0)} left in the merged tree, "
+                      f"not from this PR; number it by hand")
+
+
+def check_log(path: Path) -> int:
+    """Exit code for a day's log after a session block is folded in (0 = no placeholder).
+
+    The session block lives in the PR description, outside every tree check,
+    and is folded into logs/ by hand, so the fold is checked on its own.
+    """
+    text = _read_text(path)
+    if text is None:
+        print(f"REFUSED: {path} not found or not UTF-8 text")
+        return 1
+    left = [(n, m.group(0)) for n, line in enumerate(text.splitlines(), 1)
+            for m in PLACEHOLDER.finditer(line)]
+    if left:
+        where = ", ".join(f"line {n} ({token})" for n, token in left)
+        print(f"REFUSED: {path} still holds placeholders at {where}; replace each with "
+              f"the number the merge printed")
+        return 1
+    print(f"{path}: no placeholders")
+    return 0
+
+
 # Git plumbing
 
 def git(*args: str, cwd: Path) -> str:
@@ -294,14 +414,15 @@ def _show(rev: str, path: str, top: Path) -> str | None:
 
 
 def resolve(path: str, top: Path, conflicted: bool,
-            revs: tuple[str, str, str]) -> str | None:
+            revs: tuple[str, str, str], numbers: dict[str, str] | None = None) -> str | None:
     """Merge one file from its three versions; return the result (None if skipped).
 
     A conflicted file is read from git's stages; a file git merged cleanly is
     read from the merge base, HEAD and MERGE_HEAD, so its result is checked
     (unique D numbers, no edited entries, every entry kept) and put in order
     too. A clean merge can't be trusted alone: two branches adding D19 at
-    different lines merge without a conflict.
+    different lines merge without a conflict. Placeholders on the PR side
+    (ours) are numbered first.
     """
     layout = LAYOUTS[path]
     if conflicted:
@@ -311,11 +432,14 @@ def resolve(path: str, top: Path, conflicted: bool,
         if None in versions:
             print(f"{path}: skipped, not in all three versions")
             return None
+    if numbers:
+        versions[1] = apply_numbers(versions[1], numbers)
     base = versions[0]
     result = merge_texts(*versions, layout, path)
     current = (top / path).read_text(encoding="utf-8")
     added = len(_leaves(parse(result, layout))) - len(_leaves(parse(base, layout)))
-    what = "resolved" if conflicted else ("checked and reordered" if result != current
+    changes = "numbered" if numbers and PLACEHOLDER.search(current) else "reordered"
+    what = "resolved" if conflicted else (f"checked and {changes}" if result != current
                                            else "checked")
     print(f"{path}: {what}; {added} entr{'y' if added == 1 else 'ies'} added on either "
           f"side since the branches split, all kept")
@@ -332,42 +456,64 @@ def main(argv: list[str] | None = None, cwd: Path | None = None) -> int:
     ap.add_argument("--dry-run", action="store_true", help="check without writing")
     ap.add_argument("--against", metavar="REF",
                     help="the branch that was merged in (e.g. origin/main): with no merge "
-                         "open, exit 0 if HEAD already contains it, since nothing can clash")
+                         "open and HEAD already containing it, only number placeholders "
+                         "(exit 0 with nothing to check if there are none)")
+    ap.add_argument("--check-log", metavar="LOG",
+                    help="only check that LOG (e.g. logs/YYYY-MM-DD.md after folding a "
+                         "session block, merge-side-pr step 8) holds no placeholder")
     args = ap.parse_args(argv)
+    if args.check_log:
+        return check_log(Path(args.check_log) if cwd is None else cwd / args.check_log)
     try:
         top = Path(git("rev-parse", "--show-toplevel", cwd=cwd or Path.cwd()).strip())
-        if not (Path(git("rev-parse", "--absolute-git-dir", cwd=top).strip()) / "MERGE_HEAD").exists():
+        head = git("rev-parse", "HEAD", cwd=top).strip()
+        if (Path(git("rev-parse", "--absolute-git-dir", cwd=top).strip()) / "MERGE_HEAD").exists():
+            other = git("rev-parse", "MERGE_HEAD", cwd=top).strip()
+            revs = (git("merge-base", head, other, cwd=top).strip(), head, other)
+        elif args.against and subprocess.run(
+                ["git", "merge-base", "--is-ancestor", args.against, "HEAD"],
+                cwd=top, capture_output=True).returncode == 0:
             # `git merge` opens no merge when the branch already contains the
-            # other side ("Already up to date"); then there is nothing to check.
-            if args.against and subprocess.run(
-                    ["git", "merge-base", "--is-ancestor", args.against, "HEAD"],
-                    cwd=top, capture_output=True).returncode == 0:
-                print(f"nothing to check: no merge open, HEAD already contains {args.against}")
-                return 0
+            # other side ("Already up to date"): no clash is possible, but the
+            # PR's placeholders still need numbers.
+            other = git("rev-parse", args.against, cwd=top).strip()
+            revs = (other, head, other)
+        else:
             raise Refusal("not inside an open git merge (no MERGE_HEAD); merge with "
                           "`git merge --no-commit --no-ff` so clean merges stay open too")
-        head = git("rev-parse", "HEAD", cwd=top).strip()
-        other = git("rev-parse", "MERGE_HEAD", cwd=top).strip()
-        revs = (git("merge-base", head, other, cwd=top).strip(), head, other)
+        numbers, rewritten, pr_files = number_tree(top, revs)
+        if revs[0] == revs[2] and not numbers:
+            check_no_placeholders(top, {}, pr_files)
+            print(f"nothing to check: no merge open, HEAD already contains {args.against}")
+            print("numbered: none")
+            return 0
         conflicted = git("diff", "--name-only", "--diff-filter=U", cwd=top).split()
         files = ([Path(f).as_posix() for f in args.files]
                  or [f for f in LAYOUTS if (top / f).exists()])
         for f in files:
             if f not in LAYOUTS:
                 raise Refusal(f"{f}: not an append-only file this script knows")
+        if numbers and DEVIATIONS not in files:
+            files.append(DEVIATIONS)                 # the placeholders are defined there
         # Every file is merged before any is written, so a refusal writes nothing.
-        results = {f: resolve(f, top, f in conflicted, revs) for f in files}
+        results = {f: resolve(f, top, f in conflicted, revs, numbers) for f in files}
+        check_no_placeholders(top, {**rewritten, **{f: t for f, t in results.items()
+                                                     if t is not None}}, pr_files)
     except Refusal as err:
         print(f"REFUSED, nothing written: {err}")
         return 1
+    print("numbered: " + (", ".join(f"{p} -> {n}" for p, n in numbers.items()) or "none"))
     changed = [f for f, text in results.items()
                if text is not None and text != (top / f).read_text(encoding="utf-8")]
     if not args.dry_run:
         for f in changed:
             (top / f).write_text(results[f], encoding="utf-8", newline="\n")
-    to_add = sorted(set(changed) | {f for f in files if f in conflicted})
+        for f, text in rewritten.items():
+            (top / f).write_bytes(text.encode("utf-8"))        # line endings as stored
+    to_add = sorted(set(changed) | set(rewritten) | {f for f in files if f in conflicted})
     if to_add and not args.dry_run:
-        print(f"Next: review with `git diff`, then `git add {' '.join(to_add)}`")
+        then = "" if revs[0] != revs[2] else " and commit (no merge is open)"
+        print(f"Next: review with `git diff`, then `git add {' '.join(to_add)}`{then}")
     others = [f for f in conflicted if f not in files]
     if others:
         print(f"still conflicted, resolve by hand: {', '.join(others)}")
