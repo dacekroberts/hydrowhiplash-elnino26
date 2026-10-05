@@ -49,6 +49,62 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   its register. Finding 5's map extent and baseline wording were already
   logged as D28; the legend thresholds are new.
 
+### 2026-10-05 - Station snowpack downloads
+
+- **Decided to download every station source raw and unfiltered, with all
+  flags, and to clean in a separate step.** NRCS requested with
+  `activeOnly=false` (the default keeps only active sites: WA 131 of 315)
+  and `returnSuspectData=true`. Filtering (QC flag B back-estimates, 1 July
+  placeholder dates, negatives, BC duplicates) is decided once, with all
+  flags visible. Files: `src/download_nrcs_snow.py`,
+  `src/download_bc_snow.py`, `src/download_yukon_snow.py`,
+  `src/download_canswe.py`, `tests/test_station_downloads.py`, station block
+  in `src/config.py`.
+- **Decided to request NRCS snow courses with period reference START.** With
+  START the April 1 survey is month 4, part 1, with its collection date;
+  with the default END the same value is labelled the second half of March.
+  SNOTEL uses MONTHLY START, the midnight reading opening 1 April (equal to
+  the daily value dated 31 March, checked live). Chosen by the download
+  agent and accepted; rejected MONTHLY for snow courses (derived, no
+  collection date).
+- **Found:** CanSWE's flag Y means "precise sampling date not available";
+  only NWT dates are set to 1 April (Manitoba within a week), so the
+  earlier ledger wording "date unknown, set to 1 April" was imprecise; the
+  download docstring follows the ReadMe. Station counts differ between the
+  provincial files and CanSWE (Yukon 91 vs 92; BC 388 manual courses vs 545
+  CanSWE stations, of which 135 are pillows).
+
+### 2026-10-04 - Station snowpack sources and table licensing
+
+- **Decided (owner) to write download scripts this session for NRCS
+  (SNOTEL and snow courses, WA, OR, ID, AK), BC manual snow surveys and the
+  Yukon snow survey network; April 1 cleaning and comparison with ERA5-Land
+  next session.** Licence reads (`DATA_SOURCES.md`): NRCS public domain
+  (liability disclaimer, credit requested); BC and Yukon Open Government
+  Licences with a fixed attribution line. Rejected NRCS only (BC and Yukon
+  are single small CSVs) and deferring all stations.
+- **Decided (owner) to take Alberta station data from CanSWE rather than
+  Alberta's portal, with emailing the publisher a last resort.** Alberta's
+  portal has no data licence: its website terms allow only unmodified,
+  non-commercial copies, and historical records are by email request
+  (verdict AMBIGUOUS). CanSWE v8 (Zenodo) is under the Open Government
+  Licence - Canada and includes Alberta manual snow courses (about 107) and
+  pillows, but ends July 2025, and its licensor (the federal Crown) may not
+  hold the rights to provincial records (no restriction stated either).
+  Download approved by the owner later the same session. Rejected
+  Alberta's portal (terms) and dropping Alberta stations.
+- **Decided (owner) to add a third-party note to `LICENSE-CONTENT`:** data
+  values in `results/` tables taken or derived from third-party sources stay
+  under their sources' terms (listed in `DATA_SOURCES.md` with the required
+  notices); the project's own selection, analysis, figures and text stay
+  under the notice. This settles the open question from 2026-10-04 "Working
+  setup", so region x year tables can be committed to `results/tables/`.
+  Rejected committing only summary statistics (Phase 4 cloud threads need
+  the tables) and deferring. Files: `LICENSE-CONTENT`.
+- **Decided (owner) to merge PR #7 after a clean pre-screen, although it
+  adds a bullet to an existing DECISIONS.md entry rather than a new one.**
+  Pre-screen ALL CLEAN against 31b662d; squash commit d831fdc.
+
 ### 2026-10-04 - SPEI settings
 
 - **Decided (owner) to calibrate SPEI on 1951-2020.** 70 values per calendar

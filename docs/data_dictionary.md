@@ -23,7 +23,7 @@ Status: **have** = downloaded; **planned** = in `ACTION_PLAN.md`.
 | Soil moisture, layers 1-2 | ERA5-Land | 2 | have (2026-10-04) | m³/m³ | m³/m³ |
 | April 1 SWE (gridded snapshot) | ERA5-Land hourly | 2 | have (2026-10-04) | m water equivalent | mm |
 | Glacier mask | derived from ERA5-Land `sd` (cap + perennial rule; the invariant field was not used, D27) | 2 | have | boolean | mask |
-| Snow water equivalent (stations) | SNOTEL, BC, Alberta | 2 | planned | inches (SNOTEL), mm (BC, AB) | mm |
+| Snow water equivalent (stations) | NRCS SNOTEL and snow courses (WA, OR, ID, AK), BC, Yukon, CanSWE (Alberta) | 2 | have, raw (2026-10-05) | inches (NRCS), mm (BC, Yukon), kg m-2 = mm (CanSWE) | mm |
 | PET, SPEI-3, whiplash | derived | 2 | built (2026-10-04) | mm/day; standardised | as native |
 | Fire perimeters | MTBS, WFIGS/NIFC, CNFDB | 3 | planned (after freeze) | polygons + dates | ha, days |
 | Region boundaries | Natural Earth admin-1 | 1 | have | degrees (EPSG:4326) | polygons; ha in ESRI:102008 |
@@ -198,7 +198,7 @@ combining years.
 - **Files:** `data/raw/era5_land_april1/` and
   `data/raw/era5_land_north_april1/`, `era5_land_april1.nc` in each.
 
-## 3. Snowpack from stations (SNOTEL, BC, Alberta), planned
+## 3. Snowpack from stations (NRCS, BC, Yukon, CanSWE for Alberta), have (raw)
 
 **What they measure.** April 1 snow water equivalent at fixed mountain
 sites, the traditional measure of how much water the snowpack will release
@@ -221,6 +221,34 @@ where the stations are, not the whole region. Networks start in different
 years and add or drop sites over time. Coverage is sparse in northern
 Alberta. Point measurements and ERA5-Land's 9 km cells measure different
 things, so expect level differences between them.
+
+**What "April 1" means in each raw file** (downloaded 2026-10-05, raw and
+unfiltered under `data/raw/stations/`; cleaning not yet built):
+- NRCS SNOTEL (`MONTHLY`, period reference START): month 4 is the midnight
+  reading opening 1 April (the daily value dated 31 March).
+- NRCS snow courses (`SEMIMONTHLY`, START): the April 1 survey is month 4,
+  part 1, with its own collection date, usually late March.
+- BC manual surveys: `Survey Period` = `01-Apr`, taken about 26 March to
+  1 April.
+- Yukon: `target_date` = 1 April (sample dates run 11 days early to 15
+  days late).
+- CanSWE: actual sampling dates on a daily axis; take the value nearest
+  1 April within a window (pillows have daily values).
+
+**Raw-data traps found at download** (to handle in cleaning):
+- NRCS SNOTEL values before 1980 are almost all regression back-estimates
+  (QC flag B: 932 of 976 April 1 values), not measurements.
+- 2,163 NRCS snow-course April 1 values carry a placeholder collection date
+  of 1 July (1950-2009); 89 negative SNOTEL values (lowest -108 in); 25
+  listed NRCS stations return no data.
+- BC: the archive already runs to June 2026, so 96 April 1 course-years are
+  in both the archive and the current-season file; headers have leading
+  spaces; CRLF line endings.
+- Yukon: comment lines are quoted, so `comment="#"` does not skip them;
+  6.5% of April 1 values are estimated from depth.
+- CanSWE station prefixes: `ALE-` Alberta, `BCE-` BC, `YT-` Yukon, `HQ-`
+  Hydro-Québec (excluded). April 1 ±15 days since 1950, stations with 30 or
+  more years: ALE 124 (11 pillows), BCE 251 (32 pillows), YT 58.
 
 ## 4. Derived climate variables, planned (Phase 2)
 

@@ -138,3 +138,50 @@ HAC_MAXLAGS = 2
 BLOCK_LEN = 3
 PREDICTION_ALPHA = 0.2  # 80% prediction intervals
 RANDOM_SEED = 2026
+
+# Station snowpack (Phase 2; DATA_SOURCES.md rows NRCS, BC, Yukon)
+# Raw downloads only; cleaning and the April 1 extraction happen later.
+STATIONS_RAW = DATA_RAW / "stations"
+NRCS_SNOW_RAW = STATIONS_RAW / "nrcs"
+BC_SNOW_RAW = STATIONS_RAW / "bc"
+YUKON_SNOW_RAW = STATIONS_RAW / "yukon"
+# NRCS AWDB REST API, no key. Parameter names checked against the OpenAPI
+# spec at https://wcc.sc.egov.usda.gov/awdbRestApi/v3/api-docs (2026-10-05).
+NRCS_AWDB_URL = "https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/"
+NRCS_STATES = ["WA", "OR", "ID", "AK"]
+NRCS_ELEMENT = "WTEQ"  # snow water equivalent, inches
+# Network -> (duration, periodRef). SNTL: snow pillows, MONTHLY with START is
+# the midnight reading opening the month (equals the DAILY value dated the
+# last day of the previous month). SNOW: manual snow courses, SEMIMONTHLY
+# keeps the collection date (their MONTHLY is derived); with START the
+# April 1 survey is month 4, monthPart "1" (END labels it month 3, part "2").
+NRCS_NETWORKS = {
+    "SNTL": ("MONTHLY", "START"),
+    "SNOW": ("SEMIMONTHLY", "START"),
+}
+NRCS_BATCH_SIZE = 40     # station triplets per data request
+NRCS_PAUSE_S = 1.0       # seconds between requests
+# HTTP settings shared by the station downloads. Retries cover 5xx, 429 and
+# timeouts; the wait doubles each time from HTTP_BACKOFF_S.
+HTTP_TIMEOUT_S = 300
+HTTP_RETRIES = 4
+HTTP_BACKOFF_S = 5.0
+# BC manual snow surveys (BC River Forecast Centre), saved as published.
+BC_SNOW_URLS = {
+    "allmss_archive.csv": ("https://www.env.gov.bc.ca/wsd/data_searches/snow/"
+                           "asws/data/allmss_archive.csv"),
+    "allmss_current.csv": ("https://www.env.gov.bc.ca/wsd/data_searches/snow/"
+                           "asws/data/allmss_current.csv"),
+}
+# Yukon snow survey network (Yukon Water Data API v2), saved as published.
+YUKON_SNOW_URLS = {
+    "snow_survey_data.csv": "https://service.yukon.ca/water-data/api/v2/snow-survey/data",
+    "snow_survey_metadata.csv": ("https://service.yukon.ca/water-data/api/v2/"
+                                 "snow-survey/metadata"),
+}
+# CanSWE v8 (Vionnet et al.; Open Government Licence - Canada), from Zenodo.
+# Version DOI 10.5281/zenodo.19075529, concept DOI 10.5281/zenodo.4734371.
+# The CSV zip in the record holds the same data as the NetCDF; not downloaded.
+CANSWE_RAW = STATIONS_RAW / "canswe"
+CANSWE_RECORD_URL = "https://zenodo.org/api/records/19075529"
+CANSWE_FILES = ["CanSWE-CanEEN_1928-2025_v8.nc", "ReadMe_CanSWE_v8.pdf"]

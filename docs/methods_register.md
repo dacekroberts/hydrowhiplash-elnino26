@@ -62,6 +62,18 @@ measurement the row says "not measured".
 | Whiplash index | SPEI-3(JJA) - SPEI-3(preceding DJF), every year | whiplash | not built | draft definition | not yet measured | pending (pre-freeze "Whiplash timing") | data dictionary s.4c |
 | `precip_anom` (H5) | months, baseline and units not set | H5 | not built | pre-freeze item | none | pending | ANALYSIS_PLAN "H5 definitions" |
 
+## Station snowpack (raw, 2026-10-05; cleaning not yet built)
+
+| Control | Value | Applies to | Code | Why | Measured effect | Status | Record |
+|---|---|---|---|---|---|---|---|
+| Discontinued stations kept | NRCS `activeOnly=false` | NRCS station lists | `src/download_nrcs_snow.py` | the API default drops discontinued sites | WA: 131 active of 315 listed | applied | DECISIONS "Station snowpack downloads" |
+| April 1 definition per source | SNTL MONTHLY START; snow courses SEMIMONTHLY START month 4 part 1; BC `Survey Period` 01-Apr; Yukon `target_date`; CanSWE nearest value to 1 April | station SWE | download scripts; cleaning not built | sources date surveys differently | see data dictionary s.3 | applied (download); pending (cleaning) | same |
+| Raw downloads unfiltered | suspect and estimated values kept (`returnSuspectData=true`, flags returned) | NRCS | `src/download_nrcs_snow.py` | filtering is a cleaning decision, made once with all flags visible | 293,298 rows | applied | same |
+| SNOTEL back-estimates | QC flag B (regression estimate homogenising pillow and snow course records) | NRCS SNTL | cleaning not built | not measurements | 932 of 976 April 1 values before 1980; excluding B, stations with ≥ 30 April 1 values: WA 48 to 45, OR 71 to 69, ID 73 to 72, AK 19 to 19 | pending | data dictionary s.3 |
+| Placeholder and implausible dates | snow-course collection date 1 July; negative SWE | NRCS | cleaning not built | data entry artefacts | 2,163 April 1 values dated 1 July (1950-2009); 89 negative SNTL values (lowest -108 in) | pending | same |
+| BC duplicate seasons | archive and current-season files overlap | BC | cleaning not built | the archive already runs to June 2026 | 96 April 1 course-years in both | pending | same |
+| Hydro-Québec excluded | `HQ-` stations | CanSWE | cleaning not built | CC BY-NC-SA terms; outside the study area | 177 stations | pending | DATA_SOURCES CanSWE row |
+
 ## ENSO classification
 
 | Control | Value | Applies to | Code | Why | Measured effect | Status | Record |

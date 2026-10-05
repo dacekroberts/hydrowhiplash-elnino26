@@ -19,3 +19,9 @@ licence; see LICENSE.
 
 Third-party data used by this project remains under its publishers' own
 terms; see DATA_SOURCES.md.
+
+Tables in results/ (for example the region x year tables in results/tables/)
+contain data values taken or derived from third-party sources. Those values
+remain under their sources' terms, listed in DATA_SOURCES.md with the notices
+each source requires, and this notice does not restrict them. The project's
+own selection, analysis, figures and text remain covered by this notice.

@@ -5,17 +5,23 @@ Joins the outputs of `python -m src.whiplash` and `python -m src.snow`
 winter (Y-1)-Y: DJF SPEI and April 1 SWE of that winter, JJA SPEI and the
 fire season of year Y.
 
-Run:  python -m src.phase2   (writes data/processed/whiplash_swe_region_year.csv)
+Run:  python -m src.phase2   (writes data/processed/whiplash_swe_region_year.csv
+                               and the committed copy in results/tables/)
+
+The committed copy holds values derived from ERA5-Land (CC-BY 4.0) and the
+ENSO index (public domain); they stay under those terms (LICENSE-CONTENT,
+DATA_SOURCES.md).
 """
 from __future__ import annotations
 
 import pandas as pd
 
-from src.config import DATA_PROCESSED, REGIONS
+from src.config import DATA_PROCESSED, REGIONS, RESULTS
 
 WHIPLASH = DATA_PROCESSED / "whiplash_region_year.csv"
 SWE = DATA_PROCESSED / "swe_april1_region_year.csv"
 OUT = DATA_PROCESSED / "whiplash_swe_region_year.csv"
+COMMITTED = RESULTS / "tables" / OUT.name
 ENSO_COLS = ["winter", "enso_index", "enso_djf", "phase", "strong"]
 
 
@@ -36,11 +42,17 @@ def build_table(whiplash: pd.DataFrame, swe: pd.DataFrame) -> pd.DataFrame:
     return table[lead + [c for c in table.columns if c not in lead]]
 
 
+def write_tables(table: pd.DataFrame) -> None:
+    """Write the table to data/processed/ and its committed copy to results/tables/."""
+    for path in (OUT, COMMITTED):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        table.to_csv(path, index=False, lineterminator="\n")
+        print(f"wrote {path}: {len(table)} rows, {table['region'].nunique()} regions, "
+              f"years {table['year'].min()}-{table['year'].max()}")
+
+
 def main() -> None:
-    table = build_table(pd.read_csv(WHIPLASH), pd.read_csv(SWE))
-    table.to_csv(OUT, index=False)
-    print(f"wrote {OUT}: {len(table)} rows, {table['region'].nunique()} regions, "
-          f"years {table['year'].min()}-{table['year'].max()}")
+    write_tables(build_table(pd.read_csv(WHIPLASH), pd.read_csv(SWE)))
 
 
 if __name__ == "__main__":

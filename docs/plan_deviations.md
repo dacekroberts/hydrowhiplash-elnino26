@@ -43,6 +43,36 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-04 (Phase 2)
 
+### D31 · Station snowpack records start well after 1950
+- **Plan:** `ANALYSIS_PLAN.md` "Data and years": climate tests including
+  SWE use "winters 1950–51 to present"; `ACTION_PLAN.md` Phase 2 lists the
+  station networks without start years.
+- **Actual (licence reads, 2026-10-04):** Yukon April SWE starts 1960 but
+  has 1-7 courses a year until about 1975; Alaska snow courses start 1951
+  with 9 by 1960; SNOTEL pillows start 1978 (WA, OR, ID: 165 sites by
+  1985). WA, OR and ID snow courses do reach back (282 begun by 1950, 75
+  spanning 1950-2020); BC manual courses run from 1935 (127 with 50 or more
+  April 1 values since 1950). Gridded ERA5-Land April 1 SWE covers 1950-2026
+  everywhere.
+- **Why:** network histories.
+- **Plan doc:** left as written (owner's prose; the SWE source and
+  definition is still a pre-freeze item).
+
+### D30 · Alberta station snowpack from CanSWE, not Alberta's portal
+- **Plan:** `ACTION_PLAN.md` Phase 2 ("BC and Alberta snow surveys");
+  `DATA_SOURCES.md` placeholder row with endpoint https://rivers.alberta.ca/.
+- **Actual:** Alberta's portal publishes no data licence (website terms
+  allow only unmodified, non-commercial copies; historical records by email
+  request), verdict AMBIGUOUS. Alberta station data is to come from CanSWE v8
+  (Zenodo, Open Government Licence - Canada), which includes about 107
+  Alberta manual snow courses and pillows but ends July 2025. Download
+  approved by the owner the same session.
+- **Why:** owner's choice; emailing the publisher is a last resort.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Station snowpack sources and
+  table licensing"; `DATA_SOURCES.md` CanSWE and Alberta rows.
+- **Plan doc:** `DATA_SOURCES.md` updated; `ACTION_PLAN.md` left as
+  written.
+
 ### D29 · Methods register added
 - **Plan:** `CLAUDE.md` and `ACTION_PLAN.md` Phase 4 ("Write the Methods
   and limitations section as you go") name no record of controls; units and
