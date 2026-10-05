@@ -39,19 +39,37 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    ```
    In `../_pr-<N>`: `python -m pytest` and
    `python scripts/check_no_em_dashes.py`. For changes under `src/`, also run
-   `/code-review low` on the PR. Tests that need `data/` can't run there
-   (data is never committed); say so instead of skipping silently.
+   `/code-review low` on the PR. If the PR touches `site/`, `results/figures/`,
+   `src/figures.py` or `src/diagrams.py`, also run
+   `python scripts/check_site.py`: it renders a copy of the site and fails on
+   any unrendered page or broken local link (a bare `quarto render` exits 0
+   on both). Tests that need `data/` can't run there (data is never
+   committed); say so instead of skipping silently.
 4. **Report to the owner and wait.** In a few lines: what the PR changes,
    check results, rule flags, anything touching their prose, merge
    conflicts. Ask for a clear yes before merging. The owner may prefer to
    merge on GitHub instead; then skip to step 7 once it's merged.
 5. **Resolve conflicts on the PR branch, not on main.** Expected spots:
    the top of `DECISIONS.md` and `docs/plan_deviations.md` (both newest
-   first). In `../_pr-<N>`: `git merge origin/main`, keep both entries, newest
-   date first (same date: keep main's entry above the PR's), commit, push,
-   re-run step 3's checks.
-6. **Merge.** `gh pr merge <N> --squash --delete-branch`. Squash gives one
-   commit per task on `main`; the PR keeps the detailed history.
+   first). In `../_pr-<N>`: `git merge origin/main`, then
+   `python scripts/merge_append_only.py`, which resolves both files
+   entry by entry (newest date first, deviations by number; on the same date
+   the PR's entries go above main's, so the latest merge ends on top), keeps
+   every entry of both sides, and refuses if an old entry was edited or a D
+   number is used twice. This step is the main session's job: side sessions
+   don't merge main into their open PRs (the owner's choice, 2026-10-04), so
+   only one session ever pushes merge commits to a PR branch. Review with `git diff`, `git add` the files, resolve anything
+   else by hand, commit, push, re-run step 3's checks. If it refuses, resolve
+   that file by hand: keep every entry of both sides, never one side's whole
+   file.
+6. **Merge.** `gh pr merge <N> --squash` (no `--delete-branch`), then
+   delete only the remote branch: `git push origin --delete <branch>`.
+   Squash gives one commit per task on `main`; the PR keeps the detailed
+   history. Never pass `--delete-branch`: it also deletes the local branch,
+   and if a side session has that branch checked out, `gh` removes the
+   session's whole worktree, uncommitted work included (happened with PR #2,
+   2026-10-04). Delete the local branch only if `git worktree list` shows it
+   checked out nowhere: `git branch -D <branch>`.
 7. **Update the main checkout.** `git status` first: if it has uncommitted
    changes, ask before doing anything with them (never stash silently). Then
    `git pull --ff-only`.

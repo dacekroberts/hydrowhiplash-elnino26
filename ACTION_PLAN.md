@@ -1,7 +1,8 @@
 # Action Plan: hydrowhiplash-elnino26
 
 Goal: estimate how the 2026–27 strong El Niño is likely to shape the **2027 fire
-season** in the Pacific Northwest, BC and Alberta, contrasted with Northern and
+season** in the Pacific Northwest, BC and Alberta, plus Alaska and Yukon
+[mid-project: D20], contrasted with Northern and
 Southern California.
 
 **Analysis principle:** every step runs on the **full record** (climate 1950–present, fire 1984–present),
@@ -43,15 +44,17 @@ deliverable so you always know when you're done.
 
 ## Phase 1 — Regions & climate data (week 1)
 
-- [ ] `python -m src.regions` to build the region polygons
-      (PNW, BC, AB, NorCal, SoCal)
-- [ ] Notebook `01_explore_era5.ipynb`: open the ERA5 files, convert units
+- [x] `python -m src.regions` to build the region polygons
+      (PNW, BC, AB, NorCal, SoCal; AK and YT added [mid-project: D20])
+- [x] Download the north ERA5-Land domain (Alaska and Yukon, 51-71.5N x
+      169-123.5W) with `python -m src.download_era5 north` [mid-project: D20]
+- [x] Notebook `01_explore_era5.ipynb`: open the ERA5 files, convert units
       (see `download_era5.py`), and plot regional winter (DJF) precipitation
       as a **full time series, 1950–present, with El Niño winters marked**
       (strong ones emphasised)
-- [ ] Map winter precipitation for one strong El Niño winter (1997–98)
+- [x] Map winter precipitation for one strong El Niño winter (1997–98)
       against the all-years average
-- [ ] Sanity check: do SoCal winters stand out wet and the PNW/BC dry in the
+- [x] Sanity check: do SoCal winters stand out wet and the PNW/BC dry in the
       highlighted years? If not, check units and dates before going further.
 
 **Done when:** you have the highlighted time series per region and a map of
@@ -63,7 +66,8 @@ the El Niño precipitation dipole.
       with `xclim`, then whiplash = SPEI-3(JJA) − SPEI-3(preceding DJF)
       for **every year**
 - [ ] Average by region to get one time series per region per year
-- [ ] Add April 1 snowpack: SNOTEL (WA/OR/ID), BC and Alberta snow surveys
+- [ ] Add April 1 snowpack: SNOTEL (WA/OR/ID), BC and Alberta snow surveys;
+      Alaska SNOTEL and Yukon snow surveys [mid-project: D20]
 - [ ] Gridded snowpack from ERA5-Land SWE (`sd`, already downloaded), with
       two fixes before any regional mean:
       - **Exclude glacier cells.** ERA5-Land holds glacier ice at a 10 m
@@ -101,11 +105,13 @@ committed copy in `results/tables/`.
 ## Phase 3 — Fire data (week 3)
 
 - [ ] Download US fire perimeters (MTBS for 1984 to about 2 years ago,
-      NIFC/WFIGS for recent years) and Canadian perimeters (CNFDB) for BC and AB
+      NIFC/WFIGS for recent years) and Canadian perimeters (CNFDB) for BC and AB;
+      MTBS/WFIGS for Alaska and CNFDB for Yukon [mid-project: D20]
 - [ ] Clip to regions and compute **area burned** and **season length**
       (first to last fire date) for every year, counting only fires ≥ 405 ha
       in all regions so US and Canadian records match: June–October for US
-      regions and BC, **April–October for Alberta**
+      regions and BC, **April–October for Alberta**, April–September for
+      Alaska and Yukon (provisional) [mid-project: D20]
 - [ ] Record dataset versions in `DATA_SOURCES.md`
 
 **Done when:** you have a table of regions × all years with area burned,

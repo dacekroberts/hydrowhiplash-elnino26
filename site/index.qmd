@@ -7,8 +7,26 @@ title: "What past El Niños suggest for the 2027 fire season"
 
 ## Two pathways from one El Niño
 
-<!-- Mechanism diagram: PNW/BC dry winter → low snowpack → long fire season;
-     SoCal wet winter → grass growth → big grass fires. Any time. -->
+<!-- Two layouts of one diagram: the wide one from 576 px up, the narrow one
+     below (Bootstrap classes d-none d-sm-block / d-sm-none). Read from
+     results/ at render time; Quarto copies the outputs into _site/. -->
+
+::: {.d-none .d-sm-block}
+```{python}
+#| echo: false
+#| fig-alt: "Flow diagram. El Niño, warm water in the central-eastern tropical Pacific, makes the Pacific jet stream extend east and shift south. North pathway (PNW, BC, AB): a milder, often drier winter, then less snow and earlier melt, then an earlier or longer fire season. South pathway (SoCal): a wetter winter, then more grass growth, then more fine fuel once the grass cures and larger grass fires. Footnote: these are expected pathways tested in this study; AK and YT are also analysed, as northern regions, with no pathway drawn because their hypotheses are not yet set; NorCal is also analysed, as a contrast region, with no pathway drawn because its expected response is not yet set."
+from IPython.display import SVG
+SVG(filename="../results/figures/mechanism.svg")
+```
+:::
+
+::: {.d-sm-none}
+```{python}
+#| echo: false
+#| fig-alt: "Flow diagram. El Niño, warm water in the central-eastern tropical Pacific, makes the Pacific jet stream extend east and shift south. North pathway (PNW, BC, AB): a milder, often drier winter, then less snow and earlier melt, then an earlier or longer fire season. South pathway (SoCal): a wetter winter, then more grass growth, then more fine fuel once the grass cures and larger grass fires. Footnote: these are expected pathways tested in this study; AK and YT are also analysed, as northern regions, with no pathway drawn because their hypotheses are not yet set; NorCal is also analysed, as a contrast region, with no pathway drawn because its expected response is not yet set."
+SVG(filename="../results/figures/mechanism_narrow.svg")
+```
+:::
 
 ## What El Niño does to winter rain
 
