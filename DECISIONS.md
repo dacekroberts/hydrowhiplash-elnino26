@@ -17,6 +17,77 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - SPEI settings
+
+- **Decided (owner) to calibrate SPEI on 1951-2020.** 70 values per calendar
+  month for a 3-parameter fit, and a fixed baseline, so months added later
+  (the 2026-27 winter, the 2027 summer) are scored against an unchanged
+  normal. Includes the warming trend, so recent summers read drier as
+  Thornthwaite PET rises with temperature. Rejected 1991-2020 (30 values per
+  month gives noisier tails) and the full record (the baseline would move
+  each time data is added). Pre-freeze item "SPEI settings".
+- **Decided (owner) on the log-logistic distribution (scipy `fisk`) fitted by
+  maximum likelihood, with SPEI clipped to ±3.09 (probability 0.001 in each
+  tail).** Log-logistic is the standard SPEI choice (Vicente-Serrano et al.
+  2010). Probe on a 30 x 30 block (47-50N, 122-119W, 900 cells, 1950-2025,
+  calibration 1951-2020): mean -0.007, SD 0.988, minimum -8.21, 514 s; GEV
+  gave mean 0.000, SD 1.001, maximum +8.21, 267 s. A value of -8 SD is a
+  fitted-tail artefact, hence the clip. Rejected GEV (less standard, also
+  blew up) and empirical ranks (bounded near ±2.7 with 70 years, so a new
+  record can't exceed the old one). xclim's fast `APP` method is not
+  available for 3-parameter fits.
+- **Decided (owner) to compute SPEI per grid cell, take the cos(latitude)
+  regional mean, then re-standardise the regional series to mean 0 and SD 1
+  over 1951-2020, separately for each season.** Every km² counts equally,
+  and a regional value is in SD units again: a mean of correlated z-scores
+  has SD below 1, by different amounts in different regions. Rejected the
+  plain regional mean (magnitudes not comparable across regions) and a
+  regional water balance (P and PET averaged first; the mm average is
+  dominated by the wettest cells, e.g. BC's coast over its dry interior,
+  where fire is). Cost: about 0.57 s per cell for the fit, about 70,000
+  region cells, run once in parallel and cached.
+- **Decided to keep Thornthwaite PET (xclim `TW48`) as drafted.** It is zero
+  below 0 °C (probe block: DJF 0.018 mm/day, JJA 3.35 mm/day), so in cold
+  winters the water balance is precipitation alone and winter SPEI behaves
+  like SPI. Penman-Monteith would need humidity, radiation and wind.
+
+### 2026-10-04 - ERA5-Land SWE: glacier exclusion and April 1
+
+- **Decided (owner) to exclude, from every SWE regional mean, cells that
+  reach the 10 m cap (>= 9,990 mm) in any month or keep more than 10 mm of
+  snow at the yearly minimum in at least 90% of years, 1950-2025; one fixed
+  mask for all years.** Measured 2026-10-04: the cap rule alone flags 358
+  main-domain cells (BC 130) and 1,104 north cells (AK 748, YT 221). A
+  second group the cap rule misses holds a steady ~5 m every April with no
+  trend (mean 5,341 mm in 1950, 5,199 mm in 2025, main domain): 394 main
+  cells (BC 206, AB 4) and 1,146 north (AK 894, YT 48). Mean April SWE
+  1950-2025, all cells / cap excluded / both excluded: AK 715 / 417 / 229 mm,
+  YT 478 / 204 / 170 mm, BC 595 / 516 / 443 mm, AB 52 / 51 / 49 mm; PNW,
+  NorCal and SoCal unchanged. Rejected the cap rule only (leaves AK 82% too
+  high) and the CDS glacier mask (needs confirming on the 0.1° grid, and may
+  also miss the ~5 m cells). Departs from the two options in
+  `ACTION_PLAN.md` Phase 2 (D27).
+- **Decided (owner) to take April 1 SWE from the 00:00 UTC April 1 field of
+  hourly ERA5-Land (`reanalysis-era5-land`), not from the monthly means.** Same
+  date as the snow surveys. Rejected the mean of the March and April
+  monthly means: biased low wherever melt is under way by mid-April, and
+  more so in warm El Niño springs, which could exaggerate an El Niño effect.
+  A separate CDS dataset: licence read before the download.
+
+### 2026-10-04 - Methods register
+
+- **Decided (owner) to document every control, cap, filter and threshold as
+  it is applied, in a new `docs/methods_register.md`.** One table row per
+  control with its value, code location, reason, measured effect and status
+  (applied, planned, pending), so the Methods and limitations section can be
+  written from it later. Seeded with the Phase 1 controls (cos-latitude
+  weights, cell-centre masks, grid snapping, the California split, the
+  Alaska clip, ENSO thresholds) and the Phase 2 glacier measurements. The
+  data dictionary keeps units and traps per dataset; the register lists what
+  the pipeline does to the data. Rejected adding a column to the data
+  dictionary (controls such as region masks and ENSO thresholds cut across
+  datasets). Files: `docs/methods_register.md`, `CLAUDE.md`.
+
 ### 2026-10-04 - Side PR merges without --delete-branch
 
 - **Decided (owner) to merge side PRs with `gh pr merge <N> --squash` and

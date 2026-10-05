@@ -44,6 +44,9 @@ never committed), so worktree sessions take only tasks that need no data.
 - Log every departure from the planning docs (estimates, assumptions,
   procedures, scope) in `docs/plan_deviations.md` as it's found, including
   stale wording left as written.
+- Record every control, cap, filter, threshold and exclusion in
+  `docs/methods_register.md` when it's added or re-measured (value, code
+  location, why, measured effect), for the methods section.
 
 ## Environment
 

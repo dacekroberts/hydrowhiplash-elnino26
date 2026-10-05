@@ -59,3 +59,42 @@ def test_access_errors_stop_the_run(monkeypatch, tmp_path, status, stops):
     else:
         download_era5.main()  # other errors skip the year and carry on
         assert client.calls > 1
+
+
+class _RecordingClient:
+    def __init__(self):
+        self.requests = []
+
+    def retrieve(self, dataset, req, target):
+        self.requests.append((req, target))
+        raise _HTTPError(500)  # nothing written; every year is attempted
+
+
+def test_variable_set_goes_to_its_own_folder(monkeypatch, tmp_path):
+    client = _RecordingClient()
+    monkeypatch.setattr(download_era5, "RAW", tmp_path)
+    monkeypatch.setattr(download_era5.cdsapi, "Client", lambda: client, raising=False)
+    download_era5.main(["--set", "snow_soil", "north"])
+    req, target = client.requests[0]
+    assert req["variable"] == ["snowfall", "volumetric_soil_water_layer_1",
+                               "volumetric_soil_water_layer_2"]
+    assert req["area"] == [71.5, -169, 51, -123.5]
+    assert (tmp_path / "era5_land_north_snow_soil").is_dir()
+    assert not (tmp_path / "era5_land_north").exists()  # core folder untouched
+
+
+def test_default_set_is_core(monkeypatch, tmp_path):
+    client = _RecordingClient()
+    monkeypatch.setattr(download_era5, "RAW", tmp_path)
+    monkeypatch.setattr(download_era5.cdsapi, "Client", lambda: client, raising=False)
+    download_era5.main(["main"])
+    req, _ = client.requests[0]
+    assert req["variable"] == ["total_precipitation", "2m_temperature",
+                               "snow_depth_water_equivalent"]
+    assert (tmp_path / "era5_land").is_dir()
+
+
+@pytest.mark.parametrize("args", [["--set"], ["--set", "nope"]])
+def test_bad_variable_set_stops(args):
+    with pytest.raises(SystemExit):
+        download_era5.main(args)

@@ -1,8 +1,10 @@
-"""Download ERA5-Land monthly precipitation, 2 m temperature and SWE.
+"""Download ERA5-Land monthly means for each domain and variable set.
 
 Domains, years and variables come from src/config.py (ERA5_DOMAINS,
-CLIMATE_FIRST_YEAR, ERA5_VARIABLES). Each domain has its own folder under
-data/raw, one NetCDF file per year, so a failed request only costs one year;
+CLIMATE_FIRST_YEAR, ERA5_VARIABLE_SETS). Set "core" is precipitation, 2 m
+temperature and SWE; set "snow_soil" is snowfall and soil moisture layers
+1-2. Each domain and set has its own folder under data/raw (the domain's
+folder plus the set's suffix), one NetCDF file per year, so a failed request only costs one year;
 re-running skips years already downloaded.
 
 Needs a Copernicus CDS account and a .cdsapirc file (see README).
@@ -11,6 +13,10 @@ UNITS (important):
   total_precipitation  monthly mean of daily totals, in metres per day.
                        mm/month = tp * 1000 * days_in_month
   2m_temperature       kelvin. deg C = t2m - 273.15
+  snowfall             (sf) expected m water equivalent per day, the tp
+                       convention; confirm on the first file.
+  volumetric_soil_water_layer_1/2  (swvl1, swvl2) m3/m3, layers 0-7 and
+                       7-28 cm.
   snow_depth_water_equivalent  (sd) metres of water equivalent, monthly mean
                        of the month, not a first-of-month value. mm = sd * 1000
   In new CDS NetCDF files the time dimension is called "valid_time".
@@ -19,8 +25,9 @@ UNITS (important):
   and number before combining years: expver can differ for recent months.
 Regional means must be area-weighted: use src.geo.regional_mean.
 
-Run:  python -m src.download_era5            every domain
-      python -m src.download_era5 north      one domain
+Run:  python -m src.download_era5                       core set, every domain
+      python -m src.download_era5 north                 core set, one domain
+      python -m src.download_era5 --set snow_soil main  another set
 """
 import sys
 import zipfile
@@ -29,15 +36,16 @@ from datetime import date
 import cdsapi
 
 from src.config import (CLIMATE_FIRST_YEAR, DATA_RAW, ERA5_DATASET, ERA5_DOMAINS,
-                        ERA5_LAG_MONTHS, ERA5_VARIABLES)
+                        ERA5_LAG_MONTHS, ERA5_VARIABLE_SETS)
 
 RAW = DATA_RAW
 
 
-def request(year: int, months: list[int], area: list[float]) -> dict:
+def request(year: int, months: list[int], area: list[float],
+            variables: list[str] = ERA5_VARIABLE_SETS["core"][0]) -> dict:
     return {
         "product_type": ["monthly_averaged_reanalysis"],
-        "variable": ERA5_VARIABLES,
+        "variable": list(variables),
         "year": [str(year)],
         "month": [f"{m:02d}" for m in months],
         "time": ["00:00"],
@@ -73,11 +81,11 @@ def is_access_error(err: Exception) -> bool:
 
 
 def retrieve(client: cdsapi.Client, year: int, months: list[int], area: list[float],
-             target) -> None:
+             target, variables: list[str] = ERA5_VARIABLE_SETS["core"][0]) -> None:
     """Download to a temporary file, then rename, so an interrupted download
     never leaves a truncated file that later runs would skip."""
     tmp = target.with_suffix(".tmp")
-    client.retrieve(ERA5_DATASET, request(year, months, area), str(tmp))
+    client.retrieve(ERA5_DATASET, request(year, months, area, variables), str(tmp))
     if zipfile.is_zipfile(tmp):
         # Mixed accumulated and instantaneous variables can arrive zipped,
         # one NetCDF per variable group, even with "unarchived" requested.
@@ -90,11 +98,13 @@ def retrieve(client: cdsapi.Client, year: int, months: list[int], area: list[flo
     tmp.replace(target)
 
 
-def download_domain(client: cdsapi.Client, name: str, today: date) -> None:
+def download_domain(client: cdsapi.Client, name: str, today: date,
+                    variable_set: str = "core") -> None:
     area, folder = ERA5_DOMAINS[name]
-    out = RAW / folder
+    variables, suffix = ERA5_VARIABLE_SETS[variable_set]
+    out = RAW / f"{folder}{suffix}"
     out.mkdir(parents=True, exist_ok=True)
-    print(f"domain {name}: {area} -> {out}")
+    print(f"domain {name}, set {variable_set} {variables}: {area} -> {out}")
     for year in range(CLIMATE_FIRST_YEAR, today.year + 1):
         months = months_available(year, today)
         if not months:
@@ -109,7 +119,7 @@ def download_domain(client: cdsapi.Client, name: str, today: date) -> None:
             continue
         print(f"requesting {year} ({len(months)} months)...")
         try:
-            retrieve(client, year, months, area, target)
+            retrieve(client, year, months, area, target, variables)
             if full and partial.exists():
                 partial.unlink()
         except Exception as err:  # most recent months may not be published yet
@@ -121,15 +131,26 @@ def download_domain(client: cdsapi.Client, name: str, today: date) -> None:
                     "Download tab, then re-run; finished years are skipped.") from err
 
 
-def main(domains: list[str] | None = None) -> None:
-    domains = domains or list(ERA5_DOMAINS)
+def main(args: list[str] | None = None) -> None:
+    args = list(args or [])
+    variable_set = "core"
+    if "--set" in args:
+        i = args.index("--set")
+        if i + 1 >= len(args):
+            raise SystemExit(f"--set needs a name from {list(ERA5_VARIABLE_SETS)}.")
+        variable_set = args[i + 1]
+        del args[i:i + 2]
+    if variable_set not in ERA5_VARIABLE_SETS:
+        raise SystemExit(f"Unknown variable set {variable_set!r}; choose from "
+                         f"{list(ERA5_VARIABLE_SETS)}.")
+    domains = args or list(ERA5_DOMAINS)
     unknown = set(domains) - set(ERA5_DOMAINS)
     if unknown:
         raise SystemExit(f"Unknown domain(s) {sorted(unknown)}; choose from {list(ERA5_DOMAINS)}.")
     client = cdsapi.Client()
     today = date.today()
     for name in domains:
-        download_domain(client, name, today)
+        download_domain(client, name, today, variable_set)
 
 
 if __name__ == "__main__":

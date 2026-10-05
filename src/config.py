@@ -58,11 +58,45 @@ ERA5_DATASET = "reanalysis-era5-land-monthly-means"
 # 2026-10-04 "ERA5-Land variables").
 ERA5_VARIABLES = ["total_precipitation", "2m_temperature",
                   "snow_depth_water_equivalent"]
+# Phase 2 additions, downloaded as a separate set so the core files stay
+# untouched (ACTION_PLAN.md Phase 2; D13). Descriptive unless ANALYSIS_PLAN.md
+# adds them before the freeze. Layers 1-2 cover 0-7 and 7-28 cm.
+ERA5_SNOW_SOIL_VARIABLES = ["snowfall", "volumetric_soil_water_layer_1",
+                            "volumetric_soil_water_layer_2"]
+# Variable set name -> (variables, folder suffix). Each domain's set goes to
+# its own folder: data/raw/<domain folder><suffix>.
+ERA5_VARIABLE_SETS = {
+    "core": (ERA5_VARIABLES, ""),
+    "snow_soil": (ERA5_SNOW_SOIL_VARIABLES, "_snow_soil"),
+}
 ERA5_LAG_MONTHS = 3  # months behind real time before a month is safely published
 
 # Seasons. A season that crosses the new year is labelled by the year of its
 # last month: (12, 1, 2) labelled Y is Dec of Y-1 plus Jan and Feb of Y.
 WINTER_MONTHS = (12, 1, 2)  # DJF
+SUMMER_MONTHS = (6, 7, 8)   # JJA
+
+# SPEI and whiplash (DECISIONS.md 2026-10-04 "SPEI settings"; pre-freeze item)
+PET_METHOD = "TW48"          # xclim Thornthwaite (1948); zero below 0 deg C
+SPEI_SCALE = 3               # months summed in the water balance
+SPEI_DIST = "fisk"           # log-logistic
+SPEI_FIT_METHOD = "ML"       # maximum likelihood
+SPEI_CAL_YEARS = (1951, 2020)  # calibration period, inclusive
+# Clip per-cell SPEI to +-3.09 (probability 0.001 per tail): a fitted tail
+# gave -8.21 in a 900-cell probe.
+SPEI_CLIP = 3.09
+
+# ERA5-Land SWE (DECISIONS.md 2026-10-04 "ERA5-Land SWE: glacier exclusion
+# and April 1"). A cell is excluded from every SWE regional mean if it reaches
+# the cap in any month, or keeps more than PERENNIAL_MIN_MM of snow at the
+# yearly minimum in at least PERENNIAL_YEAR_FRACTION of GLACIER_MASK_YEARS.
+SWE_CAP_MM = 9_990            # ERA5-Land holds glacier ice at 10 m (10,000 mm)
+PERENNIAL_MIN_MM = 10
+PERENNIAL_YEAR_FRACTION = 0.9
+GLACIER_MASK_YEARS = (1950, 2025)  # complete years used to build the fixed mask
+# April 1 SWE: 00:00 UTC on 1 April from hourly ERA5-Land.
+ERA5_HOURLY_DATASET = "reanalysis-era5-land"
+APRIL1_FOLDER_SUFFIX = "_april1"
 
 # Regions
 NATURAL_EARTH_ADMIN1_URL = ("https://naciscdn.org/naturalearth/10m/cultural/"
