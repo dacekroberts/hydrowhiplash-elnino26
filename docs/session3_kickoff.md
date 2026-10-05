@@ -28,8 +28,19 @@ is the prompt to paste into a new Claude Code session in the main checkout.
   layers 1-2, both domains (`data/raw/era5_land*_snow_soil/`, 77 files each).
 - Caches: per-cell SPEI in `data/processed/spei3_cells_{main,north}.nc`
   (about 95 minutes to rebuild; `python -m src.whiplash --refresh`).
-- Deviations: main uses up to D31; the side session's PR #8 added D35. Next
-  free numbers: D36 onward (tell the side session which ones main takes).
+- Deviations: main uses up to D31; the side session's PR #8 added D35.
+  Session 3 takes D36-D39; the side session uses D40 onward (agreed in the
+  handoff below).
+- Handed to the side session at the end of the Phase 2 session (owner's
+  choice), one PR each: (1) `docs/prefreeze_options.md`, option drafts for
+  "Whiplash timing" and the Alaska/Yukon hypotheses; (2) one rule for which
+  day's log a side block goes in (merge-side-pr vs daily-log); (3)
+  `docs/alberta_swe_sources.md`, research on an Alberta April 1 SWE source
+  for 2026-27 (CanSWE ends July 2025); (4) the expansion readiness table,
+  an add-a-region skill, and notebook 01 pointing at `src.winter_figures`.
+  Its file boundary keeps it out of `src/config.py`, the Phase 2 modules,
+  notebooks 02-03, the methods register, the data dictionary,
+  `DATA_SOURCES.md` and `ANALYSIS_PLAN.md`.
 - Side session: worktree `.claude/worktrees/compassionate-tesla-8a3554`, last
   on `side/winter-figures` (merged as PR #9). Merge side PRs only with the
   `merge-side-pr` skill, pre-screening with `scripts/prescreen_prs.py`, and
@@ -106,7 +117,8 @@ Session 3 for hydrowhiplash-elnino26: station snowpack cleaning (Phase 2, contin
    (.claude/worktrees/compassionate-tesla-8a3554) may open PRs. Merge only
    with the merge-side-pr skill (pre-screen with scripts/prescreen_prs.py,
    never --delete-branch), asking me before each merge unless I say
-   otherwise. Tell it which deviation numbers main takes (D36 onward free).
+   otherwise. Main takes D36-D39; the side session uses D40 onward. Its
+   queued tasks are listed in the handoff (Part 1).
 
 4. Station cleaning, src/stations.py (plain functions, tests on synthetic
    data): one tidy station x year table of April 1 SWE in mm (station_id,
