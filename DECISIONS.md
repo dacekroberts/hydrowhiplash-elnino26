@@ -53,6 +53,15 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   per-entry files (restructures both documents). Files:
   `scripts/merge_append_only.py`, `tests/test_merge_append_only.py`,
   `.claude/skills/merge-side-pr/SKILL.md`.
+- **Decided, by the owner, that the main session keeps PRs mergeable:**
+  side PRs merge through `merge-side-pr`, which merges main into each PR
+  just before merging it (step 5), and side sessions don't merge main into
+  their own open PRs. Both ways give the same files (above), so the choice
+  is about who pushes: one session per PR branch, and one merge commit per
+  PR instead of one per earlier merge. Rejected the side session updating
+  every remaining PR after each merge (fits merging with GitHub's button,
+  which the owner won't use for side PRs). Files:
+  `.claude/skills/merge-side-pr/SKILL.md`.
 
 ### 2026-10-04 - Side worktree session
 

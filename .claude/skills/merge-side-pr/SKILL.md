@@ -52,10 +52,9 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    entry by entry (newest date first, deviations by number; on the same date
    the PR's entries go above main's, so the latest merge ends on top), keeps
    every entry of both sides, and refuses if an old entry was edited or a D
-   number is used twice. The result is the same whether main was merged in
-   once or after every earlier merge, so a side session may also keep its
-   own PRs updated; agree who does it, so two sessions don't push to one
-   branch. Review with `git diff`, `git add` the files, resolve anything
+   number is used twice. This step is the main session's job: side sessions
+   don't merge main into their open PRs (the owner's choice, 2026-10-04), so
+   only one session ever pushes merge commits to a PR branch. Review with `git diff`, `git add` the files, resolve anything
    else by hand, commit, push, re-run step 3's checks. If it refuses, resolve
    that file by hand: keep every entry of both sides, never one side's whole
    file.
