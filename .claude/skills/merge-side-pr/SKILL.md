@@ -96,12 +96,20 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
 7. **Update the main checkout.** `git status` first: if it has uncommitted
    changes, ask before doing anything with them (never stash silently). Then
    `git pull --ff-only`.
-8. **Fold the session block into the day's log** (`logs/YYYY-MM-DD.md` for
-   the day the side session worked; create it with
-   `python scripts/log.py new` if missing):
-   - paste the block under `## Sessions` in order of start time; its heading
-     stays `### HH:MM-HH:MM · Claude Code (worktree: <branch>)`;
-   - add `"claude-code-worktree HH:MM-HH:MM"` to `sessions`. Don't add its
+8. **Fold the session block into today's log**, the log of the day of the
+   merge (`logs/YYYY-MM-DD.md`; create it with `python scripts/log.py new`
+   if missing), never into an earlier day's log: `daily-log` forbids editing
+   a previous day, and earlier logs may already be exported. If the side
+   session worked on an earlier day (it started before midnight, or the PR
+   waited), the block still goes in today's log and carries its work date:
+   - paste the block under `## Sessions` in order of start time, blocks from
+     earlier days first; its heading stays
+     `### HH:MM-HH:MM · Claude Code (worktree: <branch>)`, or
+     `### HH:MM-HH:MM · Claude Code (worktree: <branch>, worked YYYY-MM-DD)`
+     when the work date differs from the log's date;
+   - add `"claude-code-worktree HH:MM-HH:MM"` to `sessions` (with the work
+     date before the times when it differs:
+     `"claude-code-worktree YYYY-MM-DD HH:MM-HH:MM"`). Don't add its
      hours to `hours`: it ran in parallel with the owner's main session, and
      `hours` counts the owner's hands-on time. Merge its `tags`;
    - copy its decisions under `## Decisions` and its files under
