@@ -17,6 +17,29 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Site render check
+
+- **Decided to add `scripts/check_site.py`, which renders the Quarto site and
+  fails unless every page was rendered and every local `src`/`href` in the
+  output resolves, and to run it from `merge-side-pr` step 3 when a PR
+  touches `site/`, `results/figures/` or `src/figures.py`.** Built in the
+  side session at the owner's request (originally offered to the main
+  session). Both failures met while building the mechanism diagram exited
+  0: Quarto rendered 0 pages in a worktree (its path contains `.claude\`,
+  and Quarto skips dot folders) and silently left out an image linked from
+  `../results/`. The script renders a copy of `site/` and `results/` in a
+  short temp folder, so it works from any checkout, avoids the Windows
+  260-character path limit hit by Quarto's sass cache, and never writes
+  `site/_site/` into the repo; the copy is kept on failure. It also points
+  `QUARTO_DENO_DOM` at the env's own `deno_dom.dll` when the conda-forge
+  activation script leaves it at the package build path. Verified: passes on
+  `main` (2 pages), fails on the broken `../results/` image link from PR #1's
+  first commit. Rejected a git `post-merge` hook (merges happen on GitHub, so
+  it fires only on a later pull, and adds a render to every pull) and a bare
+  `quarto render` step (passes both failures). Files:
+  `scripts/check_site.py`, `tests/test_check_site.py`,
+  `.claude/skills/merge-side-pr/SKILL.md`.
+
 ### 2026-10-04 - Side worktree session
 
 - **Decided to write a `merge-side-pr` skill before the first side-session

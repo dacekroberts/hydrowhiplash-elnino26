@@ -21,6 +21,21 @@ flagged here instead.
 
 ## 2026-10-04 (Session 0)
 
+### D19 · Site render check added ahead of the "Later tooling" plan
+- **Plan:** `ACTION_PLAN.md` "Later tooling" lists a published-numbers
+  check, a pre-push hook running `scripts/check_all.py` ("worth it once
+  there are three or more checks", after Phase 4) and a drift check. No
+  site render check. `CLAUDE.md` "Checks" lists pytest and the em-dash
+  check only.
+- **Actual:** `scripts/check_site.py` added in Phase 1 and run from
+  `merge-side-pr` for PRs touching the site. It is a third check, which meets
+  the plan's stated threshold for the pre-push hook; the hook is not built
+  (its plan date is after Phase 4). Numbered D19 because PR #1 adds D17-D18.
+- **Why:** two silent render failures (exit 0) found while building the
+  mechanism diagram.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Site render check".
+- **Plan doc:** left as written (`ACTION_PLAN.md`, `CLAUDE.md` "Checks").
+
 ### D16 · Parallel worktree session before Phase 4
 - **Plan:** `ACTION_PLAN.md` and `docs/claude_code_project_setup.md`
   assume one sequential local session until Phase 4.
