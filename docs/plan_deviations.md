@@ -27,7 +27,7 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (Phase 2)
 
-### D?a · Side-session deviation numbers given at merge
+### D40 · Side-session deviation numbers given at merge
 - **Plan:** `docs/session3_kickoff.md` and `docs/session4_kickoff.md` split
   the D numbers into agreed ranges per session (session 3: main D36-D39,
   side session D40 onward), with a new split agreed at each session start.

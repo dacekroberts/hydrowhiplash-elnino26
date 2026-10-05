@@ -21,7 +21,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 - **Decided (owner, relayed by the main session) that side sessions write
   placeholder deviation numbers and the merge assigns the real ones.**
-  Deviation D?a. A new side-session entry is titled with a placeholder
+  Deviation D40. A new side-session entry is titled with a placeholder
   (D\?a, then D\?b, unique within the PR), used for every reference to it. When main is merged
   into the PR, `scripts/merge_append_only.py` gives each placeholder the
   next number after the highest real D on either side and rewrites the
