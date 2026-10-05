@@ -19,6 +19,88 @@ reasoning lives) and *Plan doc* (updated, or left as written). Wording in the
 planning documents that is the owner's own prose is left as written and
 flagged here instead.
 
+**Substantial deviations.** When the owner judges a deviation substantial
+enough to change the plans themselves (e.g. a scope change), the entry says
+*Substantial: yes*, the planning documents are edited directly, and every
+changed spot carries the marker `[mid-project: Dnn]`, so mid-project
+additions stay distinguishable from the original plan.
+
+## 2026-10-04 (Phase 1)
+
+### D20 · Scope: Alaska and Yukon added as regions
+- **Plan:** five regions everywhere: `CLAUDE.md` ("PNW (WA/OR/ID), BC and
+  Alberta, contrasted with NorCal and SoCal"), `ACTION_PLAN.md` Phase 1
+  ("PNW, BC, AB, NorCal, SoCal"), `ANALYSIS_PLAN.md` "Data and years" and
+  "Outcomes" (fire seasons for US regions, BC and AB only), `README.md`.
+  One ERA5-Land domain, 32-60.5N x 140-109W.
+- **Actual:** seven regions; AK and YT with role `north`, fire window
+  Apr-Sep (provisional); second download domain 51-71.5N x 169-123.5W
+  (77 more files, about 50 minutes). Hypotheses for them are a new
+  pre-freeze item; H1-H5 as written don't mention them.
+- **Why:** owner's decision after discussing the El Niño signal in Alaska.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Alaska and Yukon added".
+- **Substantial:** yes. The owner decided the scope change warrants editing
+  the plans directly (2026-10-04).
+- **Plan doc:** updated, each changed spot marked `[mid-project: D20]`:
+  `CLAUDE.md` (scope line, fire-season window), `README.md` (scope line,
+  methods table), `ACTION_PLAN.md` (goal, Phase 1 regions and north
+  download, Phase 2 snowpack stations, Phase 3 fire sources and windows),
+  `ANALYSIS_PLAN.md` ("Data and years" regions, "Outcomes" fire season, plus
+  the pre-freeze item). Hypotheses H1-H5 left as written: their AK/YT
+  versions are a pre-freeze decision. Code: `config.py`, `regions.py`,
+  `download_era5.py`, `era5.py`.
+
+### D21 · First ERA5-Land download duration (corrects D10)
+- **Plan:** D10 recorded the main-domain download as "about 50 minutes
+  through the CDS queue".
+- **Actual:** the CDS client log (`data/raw/era5_download.err.log`) runs
+  from 17:05:27 to 18:06:56 on 2026-10-04: 61.5 minutes for 77 requests,
+  about 48 s per year. The north-domain download (20:36:11 to 21:36:32) took
+  60.3 minutes, about 47 s per year, for 288 MB.
+- **Plan doc:** D10 left as written (entries are never edited); this entry
+  supersedes its duration.
+
+### D19 · El Niño winter drying in PNW and BC is weaker than assumed
+- **Plan:** `ACTION_PLAN.md` Phase 1 sanity check ("SoCal winters stand out
+  wet and the PNW/BC dry"); `docs/data_dictionary.md` section 1 ("the
+  classic El Niño winter is dry and mild in the PNW, BC and Alberta").
+- **Actual (descriptive, ONI, 76 winters):** directions as expected in all
+  five regions, but the northern precipitation signal is small. El Niño
+  minus neutral DJF precipitation: PNW -5.6% (-0.21 SD), BC -4.8%
+  (-0.26 SD), AB -11.8% (-0.52 SD), NorCal +9.5% (+0.24 SD), SoCal +37.9%
+  (+0.62 SD). The 7 strong El Niño winters are not drier than average in
+  PNW (-0.3%) or BC (+0.5%); AB -14.9%. Alaska and Yukon (added the same
+  day, D20): El Niño minus neutral AK -3.6% (-0.20 SD), YT -10.0%
+  (-0.41 SD); strong winters AK -12.4% (-0.69 SD), YT -5.8%. Under RONI the
+  El Niño minus
+  neutral contrast roughly doubles in PNW (-10.7%) and SoCal (+62.9%),
+  mostly because the neutral group changes, not the El Niño group.
+- **Why:** not yet known; the data dictionary's mechanism also runs through
+  temperature (warm winters, rain instead of snow), which DJF precipitation
+  alone doesn't capture. Phase 2 SWE and snowfall fraction test that path.
+- **Plan doc:** left as written (owner's prose); flagged.
+
+### D18 · Cartopy map layers from Natural Earth 50m
+- **Plan:** `DATA_SOURCES.md`: every dataset gets a ledger row before use.
+- **Actual:** the 1997-98 map's ocean, country borders and state lines are
+  Natural Earth 1:50m layers that cartopy downloaded on first use
+  (`ne_50m_ocean`, `ne_50m_admin_0_boundary_lines_land`,
+  `ne_50m_admin_1_states_provinces_lakes`). Same publisher and terms as the
+  admin-1 file read the same day (public domain); ledger row added after the
+  first run.
+- **Plan doc:** `DATA_SOURCES.md` updated.
+
+### D17 · ERA5 loading and unit conversion in `src/era5.py`
+- **Plan:** `ACTION_PLAN.md` Phase 1: "Notebook `01_explore_era5.ipynb`:
+  open the ERA5 files, convert units".
+- **Actual:** loading, unit conversion, masks, DJF totals and the region x
+  year table are plain functions in `src/era5.py` with 10 tests; the
+  notebook imports them. `python -m src.era5` writes
+  `data/processed/djf_precip_region_year.csv` (380 rows) without the
+  notebook.
+- **Why:** owner's Phase 1 brief; Phase 2 reuses the same loader.
+- **Plan doc:** left as written.
+
 ## 2026-10-04 (Session 0)
 
 ### D25 · Site figures embedded through a Python cell, not an image link
@@ -53,6 +135,35 @@ flagged here instead.
   and #3 D22-D23.
 - **Recorded:** `DECISIONS.md` 2026-10-04 "Mechanism diagram".
 - **Plan doc:** left as written.
+
+### D23 · Site render check added ahead of the "Later tooling" plan
+- **Plan:** `ACTION_PLAN.md` "Later tooling" lists a published-numbers
+  check, a pre-push hook running `scripts/check_all.py` ("worth it once
+  there are three or more checks", after Phase 4) and a drift check. No
+  site render check. `CLAUDE.md` "Checks" lists pytest and the em-dash
+  check only.
+- **Actual:** `scripts/check_site.py` added in Phase 1 and run from
+  `merge-side-pr` for PRs touching the site. It is a third check, which meets
+  the plan's stated threshold for the pre-push hook; the hook is not built
+  (its plan date is after Phase 4). Numbered D23 because main uses D17-D21
+  and PR #5 D22; PR #1 uses D24-D25.
+- **Why:** two silent render failures (exit 0) found while building the
+  mechanism diagram.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Site render check".
+- **Plan doc:** left as written (`ACTION_PLAN.md`, `CLAUDE.md` "Checks").
+
+### D22 · Append-only merge script added
+- **Plan:** `merge-side-pr` step 5 resolved `DECISIONS.md` and
+  `docs/plan_deviations.md` conflicts by hand; `ACTION_PLAN.md` "Later
+  tooling" has no merge tooling.
+- **Actual:** `scripts/merge_append_only.py` resolves both files and step 5
+  runs it. Numbered D22 because main's Phase 1 work uses D17-D21; open PRs
+  #3 and #1 use D23-D25.
+- **Why:** every side-session PR conflicts with the others at the top of both
+  files.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Append-only merge script".
+- **Plan doc:** updated (`merge-side-pr` step 5); `ACTION_PLAN.md` left as
+  written.
 
 ### D16 · Parallel worktree session before Phase 4
 - **Plan:** `ACTION_PLAN.md` and `docs/claude_code_project_setup.md`

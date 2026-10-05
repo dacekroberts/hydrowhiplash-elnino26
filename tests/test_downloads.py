@@ -50,7 +50,7 @@ class _FakeClient:
 @pytest.mark.parametrize("status, stops", [(403, True), (401, True), (500, False)])
 def test_access_errors_stop_the_run(monkeypatch, tmp_path, status, stops):
     client = _FakeClient(status)
-    monkeypatch.setattr(download_era5, "OUT", tmp_path)
+    monkeypatch.setattr(download_era5, "RAW", tmp_path)
     monkeypatch.setattr(download_era5.cdsapi, "Client", lambda: client, raising=False)
     if stops:
         with pytest.raises(SystemExit):

@@ -41,6 +41,14 @@ decisions.
 - [ ] **H5 definitions.** Fix `precip_anom`'s months (DJF or Oct-Mar),
       baseline period, and units (mm, % of normal or standardised), and give
       the expected sign of lag0 and lag1 per region.
+- [ ] **Alaska and Yukon (added 2026-10-04).** Two new regions, AK (Alaska
+      east of 169W) and YT, with the role `north`: their own hypothesis
+      family, separate from PNW/BC/AB, because El Niño acts there mainly
+      through warm springs and early melt rather than a dry winter. State
+      which hypotheses include them and their expected directions (winter
+      precipitation may not be lower there), and whether Alaska stays one
+      region or splits Interior from coast (different biomes; fire is almost
+      all Interior). Fire window Apr-Sep is provisional in `config.py`.
 
 **Data rules**
 
@@ -88,7 +96,8 @@ decisions.
   is paired with fire season Y.
 - ENSO phase: El Niño if DJF index ≥ +0.5 °C, La Niña if ≤ −0.5 °C, otherwise
   neutral. Strong El Niño: ≥ +1.5 °C.
-- Regions: PNW (WA/OR/ID), BC, AB, NorCal, SoCal.
+- Regions: PNW (WA/OR/ID), BC, AB, NorCal, SoCal; AK (Alaska east of 169W)
+  and YT (Yukon), role `north` [mid-project: D20].
 
 ## Outcomes
 
@@ -99,7 +108,8 @@ decisions.
 - **Burned area:** total hectares of counted fires per region per fire season,
   as `log_burn = log(1 + ha)`.
 - **Fire-season length:** days from the first to the last counted fire.
-- **Fire season:** June–October (US regions, BC), April–October (AB).
+- **Fire season:** June–October (US regions, BC), April–October (AB),
+  April–September (AK, YT; provisional) [mid-project: D20].
 - **Trend handling (one method only):**
   - In regressions, the trend is handled by a `year` term on the raw
     `log_burn`. No moving-baseline anomaly is applied first.
