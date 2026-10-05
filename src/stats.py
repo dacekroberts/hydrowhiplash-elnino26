@@ -74,14 +74,33 @@ def bootstrap_ci_diff(values, in_group, n_boot: int = N_BOOTSTRAP,
 
 def block_bootstrap_ci(df: pd.DataFrame, statistic: Callable[[pd.DataFrame], float],
                        block_len: int = BLOCK_LEN, n_boot: int = N_BOOTSTRAP,
-                       alpha: float = ALPHA, seed: int = DEFAULT_SEED) -> dict:
+                       alpha: float = ALPHA, seed: int = DEFAULT_SEED,
+                       year_col: str = "year") -> dict:
     """Moving-block bootstrap CI for any statistic of a yearly time series.
 
     Resamples runs of `block_len` consecutive years, so short-range
     autocorrelation (one dry year following another) is preserved.
-    `df` must be sorted by year; `statistic` takes a DataFrame and returns
-    a number (e.g. a regression coefficient).
+    `statistic` takes a DataFrame and returns a number (e.g. a regression
+    coefficient).
+
+    `df` must hold one row per year in increasing year order: blocks are
+    runs of consecutive rows, so unsorted rows give a wrong answer with no
+    error (a lag-1 autocorrelation of 0.84 came out as -0.08; DECISIONS.md
+    2026-10-05 "Phase 1 audit"). Raises if `df[year_col]` is not strictly
+    increasing, or if there are fewer rows than `block_len`.
+
+    Blocks of a few years break up longer persistence, so statistics that
+    depend on it (autocorrelation, trends in a random walk) are understated;
+    use it for means and regression coefficients.
     """
+    if year_col in df and not df[year_col].is_monotonic_increasing:
+        raise ValueError(f"block_bootstrap_ci needs df sorted by {year_col!r}; sort it first.")
+    if year_col in df and df[year_col].duplicated().any():
+        raise ValueError(f"block_bootstrap_ci needs one row per {year_col!r} (a single "
+                         f"region's series), but some {year_col} values repeat.")
+    if len(df) < block_len:
+        raise ValueError(f"block_bootstrap_ci needs at least block_len={block_len} rows; "
+                         f"got {len(df)}.")
     rng = np.random.default_rng(seed)
     n = len(df)
     n_blocks = int(np.ceil(n / block_len))
@@ -117,9 +136,17 @@ def fit_pooled(formula: str, df: pd.DataFrame, cluster: str = "year"):
     Clustering by year allows regions in the same year to be correlated
     (they share the same El Niño). The interaction coefficients answer
     "does El Niño affect region X differently from SoCal?"
+
+    Rows with a missing value in the formula's variables are dropped, as in
+    plain OLS (`fit.nobs` gives the rows used); the cluster groups are taken
+    from those same rows (DECISIONS.md 2026-10-05 "Phase 1 audit").
     """
-    return smf.ols(formula, data=df).fit(
-        cov_type="cluster", cov_kwds={"groups": df[cluster]})
+    model = smf.ols(formula, data=df)
+    groups = df.loc[model.data.row_labels, cluster]
+    if groups.isna().any():
+        raise ValueError(f"Cluster column {cluster!r} has missing values in rows the "
+                         f"model uses.")
+    return model.fit(cov_type="cluster", cov_kwds={"groups": groups})
 
 
 def adjust_pvalues(pvalues, method: str = "holm") -> np.ndarray:
@@ -135,6 +162,12 @@ def loyo_prediction(formula: str, df: pd.DataFrame, alpha: float = PREDICTION_AL
     (1 - alpha) prediction interval, and record whether the actual value
     fell inside. Mean of `covered` is the empirical coverage, which should
     be close to 1 - alpha if the intervals are honest.
+
+    A held-out row with no actual value (a region-year with a missing
+    outcome, or a year still to come) keeps its prediction and interval but
+    has `covered` missing (pandas nullable boolean), so `covered.mean()`
+    counts only years that can be checked (DECISIONS.md 2026-10-05
+    "Phase 1 audit").
     """
     response = formula.split("~")[0].strip()
     rows = []
@@ -145,9 +178,13 @@ def loyo_prediction(formula: str, df: pd.DataFrame, alpha: float = PREDICTION_AL
         pred = fit.get_prediction(test).summary_frame(alpha=alpha)
         for (_, t), (_, p) in zip(test.iterrows(), pred.iterrows()):
             actual = t[response]
+            covered = (pd.NA if pd.isna(actual)
+                       else bool(p["obs_ci_lower"] <= actual <= p["obs_ci_upper"]))
             rows.append({
                 year_col: year, "actual": actual, "predicted": p["mean"],
                 "pi_low": p["obs_ci_lower"], "pi_high": p["obs_ci_upper"],
-                "covered": p["obs_ci_lower"] <= actual <= p["obs_ci_upper"],
+                "covered": covered,
             })
-    return pd.DataFrame(rows)
+    out = pd.DataFrame(rows)
+    out["covered"] = out["covered"].astype("boolean")
+    return out
