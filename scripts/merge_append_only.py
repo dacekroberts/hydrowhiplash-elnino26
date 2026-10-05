@@ -45,11 +45,14 @@ cleanly whenever two branches' additions don't touch the same lines, and a
 clean merge can still hold the same D number twice. Usage, on a PR branch
 (e.g. merge-side-pr's throwaway worktree):
     git merge --no-commit --no-ff origin/main    # keeps even a clean merge open
-    python scripts/merge_append_only.py [FILE ...] [--dry-run]
+    python scripts/merge_append_only.py --against origin/main [FILE ...] [--dry-run]
 With no FILE, merges every file in LAYOUTS: conflicted ones from git's stages,
 cleanly merged ones from the merge base, HEAD and MERGE_HEAD (checked, and
 put in order). Then review with `git diff`, `git add` the files it names and
-commit the merge.
+commit the merge. When the branch already contains origin/main, git opens no
+merge ("Already up to date"); with --against the script then exits 0 with
+"nothing to check". Without it, or when the branch doesn't contain that ref,
+a missing merge is refused: it means the merge step was skipped.
 """
 from __future__ import annotations
 
@@ -327,10 +330,20 @@ def main(argv: list[str] | None = None, cwd: Path | None = None) -> int:
     ap.add_argument("files", nargs="*", help="files to merge (default: every file in "
                                              "LAYOUTS present in the working tree)")
     ap.add_argument("--dry-run", action="store_true", help="check without writing")
+    ap.add_argument("--against", metavar="REF",
+                    help="the branch that was merged in (e.g. origin/main): with no merge "
+                         "open, exit 0 if HEAD already contains it, since nothing can clash")
     args = ap.parse_args(argv)
     try:
         top = Path(git("rev-parse", "--show-toplevel", cwd=cwd or Path.cwd()).strip())
         if not (Path(git("rev-parse", "--absolute-git-dir", cwd=top).strip()) / "MERGE_HEAD").exists():
+            # `git merge` opens no merge when the branch already contains the
+            # other side ("Already up to date"); then there is nothing to check.
+            if args.against and subprocess.run(
+                    ["git", "merge-base", "--is-ancestor", args.against, "HEAD"],
+                    cwd=top, capture_output=True).returncode == 0:
+                print(f"nothing to check: no merge open, HEAD already contains {args.against}")
+                return 0
             raise Refusal("not inside an open git merge (no MERGE_HEAD); merge with "
                           "`git merge --no-commit --no-ff` so clean merges stay open too")
         head = git("rev-parse", "HEAD", cwd=top).strip()
