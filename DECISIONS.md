@@ -17,6 +17,38 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Phase 1 audit
+
+- **Decided (owner) to run a read-only audit of the code against the
+  project's own rules at each phase boundary, by a side session against the
+  latest main, with a dated report in `docs/`.** First run: `main` at
+  `9e5f73a`, Phase 1 and shared modules (`config`, `geo`, `regions`, `era5`,
+  `describe`, `stats`, `figures`, both downloaders, notebook 01, their
+  tests), Phase 2 work in progress left out. 7 findings (3 medium, 4 low) and
+  4 methods notes; none changes a Phase 1 result. Measurement rules, year
+  labels, ENSO classification and the single source of truth passed; both
+  ERA5-Land domains hold 919 contiguous months. Rejected auditing after every
+  session (repeats `merge-side-pr`'s per-PR review and adds noise). Report:
+  `docs/audit_2026-10-05_phase1.md` (top level of `docs/`, which
+  `LICENSE-CONTENT` covers; a `docs/audits/` folder would not be).
+- **Fixed three `stats.py` findings (1, 2 and 4), each confirmed on
+  synthetic data first.** `loyo_prediction` counted a held-out row with no
+  actual value as not covered, lowering the coverage used to judge the
+  forecast intervals; such rows now keep their interval with `covered`
+  missing (pandas nullable boolean). `block_bootstrap_ci` gave a wrong answer
+  silently on rows not sorted by year (a lag-1 autocorrelation of 0.84 came
+  out as -0.08); it now raises unless there is one row per year in
+  increasing order and at least `block_len` rows. `fit_pooled` failed on any
+  missing value ("The weights and list don't have the same length"); it now
+  fits complete cases, as plain OLS does, with the cluster groups taken from
+  the same rows, giving the same coefficients and errors as fitting the
+  complete rows directly. 4 tests; methods register rows updated. Files:
+  `src/stats.py`, `tests/test_stats.py`, `docs/methods_register.md`.
+- **Sent findings 3, 5, 6 and 7 to the main session rather than fixing them
+  here:** they sit in its modules (`era5.py`, `figures.py`, notebook 01) or
+  its register. Finding 5's map extent and baseline wording were already
+  logged as D28; the legend thresholds are new.
+
 ### 2026-10-04 - SPEI settings
 
 - **Decided (owner) to calibrate SPEI on 1951-2020.** 70 values per calendar

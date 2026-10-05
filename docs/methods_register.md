@@ -82,12 +82,12 @@ measurement the row says "not measured".
 | Significance | α = 0.05 after correction | `config.py:109` | | applied (default) | ANALYSIS_PLAN "Reporting rules" |
 | Permutation test | 10,000 permutations; two-sided; p = (count + 1) / (n + 1) | `config.py:110`; `stats.py:53` | | applied | ANALYSIS_PLAN "Headline methods" 1 |
 | Bootstrap CI | 10,000 resamples; 95% percentile; resampled within each group | `config.py:111`; `stats.py:68-70` | | applied | same |
-| HAC errors | Newey-West, maxlags 2; `use_t` not set | `config.py:112`; `stats.py:107` | | applied; `use_t=True` pending | ANALYSIS_PLAN "Small-cluster corrections" |
-| Block bootstrap | moving blocks of 3; ceil(n/3) blocks, truncated to n | `config.py:113`; `stats.py:87-92` | autocorrelation check on HAC | applied | ANALYSIS_PLAN "Supporting methods" |
-| Pooled-model errors | clustered by year | `stats.py:122` | | applied; Driscoll-Kraay pending | same |
-| Prediction intervals | 80% (α 0.2), leave-one-year-out, plain OLS (not HAC) | `config.py:114`; `stats.py:144` | | applied; forward validation pending | ANALYSIS_PLAN "Headline methods" 4 |
+| HAC errors | Newey-West, maxlags 2; `use_t` not set | `config.py:112`; `stats.py:126` | | applied; `use_t=True` pending | ANALYSIS_PLAN "Small-cluster corrections" |
+| Block bootstrap | moving blocks of 3; ceil(n/3) blocks, truncated to n; input must be one row per year, sorted, at least 3 rows, or it raises (unsorted rows gave a wrong answer silently: lag-1 autocorrelation 0.84 came out as -0.08, Phase 1 audit) | `config.py:113`; `stats.py:96-114` | autocorrelation check on HAC; blocks of 3 understate statistics that depend on longer persistence | applied | ANALYSIS_PLAN "Supporting methods"; DECISIONS 2026-10-05 "Phase 1 audit" |
+| Pooled-model errors | clustered by year; complete cases only (rows missing any formula variable are dropped, as in plain OLS; `fit.nobs` gives the rows used), clusters taken from the same rows | `stats.py:144-150` | a missing value used to stop the fit with a length-mismatch error | applied; Driscoll-Kraay pending | ANALYSIS_PLAN "Supporting methods"; DECISIONS 2026-10-05 "Phase 1 audit" |
+| Prediction intervals | 80% (α 0.2), leave-one-year-out, plain OLS (not HAC); a held-out row with no actual value keeps its interval but has no coverage verdict, so coverage counts checkable rows only | `config.py:114`; `stats.py:157-190` | such rows used to count as not covered, lowering coverage | applied; forward validation pending | ANALYSIS_PLAN "Headline methods" 4; DECISIONS 2026-10-05 "Phase 1 audit" |
 | Random seed | 2026, the same stream re-seeded in every call | `config.py:115`; `stats.py:30` | reproducibility | applied | not recorded |
-| Multiple comparisons | Holm by default, BH alongside; families not yet defined | `stats.py:125` | | families pending | ANALYSIS_PLAN "Correction families" |
+| Multiple comparisons | Holm by default, BH alongside; families not yet defined | `stats.py:152` | | families pending | ANALYSIS_PLAN "Correction families" |
 | Trend handling | `year` term in regressions; `burn_detr` in permutation and bootstrap tests | | one method only | planned | ANALYSIS_PLAN "Outcomes" |
 | Outcome transform | `log_burn = log(1 + ha)`; coefficients reported as 100 × (exp(b) - 1) | | burned area spans orders of magnitude | planned | ANALYSIS_PLAN "Outcomes"; data dictionary s.5 |
 | Strong-only results | labelled exploratory | | about 5 strong winters | planned | ANALYSIS_PLAN "Reporting rules" |
