@@ -53,6 +53,10 @@ defined, or is left anywhere in the merged tree. In Markdown prose, a
 backslash before the question mark makes a literal mention (it renders as
 D?a and is not a placeholder); the files in LITERAL_PLACEHOLDERS describe
 the rule and are skipped. The main session numbers its own entries directly.
+The PR's session block sits in the PR description, outside the tree: after
+folding it into the day's log with the printed numbers (merge-side-pr step
+8), check the log with
+    python scripts/merge_append_only.py --check-log logs/YYYY-MM-DD.md
 
 Run it after every merge, not only conflicted ones: git merges these files
 cleanly whenever two branches' additions don't touch the same lines, and a
@@ -372,6 +376,27 @@ def check_no_placeholders(top: Path, texts: dict[str, str], pr_files: set[str]) 
                       f"not from this PR; number it by hand")
 
 
+def check_log(path: Path) -> int:
+    """Exit code for a day's log after a session block is folded in (0 = no placeholder).
+
+    The session block lives in the PR description, outside every tree check,
+    and is folded into logs/ by hand, so the fold is checked on its own.
+    """
+    text = _read_text(path)
+    if text is None:
+        print(f"REFUSED: {path} not found or not UTF-8 text")
+        return 1
+    left = [(n, m.group(0)) for n, line in enumerate(text.splitlines(), 1)
+            for m in PLACEHOLDER.finditer(line)]
+    if left:
+        where = ", ".join(f"line {n} ({token})" for n, token in left)
+        print(f"REFUSED: {path} still holds placeholders at {where}; replace each with "
+              f"the number the merge printed")
+        return 1
+    print(f"{path}: no placeholders")
+    return 0
+
+
 # Git plumbing
 
 def git(*args: str, cwd: Path) -> str:
@@ -433,7 +458,12 @@ def main(argv: list[str] | None = None, cwd: Path | None = None) -> int:
                     help="the branch that was merged in (e.g. origin/main): with no merge "
                          "open and HEAD already containing it, only number placeholders "
                          "(exit 0 with nothing to check if there are none)")
+    ap.add_argument("--check-log", metavar="LOG",
+                    help="only check that LOG (e.g. logs/YYYY-MM-DD.md after folding a "
+                         "session block, merge-side-pr step 8) holds no placeholder")
     args = ap.parse_args(argv)
+    if args.check_log:
+        return check_log(Path(args.check_log) if cwd is None else cwd / args.check_log)
     try:
         top = Path(git("rev-parse", "--show-toplevel", cwd=cwd or Path.cwd()).strip())
         head = git("rev-parse", "HEAD", cwd=top).strip()

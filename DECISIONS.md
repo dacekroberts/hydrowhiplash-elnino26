@@ -38,18 +38,27 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   of the deviations log up.** The log is newest first, so numbering in
   reading order would put D40 above D41 and break the descending order the
   log and the merge's ordering rely on. The request said "in order of
-  appearance"; read here as the order the entries were written.
+  appearance"; read here as the order the entries were written. Owner
+  confirmed 2026-10-05.
 
 - **Decided how the merge tells a placeholder from a mention of one.** The
   token is D, a question mark and lower-case letters, standing alone. In
   Markdown prose a backslash before the question mark makes a literal mention
-  (it renders the same and is not numbered), as in the bullet above. The
+  (it renders the same and is not numbered), as in the first bullet. The
   script, the pre-screen, their tests and the merge-side-pr skill describe
-  the rule, so they are skipped (`LITERAL_PLACEHOLDERS`). The leftover check
-  covers every other tracked file: a placeholder from main's side, or one a
-  PR references without defining, stops the merge. Rejected matching only
-  inside the two logs, which would miss `[mid-project: ...]` markers and code
-  comments.
+  the rule, so they are skipped, named one by one (`LITERAL_PLACEHOLDERS`,
+  at the main session's request). The leftover check covers every other
+  tracked file: a placeholder from main's side, or one a PR references
+  without defining, stops the merge; tests show it for a `src/` comment, a
+  notebook cell and a Markdown plan file. Rejected matching only inside the
+  two logs, which would miss `[mid-project: ...]` markers and code comments.
+
+- **Decided to check the day's log separately after a session block is
+  folded in (`merge_append_only.py --check-log`).** The block lives in the
+  PR description, which no tree check sees, and is folded into `logs/` by
+  hand with the numbers the merge printed (merge-side-pr steps 8 and 10).
+  Requested by the main session while the owner reviewed the risk of a
+  missed reference.
 
 ### 2026-10-05 - Data guide page, refreshed every session
 

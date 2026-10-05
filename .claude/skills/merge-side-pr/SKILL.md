@@ -134,12 +134,17 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    - copy its decisions under `## Decisions` and its files under
      `## Files changed`, each marked "(PR #<N>)";
    - replace every deviation placeholder in the folded block with the
-     number step 5 printed (`D?a` becomes `D40`): the log carries the
-     assigned numbers, never placeholders;
+     number step 5 printed for this PR (also in the pre-screen report;
+     `D?a` becomes `D40`): the log carries the assigned numbers, never
+     placeholders. Placeholders are per PR, so two PRs folded the same day
+     can both say `D?a` and map to different numbers;
    - add a bullet to the current main session's block: "Merged PR #<N>
      (<title>), squash commit <hash>".
 9. **Clean up.** `git worktree remove ../_pr-<N>` and `git branch -D pr-<N>`.
 10. **Check and commit.** `python scripts/log.py list`,
+    `python scripts/merge_append_only.py --check-log logs/YYYY-MM-DD.md`
+    (refuses if a placeholder survived the fold: the session block came
+    from the PR description, which no tree check sees),
     `python scripts/check_no_em_dashes.py`, then commit the log with
     "Log PR #<N> session block" and push.
 

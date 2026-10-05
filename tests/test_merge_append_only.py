@@ -356,3 +356,43 @@ def test_placeholders_numbered_when_already_up_to_date(tmp_path, capsys):
     out = capsys.readouterr().out
     assert "numbered: D?a -> D40, D?b -> D41" in out and "and commit" in out
     assert "### D41 · Second" in (repo / "docs/plan_deviations.md").read_text(encoding="utf-8")
+
+
+STRAYS = {
+    "src/thing.py": "x = 1  # see D?a\n",
+    "notebooks/01.ipynb": '{"cells": [{"cell_type": "markdown", "source": ["Per D?a, ..."]}]}\n',
+    "ANALYSIS_PLAN.md": "# Plan\n\nRegions: PNW [mid-project: D?a].\n",
+}
+
+
+@pytest.mark.parametrize("path", list(STRAYS))
+@pytest.mark.parametrize("side", ["pr", "main"])
+def test_stray_placeholder_in_code_notebook_or_plan_is_refused(tmp_path, capsys, path, side):
+    # Only the tooling files are exempt: a stray token anywhere else stops the merge,
+    # whether the PR brought it (dangling) or main did (leftover).
+    stray = {path: STRAYS[path]}
+    pr, main = (stray, {"README.md": "main\n"}) if side == "pr" else ({"README.md": "pr\n"}, stray)
+    repo = _placeholder_repo(tmp_path, pr, main)
+    assert mao.main([], cwd=repo) == 1
+    out = capsys.readouterr().out
+    expected = "is referenced but no entry" if side == "pr" else "left in the merged tree"
+    assert f"{path}: " in out and expected in out
+
+
+def test_only_the_tooling_is_exempt():
+    # Each exempt file really shows the syntax (else the exemption is unneeded),
+    # and nothing outside scripts/, tests/ and the merge skill is exempt.
+    for f in mao.LITERAL_PLACEHOLDERS:
+        assert mao.PLACEHOLDER.search((ROOT / f).read_text(encoding="utf-8")), f
+        assert f.startswith(("scripts/", "tests/", ".claude/skills/merge-side-pr/")), f
+
+
+def test_check_log_refuses_a_leftover_placeholder(tmp_path, capsys):
+    log = tmp_path / "2026-10-05.md"
+    log.write_text("### 11:16-11:32 · Claude Code (worktree: side/x)\n- Added D40.\n",
+                   encoding="utf-8")
+    assert mao.main(["--check-log", str(log)]) == 0
+    log.write_text(log.read_text(encoding="utf-8") + "- Marker [mid-project: D?b].\n",
+                   encoding="utf-8")
+    assert mao.main(["--check-log", str(log)]) == 1
+    assert "line 3 (D?b)" in capsys.readouterr().out
