@@ -19,11 +19,12 @@ Status: **have** = downloaded; **planned** = in `ACTION_PLAN.md`.
 | Precipitation | ERA5-Land | 0 | have | m/day | mm/month |
 | 2 m air temperature | ERA5-Land | 0 | have | K | °C |
 | Snow water equivalent (gridded) | ERA5-Land | 0 | have | m water equivalent | mm |
-| Snowfall | ERA5-Land | 2 | planned | m water equivalent/day | mm/month |
-| Soil moisture, layers 1-2 | ERA5-Land | 2 | planned | m³/m³ | m³/m³ |
-| Glacier mask | ERA5-Land (invariant) | 2 | planned (option) | fraction 0-1 | mask |
+| Snowfall | ERA5-Land | 2 | have (2026-10-04) | m water equivalent/day | mm/month |
+| Soil moisture, layers 1-2 | ERA5-Land | 2 | have (2026-10-04) | m³/m³ | m³/m³ |
+| April 1 SWE (gridded snapshot) | ERA5-Land hourly | 2 | have (2026-10-04) | m water equivalent | mm |
+| Glacier mask | derived from ERA5-Land `sd` (cap + perennial rule; the invariant field was not used, D27) | 2 | have | boolean | mask |
 | Snow water equivalent (stations) | SNOTEL, BC, Alberta | 2 | planned | inches (SNOTEL), mm (BC, AB) | mm |
-| PET, SPEI-3, whiplash | derived | 2 | planned | mm/month; standardised | as native |
+| PET, SPEI-3, whiplash | derived | 2 | built (2026-10-04) | mm/day; standardised | as native |
 | Fire perimeters | MTBS, WFIGS/NIFC, CNFDB | 3 | planned (after freeze) | polygons + dates | ha, days |
 | Region boundaries | Natural Earth admin-1 | 1 | have | degrees (EPSG:4326) | polygons; ha in ESRI:102008 |
 
@@ -137,17 +138,28 @@ combining years.
   - Glaciers are held at a 10 m cap all year. In 1950, 325 land cells (0.65%)
     sat at the cap and raised the domain's April SWE from 233 to 283 mm, so
     glacier cells are excluded before any regional mean.
+  - A second group of cells never reaches the cap but holds a steady ~5 m
+    of SWE every April, 1950-2025, with no trend: ice, not seasonal snow.
+    The exclusion mask (`src.snow.glacier_mask`) drops cells at the cap in
+    any month and cells keeping more than 10 mm at the yearly minimum in at
+    least 90% of 1950-2025: 752 main-domain cells (BC 336, AB 4) and 2,250
+    north (AK 1,642, YT 269). Mean April 1 SWE 1951-2026, excluded / all
+    cells: AK 226 / 711 mm, YT 167 / 475, BC 442 / 593, AB 67 / 69.
   - It's a monthly mean. "April SWE" is the average over April, centred
     mid-month after low-elevation melt has started, not the April 1 snapshot
-    that snow surveys measure. Tiny negative values (about -7e-25) are
+    that snow surveys measure. The project takes April 1 from hourly
+    ERA5-Land instead (section 2g). Tiny negative values (about -7e-25) are
     rounding noise; clip to 0.
 - **Used for:** gridded snowpack next to the station surveys (Phase 2).
 
 ### 2d. Snowfall (`sf`), planned
 
 - **Measures:** precipitation falling as snow, as melted-water depth.
-- **Units:** m water equivalent per day (monthly mean of daily totals, the
-  same convention as `tp`; *confirm at download*).
+- **Units:** m water equivalent per day (monthly mean of daily totals), the
+  same convention as `tp`: confirmed on the first file, where sf/tp is at
+  most 0.9996 (median 0.41, main domain, 1950). `mm/month = sf × 1000 ×
+  days_in_month` (`src.era5.convert_units`). Folders
+  `data/raw/era5_land_snow_soil/` and `data/raw/era5_land_north_snow_soil/`.
 - **Used for:** snowfall fraction = snowfall / total precipitation, to show
   how much of a warm El Niño winter fell as rain instead of snow.
 
@@ -162,12 +174,29 @@ combining years.
 - **Used for:** summer fuel dryness, alongside SPEI (descriptive unless
   `ANALYSIS_PLAN.md` adds it).
 
-### 2f. Glacier mask (invariant), planned option
+### 2f. Glacier mask (invariant), not used
 
 - **Measures:** the fraction of each cell covered by glacier, one fixed
-  field. It is the official alternative to flagging cells stuck at the 10 m
-  SWE cap. Invariant fields are delivered for the whole globe, not cut to the
-  domain.
+  field. It was the official alternative to flagging cells stuck at the 10 m
+  SWE cap. Not used: the project derives its mask from `sd` itself (section
+  2c; `DECISIONS.md` 2026-10-04 "ERA5-Land SWE: glacier exclusion and April
+  1"; D27). Invariant fields are delivered for the whole globe, not cut to
+  the domain.
+
+### 2g. April 1 SWE from hourly ERA5-Land (`sd`), have
+
+- **Measures:** snow water equivalent at 00:00 UTC on 1 April (late
+  afternoon of 31 March local time), one field per year, 1950-2026. Same
+  variable and grid as 2c, from the hourly dataset `reanalysis-era5-land`
+  (DOI 10.24381/cds.e2161bac; ledger row in `DATA_SOURCES.md`).
+- **Units:** metres of water equivalent; `mm = sd × 1000`, clipped at 0
+  (`src.snow.open_april1`). Year label = the year of the April, i.e. winter
+  (Y-1)-Y.
+- **Check:** regional April 1 SWE correlates 0.97-0.99 with the mean of the
+  March and April monthly means and sits 2-10% above it (1951-2026, glacier
+  cells excluded), as a snapshot before mid-April melt should.
+- **Files:** `data/raw/era5_land_april1/` and
+  `data/raw/era5_land_north_april1/`, `era5_land_april1.nc` in each.
 
 ## 3. Snowpack from stations (SNOTEL, BC, Alberta), planned
 
@@ -199,11 +228,12 @@ things, so expect level differences between them.
 
 - **Measures:** how much water the air could draw from a fully wet
   surface: the atmosphere's demand for water.
-- **Method:** Thornthwaite (draft), from monthly mean temperature and
-  latitude (day length) only, via `xclim`. Simple, but temperature-only PET
+- **Method:** Thornthwaite (xclim `TW48`), from monthly mean temperature
+  and latitude (day length) only. Zero in months at or below 0 °C, so in
+  cold winters the water balance is precipitation alone. Simple, but temperature-only PET
   tends to overstate drying as temperatures rise. Penman-Monteith (humidity,
   radiation, wind) would need extra ERA5-Land variables.
-- **Units:** mm/month.
+- **Units:** mm/day in `src.whiplash` (xclim works in rates).
 
 ### 4b. SPEI-3 (Standardised Precipitation-Evapotranspiration Index)
 
@@ -214,12 +244,19 @@ things, so expect level differences between them.
 - **Units:** dimensionless, in standard deviations. 0 = normal; -1 is
   moderately dry (drier than about 84% of the calibration years); -2 is
   extreme. Typical range -3 to +3.
-- **Settings to fix before the freeze:** calibration period, distribution,
-  PET method, scale 3.
+- **Settings (decided 2026-10-04, `DECISIONS.md` "SPEI settings"):**
+  scale 3; log-logistic fitted by maximum likelihood per calendar month;
+  calibration 1951-2020; per-cell values clipped to ±3.09; regional SPEI is
+  the cos(latitude) mean of per-cell SPEI, re-standardised to mean 0 and
+  SD 1 over 1951-2020 for each season. Per-cell SPEI is cached in
+  `data/processed/spei3_cells_<domain>.nc`.
 
 ### 4c. Whiplash index
 
-- **Definition (draft):** SPEI-3(JJA) - SPEI-3(preceding DJF), every year.
+- **Definition (draft):** SPEI-3(JJA) - SPEI-3(preceding DJF), every year,
+  from the re-standardised regional values (`src.whiplash`). Table:
+  `data/processed/whiplash_region_year.csv`; joined with April 1 SWE in
+  `data/processed/whiplash_swe_region_year.csv` (`src.phase2`).
 - **Units:** standard deviations of SPEI.
 - **Reading it:** negative = a swing from wetter-than-usual winter to
   drier-than-usual summer (e.g. winter +1, summer -1 gives -2). Positive =

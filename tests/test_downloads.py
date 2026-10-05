@@ -98,3 +98,31 @@ def test_default_set_is_core(monkeypatch, tmp_path):
 def test_bad_variable_set_stops(args):
     with pytest.raises(SystemExit):
         download_era5.main(args)
+
+
+from src import download_era5_april1  # noqa: E402
+
+
+@pytest.mark.parametrize("today, last", [
+    (date(2026, 10, 4), 2026),
+    (date(2027, 4, 3), 2026),   # inside the hourly lag
+    (date(2027, 4, 8), 2027),
+])
+def test_april1_years_respect_hourly_lag(today, last):
+    years = download_era5_april1.april1_years(today)
+    assert years[0] == 1950 and years[-1] == last
+
+
+def test_april1_request_is_one_snapshot_per_year():
+    req = download_era5_april1.request([1950, 1951], [71.5, -169, 51, -123.5])
+    assert req["month"] == ["04"] and req["day"] == ["01"] and req["time"] == ["00:00"]
+    assert req["variable"] == ["snow_depth_water_equivalent"]
+    assert req["year"] == ["1950", "1951"]
+
+
+def test_april1_access_error_stops(monkeypatch, tmp_path):
+    monkeypatch.setattr(download_era5_april1, "RAW", tmp_path)
+    monkeypatch.setattr(download_era5_april1.cdsapi, "Client", lambda: _FakeClient(403),
+                        raising=False)
+    with pytest.raises(SystemExit):
+        download_era5_april1.main(["main"])

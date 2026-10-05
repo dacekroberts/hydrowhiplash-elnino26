@@ -151,3 +151,9 @@ def test_assign_domains_picks_containing_box():
         era5.assign_domains(regions)
     domains = era5.assign_domains(regions.iloc[:3])
     assert domains.to_dict() == {"South": "main", "North": "north", "Edge": "north"}
+
+
+def test_snowfall_uses_the_precipitation_convention():
+    ds = xr.Dataset({"sf": monthly([0.001, 0.001], start="2000-02-01", name="sf")})
+    mm = era5.convert_units(ds)["sf"].values.ravel()
+    assert mm == pytest.approx([29.0, 31.0])  # leap February, then March

@@ -44,18 +44,28 @@ def _winter_label(year: int) -> str:
     return f"{year - 1}-{year % 100:02d}"
 
 
-def _series_panel(ax, g: pd.DataFrame, value: str, ylabel: str, title: str) -> None:
+def _series_panel(ax, g: pd.DataFrame, value: str, ylabel: str, title: str,
+                  signed: bool = False) -> None:
+    """Bars per winter. `signed` values (e.g. a standardised index) get a
+    zero baseline and symmetric limits; labels sit beyond each bar's end."""
     ax.bar(g["year"], g[value], width=0.8, color=_bar_colours(g), linewidth=0)
     mean = g[value].mean()
     ax.axhline(mean, color=INK, lw=1, ls=(0, (4, 3)))
+    if signed:
+        ax.axhline(0, color=MUTED, lw=0.8)
     for _, r in g[g["strong"] & (g["phase"] == "el_nino")].iterrows():
+        below = signed and r[value] < 0
         ax.annotate(_winter_label(int(r["year"])), (r["year"], r[value]),
-                    xytext=(0, 2), textcoords="offset points", ha="center",
-                    va="bottom", fontsize=7, color=INK, zorder=4,
+                    xytext=(0, -2 if below else 2), textcoords="offset points", ha="center",
+                    va="top" if below else "bottom", fontsize=7, color=INK, zorder=4,
                     path_effects=[patheffects.withStroke(linewidth=1.5, foreground="white")])
     ax.set_title(title, loc="left", fontsize=10, color=INK, fontweight="bold")
     ax.set_ylabel(ylabel, fontsize=8)
-    ax.set_ylim(0, g[value].max() * 1.15)
+    if signed:
+        lim = np.nanmax(np.abs(g[value])) * 1.2
+        ax.set_ylim(-lim, lim)
+    else:
+        ax.set_ylim(0, g[value].max() * 1.15)
     ax.grid(axis="y", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
     ax.tick_params(labelsize=8)
@@ -71,18 +81,21 @@ def _legend(fig, index: str) -> None:
 
 
 def winter_series(table: pd.DataFrame, value: str, ylabel: str, index: str,
-                  out: Path) -> Path:
-    """One panel per region, every winter shown, El Nino winters highlighted."""
+                  out: Path, signed: bool = False, xlabel: str | None = None) -> Path:
+    """One panel per region, every winter shown, El Nino winters highlighted.
+
+    `signed` for values centred on zero; `xlabel` replaces the default axis
+    note (e.g. when the value spans winter and the following summer)."""
     regions = list(dict.fromkeys(table["region"]))
     fig, axes = plt.subplots(len(regions), 1, figsize=(10, 2.1 * len(regions)), sharex=True)
     for ax, region in zip(axes, regions):
         g = table[table["region"] == region].sort_values("year")
-        _series_panel(ax, g, value, ylabel, region)
+        _series_panel(ax, g, value, ylabel, region, signed=signed)
     years = table["year"]
     ticks = range(int(np.ceil(years.min() / 10) * 10), int(years.max()) + 1, 10)
     axes[-1].set_xticks(list(ticks), [_winter_label(t) for t in ticks])
-    axes[-1].set_xlabel("Winter (Dec-Feb); fire season paired with each winter is the later year",
-                        fontsize=8)
+    axes[-1].set_xlabel(xlabel or "Winter (Dec-Feb); fire season paired with each winter is the "
+                        "later year", fontsize=8)
     _legend(fig, index)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     return _save(fig, out)
