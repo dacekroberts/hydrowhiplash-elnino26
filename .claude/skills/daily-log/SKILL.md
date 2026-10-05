@@ -44,6 +44,11 @@ into their own catalogue, so the structure must stay identical every day.
 
 - Never edit a previous day's log. A correction goes in today's log, naming
   the earlier date.
+- Side-session blocks (worktree or branch sessions, which don't edit
+  `logs/`) are folded in by `merge-side-pr` step 8 into the log of the day
+  the PR is merged, the same rule as above: never into an earlier day's log.
+  A block whose work happened on an earlier day keeps its times and says
+  its work date in its heading (`worked YYYY-MM-DD`) and `sessions` entry.
 - Neutral, factual voice, past tense. No em dashes in the frontmatter.
 - Work done in claude.ai doesn't reach the repo by itself: when the user
   pastes a summary of a claude.ai session, add it as its own

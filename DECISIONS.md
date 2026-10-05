@@ -17,6 +17,23 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Side-session blocks go in the merge day's log
+
+- **Decided (owner, by merging this change) that a side session's block is
+  folded into the log of the day its PR is merged, never into an earlier
+  day's log.** `merge-side-pr` step 8 filed it under the day the side
+  session worked, while `daily-log` says never edit a previous day's log;
+  PR #8's block (side session 23:40-00:20) went into `logs/2026-10-04.md`
+  at 00:45 on 2026-10-05. Now both skills say the same thing: today's log,
+  with the work date in the block's heading (`worked YYYY-MM-DD`) and
+  `sessions` entry when it differs. This keeps the daily-log rule without an
+  exception and leaves exported logs unchanged, and matches `CLAUDE.md`
+  ("adds the block to the day's log when it merges the PR"). PR #8's block
+  stays in the 2026-10-04 log (earlier days aren't rewritten). Rejected
+  filing by the work day with an exception in `daily-log` (earlier logs
+  would change after export, and a block can arrive days late). Files:
+  `.claude/skills/merge-side-pr/SKILL.md`, `.claude/skills/daily-log/SKILL.md`.
+
 ### 2026-10-05 - Phase 1 figures from code
 
 - **Decided to regenerate the three Phase 1 figures with a new module,
