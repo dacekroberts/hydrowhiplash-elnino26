@@ -65,3 +65,17 @@ def test_new_region_role_needs_wording(monkeypatch):
     monkeypatch.setattr(diagrams, "UNDRAWN_REGIONS", ("XX",))
     with pytest.raises(ValueError, match="No footnote wording"):
         diagrams.footer_lines()
+
+
+def test_series_legend_reads_thresholds_from_config(monkeypatch):
+    import matplotlib.pyplot as plt
+
+    from src import figures
+    monkeypatch.setattr(figures, "EL_NINO_THRESHOLD", 0.7)
+    monkeypatch.setattr(figures, "STRONG_THRESHOLD", 1.8)
+    fig = plt.figure()
+    figures._legend(fig, "ONI")
+    labels = [t.get_text() for t in fig.legends[0].get_texts()]
+    plt.close(fig)
+    assert "El Niño (DJF ONI ≥ 0.7)" in labels
+    assert "Strong El Niño (≥ 1.8), labelled" in labels

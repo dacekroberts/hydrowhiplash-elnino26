@@ -18,7 +18,7 @@ from matplotlib import patheffects
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
 
-from src.config import RESULTS
+from src.config import EL_NINO_THRESHOLD, RESULTS, STRONG_THRESHOLD
 
 FIGURES = RESULTS / "figures"
 INK, MUTED, GRID = "#0b0b0b", "#52514e", "#e1e0d9"
@@ -73,8 +73,8 @@ def _series_panel(ax, g: pd.DataFrame, value: str, ylabel: str, title: str,
 
 def _legend(fig, index: str) -> None:
     handles = [Patch(color=OTHER, label="Other winters"),
-               Patch(color=NINO, label=f"El Niño (DJF {index} ≥ 0.5)"),
-               Patch(color=STRONG, label=f"Strong El Niño (≥ 1.5), labelled"),
+               Patch(color=NINO, label=f"El Niño (DJF {index} ≥ {EL_NINO_THRESHOLD})"),
+               Patch(color=STRONG, label=f"Strong El Niño (≥ {STRONG_THRESHOLD}), labelled"),
                plt.Line2D([], [], color=INK, lw=1, ls=(0, (4, 3)), label="Mean of all winters")]
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8,
                bbox_to_anchor=(0.5, 0.995))

@@ -25,6 +25,22 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-05 (Phase 2)
+
+### D35 · Read-only rules audits at phase boundaries
+- **Plan:** `ACTION_PLAN.md` has no code audits; review happens per PR in
+  `merge-side-pr` (`/code-review low` for changes under `src/`).
+- **Actual:** a side session audits the code against `CLAUDE.md`, the data
+  dictionary and `ANALYSIS_PLAN.md` at each phase boundary, read-only, with
+  a dated report in `docs/`. First run 2026-10-05 on Phase 1 (`9e5f73a`):
+  7 findings, 3 fixed in `stats.py`, 4 sent to the main session.
+- **Why:** per-PR review sees one change at a time; rule breaks that build
+  up across a phase, and silent wrong answers on unusual input, need a
+  whole-codebase pass.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Phase 1 audit";
+  `docs/audit_2026-10-05_phase1.md`.
+- **Plan doc:** left as written. Numbered D35 because main uses D27-D31.
+
 ## 2026-10-04 (Phase 2)
 
 ### D31 · Station snowpack records start well after 1950

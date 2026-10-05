@@ -82,16 +82,32 @@ def convert_units(ds: xr.Dataset) -> xr.Dataset:
 
 
 def open_era5(directory: Path = ERA5_DIR) -> xr.Dataset:
-    """Every yearly file as one lazily loaded Dataset, in project units."""
+    """Every yearly file as one lazily loaded Dataset, in project units.
+
+    Raises if a year was unpacked into a folder (a zipped CDS reply, see
+    src.download_era5.retrieve), which the file glob would skip, or if the
+    months are not contiguous: either would silently drop winters, because
+    seasons missing a month are dropped (Phase 1 audit, finding 3).
+    """
     paths = sorted(directory.glob("era5_land_*.nc"))
     if not paths:
         raise FileNotFoundError(f"No ERA5-Land files in {directory}; run python -m src.download_era5.")
+    folders = sorted(p.name for p in directory.glob("era5_land_*") if p.is_dir())
+    if folders:
+        raise ValueError(f"Unpacked year folders in {directory} are not read: {folders}. "
+                         "Merge their files into one NetCDF per year first.")
     ds = xr.open_mfdataset(paths, preprocess=lambda d: snap_grid(drop_grib_coords(d)),
                            combine="nested", concat_dim=TIME, data_vars="all",
                            coords="minimal", compat="override", join="exact")
     ds = ds.sortby(TIME)
     if not ds.indexes[TIME].is_unique:
         raise ValueError("Duplicate months across ERA5-Land files.")
+    times = ds.indexes[TIME]
+    expected = pd.date_range(times[0], times[-1], freq="MS")
+    if len(times) != len(expected) or not (times == expected).all():
+        missing = expected.difference(times)
+        raise ValueError(f"ERA5-Land months are not contiguous in {directory}: "
+                         f"{len(missing)} missing, first {missing[0].date() if len(missing) else '?'}.")
     return convert_units(ds)
 
 
@@ -100,14 +116,19 @@ def region_masks(regions: gpd.GeoDataFrame, grid: xr.Dataset | xr.DataArray) -> 
     its centre lies inside the polygon (regionmask's rule).
 
     Regions keep the order of the GeoDataFrame and are labelled by its
-    `region` column. Raises if any cell falls in two regions.
+    `region` column. Raises if any cell centre lies inside two polygons'
+    interiors (overlapping regions): the overlap=False mask assigns each cell
+    to one region by construction, so the check uses overlap=True instead.
+    Cells exactly on a shared edge (the 35.5N row) are not overlaps.
     """
     rm = regionmask.from_geopandas(regions, names="region", name="study_regions",
                                    overlap=False)
     mask = rm.mask_3D(grid[LON], grid[LAT], drop=False)
     mask = mask.assign_coords(region=mask["names"].values).drop_vars(["names", "abbrevs"])
-    if (mask.sum("region") > 1).any():
-        raise ValueError("A grid cell is assigned to more than one region.")
+    both = regionmask.from_geopandas(regions, names="region", overlap=True).mask_3D(
+        grid[LON], grid[LAT], drop=False)
+    if (both.sum("region") > 1).any():
+        raise ValueError("Region polygons overlap: a grid cell centre lies in more than one region.")
     return mask
 
 

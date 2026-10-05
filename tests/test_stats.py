@@ -95,6 +95,52 @@ def test_loyo_coverage_close_to_nominal(synthetic):
     assert 0.65 <= result["covered"].mean() <= 0.95
 
 
+def test_loyo_missing_outcome_is_not_counted_as_uncovered(synthetic):
+    # A region-year with no outcome, or a year still to come, keeps its
+    # prediction but has no coverage verdict; coverage counts the rest only.
+    gaps = synthetic.copy()
+    gaps.loc[[3, 10], "log_burn"] = np.nan
+    result = stats.loyo_prediction("log_burn ~ enso_djf + temp_jja + year", gaps, alpha=0.2)
+    missing = result["year"].isin(gaps.loc[[3, 10], "year"])
+    assert result.loc[missing, "covered"].isna().all()
+    assert result.loc[missing, "predicted"].notna().all()
+    checked = result.loc[~missing]
+    assert result["covered"].mean() == checked["covered"].astype(bool).mean()
+
+
+def test_block_bootstrap_rejects_unsorted_or_repeated_years(synthetic):
+    def mean(d):
+        return d["log_burn"].mean()
+    with pytest.raises(ValueError, match="sorted"):
+        stats.block_bootstrap_ci(synthetic.iloc[::-1], mean, n_boot=10)
+    repeated = pd.concat([synthetic, synthetic]).sort_values("year")
+    with pytest.raises(ValueError, match="one row per"):
+        stats.block_bootstrap_ci(repeated, mean, n_boot=10)
+
+
+def test_block_bootstrap_rejects_series_shorter_than_a_block(synthetic):
+    with pytest.raises(ValueError, match="at least block_len"):
+        stats.block_bootstrap_ci(synthetic.head(2), lambda d: d["log_burn"].mean(),
+                                 block_len=3, n_boot=10)
+
+
+def test_pooled_fit_drops_missing_rows_and_matches_complete_case():
+    # A missing outcome used to fail with "The weights and list don't have the
+    # same length"; the result must equal fitting the complete rows only.
+    rng = np.random.default_rng(5)
+    enso = rng.normal(0, 1, N)
+    panel = pd.concat([pd.DataFrame({"year": YEARS, "region": r, "enso_djf": enso,
+                                     "log_burn": rng.normal(0, 1, N)})
+                       for r in ["SoCal", "PNW", "BC"]], ignore_index=True)
+    panel.loc[[4, 50], "log_burn"] = np.nan
+    formula = "log_burn ~ enso_djf * C(region, Treatment('SoCal'))"
+    fit = stats.fit_pooled(formula, panel)
+    complete = stats.fit_pooled(formula, panel.dropna().reset_index(drop=True))
+    assert int(fit.nobs) == len(panel) - 2
+    assert np.allclose(fit.params, complete.params)
+    assert np.allclose(fit.bse, complete.bse)
+
+
 def test_stats_defaults_come_from_config():
     import inspect
     from src import config

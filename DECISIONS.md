@@ -35,6 +35,58 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   session's call. Files: `src/winter_figures.py`,
   `tests/test_winter_figures.py`, `README.md` (run order).
 
+### 2026-10-05 - Phase 1 audit
+
+- **Decided (owner) to run a read-only audit of the code against the
+  project's own rules at each phase boundary, by a side session against the
+  latest main, with a dated report in `docs/`.** First run: `main` at
+  `9e5f73a`, Phase 1 and shared modules (`config`, `geo`, `regions`, `era5`,
+  `describe`, `stats`, `figures`, both downloaders, notebook 01, their
+  tests), Phase 2 work in progress left out. 7 findings (3 medium, 4 low) and
+  4 methods notes; none changes a Phase 1 result. Measurement rules, year
+  labels, ENSO classification and the single source of truth passed; both
+  ERA5-Land domains hold 919 contiguous months. Rejected auditing after every
+  session (repeats `merge-side-pr`'s per-PR review and adds noise). Report:
+  `docs/audit_2026-10-05_phase1.md` (top level of `docs/`, which
+  `LICENSE-CONTENT` covers; a `docs/audits/` folder would not be).
+- **Fixed three `stats.py` findings (1, 2 and 4), each confirmed on
+  synthetic data first.** `loyo_prediction` counted a held-out row with no
+  actual value as not covered, lowering the coverage used to judge the
+  forecast intervals; such rows now keep their interval with `covered`
+  missing (pandas nullable boolean). `block_bootstrap_ci` gave a wrong answer
+  silently on rows not sorted by year (a lag-1 autocorrelation of 0.84 came
+  out as -0.08); it now raises unless there is one row per year in
+  increasing order and at least `block_len` rows. `fit_pooled` failed on any
+  missing value ("The weights and list don't have the same length"); it now
+  fits complete cases, as plain OLS does, with the cluster groups taken from
+  the same rows, giving the same coefficients and errors as fitting the
+  complete rows directly. 4 tests; methods register rows updated. Files:
+  `src/stats.py`, `tests/test_stats.py`, `docs/methods_register.md`.
+- **Sent findings 3, 5, 6 and 7 to the main session rather than fixing them
+  here:** they sit in its modules (`era5.py`, `figures.py`, notebook 01) or
+  its register. Finding 5's map extent and baseline wording were already
+  logged as D28; the legend thresholds are new.
+
+### 2026-10-05 - Phase 1 audit fixes in the main session
+
+- **Fixed audit findings 3, 5 and 6 (`docs/audit_2026-10-05_phase1.md`),
+  at the owner's direction; finding 7 (Phase 1 figures only rebuildable by
+  running notebook 01) went to the side session.**
+  - 3: `open_era5` now raises if an `era5_land_<year>/` folder exists (a
+    zipped CDS reply the `*.nc` glob would skip) or if months are not
+    contiguous; either would silently drop winters. Latent: all four ERA5
+    folders hold 77 files and no year folders (checked 2026-10-05).
+  - 5: the series legend reads `EL_NINO_THRESHOLD` and `STRONG_THRESHOLD`
+    from config instead of hard-coded 0.5 and 1.5; figures unchanged.
+  - 6: the "cell in two regions" check could never fire with
+    `overlap=False`; it now builds an `overlap=True` mask and raises when a
+    cell centre lies inside two polygons. Cells on a shared edge (the 35.5N
+    row) are not flagged; all 7 real regions pass with unchanged cell
+    counts. Rejected dropping the check (polygon overlaps would go
+    unnoticed if regions change).
+  Files: `src/era5.py`, `src/figures.py`, `tests/test_era5.py`,
+  `tests/test_diagrams.py`.
+
 ### 2026-10-05 - Station snowpack downloads
 
 - **Decided to download every station source raw and unfiltered, with all
