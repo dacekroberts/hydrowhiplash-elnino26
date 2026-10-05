@@ -27,6 +27,35 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (Phase 2)
 
+### D37 · Station SWE index starts 1960-1975 in the north and ends 2025 in Alberta
+- **Plan:** `ANALYSIS_PLAN.md` "Data and years": climate tests including
+  SWE use "winters 1950–51 to present".
+- **Actual (measured with the cleaning rules, 2026-10-05):** with normals
+  from 1991-2020 (20 or more values) and at least 5 stations per
+  region-year, the station index starts PNW and BC 1951, AK 1960, AB 1963,
+  YT 1975, and Alberta ends 2025 (CanSWE ends July 2025). Makes D31's
+  network histories concrete for the index; ERA5-Land April 1 SWE still
+  covers 1951-2026 everywhere. Of the 7 strong El Niño winters, AB lacks
+  1957-58 and YT lacks 1957-58 and 1972-73.
+- **Why:** network histories (D31) and the owner's minimum of 5 stations,
+  which the owner may widen for AB and YT.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Regional station index".
+- **Plan doc:** left as written (owner's prose; the SWE source is still a
+  pre-freeze item).
+
+### D36 · Station networks beyond the plan's list
+- **Plan:** `ACTION_PLAN.md` Phase 2: "SNOTEL (WA/OR/ID), BC and Alberta
+  snow surveys; Alaska SNOTEL and Yukon snow surveys".
+- **Actual:** the station table also holds NRCS manual snow courses (WA,
+  OR, ID, AK; the pre-1980 record), BC, Alberta and Yukon snow pillows from
+  CanSWE, and stations assigned by location whatever their network (15
+  BC-run courses in WA and ID count for PNW; Yukon network sites outside
+  Yukon dropped). 71,759 station-years, 2,180 stations.
+- **Why:** SNOTEL starts about 1980, so snow courses carry 1950-79; pillows
+  give exact-date readings; owner's cleaning choices.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Station snowpack cleaning rules".
+- **Plan doc:** left as written.
+
 ### D35 · Read-only rules audits at phase boundaries
 - **Plan:** `ACTION_PLAN.md` has no code audits; review happens per PR in
   `merge-side-pr` (`/code-review low` for changes under `src/`).

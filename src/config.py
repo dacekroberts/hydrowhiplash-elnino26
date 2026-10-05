@@ -140,7 +140,7 @@ PREDICTION_ALPHA = 0.2  # 80% prediction intervals
 RANDOM_SEED = 2026
 
 # Station snowpack (Phase 2; DATA_SOURCES.md rows NRCS, BC, Yukon)
-# Raw downloads only; cleaning and the April 1 extraction happen later.
+# Raw downloads; cleaning and the April 1 extraction in src/stations.py (below).
 STATIONS_RAW = DATA_RAW / "stations"
 NRCS_SNOW_RAW = STATIONS_RAW / "nrcs"
 BC_SNOW_RAW = STATIONS_RAW / "bc"
@@ -185,3 +185,56 @@ YUKON_SNOW_URLS = {
 CANSWE_RAW = STATIONS_RAW / "canswe"
 CANSWE_RECORD_URL = "https://zenodo.org/api/records/19075529"
 CANSWE_FILES = ["CanSWE-CanEEN_1928-2025_v8.nc", "ReadMe_CanSWE_v8.pdf"]
+
+# Station April 1 SWE cleaning (src/stations.py; DECISIONS.md 2026-10-05
+# "Station snowpack cleaning rules"; measured effects in
+# docs/methods_register.md "Station snowpack").
+INCH_MM = 25.4
+FOOT_M = 0.3048            # NRCS station elevations are in feet
+# NRCS QC flags dropped: B = regression back-estimate homogenising pillow and
+# snow course records (not a measurement; would double-count the course),
+# S = suspect (holds all 8 negative April values). Kept: V, E (minor
+# adjustment for sensor noise), K (estimate), C, N, X.
+NRCS_DROP_QC = ("B", "S")
+# Snow-course collection date used as a placeholder (2,163 April 1 surveys,
+# 1950-2009); the value is kept and flagged date_unknown.
+NRCS_PLACEHOLDER_DATE = (7, 1)  # (month, day)
+# Manual surveys: the sample nearest 1 April within +-STATION_WINDOW_DAYS.
+# Share of surveys inside +-10 days: NRCS 98.3%, BC 99.99%, Yukon 99.8%,
+# Alberta (CanSWE) 98.8% (profile 2026-10-05).
+STATION_WINDOW_DAYS = 10
+# BC survey codes that mark an estimate rather than a survey; dropped. Every
+# other code is kept and carried in `flags`.
+BC_DROP_CODES = ("EST AREAL AVG", "EST PILLOW")
+# CanSWE: station prefixes used and the role of each. Alberta comes only from
+# CanSWE (D30); BC and Yukon manual courses come from the provincial files,
+# which win wherever both hold the same station-year.
+CANSWE_PREFIXES = ("ALE", "BCE", "YT")
+CANSWE_PILLOW_TYPE = 2      # type_mes: snow pillow or snow scale
+# Yukon network sites outside Yukon (3 in Alaska, 4 in BC, 2 in NWT) are
+# dropped: lowest licence risk (DATA_SOURCES.md Yukon row).
+YUKON_NETWORK_REGION = "YT"
+STATION_TABLE = DATA_PROCESSED / "station_swe_apr1.csv"
+# Regional station index (src.stations.station_index). Each station's normal
+# is its mean (and SD) of April 1 SWE over STATION_NORMAL_YEARS, from at least
+# STATION_NORMAL_MIN_YEARS values (2/3 of the period). swe_pct = median across
+# stations of SWE / normal x 100, leaving out stations whose normal is under
+# STATION_PCT_MIN_NORMAL_MM (percentages explode there); swe_z = mean of
+# (SWE - mean) / SD. A region-year needs STATION_MIN_PER_REGION_YEAR stations.
+STATION_NORMAL_YEARS = (1991, 2020)
+STATION_NORMAL_MIN_YEARS = 20
+STATION_PCT_MIN_NORMAL_MM = 10
+STATION_MIN_PER_REGION_YEAR = 5   # owner: may be widened for AB and YT if too short
+STATION_INDEX_TABLE = DATA_PROCESSED / "station_swe_region_year.csv"
+
+# Snowfall fraction and soil moisture (src/snow_soil.py; descriptive unless
+# ANALYSIS_PLAN.md adds them; DECISIONS.md 2026-10-05 "Snowfall fraction and
+# soil moisture columns"). Snowfall fraction = regional mean snowfall /
+# regional mean total precipitation over SNOWFALL_MONTHS (the accumulation
+# season behind April 1 SWE; labelled by the March year). Soil moisture = the
+# JJA mean of the depth-weighted 0-28 cm layer (layer 1 is 0-7 cm, layer 2
+# 7-28 cm, so weights 7/28 and 21/28).
+SNOWFALL_MONTHS = (11, 12, 1, 2, 3)  # Nov-Mar
+SOIL_MONTHS = SUMMER_MONTHS          # JJA
+SOIL_LAYER_WEIGHTS = {"swvl1": 0.25, "swvl2": 0.75}
+SNOW_SOIL_TABLE = DATA_PROCESSED / "snow_soil_region_year.csv"

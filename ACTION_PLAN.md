@@ -66,7 +66,7 @@ the El Niño precipitation dipole.
       with `xclim`, then whiplash = SPEI-3(JJA) − SPEI-3(preceding DJF)
       for **every year**
 - [x] Average by region to get one time series per region per year
-- [ ] Add April 1 snowpack: SNOTEL (WA/OR/ID), BC and Alberta snow surveys;
+- [x] Add April 1 snowpack: SNOTEL (WA/OR/ID), BC and Alberta snow surveys;
       Alaska SNOTEL and Yukon snow surveys [mid-project: D20]
 - [x] Gridded snowpack from ERA5-Land SWE (`sd`, already downloaded), with
       two fixes before any regional mean:

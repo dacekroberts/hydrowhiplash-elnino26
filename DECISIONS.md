@@ -17,6 +17,103 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Stations against ERA5-Land (verification)
+
+- **Found that station April 1 SWE agrees with ERA5-Land on the direction
+  of the El Niño difference in all five station regions, and on its size in
+  BC and AB, while in PNW the station loss is smaller because the network
+  sits high.** Correlation of the yearly series (% of 1991-2020 normal /
+  standardised): PNW 0.94 / 0.95 (76 years), BC 0.79 / 0.84 (76), AB 0.84 /
+  0.77 (63), AK 0.78 / 0.80 (67), YT 0.84 / 0.84 (52). Level ratio (median
+  station normal / ERA5-Land regional mean, 1991-2020): PNW 3.10, BC 1.07,
+  AB 1.26, AK 0.68, YT 0.88. Strong El Niño minus all winters, points of
+  normal, stations / ERA5-Land on the same years: PNW -8.5 / -25.6, BC
+  -14.3 / -13.0, AB -38.9 / -32.3, AK -4.1 / -5.0, YT -5.5 / -2.1. Checked
+  before interpreting the PNW gap: units (the index is a ratio; normals
+  plausible, PNW pillow median 456 mm), dates (exact-date pillows show -1.7,
+  courses within 3 days of 1 April -15.1, so the ±10-day window does not
+  hide a loss) and the glacier mask (no PNW cells). PNW stations split into
+  elevation thirds: low (550-1,470 m) -42.3, mid -4.6, high (1,880-2,800 m)
+  +3.0; BC low -20.9, high -10.9. The area-weighted grid mean is dominated
+  by lower terrain. Also found: the median index collapses toward 0 in snow
+  droughts (PNW 2015: 156 of 368 stations bare, median 3.3%; 2026: 153 of
+  344, 4.7%) while ERA5-Land shows about 27% and 40%. Descriptive; no tests.
+  An elevation-matched ERA5-Land comparison was flagged as a scope addition,
+  not built. Files: `src/stations.py`, notebook 03.
+
+### 2026-10-05 - Snowfall fraction and soil moisture columns
+
+- **Decided (owner) to define the snowfall fraction over November-March as
+  the ratio of regional totals, and summer soil moisture as the JJA mean of
+  the depth-weighted 0-28 cm layer.** Nov-Mar is the accumulation season
+  behind April 1 SWE (rejected: DJF, which misses November and March, when
+  the rain-snow line matters most at mid elevations; Oct-Mar). Ratio of
+  regional means (cos-latitude weighted, `src.geo.regional_mean`) rather
+  than the mean of per-cell fractions, which is noisy in near-dry cells.
+  JJA matches SPEI-3 JJA (rejected: each region's fire window, which mixes
+  snowmelt-wet April-May soils into the northern means; both). Layers
+  weighted 0.25 / 0.75 (7 and 21 cm thick) rather than layer 1 alone, which
+  flickers with each shower. Means 1951-2026: snowfall fraction YT 0.99,
+  AB 0.92, AK 0.83, BC 0.78, PNW 0.46, NorCal 0.31, SoCal 0.06; soil
+  moisture 0.12 (SoCal) to 0.35 m³/m³ (AB). Descriptive unless
+  `ANALYSIS_PLAN.md` adds them. Files: `src/config.py`, `src/snow_soil.py`,
+  `results/tables/snow_soil_region_year.csv`.
+
+### 2026-10-05 - Regional station index
+
+- **Decided (owner) that the regional station index is the median across
+  stations of April 1 SWE as % of each station's 1991-2020 mean, with the
+  mean standardised anomaly as a second column.** Normals from stations
+  with at least 20 of the 30 years (935 stations); the % column leaves out
+  stations whose normal is under 10 mm, where percentages explode. A
+  region-year needs 5 stations, else the index is left empty (the counts
+  stay in the table); the owner may widen this for AB and YT if their
+  analyses prove too short (a 3 was a misclick, corrected the same
+  session). Rejected: one method only; 1951-2020 normals (more early
+  stations, but normals from different parts of 70 trending years);
+  1981-2010; 24 (WMO 80%) or 15 years; 3 or 10 stations. Resulting index
+  starts: PNW and BC 1951, AK 1960, AB 1963, YT 1975; AB ends 2025 (CanSWE).
+  Files: `src/config.py`, `src/stations.py`,
+  `results/tables/station_swe_region_year.csv`.
+
+### 2026-10-05 - Station snowpack cleaning rules
+
+- **Decided (owner) the rules that turn the raw station files into one
+  station x year table of April 1 SWE in mm**, every year kept (71,759
+  station-years, 2,180 stations in five regions, 1950-2026). Measured on the
+  raw files first; each rule's count is in `docs/methods_register.md`.
+  - NRCS: dropped QC flags B (1,126 regression back-estimates that copy a
+    snow course into a pillow record, so the course would count twice
+    before 1980 and the swings are damped, SD 0.54 vs 0.61 of the station
+    median) and S (9 values with data, all 8 April negatives among them).
+    Kept E (minor adjustment for sensor noise; 27% of SNOTEL), K (estimate;
+    782 snow-course values since 2009, median 1.00 of normal), V, N, C, X,
+    with the flag in `flags`. Rejected dropping K too, or keeping B.
+  - NRCS snow courses dated 1 July (2,163 values, 485 courses): kept with
+    `sample_date` empty and flag `date_unknown`; their values look like
+    April 1 surveys (median 0.92 of the station median vs 0.96).
+  - Manual surveys, all sources: the sample nearest 1 April within ±10 days
+    (98.3% of NRCS, 99.99% BC, 99.8% Yukon, 98.8% Alberta inside). Rejected
+    ±7 and ±15. Pillows: SNOTEL's midnight value opening 1 April, CanSWE's
+    daily value dated 1 April; each pillow is its own station.
+  - BC: survey codes kept as flags except the estimates EST AREAL AVG and
+    EST PILLOW (7 values); archive and current-season rows were identical
+    (103) and are kept once; coordinates from CanSWE (the BC file has none),
+    so 7 courses (84 values) without a CanSWE match are dropped.
+  - Yukon: "Estimated SWE" kept and flagged (199 values; depth measured,
+    density from history); network sites outside Yukon dropped (lowest
+    licence risk; 8 stations, 315 values), as were 2 in NWT (no region).
+  - CanSWE: provincial files win for the same station-year (15,373 CanSWE
+    values replaced, 9,770 added: Alberta, BC and Yukon pillows, BC-run
+    courses missing from the BC file). CanSWE flags kept in `flags`; flag Y
+    does not occur in AB, BC or YT. Hydro-Québec is never read.
+  - Regions by point in polygon, whatever the network: 15 BC-run courses in
+    WA and ID count for PNW; 33 stations fall in no region (mostly Alberta-
+    and BC-run sites in Montana, plus 3 Idaho stations on the edge and the 2
+    NWT sites).
+  - NRCS station elevations converted from feet (found while building).
+  Files: `src/config.py`, `src/stations.py`, `tests/test_stations.py`.
+
 ### 2026-10-05 - Side-session blocks go in the merge day's log
 
 - **Decided (owner, by merging this change) that a side session's block is

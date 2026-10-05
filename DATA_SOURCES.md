@@ -86,6 +86,19 @@ verbatim from the publisher and shown on the site's methods page.
    29). Air and Water Database. Water and Climate Information System.
    https://nwcc-apps.sc.egov.usda.gov/"
 
+**Outputs carrying station values** (checked 2026-10-05, before the first
+commit of station-derived outputs). Any page that shows one of these needs
+notices 4, 5 and 7, the NRCS credit (6) and, for the ERA5-Land columns,
+notice 2:
+- `results/tables/station_swe_region_year.csv` (`python -m src.stations`):
+  regional index from NRCS, BC, Yukon and CanSWE stations beside ERA5-Land.
+- `results/figures/swe_april1_stations_vs_era5_<index>.png` (notebook 03).
+The station x year table (`data/processed/station_swe_apr1.csv`) is not
+committed. Hydro-Québec (`HQ-`) stations are never read, and Yukon network
+sites outside Yukon are dropped (the third-party-rights question in the
+Yukon row). `results/tables/snow_soil_region_year.csv` holds ERA5-Land and
+ENSO values only (notices 1-2).
+
 ## Acts owed to publishers
 
 Obligations that publishing alone doesn't discharge (registration,

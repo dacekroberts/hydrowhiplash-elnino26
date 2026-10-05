@@ -167,6 +167,32 @@ def percent_of_normal_map(pcts: list[xr.DataArray], regions: gpd.GeoDataFrame,
     return _save(fig, out)
 
 
+def winter_series_columns(table: pd.DataFrame, columns: dict[str, str], ylabel: str,
+                          index: str, out: Path, xlabel: str | None = None) -> Path:
+    """Several series side by side per region on a shared y scale, e.g.
+    station index | ERA5-Land; `columns` maps a column title to a value
+    column. Winters with no value in a column are left blank there."""
+    names = list(columns)
+    regions = list(dict.fromkeys(table["region"]))
+    fig, axes = plt.subplots(len(regions), len(names), figsize=(14, 2.1 * len(regions)),
+                             sharex=True, sharey="row", squeeze=False)
+    for i, region in enumerate(regions):
+        g = table[table["region"] == region].sort_values("year")
+        for j, name in enumerate(names):
+            _series_panel(axes[i, j], g.dropna(subset=[columns[name]]), columns[name],
+                          ylabel if j == 0 else "", f"{region} · {name}")
+        top = np.nanmax(g[list(columns.values())].to_numpy()) * 1.15
+        axes[i, 0].set_ylim(0, top)
+    years = table["year"]
+    ticks = range(int(np.ceil(years.min() / 10) * 10), int(years.max()) + 1, 10)
+    for ax in axes[-1]:
+        ax.set_xticks(list(ticks), [_winter_label(t) for t in ticks])
+        ax.set_xlabel(xlabel or "Winter (Dec-Feb); April 1 of the later year", fontsize=8)
+    _legend(fig, index)
+    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    return _save(fig, out)
+
+
 def _save(fig, out: Path) -> Path:
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")

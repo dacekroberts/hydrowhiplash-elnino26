@@ -23,7 +23,8 @@ Status: **have** = downloaded; **planned** = in `ACTION_PLAN.md`.
 | Soil moisture, layers 1-2 | ERA5-Land | 2 | have (2026-10-04) | m³/m³ | m³/m³ |
 | April 1 SWE (gridded snapshot) | ERA5-Land hourly | 2 | have (2026-10-04) | m water equivalent | mm |
 | Glacier mask | derived from ERA5-Land `sd` (cap + perennial rule; the invariant field was not used, D27) | 2 | have | boolean | mask |
-| Snow water equivalent (stations) | NRCS SNOTEL and snow courses (WA, OR, ID, AK), BC, Yukon, CanSWE (Alberta) | 2 | have, raw (2026-10-05) | inches (NRCS), mm (BC, Yukon), kg m-2 = mm (CanSWE) | mm |
+| Snow water equivalent (stations) | NRCS SNOTEL and snow courses (WA, OR, ID, AK), BC, Yukon, CanSWE (Alberta; BC and Yukon pillows) | 2 | have, cleaned (2026-10-05) | inches (NRCS; elevation in feet), mm (BC, Yukon), kg m-2 = mm (CanSWE) | mm; index in % of normal and SD |
+| Snowfall fraction, summer soil moisture | derived from ERA5-Land `sf`, `tp`, `swvl1-2` | 2 | built (2026-10-05) | mm/month; m³/m³ | fraction 0-1; m³/m³ |
 | PET, SPEI-3, whiplash | derived | 2 | built (2026-10-04) | mm/day; standardised | as native |
 | Fire perimeters | MTBS, WFIGS/NIFC, CNFDB | 3 | planned (after freeze) | polygons + dates | ha, days |
 | Region boundaries | Natural Earth admin-1 | 1 | have | degrees (EPSG:4326) | polygons; ha in ESRI:102008 |
@@ -152,7 +153,7 @@ combining years.
     rounding noise; clip to 0.
 - **Used for:** gridded snowpack next to the station surveys (Phase 2).
 
-### 2d. Snowfall (`sf`), planned
+### 2d. Snowfall (`sf`), have
 
 - **Measures:** precipitation falling as snow, as melted-water depth.
 - **Units:** m water equivalent per day (monthly mean of daily totals), the
@@ -163,7 +164,7 @@ combining years.
 - **Used for:** snowfall fraction = snowfall / total precipitation, to show
   how much of a warm El Niño winter fell as rain instead of snow.
 
-### 2e. Soil moisture, layers 1-2 (`swvl1`, `swvl2`), planned
+### 2e. Soil moisture, layers 1-2 (`swvl1`, `swvl2`), have
 
 - **Measures:** the fraction of a soil layer's volume that is water. Layer 1
   is 0-7 cm, layer 2 is 7-28 cm.
@@ -198,14 +199,14 @@ combining years.
 - **Files:** `data/raw/era5_land_april1/` and
   `data/raw/era5_land_north_april1/`, `era5_land_april1.nc` in each.
 
-## 3. Snowpack from stations (NRCS, BC, Yukon, CanSWE for Alberta), have (raw)
+## 3. Snowpack from stations (NRCS, BC, Yukon, CanSWE for Alberta), have (cleaned 2026-10-05)
 
 **What they measure.** April 1 snow water equivalent at fixed mountain
 sites, the traditional measure of how much water the snowpack will release
 in spring and summer.
 
-**How.** Two methods, used by all three networks to differing degrees
-(*confirm the details for each network at download*):
+**How.** Two methods, both in every network here (checked against the files,
+2026-10-05):
 - **Manual snow courses:** surveyors push a calibrated tube through the
   snowpack, weigh the core and record depth and SWE at a marked transect on
   set dates, usually around the first of the month.
@@ -213,8 +214,10 @@ in spring and summer.
   weighs the snow above it and reports SWE continuously; SNOTEL sites are
   this type, often with a sonic depth sensor too.
 
-**Units.** SNOTEL reports inches of water (`mm = in × 25.4`); BC and Alberta
-report mm. Depth, where used, is cm or inches.
+**Units.** NRCS (SNOTEL and snow courses) reports inches of water
+(`mm = in × 25.4`) and station elevation in **feet** (`m = ft × 0.3048`); BC
+and Yukon report mm and metres; CanSWE reports kg m⁻² (= mm) and metres.
+Depth, where used, is cm or inches.
 
 **Traps.** Sites sit at particular elevations, so a regional average reflects
 where the stations are, not the whole region. Networks start in different
@@ -250,7 +253,44 @@ unfiltered under `data/raw/stations/`; cleaning not yet built):
   Hydro-Québec (excluded). April 1 ±15 days since 1950, stations with 30 or
   more years: ALE 124 (11 pillows), BCE 251 (32 pillows), YT 58.
 
-## 4. Derived climate variables, planned (Phase 2)
+**Fields and flags per source** (as read by `src/stations.py`):
+
+| Source | Station id in the table | Date | Flags carried in `flags` |
+|---|---|---|---|
+| NRCS | triplet `id:state:network` (`SNTL` pillow, `SNOW` course) | SNTL: 1 April; courses: `collectionDate` | `nrcs_qc:` E (minor adjustment for sensor noise), K (estimate), C (different sensor equation), N (no validation profile), X (external estimate); `nrcs_qa:` P (provisional), A (approved), R (raw); `date_unknown` (1 July placeholder). B (back-estimate) and S (suspect) are dropped. V (validated) is not written. |
+| BC | `BCE-<Number>` (CanSWE's id, so the two match) | `Date of Survey` | `bc:<Survey Code>` (PROBLEM, EARLY/LATE, TRACE, PRELIMINARY, UNSCHEDULED, ...; undefined in the files) |
+| Yukon | `YT-<location_code>` | `sample_date` (the real day; `target_date` is 1 April) | `yukon:estimated` (depth measured, density from history) |
+| CanSWE | its own `station_id` (`ALE-`, `BCE-`, `YT-`; pillows often end in `P`) | daily axis | `canswe:` A (sampling problems), B (outside nominal period), C (A and B), E (estimate), R (revised), T (trace) |
+
+**Cleaned table** (`data/processed/station_swe_apr1.csv`, not committed;
+built 2026-10-05): one row per station and year, columns `station_id`,
+`source` (nrcs, bc, yukon, canswe), `network`, `method` (manual, pillow),
+`lat`, `lon`, `elevation` (m), `year`, `swe_apr1_mm`, `sample_date` (empty
+when unknown), `flags`, `region`. 71,759 station-years, 2,180 stations,
+1950-2026, five regions (no California stations). Rules and their counts:
+`docs/methods_register.md` "Station snowpack".
+
+**Regional station index** (`station_swe_region_year.csv`, also in
+`results/tables/`):
+- `station_swe_pct`: median across stations of SWE as % of each station's
+  1991-2020 mean (stations with a normal of at least 10 mm). 100 = normal.
+  Floors at 0, so in snow droughts with many bare stations the median
+  collapses (PNW 2015: 3.3%).
+- `station_swe_z`: mean across stations of (SWE - station mean) / station
+  SD, in SD units. 0 = normal.
+- `n_stations`, `n_stations_pct`: stations behind each value; the index is
+  empty below 5.
+- `era5_swe_apr1_mm`, `era5_swe_pct`, `era5_swe_z`: ERA5-Land April 1 SWE
+  (glacier cells excluded) and the same two scales against its own
+  1991-2020 regional mean.
+
+**Traps found in cleaning:** the station network sits high (PNW median
+station normal 3.1 times the ERA5-Land regional mean), so the station index
+understates losses concentrated at low elevations (PNW strong El Niño
+winters: low third of stations -42 points, high third +3). Comparing
+stations and grid in mm is meaningless; compare % or z.
+
+## 4. Derived climate variables, built (Phase 2) unless marked planned
 
 ### 4a. Potential evapotranspiration (PET)
 
@@ -304,11 +344,21 @@ unfiltered under `data/raw/stations/`; cleaning not yet built):
   35.5N grid row sits exactly on the NorCal/SoCal split and goes to SoCal
   (`DECISIONS.md` 2026-10-04, "Phase 1 regions and ERA5 loading").
 
-- `temp_jja`: June-August mean 2 m temperature per region, °C.
-- `precip_anom_*`: winter precipitation anomaly per region; months,
+- `temp_jja` (planned): June-August mean 2 m temperature per region, °C.
+- `precip_anom_*` (planned): winter precipitation anomaly per region; months,
   baseline and units (mm, % of normal or standardised) are fixed at the
   freeze (H5 definitions). `lag0` = preceding winter, `lag1` = the winter
   before.
+
+- `snowfall_frac` (have, 2026-10-05): share of November-March
+  precipitation that fell as snow, regional mean snowfall / regional mean
+  precipitation over the season (`src.snow_soil`), 0 to 1. Year Y =
+  November Y-1 to March Y. Also `sf_season_mm` and `tp_season_mm`, the two
+  seasonal totals (mm). Table: `data/processed/snow_soil_region_year.csv`
+  and `results/tables/`.
+- `soil_moisture` (have, 2026-10-05): June-August mean volumetric soil water,
+  0-28 cm (0.25 × layer 1 + 0.75 × layer 2, by thickness), m³/m³, regional
+  mean. Year Y = summer Y. Same table.
 
 ## 5. Fire perimeters (after the freeze only), planned (Phase 3)
 
