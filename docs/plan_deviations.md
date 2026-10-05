@@ -103,6 +103,19 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-04 (Session 0)
 
+### D22 · Append-only merge script added
+- **Plan:** `merge-side-pr` step 5 resolved `DECISIONS.md` and
+  `docs/plan_deviations.md` conflicts by hand; `ACTION_PLAN.md` "Later
+  tooling" has no merge tooling.
+- **Actual:** `scripts/merge_append_only.py` resolves both files and step 5
+  runs it. Numbered D22 because main's Phase 1 work uses D17-D21; open PRs
+  #3 and #1 use D23-D25.
+- **Why:** every side-session PR conflicts with the others at the top of both
+  files.
+- **Recorded:** `DECISIONS.md` 2026-10-04 "Append-only merge script".
+- **Plan doc:** updated (`merge-side-pr` step 5); `ACTION_PLAN.md` left as
+  written.
+
 ### D16 · Parallel worktree session before Phase 4
 - **Plan:** `ACTION_PLAN.md` and `docs/claude_code_project_setup.md`
   assume one sequential local session until Phase 4.

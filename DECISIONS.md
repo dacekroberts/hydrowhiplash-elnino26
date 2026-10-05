@@ -17,6 +17,52 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Append-only merge script
+
+- **Decided to resolve `DECISIONS.md` and `docs/plan_deviations.md` merge
+  conflicts with a script, `scripts/merge_append_only.py`, run from
+  `merge-side-pr` step 5, instead of by hand.** Every side-session PR adds
+  entries at the top of both files, so each merge after the first conflicts
+  there (PRs #1-#3 all do). The idea of a checked, mechanical resolution
+  comes from expanded-heatmap's script of the same name (its 2026-09-22
+  near-miss: rebuilding from one side nearly dropped an entry git had merged
+  outside the conflict markers); the code was written for this repo rather
+  than copied. Differences: it rebuilds each file from git's three stages
+  (base, ours, theirs) instead of editing conflict regions, so that near-miss
+  can't happen; in `DECISIONS.md` the unit is the bullet (one per decision)
+  under its dated topic, so two branches adding bullets to one topic merge,
+  and both list styles found in the file (blank lines between bullets or not)
+  are kept; in `plan_deviations.md` the unit is the whole `D<n>` entry,
+  ordered by number, and a D number used twice is refused; a version that
+  doesn't parse and render back byte for byte is refused; there is no archive
+  or index handling (neither exists here). It refuses whenever an old entry
+  was edited, removed or moved. Order: each side's own order is kept and the
+  two are interleaved newest first by heading date and D number, the PR's
+  entries above main's on the same date, so the latest merge ends on top.
+  Rejected dating entries by commit time, heatmap's approach: a first version
+  did, and a simulation on the five open PR branches showed it reorders
+  entries main had already settled (a squash commit's time is the merge
+  time) and sorted D17-D19 ascending once a PR had merged main in before;
+  merging main into a PR once or after every merge then gave different
+  files. Without commit times both give byte-identical files (re-run on the
+  same branches: 34 decision bullets and 20 deviations, each once). 16 tests,
+  including a round trip of both live files, the once-or-repeatedly
+  equivalence and a real conflicted git merge. Rejected `merge=union` in
+  `.gitattributes` (stacks both sides in arbitrary order, duplicates lines
+  when an entry is edited, and GitHub's merge button ignores it) and
+  per-entry files (restructures both documents). Files:
+  `scripts/merge_append_only.py`, `tests/test_merge_append_only.py`,
+  `.claude/skills/merge-side-pr/SKILL.md`.
+- **Decided, by the owner, that the main session keeps PRs mergeable:**
+  side PRs merge through `merge-side-pr`, which merges main into each PR
+  just before merging it (step 5), and side sessions don't merge main into
+  their own open PRs. Both ways give the same files (above), so the choice
+  is about who pushes: one session per PR branch, and one merge commit per
+  PR instead of one per earlier merge. Rejected the side session updating
+  every remaining PR after each merge (fits merging with GitHub's button,
+  which the owner won't use for side PRs). Files:
+  `.claude/skills/merge-side-pr/SKILL.md`.
+
 ### 2026-10-04 - Alaska and Yukon added
 
 - **Decided (owner) that substantial deviations are written into the plans
