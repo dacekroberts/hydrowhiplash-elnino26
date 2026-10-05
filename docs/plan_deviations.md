@@ -21,12 +21,13 @@ flagged here instead.
 
 ## 2026-10-04 (Session 0)
 
-### D20 · Append-only merge script added
+### D22 · Append-only merge script added
 - **Plan:** `merge-side-pr` step 5 resolved `DECISIONS.md` and
   `docs/plan_deviations.md` conflicts by hand; `ACTION_PLAN.md` "Later
   tooling" has no merge tooling.
 - **Actual:** `scripts/merge_append_only.py` resolves both files and step 5
-  runs it. Numbered D20 because open PRs #1 and #3 add D17-D19.
+  runs it. Numbered D22 because main's Phase 1 work uses D17-D21; open PRs
+  #3 and #1 use D23-D25.
 - **Why:** every side-session PR conflicts with the others at the top of both
   files.
 - **Recorded:** `DECISIONS.md` 2026-10-04 "Append-only merge script".
