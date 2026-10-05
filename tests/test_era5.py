@@ -157,3 +157,31 @@ def test_snowfall_uses_the_precipitation_convention():
     ds = xr.Dataset({"sf": monthly([0.001, 0.001], start="2000-02-01", name="sf")})
     mm = era5.convert_units(ds)["sf"].values.ravel()
     assert mm == pytest.approx([29.0, 31.0])  # leap February, then March
+
+
+def _write_years(tmp_path, years):
+    for year in years:
+        da = monthly(np.full(12, 0.001), start=f"{year}-01-01")
+        da.to_dataset().to_netcdf(tmp_path / f"era5_land_{year}.nc")
+
+
+def test_open_era5_refuses_unpacked_year_folders(tmp_path):
+    _write_years(tmp_path, [1950, 1951])
+    (tmp_path / "era5_land_1952").mkdir()  # a zipped CDS reply, unpacked
+    with pytest.raises(ValueError, match="era5_land_1952"):
+        era5.open_era5(tmp_path)
+
+
+def test_open_era5_refuses_a_missing_year(tmp_path):
+    _write_years(tmp_path, [1950, 1952])
+    with pytest.raises(ValueError, match="not contiguous"):
+        era5.open_era5(tmp_path)
+
+
+def test_region_masks_refuse_overlapping_polygons():
+    grid = monthly([1.0], lat=(36.05, 36.15), lon=(-120.05, -119.95))
+    regions = gpd.GeoDataFrame({"region": ["A", "B"]},
+                               geometry=[box(-121, 35, -119, 37), box(-120.5, 36, -119.5, 37)],
+                               crs="EPSG:4326")
+    with pytest.raises(ValueError, match="overlap"):
+        era5.region_masks(regions, grid)

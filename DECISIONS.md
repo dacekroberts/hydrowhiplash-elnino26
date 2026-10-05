@@ -49,6 +49,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   its register. Finding 5's map extent and baseline wording were already
   logged as D28; the legend thresholds are new.
 
+### 2026-10-05 - Phase 1 audit fixes in the main session
+
+- **Fixed audit findings 3, 5 and 6 (`docs/audit_2026-10-05_phase1.md`),
+  at the owner's direction; finding 7 (Phase 1 figures only rebuildable by
+  running notebook 01) went to the side session.**
+  - 3: `open_era5` now raises if an `era5_land_<year>/` folder exists (a
+    zipped CDS reply the `*.nc` glob would skip) or if months are not
+    contiguous; either would silently drop winters. Latent: all four ERA5
+    folders hold 77 files and no year folders (checked 2026-10-05).
+  - 5: the series legend reads `EL_NINO_THRESHOLD` and `STRONG_THRESHOLD`
+    from config instead of hard-coded 0.5 and 1.5; figures unchanged.
+  - 6: the "cell in two regions" check could never fire with
+    `overlap=False`; it now builds an `overlap=True` mask and raises when a
+    cell centre lies inside two polygons. Cells on a shared edge (the 35.5N
+    row) are not flagged; all 7 real regions pass with unchanged cell
+    counts. Rejected dropping the check (polygon overlaps would go
+    unnoticed if regions change).
+  Files: `src/era5.py`, `src/figures.py`, `tests/test_era5.py`,
+  `tests/test_diagrams.py`.
+
 ### 2026-10-05 - Station snowpack downloads
 
 - **Decided to download every station source raw and unfiltered, with all
