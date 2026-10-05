@@ -74,9 +74,12 @@ prompt to paste into a new Claude Code session in the main checkout.
 - Elevation-matched ERA5-Land comparison (grid cells near station
   elevations): a scope addition, not built.
 - 111 north region cells with no SPEI fit: not investigated.
-- `prescreen_prs.py` SITE_PATHS and `merge-side-pr` step 3 don't list
-  `src/winter_figures.py` as a site-check trigger (side session offer;
-  owner's call).
+- Done in PR #16 (3362e18): `src/winter_figures.py` now triggers the
+  site check in `prescreen_prs.py` and `merge-side-pr` step 3.
+- Numbering at merge for side-session deviation entries (owner,
+  2026-10-05): the side session is building it as its own PR; until it
+  merges, main sets a new block in session 4 (side has used no number
+  from D40 up).
 - D28: the 1997-98 map's hard-coded extent and title wording (owner's call).
 - Freeze target about 18 October. At the freeze, the reminder to set up the
   Claude Code Project is due (memory note).
