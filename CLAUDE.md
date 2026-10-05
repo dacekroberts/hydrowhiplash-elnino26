@@ -8,6 +8,8 @@ PNW (WA/OR/ID), BC and Alberta, contrasted with NorCal and SoCal. Target: the
 - `ANALYSIS_PLAN.md`: pre-registered hypotheses and tests (frozen once committed)
 - `DECISIONS.md`: reasoning trail for judgment calls
 
+`docs/plan_deviations.md` tracks where reality departed from these plans.
+
 ## Required every session: daily log
 
 At the end of every work session, before the final commit, write today's log
@@ -27,6 +29,9 @@ parses it.
 - Flag scope additions rather than implementing them.
 - Log every judgment call in `DECISIONS.md` as it's made (format at the top
   of that file).
+- Log every departure from the planning docs (estimates, assumptions,
+  procedures, scope) in `docs/plan_deviations.md` as it's found, including
+  stale wording left as written.
 
 ## Environment
 

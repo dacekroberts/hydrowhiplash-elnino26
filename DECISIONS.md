@@ -17,6 +17,21 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Plan deviations log
+
+- **Decided to track every departure from the planning documents in a new
+  `docs/plan_deviations.md`, back-filled to the start of the project.** The
+  planning docs carry estimates and procedures (download size, El Niño
+  counts, licence steps, Session 0 workflow) that reality has already
+  overtaken, and the owner's prose in them is not rewritten, so the
+  departures needed one place of their own. 15 entries recorded for
+  2026-10-04 (D1-D15). `ANALYSIS_PLAN.md`'s deviations log stays the
+  official record of post-freeze changes to tests, mirrored as pointers.
+  Placed in `docs/` because `LICENSE-CONTENT` already covers `docs/*.md`.
+  Rejected adding the entries to `DECISIONS.md` (many are not judgment calls)
+  and to `ANALYSIS_PLAN.md`'s log (reserved for pre-registered tests).
+  Files: `docs/plan_deviations.md`, `CLAUDE.md`.
+
 ### 2026-10-04 - ERA5-Land variables
 
 - **Decided to add snow depth water equivalent (`sd`) to the ERA5-Land

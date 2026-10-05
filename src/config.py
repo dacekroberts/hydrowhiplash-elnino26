@@ -24,7 +24,9 @@ M2_PER_HA = 10_000
 ENSO_INDEX = "ONI"  # "ONI" or "RONI"
 ENSO_INDEX_URLS = {
     "ONI": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
-    "RONI": "",  # TODO: confirm on https://www.cpc.ncep.noaa.gov/data/indices/
+    # Same layout as the ONI table minus TOTAL; confirmed 2026-10-04. Official
+    # ENSO index per NWS Public Information Statement 26-05.
+    "RONI": "https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt",
 }
 EL_NINO_THRESHOLD = 0.5   # deg C, DJF value at or above: El Nino winter
 LA_NINA_THRESHOLD = -0.5  # deg C, DJF value at or below: La Nina winter
