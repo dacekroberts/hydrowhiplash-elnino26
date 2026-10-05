@@ -24,16 +24,28 @@ from src.config import (CLIMATE_FIRST_YEAR, DATA_PROCESSED, DATA_RAW,
                         LA_NINA_THRESHOLD, STRONG_THRESHOLD)
 
 
-def download() -> Path:
-    url = ENSO_INDEX_URLS[ENSO_INDEX]
+def download(index: str = ENSO_INDEX, refresh: bool = True) -> Path:
+    """Fetch the raw table for `index` ("ONI" or "RONI") to data/raw/.
+
+    With refresh=False an existing file is reused (for exploration of the
+    index not selected in config, e.g. RONI next to ONI before the freeze).
+    """
+    url = ENSO_INDEX_URLS[index]
     if not url:
-        raise SystemExit(f"No URL set for ENSO_INDEX = {ENSO_INDEX!r} in src/config.py.")
+        raise SystemExit(f"No URL set for index {index!r} in src/config.py.")
     DATA_RAW.mkdir(parents=True, exist_ok=True)
-    out = DATA_RAW / f"{ENSO_INDEX.lower()}.ascii.txt"
+    out = DATA_RAW / f"{index.lower()}.ascii.txt"
+    if out.exists() and not refresh:
+        return out
     resp = requests.get(url, timeout=60)
     resp.raise_for_status()
     out.write_text(resp.text)
     return out
+
+
+def load_winters(index: str = ENSO_INDEX, refresh: bool = False) -> pd.DataFrame:
+    """Classified winters for any index, without writing data/processed/."""
+    return classify_winters(parse(download(index, refresh=refresh)))
 
 
 def parse(path: Path) -> pd.DataFrame:

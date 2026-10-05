@@ -1,8 +1,9 @@
-"""Download ERA5-Land monthly precipitation and 2 m temperature.
+"""Download ERA5-Land monthly precipitation, 2 m temperature and SWE.
 
-Domain, years and variables come from src/config.py (ERA5_AREA,
-CLIMATE_FIRST_YEAR, ERA5_VARIABLES). One NetCDF file per year, so a failed
-request only costs one year; re-running skips years already downloaded.
+Domains, years and variables come from src/config.py (ERA5_DOMAINS,
+CLIMATE_FIRST_YEAR, ERA5_VARIABLES). Each domain has its own folder under
+data/raw, one NetCDF file per year, so a failed request only costs one year;
+re-running skips years already downloaded.
 
 Needs a Copernicus CDS account and a .cdsapirc file (see README).
 
@@ -18,27 +19,29 @@ UNITS (important):
   and number before combining years: expver can differ for recent months.
 Regional means must be area-weighted: use src.geo.regional_mean.
 
-Run:  python -m src.download_era5
+Run:  python -m src.download_era5            every domain
+      python -m src.download_era5 north      one domain
 """
+import sys
 import zipfile
 from datetime import date
 
 import cdsapi
 
-from src.config import (CLIMATE_FIRST_YEAR, DATA_RAW, ERA5_AREA, ERA5_DATASET,
+from src.config import (CLIMATE_FIRST_YEAR, DATA_RAW, ERA5_DATASET, ERA5_DOMAINS,
                         ERA5_LAG_MONTHS, ERA5_VARIABLES)
 
-OUT = DATA_RAW / "era5_land"
+RAW = DATA_RAW
 
 
-def request(year: int, months: list[int]) -> dict:
+def request(year: int, months: list[int], area: list[float]) -> dict:
     return {
         "product_type": ["monthly_averaged_reanalysis"],
         "variable": ERA5_VARIABLES,
         "year": [str(year)],
         "month": [f"{m:02d}" for m in months],
         "time": ["00:00"],
-        "area": ERA5_AREA,
+        "area": area,
         "data_format": "netcdf",
         "download_format": "unarchived",
     }
@@ -69,11 +72,12 @@ def is_access_error(err: Exception) -> bool:
     return getattr(response, "status_code", None) in (401, 403)
 
 
-def retrieve(client: cdsapi.Client, year: int, months: list[int], target) -> None:
+def retrieve(client: cdsapi.Client, year: int, months: list[int], area: list[float],
+             target) -> None:
     """Download to a temporary file, then rename, so an interrupted download
     never leaves a truncated file that later runs would skip."""
     tmp = target.with_suffix(".tmp")
-    client.retrieve(ERA5_DATASET, request(year, months), str(tmp))
+    client.retrieve(ERA5_DATASET, request(year, months, area), str(tmp))
     if zipfile.is_zipfile(tmp):
         # Mixed accumulated and instantaneous variables can arrive zipped,
         # one NetCDF per variable group, even with "unarchived" requested.
@@ -86,18 +90,18 @@ def retrieve(client: cdsapi.Client, year: int, months: list[int], target) -> Non
     tmp.replace(target)
 
 
-def main() -> None:
-    OUT.mkdir(parents=True, exist_ok=True)
-    client = cdsapi.Client()
-    today = date.today()
-
+def download_domain(client: cdsapi.Client, name: str, today: date) -> None:
+    area, folder = ERA5_DOMAINS[name]
+    out = RAW / folder
+    out.mkdir(parents=True, exist_ok=True)
+    print(f"domain {name}: {area} -> {out}")
     for year in range(CLIMATE_FIRST_YEAR, today.year + 1):
         months = months_available(year, today)
         if not months:
             continue
         full = len(months) == 12
-        target = OUT / (f"era5_land_{year}.nc" if full else f"era5_land_{year}_partial.nc")
-        partial = OUT / f"era5_land_{year}_partial.nc"
+        target = out / (f"era5_land_{year}.nc" if full else f"era5_land_{year}_partial.nc")
+        partial = out / f"era5_land_{year}_partial.nc"
         if full and (target.exists() or target.with_suffix("").is_dir()):
             if partial.exists():
                 partial.unlink()  # full year supersedes the partial file
@@ -105,7 +109,7 @@ def main() -> None:
             continue
         print(f"requesting {year} ({len(months)} months)...")
         try:
-            retrieve(client, year, months, target)
+            retrieve(client, year, months, area, target)
             if full and partial.exists():
                 partial.unlink()
         except Exception as err:  # most recent months may not be published yet
@@ -117,5 +121,16 @@ def main() -> None:
                     "Download tab, then re-run; finished years are skipped.") from err
 
 
+def main(domains: list[str] | None = None) -> None:
+    domains = domains or list(ERA5_DOMAINS)
+    unknown = set(domains) - set(ERA5_DOMAINS)
+    if unknown:
+        raise SystemExit(f"Unknown domain(s) {sorted(unknown)}; choose from {list(ERA5_DOMAINS)}.")
+    client = cdsapi.Client()
+    today = date.today()
+    for name in domains:
+        download_domain(client, name, today)
+
+
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])

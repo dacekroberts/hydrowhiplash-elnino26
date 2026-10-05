@@ -17,6 +17,116 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Alaska and Yukon added
+
+- **Decided (owner) that substantial deviations are written into the plans
+  directly, with a `[mid-project: Dnn]` marker at each changed spot.** The
+  Alaska/Yukon scope change touches the goal and region lists in every
+  planning document; leaving five-region wording in place and flagging it
+  (the rule for owner's prose so far) would leave the plans misdescribing
+  the project. The marker keeps mid-project additions distinguishable from
+  the original plan, and the deviation entry still records it (D20, marked
+  *Substantial: yes*). Smaller deviations keep the old rule. Files:
+  `CLAUDE.md`, `docs/plan_deviations.md`, the four planning documents.
+
+- **Decided (owner) to add Alaska (AK) and Yukon (YT) as regions with a new
+  role, `north`, and a second ERA5-Land download domain.** Reason: El Niño
+  winters are reliably warm there (a deeper, east-shifted Aleutian Low), and
+  interior Alaska fire has been linked to El Niño, a different mechanism
+  (warm spring, early melt) from the dry-winter whiplash path. Owner judged
+  the link worth one more download. Role `north` gives them their own
+  hypothesis family so the PNW/BC/AB Holm corrections are unchanged;
+  rejected `primary` (dilutes those families) and `contrast`. Pre-freeze
+  item added to `ANALYSIS_PLAN.md`. Files: `src/config.py`,
+  `src/regions.py`.
+
+- **Decided (owner) on Alaska as one whole-state region for now, clipped at
+  169W.** A split into Interior and coast (different biomes; fire almost all
+  Interior; the state-wide winter precipitation mean is dominated by the wet
+  south coast) stays open until the freeze and would need a boundary source
+  such as NOAA's Alaska climate divisions. West of 169W lie 1.1 Mha of outer
+  Aleutian and Bering Sea islands (0.7% of the state, almost no fire) plus
+  the Near Islands across the antimeridian, so the polygon and the climate
+  grid both stop there. Areas: AK 149.39 Mha (+0.9% of official land area
+  148.1 Mha), YT 48.45 Mha (+0.4% of official total 48.24 Mha). Files:
+  `src/config.py` (`ALASKA_WEST_LON`), `src/regions.py`.
+
+- **Decided (owner) on one north download box, 51-71.5N x 169W-123.5W, over
+  two non-overlapping boxes or a box to 180W.** 77 requests (about 50
+  minutes, about 3.75 MB per year) against 154 for two boxes; the overlap
+  with the main domain south of 60.5N doubles as a check that the two
+  downloads agree cell for cell. Rejected extending to 180W (about 25% more
+  data for the outer islands). The downloader now loops over named domains
+  in `ERA5_DOMAINS`, each in its own folder. Files: `src/config.py`,
+  `src/download_era5.py`, `src/era5.py`.
+
+- **Found that the main and north downloads agree to float32 rounding, not
+  bit for bit, and decided to check the overlap with a tolerance.** Over
+  the 96 x 166-cell overlap (51-60.5N, 140-123.5W) and all 919 months:
+  identical land/ocean pattern; SWE identical; precipitation max
+  difference 5.9e-5 mm/month (relative 7.5e-7, 9.4% of values differ at
+  all); temperature max 2.4e-4 K. Consistent with CDS packing each request's
+  GRIB by its area. The notebook check now requires an identical land/ocean
+  pattern and agreement within relative 1e-5 or 0.001 in the variable's
+  units (an absolute floor because temperature in deg C crosses 0).
+  Rejected exact equality (fails on rounding alone). Either domain can
+  supply a region in the overlap. Files: `notebooks/01_explore_era5.ipynb`,
+  `src/config.py`, `docs/data_dictionary.md`.
+
+- **Decided (owner) on a provisional April-September fire window for AK and
+  YT,** both jurisdictions' statutory fire season (1 April to 30 September);
+  burned area peaks June-July. Rejected June-October and May-August. Final
+  window set at the freeze. Files: `src/config.py`.
+
+### 2026-10-04 - Phase 1 regions and ERA5 loading
+
+- **Decided (owner) to assign ERA5-Land cells to regions by the cell-centre
+  rule.** A 0.1 degree cell counts fully for a region when its centre lies
+  inside the polygon (regionmask `mask_3D`), then cells are cos(latitude)
+  weighted by `src.geo.regional_mean`. Measured against fractional-overlap
+  weights on all 76 DJF totals: series correlate at 0.99998 or higher in
+  every region; mean difference -0.24% (AB) to +0.81% (NorCal), largest
+  single-winter difference 1.40% (SoCal). Cell counts: PNW 7,361, BC 13,395,
+  AB 9,461, NorCal 2,820, SoCal 1,312. Rejected fractional overlap (would
+  need `regional_mean` to take fractional weights for no measurable gain).
+  Files: `src/era5.py`.
+
+- **Decided to snap the ERA5-Land grid to its nominal 0.1 degree values on
+  load, and found that the 35.5N row sits exactly on the NorCal/SoCal
+  split.** The files store that row as 35.499999999999645, so float noise
+  would have decided which side it fell on. After snapping, regionmask puts
+  the 58 cells of the row in SoCal, and a test checks each edge cell lands in
+  exactly one region. Sensitivity: SoCal mean DJF precipitation 110.9 mm
+  with the row, 110.8 mm without; NorCal would drop from 355.0 to 349.9 mm
+  (-1.4%) if it took the row instead. Kept in SoCal. Files: `src/era5.py`,
+  `tests/test_era5.py`.
+
+- **Decided (owner) on the mean of all 76 winters (1950-51 to 2025-26) as
+  the baseline for the 1997-98 map, shown as percent of normal.** Matches
+  `ACTION_PLAN.md`'s "all-years average" and the full-record principle;
+  1997-98 is one of the 76. Percent of normal on a log2 colour scale (25% to
+  400%) shows the dry interior and the wet south fairly, where mm
+  differences would be dominated by the wet coast. Rejected 1991-2020 and
+  1981-2010 normals and a leave-one-out baseline. Not binding on the H5
+  `precip_anom` baseline, which stays a pre-freeze item. Files:
+  `notebooks/01_explore_era5.ipynb`, `src/figures.py`.
+
+- **Decided to put the winter definition in `config.py` as
+  `WINTER_MONTHS = (12, 1, 2)`, with seasons crossing the new year labelled
+  by their last month.** Keeps DJF tunable (H5 may choose October-March)
+  without editing code; `winter_total` drops incomplete seasons, so winters
+  run 1950-51 to 2025-26 (76) and ocean cells stay NaN rather than summing
+  to 0. Files: `src/config.py`, `src/era5.py`.
+
+- **Found Natural Earth admin-1 to be public domain (`read-licence`,
+  verdict PERMITTED); region areas checked against official figures.**
+  Areas from `area_ha` (ESRI:102008): PNW 64.23 Mha, BC 94.56 Mha, AB
+  66.37 Mha, NorCal 27.71 Mha, SoCal 13.26 Mha. BC and AB within 0.1% and
+  0.3% of official total area (land plus freshwater); PNW and California
+  fall between official land and total area (-2.1%/+1.2% and -3.4%/+1.6%)
+  because US totals include coastal waters the polygons leave out. Files:
+  `DATA_SOURCES.md`.
+
 ### 2026-10-04 - Side worktree session
 
 - **Decided to write a `merge-side-pr` skill before the first side-session
