@@ -19,6 +19,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ### 2026-10-04 - Side worktree session
 
+- **Decided to write a `merge-side-pr` skill before the first side-session
+  PR arrives, and to squash-merge side PRs.** Each merge involves about ten
+  steps (rule checks, tests in a throwaway worktree so the main checkout's
+  uncommitted work is untouched, conflict resolution at the top of
+  `DECISIONS.md` and `docs/plan_deviations.md`, folding the session block
+  into the log), and the side session was already running. Squash gives one
+  commit per task on `main` while the PR keeps the detail. Worktree session
+  hours are not added to the log's `hours`, which counts the owner's
+  hands-on time and would double-count parallel work. Rejected handling
+  merges ad hoc (steps get skipped) and plain merge commits (noisier `main`
+  history). Files: `.claude/skills/merge-side-pr/SKILL.md`, `CLAUDE.md`.
+
 - **Decided to run a second, local Claude Code session in a git worktree for
   tasks that need no data, alongside the main line from Phase 1.** First
   tasks: the site's mechanism diagram and the attribution notices the

@@ -25,7 +25,7 @@ worktree or on a side branch does not edit `logs/`, because parallel edits to
 one day's file conflict. It ends by putting its session block (same format,
 `### HH:MM-HH:MM · Claude Code (worktree: <branch>)`) in the PR description
 and its final message; the main-checkout session adds the block to the day's
-log when it merges the PR. Data lives only in the main checkout (`data/` is
+log when it merges the PR, using the `merge-side-pr` skill. Data lives only in the main checkout (`data/` is
 never committed), so worktree sessions take only tasks that need no data.
 
 ## Working with this user
