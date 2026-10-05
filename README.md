@@ -2,7 +2,8 @@
 
 Analog analysis of how strong El Niño winters affect hydroclimate whiplash and
 the following fire season in the Pacific Northwest, British Columbia and
-Alberta, contrasted with Northern and Southern California. The current target
+Alberta, plus Alaska and Yukon [mid-project: D20], contrasted with Northern and Southern
+California. The current target
 is the 2026–27 event, with the 2027 fire season as the outcome.
 
 Author: Dace Roberts.
@@ -24,7 +25,7 @@ autocorrelated samples:
 |---|---|
 | Do El Niño years differ from the rest? | Permutation test and bootstrap confidence interval |
 | Does ONI strength matter after controlling for temperature and the long-term trend? | Regression with controls and Newey-West standard errors |
-| Does El Niño affect the PNW, BC and Alberta differently from California? | Pooled regression with an ONI × region interaction |
+| Does El Niño affect the PNW, BC and Alberta (and Alaska and Yukon [mid-project: D20]) differently from California? | Pooled regression with an ONI × region interaction |
 | Does a wet year raise fire risk afterwards (the whiplash mechanism)? | Lagged regression |
 | Are consecutive years independent? | Autocorrelation check and block bootstrap |
 | Are some results significant by chance? | Holm and Benjamini-Hochberg corrections |

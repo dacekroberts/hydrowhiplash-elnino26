@@ -1,7 +1,8 @@
 # CLAUDE.md - hydrowhiplash-elnino26
 
 Analog study: how strong El Niño winters shape the following fire season in the
-PNW (WA/OR/ID), BC and Alberta, contrasted with NorCal and SoCal. Target: the
+PNW (WA/OR/ID), BC and Alberta, plus Alaska and Yukon [mid-project: D20], contrasted with
+NorCal and SoCal. Target: the
 2026-27 El Niño and the 2027 fire season. Three documents hold the state:
 
 - `ACTION_PLAN.md`: roadmap, open work, current phase
@@ -9,6 +10,9 @@ PNW (WA/OR/ID), BC and Alberta, contrasted with NorCal and SoCal. Target: the
 - `DECISIONS.md`: reasoning trail for judgment calls
 
 `docs/plan_deviations.md` tracks where reality departed from these plans.
+When a deviation is substantial enough that the plans are edited directly,
+each changed spot carries the marker `[mid-project: Dnn]` pointing to its
+entry, so mid-project additions stay distinguishable from the original plan.
 
 ## Required every session: daily log
 
@@ -70,7 +74,8 @@ Units, measurement methods and traps for every dataset and derived variable:
   tp * 1000 * days_in_month; temperature is kelvin. Time dimension is
   `valid_time`.
 - **Fires counted:** only fires >= `MIN_FIRE_HA` (405 ha) in every region.
-- **Fire-season window:** `FIRE_SEASON_MONTHS` (Jun-Oct, Alberta Apr-Oct).
+- **Fire-season window:** `FIRE_SEASON_MONTHS` (Jun-Oct, Alberta Apr-Oct,
+  Alaska and Yukon Apr-Sep provisional [mid-project: D20]).
 - **Year labels:** the DJF index value labelled year Y is winter (Y-1)-Y and
   is paired with fire season Y.
 
