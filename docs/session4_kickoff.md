@@ -131,9 +131,13 @@ Session 4 for hydrowhiplash-elnino26: pre-freeze decisions (gate before Phase 3)
    is a last resort.
 
 8. End of session: daily-log skill, python scripts/log.py list,
-   python scripts/check_no_em_dashes.py, commit and push. Offer to update
-   the roadmap artifact at the same URL, and write the next session's
-   kickoff the same way.
+   python scripts/check_no_em_dashes.py, commit and push. Refresh the data
+   guide artifact at the same URL
+   (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P): read it, update
+   every data type, setting and number that changed from the repo (data
+   dictionary, config, methods register, results/tables), and the snapshot
+   commit in its footer. Offer to update the roadmap artifact at the same
+   URL, and write the next session's kickoff the same way.
 
 Optional, if time allows: the 111 north region cells with no SPEI fit; the
 elevation-matched ERA5-Land comparison only if I approve it as scope.

@@ -27,6 +27,18 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (Phase 2)
 
+### D39 · Data guide page refreshed at the end of every session
+- **Plan:** `CLAUDE.md` "Required every session" names the daily log only;
+  the data dictionary is the record of data types.
+- **Actual:** the end of every main-checkout session also refreshes a
+  private data guide artifact (data types, settings, headline numbers),
+  owner's request 2026-10-05. `CLAUDE.md` gained the rule.
+- **Why:** owner's request, to keep a readable overview of the whole data
+  set current.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Data guide page, refreshed every
+  session".
+- **Plan doc:** `CLAUDE.md` updated; `ACTION_PLAN.md` left as written.
+
 ### D38 · Climate change and compounding added as a pre-freeze item
 - **Plan:** `ANALYSIS_PLAN.md` "Data and years" handles the trend for
   burned area only (a `year` term; `burn_detr`); `ACTION_PLAN.md` "Later

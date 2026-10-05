@@ -17,6 +17,19 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Data guide page, refreshed every session
+
+- **Decided (owner) to keep a private data guide page listing every data
+  type, derived variable, setting and headline number, and to refresh it at
+  the end of every main-checkout session.** Published 2026-10-05
+  (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P, snapshot 6ad8666)
+  after the owner asked for a summary of all data types and values from
+  sessions 0-3, so the data set stays understandable as it grows. The repo
+  stays the source of truth (data dictionary, config, methods register); the
+  page is a readable snapshot. Rejected a committed Markdown copy, which
+  would duplicate the data dictionary and go stale. Files: `CLAUDE.md`,
+  `docs/session4_kickoff.md`.
+
 ### 2026-10-05 - Stations against ERA5-Land (verification)
 
 - **Found that station April 1 SWE agrees with ERA5-Land on the direction

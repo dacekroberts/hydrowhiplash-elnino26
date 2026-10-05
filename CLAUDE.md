@@ -24,6 +24,15 @@ time, because the user exports these into an external catalogue. A session
 isn't finished until its log is written and `python scripts/log.py list`
 parses it.
 
+Also at the end of every main-checkout session: refresh the private data
+guide artifact, https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P (every
+data type, derived variable, setting and headline number so far). Read it
+with the Artifact tool, update whatever changed from `docs/data_dictionary.md`,
+`src/config.py`, `docs/methods_register.md` and `results/tables/`, set the
+snapshot commit in its footer, and republish to the same URL. Explain each
+data type as it comes up during the session, so the guide holds nothing new
+to the owner.
+
 **Exception, worktree and branch sessions:** a session working in a git
 worktree or on a side branch does not edit `logs/`, because parallel edits to
 one day's file conflict. It ends by putting its session block (same format,
