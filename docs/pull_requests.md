@@ -65,7 +65,11 @@ main ──●──────────────●── (squash merge)
   - **Rebase and merge:** replays each commit onto `main` one by one.
 - **Draft:** a PR marked not ready for review.
 - **Close:** reject a PR without merging (it can be reopened).
-- **Delete branch:** tidy-up after a merge; the PR keeps the record.
+- **Delete branch:** tidy-up after a merge; the PR keeps the record. Here
+  only the GitHub copy is deleted (`git push origin --delete <branch>`).
+  GitHub's CLI option `gh pr merge --delete-branch` also deletes the local
+  branch, and if a side session has it checked out, removes that session's
+  whole worktree (PR #2, 2026-10-04; `merge-side-pr` step 6).
 
 ## Reviewing and merging a PR
 
@@ -86,7 +90,10 @@ main ──●──────────────●── (squash merge)
      onward).
 5. Several open PRs that all touch `DECISIONS.md` will conflict with each
    other in turn: after the first merges, the rest need `main` merged into
-   their branches. The side session can do that on its own branches.
+   their branches. The main session does that just before each merge
+   (`merge-side-pr` step 5); side sessions don't merge `main` into their own
+   open PRs (owner's choice, 2026-10-04), so only one session pushes to a
+   PR branch.
 
 ## The PR bar in the Claude desktop app
 
