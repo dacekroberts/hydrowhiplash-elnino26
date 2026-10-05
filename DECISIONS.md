@@ -17,6 +17,24 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-04 - Side PR merges without --delete-branch
+
+- **Decided (owner) to merge side PRs with `gh pr merge <N> --squash` and
+  delete only the remote branch with `git push origin --delete`, never with
+  `--delete-branch`.** Merging PR #2 with `--delete-branch` (GitHub CLI
+  2.102.0) tried to delete the local branch `side/methods-notices`, which
+  the side session had checked out in its worktree, and `gh` removed that
+  worktree: files deleted and unregistered, only the empty folder left.
+  Committed work was intact (branch tip d72dede merged as b2fd0b5); `git
+  fsck` found no dangling staged content beyond an old DECISIONS.md version;
+  unstaged edits could not be checked. PRs #5, #3 and #1 had merged the same
+  way without harm because their branches were checked out nowhere. The
+  side worktree was recreated at the same path on `side/pr-guide`
+  (1c7c18d), at the owner's choice. Local branches are now deleted only when
+  `git worktree list` shows them checked out nowhere. Rejected keeping
+  `--delete-branch` with a check beforehand (one missed check loses work).
+  Files: `.claude/skills/merge-side-pr/SKILL.md`.
+
 ### 2026-10-04 - Methods-page data notices
 
 - **Decided to add the ERA5-Land notices to `site/methods.qmd` verbatim from

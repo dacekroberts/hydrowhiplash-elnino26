@@ -62,8 +62,14 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    else by hand, commit, push, re-run step 3's checks. If it refuses, resolve
    that file by hand: keep every entry of both sides, never one side's whole
    file.
-6. **Merge.** `gh pr merge <N> --squash --delete-branch`. Squash gives one
-   commit per task on `main`; the PR keeps the detailed history.
+6. **Merge.** `gh pr merge <N> --squash` (no `--delete-branch`), then
+   delete only the remote branch: `git push origin --delete <branch>`.
+   Squash gives one commit per task on `main`; the PR keeps the detailed
+   history. Never pass `--delete-branch`: it also deletes the local branch,
+   and if a side session has that branch checked out, `gh` removes the
+   session's whole worktree, uncommitted work included (happened with PR #2,
+   2026-10-04). Delete the local branch only if `git worktree list` shows it
+   checked out nowhere: `git branch -D <branch>`.
 7. **Update the main checkout.** `git status` first: if it has uncommitted
    changes, ask before doing anything with them (never stash silently). Then
    `git pull --ff-only`.
