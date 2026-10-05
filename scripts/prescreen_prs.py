@@ -46,7 +46,8 @@ from typing import Callable
 
 ROOT = Path(__file__).resolve().parents[1]
 APPEND_ONLY = ("DECISIONS.md", "docs/plan_deviations.md")
-SITE_PATHS = ("site/", "results/figures/", "src/figures.py", "src/diagrams.py")
+SITE_PATHS = ("site/", "results/figures/", "src/figures.py", "src/diagrams.py",
+              "src/winter_figures.py")
 GH_FALLBACK = Path(r"C:\Program Files\GitHub CLI\gh.exe")
 IDENTITY = ["-c", "user.name=prescreen", "-c", "user.email=prescreen@localhost"]
 
