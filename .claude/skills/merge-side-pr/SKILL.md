@@ -69,7 +69,9 @@ Python through `C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
    git worktree add ../_pr-<N> pr-<N>
    ```
    In `../_pr-<N>`: `git merge --no-commit --no-ff origin/main`, then
-   `python scripts/merge_append_only.py`, every time, conflicts or not: git
+   `python scripts/merge_append_only.py --against origin/main`, every time,
+   conflicts or not (if the branch already contains main, git opens no merge
+   and the script says "nothing to check"; that is not a refusal): git
    merges the two logs cleanly whenever the additions don't touch the same
    lines, and a clean merge can still hold one D number twice. The script
    merges both logs entry by entry (newest date first, deviations by number;

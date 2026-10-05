@@ -134,6 +134,20 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   `scripts/merge_append_only.py`, `tests/test_merge_append_only.py`,
   `scripts/prescreen_prs.py`, `.claude/skills/merge-side-pr/SKILL.md`.
 
+- **Fixed: step 5 stopped on a PR branch that already contained main.**
+  Reported by the main session while merging PR #6: `git merge --no-commit
+  --no-ff origin/main` printed "Already up to date" and opened no merge, so
+  `merge_append_only.py` refused ("no MERGE_HEAD") and the stop rule forced
+  a stop although nothing could clash (the owner approved going on once).
+  The script takes `--against REF`: with no merge open it exits 0 ("nothing
+  to check") when HEAD already contains REF, and still refuses otherwise,
+  since a missing merge on a branch that lacks main means the merge step was
+  skipped. Step 5 runs `merge_append_only.py --against origin/main`. Chosen
+  over skipping the script in the skill text: one command for every case,
+  and the check stays in tested code. 3 tests. Files:
+  `scripts/merge_append_only.py`, `tests/test_merge_append_only.py`,
+  `.claude/skills/merge-side-pr/SKILL.md`.
+
 ### 2026-10-04 - Side PR merges without --delete-branch
 
 - **Decided (owner) to merge side PRs with `gh pr merge <N> --squash` and

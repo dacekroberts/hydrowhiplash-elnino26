@@ -181,6 +181,47 @@ def test_end_to_end_conflicted_merge(tmp_path, capsys):
     assert "Next: review" in capsys.readouterr().out
 
 
+def _two_branch_repo(tmp_path, pr_contains_main):
+    repo = tmp_path / "repo"
+    repo.mkdir()
+    _git(repo, "init", "-q", "-b", "main")
+    _git(repo, "config", "core.autocrlf", "false")
+    f = repo / "DECISIONS.md"
+    f.write_text(dec(), encoding="utf-8", newline="\n")
+    _git(repo, "add", ".")
+    _git(repo, "commit", "-qm", "base")
+    if not pr_contains_main:
+        f.write_text(dec(section("2026-10-04", "Main", "Decided main.")), encoding="utf-8",
+                     newline="\n")
+        _git(repo, "commit", "-qam", "main moves on")
+    _git(repo, "switch", "-qc", "pr", "HEAD" if pr_contains_main else "HEAD~1")
+    f.write_text(dec(section("2026-10-04", "PR", "Decided PR.")), encoding="utf-8", newline="\n")
+    _git(repo, "commit", "-qam", "pr")
+    return repo
+
+
+def test_already_up_to_date_is_nothing_to_check(tmp_path, capsys):
+    # The PR branch already contains main: `git merge` opens no merge (2026-10-04,
+    # merging PR #6), which must not count as a refusal.
+    repo = _two_branch_repo(tmp_path, pr_contains_main=True)
+    assert "Already up to date" in _git(repo, "merge", "--no-commit", "--no-ff", "main").stdout
+    assert mao.main(["--against", "main"], cwd=repo) == 0
+    assert "nothing to check" in capsys.readouterr().out
+
+
+def test_no_merge_without_against_is_still_refused(tmp_path, capsys):
+    repo = _two_branch_repo(tmp_path, pr_contains_main=True)
+    assert mao.main([], cwd=repo) == 1
+    assert "no MERGE_HEAD" in capsys.readouterr().out
+
+
+def test_skipped_merge_is_refused_even_with_against(tmp_path, capsys):
+    # Main moved on and nobody merged it in: --against must not hide that.
+    repo = _two_branch_repo(tmp_path, pr_contains_main=False)
+    assert mao.main(["--against", "main"], cwd=repo) == 1
+    assert "no MERGE_HEAD" in capsys.readouterr().out
+
+
 def test_clean_merge_is_checked_too(tmp_path, capsys):
     # Two D17s at different lines: git merges cleanly, the script must refuse.
     repo = tmp_path / "repo"
