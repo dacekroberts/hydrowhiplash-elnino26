@@ -172,11 +172,12 @@ already makes, so add it when its phase is done; don't design ahead of results.
       is the key result. *After Phase 4.*
 - [ ] **Live 2026–27 tracker** — this winter's precipitation and snowpack so
       far against all past winters, El Niño winters highlighted, updated
-      monthly through spring. *Nov 2026 → spring 2027.*
+      monthly through spring. *Oct 2026 → spring 2027* [mid-project: D46].
       One page in three states, at one URL [mid-project: D44]:
-      - *Before winter* (if the build is done before November): a
-        November-April season timeline with a countdown to the first month
-        of data, and the date the analysis plan was frozen.
+      - *Before winter* (if the build is done before the first month of
+        data, October's, arrives in early November): an October-April
+        season timeline [mid-project: D46] with a countdown to the first
+        month of data, and the date the analysis plan was frozen.
       - *Tracking:* region × month tiles fill in as each month's ERA5-Land
         data arrives, with a countdown to the April 1 snowpack, the last
         input.
@@ -187,7 +188,9 @@ already makes, so add it when its phase is done; don't design ahead of results.
       in the visitor's browser; the page picks its state from what is in
       `results/`; its dates live in `src/config.py`.
 - [ ] **Verification panel** — what actually happened in 2027 against the
-      prediction. *Fall 2027.*
+      prediction. *Fall 2027* for PNW, BC, AB, AK and YT; *after January
+      2028* for NorCal and SoCal, whose 2027 season runs to January 2028
+      [mid-project: D46].
 
 **Done when:** the site is public with the first four pieces, and the
 verification panel is added after the 2027 season.
