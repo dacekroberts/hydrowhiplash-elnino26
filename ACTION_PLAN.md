@@ -173,6 +173,19 @@ already makes, so add it when its phase is done; don't design ahead of results.
 - [ ] **Live 2026–27 tracker** — this winter's precipitation and snowpack so
       far against all past winters, El Niño winters highlighted, updated
       monthly through spring. *Nov 2026 → spring 2027.*
+      One page in three states, at one URL [mid-project: D?a]:
+      - *Before winter* (if the build is done before November): a
+        November-April season timeline with a countdown to the first month
+        of data, and the date the analysis plan was frozen.
+      - *Tracking:* region × month tiles fill in as each month's ERA5-Land
+        data arrives, with a countdown to the April 1 snowpack, the last
+        input.
+      - *Final:* the countdown goes and the page becomes the results page,
+        keeping the completed timeline as the record that the forecast was
+        issued before the season; the verification panel builds on it.
+      Countdowns target expected data arrival, not calendar dates, and run
+      in the visitor's browser; the page picks its state from what is in
+      `results/`; its dates live in `src/config.py`.
 - [ ] **Verification panel** — what actually happened in 2027 against the
       prediction. *Fall 2027.*
 

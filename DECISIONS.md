@@ -17,6 +17,33 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Season timeline page for the live tracker
+
+- **Decided (owner) to build the live 2026-27 tracker as one site page in
+  three states: before winter, tracking and final.** Deviation D?a. The
+  owner proposed a countdown page if the build finishes before November,
+  kept through the winter and then replaced by the results; adopted in the
+  form of a November-April season timeline, which holds both countdowns
+  (to the first month of data, then to the April 1 snowpack) and becomes
+  the results page's record of what arrived when. Rejected a standalone
+  countdown page, deleted at the end: a bare countdown reads as a launch
+  rather than a study, and the completed timeline is the evidence that the
+  forecast was issued before the season, which the fall verification needs.
+  The page states the freeze date, and has a state for an El Niño that comes
+  in below strong. Mockup (private, example values):
+  https://claude.ai/artifact/PirV1BadszhJwgQBHCtYdq. Files:
+  `ACTION_PLAN.md`.
+
+- **Decided that the countdowns target expected data arrival, not calendar
+  dates.** The test season is Dec-Feb and ERA5-Land publishes each month
+  after it ends, so "tracking begins" means the first month's data landing
+  (November's, early December) and tracking ends when April 1 snowpack
+  arrives. Counting to 1 November would show "tracking started" with nothing
+  on the page. The arrival lag is an assumption until measured; the dates
+  go in `src/config.py` (main session, after the freeze), and the page
+  picks its state from what the pipeline has written to `results/`, so
+  nobody flips it by hand.
+
 ### 2026-10-05 - Deviation numbers given at merge
 
 - **Decided (owner, relayed by the main session) that side sessions write

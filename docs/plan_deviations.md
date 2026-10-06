@@ -27,6 +27,32 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (Phase 2)
 
+### D?a · Scope: live tracker becomes a three-state season timeline page
+- **Plan:** `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker: this
+  winter's precipitation and snowpack against all past winters, updated
+  monthly, *Nov 2026 → spring 2027*. Nothing before November, and the
+  tracker and the results were separate pieces.
+- **Actual:** one page in three states at one URL. Before winter, a
+  November-April timeline with a countdown to the first month of data and
+  the freeze date; while tracking, region × month tiles that fill in as data
+  arrives, with a countdown to the April 1 snowpack; at the end, the
+  countdown goes and the page becomes the results page, keeping the
+  timeline as the record that the forecast came before the season.
+  Countdowns target expected data arrival and run in the browser; the state
+  comes from `results/`; the dates go in `src/config.py` (added by the main
+  session after the freeze). A private mockup of the three states was
+  published for review.
+- **Why:** owner's idea, 2026-10-05: if the build finishes before November,
+  the site can go public with a reason to come back, and the timeline then
+  carries over into the results.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Season timeline page for the live
+  tracker".
+- **Substantial:** yes. The owner decided the scope change warrants editing
+  the plan directly (2026-10-05).
+- **Plan doc:** updated, the changed spot marked `[mid-project: D?a]`:
+  `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker bullet. The "Done
+  when" line is left as written (the tracker is still the fourth piece).
+
 ### D40 · Side-session deviation numbers given at merge
 - **Plan:** `docs/session3_kickoff.md` and `docs/session4_kickoff.md` split
   the D numbers into agreed ranges per session (session 3: main D36-D39,
