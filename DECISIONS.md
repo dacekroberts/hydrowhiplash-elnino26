@@ -17,6 +17,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Alaska stays one region
+
+- **Decided (owner) to keep Alaska as one region (east of 169W) and state
+  the coast-interior limitation for AK, BC and PNW together.** Supersedes
+  the conditional in "Hypotheses" below (one region unless a probe found a
+  licensed boundary). A research agent found one (read-only, no fire pages
+  opened): NOAA NCEI Alaska climate divisions (Bieniek et al. 2012, 13
+  polygons, 391 KB, https://www.ncei.noaa.gov/pub/data/cirs/climdiv/AK_climate_divisions.zip;
+  NOAA: "in the public domain"), Interior = divisions 3, 4, 5; coastline
+  from Alaska DNR, terms not read. Fallbacks EPA Level III ecoregions ("Use
+  constraints: None") and USGS Unified Ecoregions (public domain). Kept one
+  region because every region is a whole state or province, and BC and PNW
+  share the mismatch (wet coasts that rarely burn); splitting only Alaska
+  would treat one region differently, and consistency would mean splitting
+  BC too. The tested predictors are standardised, which limits how much the
+  coast's large totals weigh. Cost: AK predictors partly describe places
+  that don't burn, likely diluting an El Niño signal toward zero; an AK
+  null is read with that in mind. A descriptive check with the NCEI
+  Interior boundary in Phase 4 stays a flagged option (scope), not decided.
+
 ### 2026-10-05 - Data rules
 
 No fire data seen; choices rest on the sources and fire regimes. General

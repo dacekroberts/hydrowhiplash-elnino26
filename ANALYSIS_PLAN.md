@@ -66,7 +66,7 @@ decisions.
       precipitation (labelled by the March year; ends before every fire
       window opens), as a z-score against the region's 1991-2020 normal.
       Signs under "Directions and sidedness" below.
-- [ ] **Alaska and Yukon (added 2026-10-04).** Two new regions, AK (Alaska
+- [x] **Alaska and Yukon (added 2026-10-04).** Two new regions, AK (Alaska
       east of 169W) and YT, with the role `north`: their own hypothesis
       family, separate from PNW/BC/AB, because El Niño acts there mainly
       through warm springs and early melt rather than a dry winter. State
@@ -78,10 +78,14 @@ decisions.
       two-sided (expected higher, positive; H3b smaller than H3a); H1 and
       H6 descriptive; H4 and H5 not extended to them; March-May mean 2 m
       temperature from ERA5-Land shown as a descriptive spring mechanism
-      variable. *Region:* Alaska stays one region unless a short probe
-      finds a boundary with clear terms; if it stays one, the likely skews
-      (climate means dominated by the wet south coast, fire almost all
-      Interior) are disclosed in the analysis.
+      variable. *Region (decided 2026-10-05):* Alaska stays one region
+      (east of 169W), like every other region a whole state or province. A
+      probe found a public-domain Interior boundary (NOAA NCEI climate
+      divisions 3-5), but splitting only Alaska would break with BC and
+      PNW, which share the coast-interior mismatch. The limitation is
+      stated for AK, BC and PNW together: climate means include wet coasts
+      that rarely burn, which may dilute El Niño signals toward zero, most
+      in AK, where fire is almost all Interior.
 - [x] **Trend and climate change** [mid-project: D38]. Trend handling below
       covers burned area only. Decide (a) whether the climate variables
       (SWE, snowfall fraction, whiplash, winter precipitation) are compared
