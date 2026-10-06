@@ -274,6 +274,8 @@ measure of how much of the effect runs through summer heat.
    years vs all other years, per region, on `burn_detr` (H2) or winter
    precipitation anomaly (H1). 10,000 permutations; 95% percentile bootstrap
    CI. `src/stats.py: permutation_test, bootstrap_ci_diff`.
+   *H1's months (decided 2026-10-05):* DJF total precipitation
+   (`precip_djf_mm`), detrended per region as under "Trend handling".
 2. **Regression with controls**, per region, Newey-West (HAC) errors with
    maxlags = 2 (`fit_ols_hac`):
    - H3a: `log_burn ~ enso_djf + year`
@@ -304,7 +306,7 @@ measure of how much of the effect runs through summer heat.
 
 ## Secondary tests: compounding (decided 2026-10-05 [mid-project: D38])
 
-Their own family, outside the headline results; Holm within the family.
+Outside the headline results; C1 and C2 are each a Holm family of 3 tests.
 `year_c` is the year centred on the mean year of the model's data, so the
 `enso_djf` coefficient is the effect at mid-record. Per primary region
 (PNW, BC, AB), HAC errors as in H3:

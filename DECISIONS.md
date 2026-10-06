@@ -17,6 +17,16 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - H1 months and the CLAUDE.md fire window
+
+- **Decided (owner): H1 compares DJF precipitation totals (`precip_djf_mm`),
+  detrended per region.** The plan named only a "winter precipitation
+  anomaly"; DJF matches the hypothesis wording and the Phase 1 values
+  already shown. Rejected Oct-Mar (H5's months). `config.H1_VALUE`.
+- **Decided (owner) to update `CLAUDE.md`'s fire-season window line to the
+  windows chosen in D43**, since sessions follow it as an instruction;
+  marked `[mid-project: D43]`.
+
 ### 2026-10-05 - Inference
 
 - **Decided (owner): t critical values (`use_t=True`) in every HAC and

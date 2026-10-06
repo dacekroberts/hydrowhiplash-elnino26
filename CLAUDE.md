@@ -93,8 +93,10 @@ Units, measurement methods and traps for every dataset and derived variable:
   tp * 1000 * days_in_month; temperature is kelvin. Time dimension is
   `valid_time`.
 - **Fires counted:** only fires >= `MIN_FIRE_HA` (405 ha) in every region.
-- **Fire-season window:** `FIRE_SEASON_MONTHS` (Jun-Oct, Alberta Apr-Oct,
-  Alaska and Yukon Apr-Sep provisional [mid-project: D20]).
+- **Fire-season window:** `FIRE_SEASON_MONTHS` (PNW Jun-Oct; BC and Alberta
+  Apr-Oct; Alaska and Yukon Apr-Sep [mid-project: D20]; NorCal and SoCal
+  June to January of the next year, a January Y+1 fire counting for season
+  Y [mid-project: D43]), by ignition date.
 - **Year labels:** the DJF index value labelled year Y is winter (Y-1)-Y and
   is paired with fire season Y.
 

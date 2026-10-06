@@ -166,6 +166,8 @@ COMPOUNDING_REGIONS = ("PNW", "BC", "AB")
 # labelled by the March year, as a z-score against the region's normal over
 # PRECIP_ANOM_NORMAL_YEARS. lag0 = the preceding Oct-Mar, lag1 = the one before.
 PRECIP_ANOM_MONTHS = (10, 11, 12, 1, 2, 3)
+# H1 (a check) compares DJF totals instead, as in Phase 1 (WINTER_MONTHS).
+H1_VALUE = "precip_djf_mm"
 PRECIP_ANOM_NORMAL_YEARS = (1991, 2020)
 # AK and YT descriptive spring mechanism variable: mean 2 m temperature.
 SPRING_MONTHS = (3, 4, 5)  # MAM
