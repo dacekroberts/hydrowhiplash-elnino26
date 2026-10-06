@@ -17,6 +17,20 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-06 - Tracker window and verification dates follow the freeze
+
+- **Decided (owner) to start the season timeline in October and to split
+  the verification date by region.** Deviation D?a; supersedes the November
+  start in "Season timeline page for the live tracker" (2026-10-05, D44).
+  H5's `precip_anom` is the October-March total, so October 2026 is an
+  input: the first countdown now targets October's data (expected about
+  6 November, an assumed lag) instead of November's (about 6 December).
+  With the California fire windows running June to January of Y+1 (D43),
+  the 2027 forecast can be checked in fall 2027 for PNW, BC, AB, AK and YT,
+  and for NorCal and SoCal only after January 2028; the page shows both
+  dates rather than holding the whole verification panel until 2028.
+  Files: `ACTION_PLAN.md`.
+
 ### 2026-10-05 - H1 months and the CLAUDE.md fire window
 
 - **Decided (owner): H1 compares DJF precipitation totals (`precip_djf_mm`),
