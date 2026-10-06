@@ -17,12 +17,13 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
-### 2026-10-06 - Tracker window and verification dates follow the freeze
+### 2026-10-06 - Tracker window and verification dates follow the pre-freeze decisions
 
 - **Decided (owner) to start the season timeline in October and to split
   the verification date by region.** Deviation D?a; supersedes the November
   start in "Season timeline page for the live tracker" (2026-10-05, D44).
-  H5's `precip_anom` is the October-March total, so October 2026 is an
+  H5's `precip_anom` as the October-March total was decided before the
+  freeze (DECISIONS.md 2026-10-05 "Hypotheses"), so October 2026 is an
   input: the first countdown now targets October's data (expected about
   6 November, an assumed lag) instead of November's (about 6 December).
   With the California fire windows running June to January of Y+1 (D43),
