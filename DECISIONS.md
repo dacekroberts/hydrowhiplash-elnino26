@@ -17,6 +17,38 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Data rules
+
+No fire data seen; choices rest on the sources and fire regimes. General
+knowledge of large California fires outside June-October (Thomas, Dec 2017;
+Camp and Woolsey, Nov 2018; the Los Angeles fires of January 2025) informed
+the window.
+
+- **Decided (owner) on fire windows: NorCal and SoCal June to January of the
+  next year, BC April-October, PNW June-October, AB April-October, AK and YT
+  April-September (no longer provisional).** A January Y+1 fire counts for
+  season Y, paired with winter (Y-1)-Y. Rejected June-December (January
+  fires would fall outside every season) and keeping June-October. Cost:
+  California season Y closes in February Y+1, so the fall 2027 check is
+  preliminary for California. `FIRE_SEASON_MONTHS` now allows a wrapping
+  window ((6, 1)). D43.
+- **Decided (owner) on the fire record rules:** MTBS Wildfire, Wildland Fire
+  Use and Unknown kept (Unknown counted), Prescribed Fire dropped, Canadian
+  prescribed burns dropped where flagged; the 405 ha floor on each fire's
+  whole `area_ha`, then clipped to each region; ignition date; MTBS then
+  WFIGS with the cutover recorded at download and the overlap year compared;
+  CNFDB date completeness reported by decade. Rejected the floor on the
+  clipped part (a large fire crossing a border would drop out of a region).
+  `MTBS_KEEP_TYPES`.
+- **Decided (owner): zero-fire region-years kept, counted and excluded in a
+  sensitivity run; no percent change where they exceed 10% of seasons**
+  (`ZERO_YEAR_PCT_LIMIT`). Rejected excluding them from the main analysis
+  (drops the quietest seasons, biasing burned area up).
+- **Decided (owner): near-threshold winters get a flip-flag sensitivity run
+  for the strong-only (exploratory) results, no exclusion**
+  (`STRONG_SENSITIVITY_BAND` 0.06; RONI 1965-66 1.53, 1986-87 1.46, 2009-10
+  1.44). Rejected excluding them and doing nothing extra.
+
 ### 2026-10-05 - Hypotheses
 
 Numbers below: El Niño minus neutral under RONI (SPEI in SPEI units, SWE as

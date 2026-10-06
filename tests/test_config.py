@@ -31,3 +31,16 @@ def test_index_and_swe_choices():
     assert config.SWE_TEST_COLUMN == "era5_swe_z"
     assert set(config.COMPOUNDING_REGIONS) <= set(config.REGIONS)
     assert config.PRECIP_ANOM_MONTHS[-1] == 3  # ends before every fire window opens
+
+
+def test_fire_windows_open_after_the_winter_predictors_close():
+    for region, (first, last) in config.FIRE_SEASON_MONTHS.items():
+        assert 1 <= first <= 12 and 1 <= last <= 12, region
+        assert first > config.PRECIP_ANOM_MONTHS[-1], region  # opens after March
+    assert config.FIRE_SEASON_MONTHS["SoCal"] == (6, 1)  # wraps into January
+
+
+def test_strong_sensitivity_band_catches_the_near_threshold_winters():
+    for value in (1.53, 1.46, 1.44):
+        assert abs(value - config.STRONG_THRESHOLD) <= config.STRONG_SENSITIVITY_BAND + 1e-9
+    assert abs(1.69 - config.STRONG_THRESHOLD) > config.STRONG_SENSITIVITY_BAND

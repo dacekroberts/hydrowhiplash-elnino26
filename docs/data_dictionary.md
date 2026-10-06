@@ -402,8 +402,10 @@ attributes such as fire name, year, type and start date.
   source's own area field. 1 ha = 10,000 m²; 1 acre = 0.4047 ha.
 - **Fires counted:** ≥ 405 ha (`MIN_FIRE_HA`, = 1,000 acres) in every
   region, so US and Canadian records are comparable.
-- **Fire season:** June-October; Alberta April-October; Alaska and Yukon
-  April-September (provisional)
+- **Fire season:** (decided 2026-10-05, `FIRE_SEASON_MONTHS`) PNW
+  June-October; BC and Alberta April-October; Alaska and Yukon
+  April-September; NorCal and SoCal June to January of the next year (a
+  January Y+1 fire counts for season Y), by ignition date
   (`FIRE_SEASON_MONTHS`; California and BC windows are pre-freeze items).
 
 **Derived fire columns.**

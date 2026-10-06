@@ -130,19 +130,44 @@ decisions.
       a ratio of regional totals; soil moisture JJA, 0-28 cm depth-weighted
       (`DECISIONS.md` 2026-10-05 "Snowfall fraction and soil moisture
       columns").
-- [ ] **Fire windows.** Jun-Oct drops California's Nov-Jan wind-driven fires
+- [x] **Fire windows.** Jun-Oct drops California's Nov-Jan wind-driven fires
       (e.g. Thomas, Dec 2017; Camp and Woolsey, Nov 2018), and northeast BC
       has spring boreal fires like Alberta. Suggested: California through
       December, BC Apr-Oct. Decide now, while fire data is unseen.
-- [ ] **Fire record rules.** Wildfires only (MTBS includes prescribed burns);
+      *Decided 2026-10-05:* NorCal and SoCal **June to January of the next
+      year** (a January Y+1 fire counts for season Y; the Oct-Jan
+      wind-driven season, including January fires); BC **April-October**;
+      PNW June-October; AB April-October; AK and YT April-September,
+      no longer provisional. Fires are assigned by ignition date.
+      California season Y closes only in February Y+1.
+- [x] **Fire record rules.** Wildfires only (MTBS includes prescribed burns);
       how fires crossing a region boundary are split (clipped area) and dated
       (ignition date); the MTBS-to-WFIGS cutover year; apply the 405 ha floor
       to computed `area_ha`, not the source's own acres; check CNFDB date
       completeness for season length.
-- [ ] **Zero-fire years.** With a 405 ha floor, a region-year with no fires
+      *Decided 2026-10-05:* MTBS incident types Wildfire, Wildland Fire Use
+      and Unknown kept (Unknown counted and reported), Prescribed Fire
+      dropped; prescribed burns dropped from the Canadian records wherever
+      flagged. The 405 ha floor applies to each fire's whole `area_ha`
+      (ESRI:102008, never the source's acres), then the fire is clipped to
+      every region it touches and each region gets its clipped hectares;
+      dated by ignition (discovery) date. MTBS for every year it holds
+      complete, WFIGS after; the cutover year is fixed and recorded at
+      download, and the last overlapping year is compared as a reported
+      check. CNFDB: share of fires with an ignition date reported by
+      decade (season length is descriptive).
+- [x] **Zero-fire years.** With a 405 ha floor, a region-year with no fires
       jumps from log(1 + 0) = 0 to about 6, and percent-change reporting
       breaks. Pre-specify handling (e.g. a sensitivity analysis excluding or
       flagging zero years) and report how many there are.
+      *Decided 2026-10-05:* zero years kept in the main analysis
+      (`log_burn` = 0) and counted per region; a sensitivity analysis
+      excludes them; where they exceed 10% of a region's seasons, results
+      are given as `log_burn` coefficients with CIs, not percent changes.
+      *Near-threshold winters (operational call, decided 2026-10-05):*
+      no exclusion; strong-only results (exploratory) get one sensitivity
+      run with the strong flag flipped for winters within 0.06 of 1.5
+      (RONI: 1965-66 1.53, 1986-87 1.46, 2009-10 1.44).
 
 **Inference**
 

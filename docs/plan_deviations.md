@@ -27,6 +27,22 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (gate)
 
+### D43 · Fire windows: California through January, BC from April
+- **Plan:** `ANALYSIS_PLAN.md` "Outcomes" and `ACTION_PLAN.md` Phase 3:
+  June-October for US regions and BC, April-October for Alberta,
+  April-September for Alaska and Yukon (provisional); `CLAUDE.md`
+  measurement rules say the same; the pre-freeze item suggested California
+  through December.
+- **Actual:** owner chose NorCal and SoCal June to January of the next year,
+  BC April-October, AK and YT April-September confirmed (2026-10-05, before
+  any fire data).
+- **Why:** see `DECISIONS.md` 2026-10-05 "Data rules".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Data rules".
+- **Plan doc:** `ANALYSIS_PLAN.md` item filled in; its "Fire season" line
+  under Outcomes, `ACTION_PLAN.md` Phase 3 and `CLAUDE.md` "Fire-season
+  window" left as written, stale (owner's prose; `CLAUDE.md` wording
+  proposed to the owner).
+
 ### D42 · H6 added; whiplash and season length descriptive; H2 and H5 wording stale
 - **Plan:** `ANALYSIS_PLAN.md` Hypotheses has H1-H5, with H2 "higher in
   SoCal" and H5 "positive lag coefficient, strongest in SoCal";

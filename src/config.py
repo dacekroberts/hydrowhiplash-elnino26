@@ -122,15 +122,32 @@ REGIONS = {  # name -> role, in display order
 
 # Fire data
 MIN_FIRE_HA = 405  # 1,000 acres: MTBS western mapping threshold, applied everywhere
-FIRE_SEASON_MONTHS = {  # first and last month, inclusive
+# First and last month of fire season Y, inclusive, by ignition date. A last
+# month below the first wraps into the next calendar year: (6, 1) is June Y
+# to January Y+1, so a January fire counts for the season before it.
+# Decided 2026-10-05 (DECISIONS.md "Data rules"): California through January
+# (wind-driven Oct-Jan fires), BC from April (northeast BC spring boreal
+# fires), Alaska and Yukon the statutory season 1 Apr-30 Sep.
+FIRE_SEASON_MONTHS = {
     "PNW": (6, 10),
-    "BC": (6, 10),
+    "BC": (4, 10),
     "AB": (4, 10),
-    "AK": (4, 9),  # provisional: Alaska and Yukon statutory season, 1 Apr-30 Sep
+    "AK": (4, 9),
     "YT": (4, 9),
-    "NorCal": (6, 10),
-    "SoCal": (6, 10),
+    "NorCal": (6, 1),
+    "SoCal": (6, 1),
 }
+# Fire record rules (ANALYSIS_PLAN.md "Fire record rules"). MTBS incident
+# types kept; "Prescribed Fire" dropped. The MIN_FIRE_HA floor applies to the
+# whole fire's area_ha before clipping to regions.
+MTBS_KEEP_TYPES = ("Wildfire", "Wildland Fire Use", "Unknown")
+# Zero-fire region-years: kept (log_burn = 0); excluded in a sensitivity run;
+# no percent-change reporting where they exceed this share of seasons.
+ZERO_YEAR_PCT_LIMIT = 0.10
+# Strong-only results (exploratory): sensitivity run with the strong flag
+# flipped for winters within this distance of STRONG_THRESHOLD (under RONI:
+# 1965-66 1.53, 1986-87 1.46, 2009-10 1.44).
+STRONG_SENSITIVITY_BAND = 0.06
 
 # Statistics (values mirror ANALYSIS_PLAN.md)
 ALPHA = 0.05
