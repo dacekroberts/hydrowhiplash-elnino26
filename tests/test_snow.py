@@ -89,3 +89,43 @@ def test_april1_regional_excludes_glacier_cells(tmp_path):
     assert out["swe_apr1_mm"].values == pytest.approx([300.0, 200.0])
     assert out["swe_apr1_mm_all_cells"].values == pytest.approx([3533.33, 3466.67], rel=1e-4)
     assert snow.excluded_cells(masks, glacier).loc["R"] == 1
+
+
+def test_glacier_mask_ignores_a_partial_year():
+    # Nine complete years with snow left in 8 (8/9 is below the 0.9 rule), then
+    # Jan-May of a tenth year: its minimum (300 mm) would make 9/10 if counted.
+    nine = seasonal(9, leftover=[50.0] * 8 + [0.0])
+    partial = np.full(5, 300.0)
+    mask = snow.glacier_mask(monthly_cells([np.concatenate([nine, partial])]),
+                             years=(1950, 1959))
+    assert not mask.item()
+
+
+def test_glacier_mask_needs_a_complete_year():
+    with pytest.raises(ValueError, match="No complete year"):
+        snow.glacier_mask(monthly_cells([np.full(5, 300.0)]), years=(1950, 1950))
+
+
+def winters_table(years, index="RONI"):
+    return pd.DataFrame({"year": years, "winter": [f"{y - 1}-{y}" for y in years],
+                         "enso_index": index, "enso_djf": 0.0, "phase": "neutral",
+                         "strong": False})
+
+
+def april1_ds(years):
+    return xr.Dataset({"swe_apr1_mm": (("region", "year"), np.ones((1, len(years)))),
+                       "swe_apr1_mm_all_cells": (("region", "year"), np.ones((1, len(years))))},
+                      coords={"region": ["R"], "year": list(years)})
+
+
+def test_april1_table_drops_1950_and_keeps_one_enso_index():
+    # April 1 1950 has no winter before it in ERA5-Land; ENSO winters start 1951.
+    table = snow.april1_table(april1_ds([1950, 1951, 1952]), winters_table([1951, 1952]))
+    assert list(table["year"]) == [1951, 1952]
+    assert list(table.columns).count("enso_index") == 1
+    assert set(table["enso_index"]) == {"RONI"}
+
+
+def test_april1_table_raises_on_a_year_without_enso():
+    with pytest.raises(ValueError, match=r"No RONI DJF value for year\(s\) \[1953\]"):
+        snow.april1_table(april1_ds([1951, 1952, 1953]), winters_table([1951, 1952]))

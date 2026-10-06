@@ -56,3 +56,16 @@ def test_soil_moisture_drops_incomplete_season():
     ds = xr.Dataset({"swvl1": grid([np.full(7, 0.2)] * 2), "swvl2": grid([np.full(7, 0.2)] * 2)})
     out = snow_soil.soil_moisture(ds, mask_all(ds["swvl1"]), months=(6, 7, 8))
     assert out.sizes["year"] == 0
+
+
+def test_snow_soil_table_left_join_raises_on_a_year_without_enso():
+    cols = ("snowfall_frac", "sf_season_mm", "tp_season_mm", "soil_moisture")
+    regional = xr.Dataset({c: (("region", "year"), np.ones((1, 4))) for c in cols},
+                          coords={"region": ["R"], "year": [1950, 1951, 1952, 1953]})
+    winters = pd.DataFrame({"year": [1951, 1952], "winter": ["1950-1951", "1951-1952"],
+                            "enso_index": "RONI", "enso_djf": 0.0, "phase": "neutral",
+                            "strong": False})
+    with pytest.raises(ValueError, match=r"year\(s\) \[1953\]"):
+        snow_soil.snow_soil_table(regional, winters)
+    table = snow_soil.snow_soil_table(regional.sel(year=[1950, 1951, 1952]), winters)
+    assert list(table["year"]) == [1951, 1952]              # 1950 precedes the first winter

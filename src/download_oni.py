@@ -7,7 +7,8 @@ Writes:
   data/raw/<index>.ascii.txt          raw index table
   data/processed/enso_index.csv       tidy: season, year, anom
   data/processed/el_nino_winters.csv  one row per winter (all phases):
-                                      year, winter, enso_djf, phase, strong
+                                      year, winter, enso_index, enso_djf,
+                                      phase, strong
 
 Year convention: the DJF value labelled with year Y is the winter of
 (Y-1)-Y, which affects the fire season of year Y.
@@ -45,7 +46,7 @@ def download(index: str = ENSO_INDEX, refresh: bool = True) -> Path:
 
 def load_winters(index: str = ENSO_INDEX, refresh: bool = False) -> pd.DataFrame:
     """Classified winters for any index, without writing data/processed/."""
-    return classify_winters(parse(download(index, refresh=refresh)))
+    return classify_winters(parse(download(index, refresh=refresh)), index)
 
 
 def parse(path: Path) -> pd.DataFrame:
@@ -54,8 +55,10 @@ def parse(path: Path) -> pd.DataFrame:
     return df.rename(columns={"seas": "season", "yr": "year"})
 
 
-def classify_winters(index: pd.DataFrame) -> pd.DataFrame:
-    """One row per winter, every phase kept, so all years stay analysable."""
+def classify_winters(index: pd.DataFrame, name: str = ENSO_INDEX) -> pd.DataFrame:
+    """One row per winter, every phase kept, so all years stay analysable.
+    `name` is the index the values come from, written to `enso_index` like
+    every other table's ENSO columns."""
     # DJF labelled Y = winter (Y-1)-Y. ERA5-Land starts in Jan 1950, so the
     # first complete winter is 1950-51 (year = CLIMATE_FIRST_YEAR + 1).
     djf = index[(index["season"] == "DJF")
@@ -66,16 +69,18 @@ def classify_winters(index: pd.DataFrame) -> pd.DataFrame:
     djf.loc[djf["enso_djf"] >= EL_NINO_THRESHOLD, "phase"] = "el_nino"
     djf.loc[djf["enso_djf"] <= LA_NINA_THRESHOLD, "phase"] = "la_nina"
     djf["strong"] = djf["enso_djf"] >= STRONG_THRESHOLD
-    return djf[["year", "winter", "enso_djf", "phase", "strong"]].reset_index(drop=True)
+    djf["enso_index"] = name
+    return djf[["year", "winter", "enso_index", "enso_djf", "phase",
+                "strong"]].reset_index(drop=True)
 
 
 def main() -> None:
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
     index = parse(download())
-    index.to_csv(DATA_PROCESSED / "enso_index.csv", index=False)
+    index.to_csv(DATA_PROCESSED / "enso_index.csv", index=False, lineterminator="\n")
 
     winters = classify_winters(index)
-    winters.to_csv(DATA_PROCESSED / "el_nino_winters.csv", index=False)
+    winters.to_csv(DATA_PROCESSED / "el_nino_winters.csv", index=False, lineterminator="\n")
 
     nino = winters[winters["phase"] == "el_nino"]
     print(f"El Nino winters since {CLIMATE_FIRST_YEAR}-{CLIMATE_FIRST_YEAR + 1 - 1900:02d} "

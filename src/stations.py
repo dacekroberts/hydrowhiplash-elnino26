@@ -72,11 +72,23 @@ def nearest_in_window(df: pd.DataFrame, key: str, date: str, year: str,
     """One row per (key, year): the row whose `date` is nearest 1 April of
     `year`, dropping rows more than `window` days away. Ties go to the later
     date. The offset is measured from the labelled year, so a record filed
-    under year Y but dated a year off falls outside the window."""
+    under year Y but dated a year off falls outside the window. Rows with no
+    date raise: callers drop and count them first (drop_missing_dates), so a
+    missing date is never counted as outside the window."""
+    if df[date].isna().any():
+        raise ValueError(f"{int(df[date].isna().sum())} row(s) with no {date}; "
+                         f"drop them with drop_missing_dates first.")
     off = (df[date] - april1(df[year])).dt.days
     inside = df[off.abs() <= window].assign(_abs=off.abs())
     inside = inside.sort_values(["_abs", date], ascending=[True, False])
     return inside.drop_duplicates([key, year]).drop(columns="_abs")
+
+
+def drop_missing_dates(df: pd.DataFrame, date: str, counts: dict) -> pd.DataFrame:
+    """Rows with a `date`; the others are counted as "missing date"."""
+    missing = df[date].isna()
+    counts["missing date"] = int(missing.sum())
+    return df[~missing]
 
 
 def join_flags(*parts: pd.Series) -> pd.Series:
@@ -143,7 +155,7 @@ def clean_nrcs(values: pd.DataFrame, meta: pd.DataFrame) -> tuple[pd.DataFrame, 
     month, day = NRCS_PLACEHOLDER_DATE
     placeholder = (course["sample_date"].dt.month == month) & (course["sample_date"].dt.day == day)
     unknown = course[placeholder].assign(sample_date=pd.NaT, date_flag="date_unknown")
-    dated = course[~placeholder]
+    dated = drop_missing_dates(course[~placeholder], "sample_date", counts)
     windowed = nearest_in_window(dated, "triplet", "sample_date", "year")
     counts["outside window"] = len(dated) - len(windowed)
     counts["date_unknown (kept)"] = len(unknown)
@@ -186,6 +198,7 @@ def clean_bc(raw: pd.DataFrame, coords: pd.DataFrame) -> tuple[pd.DataFrame, dic
     df = df[~df["code"].isin(BC_DROP_CODES)]
     counts["estimate codes"] = n - len(df)
     df["sample_date"] = pd.to_datetime(df["Date of Survey"], format="%Y/%m/%d")
+    df = drop_missing_dates(df, "sample_date", counts)
     df["year"] = df["sample_date"].dt.year
     df["station_id"] = "BCE-" + df["Number"].astype(str).str.strip()
     n = len(df)
@@ -218,6 +231,7 @@ def clean_yukon(data: pd.DataFrame, meta: pd.DataFrame) -> tuple[pd.DataFrame, d
     df = df.dropna(subset=["result"])
     counts["missing value"] = counts["rows"] - len(df)
     df["sample_date"] = pd.to_datetime(df["sample_date"])
+    df = drop_missing_dates(df, "sample_date", counts)
     df["station_id"] = YUKON_PREFIX + df["location_code"]
     n = len(df)
     df = nearest_in_window(df, "station_id", "sample_date", "year")
@@ -348,8 +362,12 @@ def station_index(table: pd.DataFrame, normals: pd.DataFrame,
 def anomalies(values: pd.Series, years: pd.Series,
               normal_years: tuple[int, int] = STATION_NORMAL_YEARS) -> tuple[pd.Series, pd.Series]:
     """% of the mean and standardised anomaly against `normal_years`, for one
-    regional series (used to put ERA5-Land on the station index's scale)."""
+    regional series (used to put ERA5-Land on the station index's scale).
+    Raises when fewer than 2 values fall in `normal_years` (no SD)."""
     inside = values[years.between(*normal_years)]
+    if inside.count() < 2:
+        raise ValueError(f"{int(inside.count())} value(s) in {normal_years[0]}-"
+                         f"{normal_years[1]}; at least 2 are needed for a normal and SD.")
     return 100 * values / inside.mean(), (values - inside.mean()) / inside.std(ddof=1)
 
 
@@ -406,14 +424,15 @@ def effects_by_group(table: pd.DataFrame, normals: pd.DataFrame, enso: pd.DataFr
     """Per region, stations split into `groups` equal-count groups by
     `column` (a station attribute such as elevation): El Nino minus neutral
     and strong El Nino minus all winters, in points of the median % of
-    normal. `enso`: year, phase, strong. Descriptive."""
+    normal. `enso`: year, phase, strong. Descriptive. Stations with no
+    `column` value (e.g. no elevation) are left out of the groups."""
     df = table.merge(normals, on="station_id", how="inner")
     df = df[df["normal_mm"] >= min_normal_mm]
     df = df.assign(pct=100 * df["swe_apr1_mm"] / df["normal_mm"])
     e = enso.drop_duplicates("year").set_index("year")
     rows = []
     for region, d in df.groupby("region", sort=False):
-        site = d.drop_duplicates("station_id").set_index("station_id")[column]
+        site = d.drop_duplicates("station_id").set_index("station_id")[column].dropna()
         labels = pd.qcut(site, groups, labels=False, duplicates="drop")
         for k in sorted(labels.unique()):
             ids = labels.index[labels == k]
@@ -449,7 +468,7 @@ def build() -> tuple[pd.DataFrame, dict]:
 def main() -> None:
     table, report = build()
     STATION_TABLE.parent.mkdir(parents=True, exist_ok=True)
-    table.to_csv(STATION_TABLE, index=False, date_format="%Y-%m-%d")
+    table.to_csv(STATION_TABLE, index=False, date_format="%Y-%m-%d", lineterminator="\n")
     for step, counts in report.items():
         print(step, counts)
     print(f"{len(table):,} station-years, {table['station_id'].nunique():,} stations -> {STATION_TABLE}")

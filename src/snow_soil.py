@@ -27,10 +27,10 @@ from __future__ import annotations
 import pandas as pd
 import xarray as xr
 
-from src.config import (DATA_PROCESSED, DATA_RAW, ENSO_INDEX, ERA5_DOMAINS,
+from src.config import (DATA_PROCESSED, DATA_RAW, ERA5_DOMAINS,
                         ERA5_VARIABLE_SETS, REGIONS, RESULTS, SNOW_SOIL_TABLE,
                         SNOWFALL_MONTHS, SOIL_LAYER_WEIGHTS, SOIL_MONTHS)
-from src.era5 import TIME, regional_series, winter_total
+from src.era5 import TIME, join_enso, regional_series, winter_total
 
 COMMITTED = RESULTS / "tables" / SNOW_SOIL_TABLE.name
 
@@ -56,11 +56,11 @@ def soil_moisture(ds: xr.Dataset, masks: xr.DataArray,
 
 
 def snow_soil_table(regional: xr.Dataset, winters: pd.DataFrame) -> pd.DataFrame:
-    """Tidy region x year table; every year kept, whatever its phase."""
+    """Tidy region x year table; every year kept, whatever its phase. Years
+    before the first ENSO winter (1950) are dropped (era5.join_enso)."""
     table = regional.to_dataframe().reset_index()
     table["year"] = table["year"].astype(int)
-    table = table.merge(winters, on="year", how="inner", validate="many_to_one")
-    table["enso_index"] = ENSO_INDEX
+    table = join_enso(table, winters)
     return table[["region", "year", "winter", "snowfall_frac", "sf_season_mm", "tp_season_mm",
                   "soil_moisture", "enso_index", "enso_djf", "phase", "strong"]]
 

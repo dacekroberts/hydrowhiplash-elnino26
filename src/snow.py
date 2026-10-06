@@ -21,13 +21,15 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import xarray as xr
 
-from src.config import (APRIL1_FOLDER_SUFFIX, DATA_PROCESSED, DATA_RAW, ENSO_INDEX,
-                        ERA5_DOMAINS, GLACIER_MASK_YEARS, PERENNIAL_MIN_MM,
-                        PERENNIAL_YEAR_FRACTION, SWE_CAP_MM)
-from src.era5 import LAT, LON, TIME, drop_grib_coords, regional_series, snap_grid
+from src.config import (APRIL1_FOLDER_SUFFIX, DATA_PROCESSED, DATA_RAW, ERA5_DOMAINS,
+                        GLACIER_MASK_YEARS, PERENNIAL_MIN_MM, PERENNIAL_YEAR_FRACTION,
+                        SWE_CAP_MM)
+from src.era5 import (LAT, LON, TIME, drop_grib_coords, join_enso, regional_series,
+                      snap_grid)
 
 APRIL1_FILE = "era5_land_april1.nc"
 OUT = DATA_PROCESSED / "swe_april1_region_year.csv"
@@ -35,10 +37,17 @@ OUT = DATA_PROCESSED / "swe_april1_region_year.csv"
 
 def glacier_mask(sd_mm: xr.DataArray, years: tuple[int, int] = GLACIER_MASK_YEARS) -> xr.DataArray:
     """Boolean (latitude, longitude): True where a cell is excluded as glacier
-    or perennial snow. `sd_mm` is monthly SWE in mm; only complete years in
-    `years` (inclusive) are used. Ocean cells (all NaN) are False."""
+    or perennial snow. `sd_mm` is monthly SWE in mm; only complete years (12
+    months) in `years` (inclusive) are used, so a partial year's minimum
+    can't flag a cell. Ocean cells (all NaN) are False."""
     first, last = years
     sd = sd_mm.sel({TIME: slice(f"{first}-01-01", f"{last}-12-31")})
+    year = sd[TIME].dt.year.values
+    n_months = pd.Series(year).value_counts()
+    complete = n_months.index[n_months == 12]
+    if complete.empty:
+        raise ValueError(f"No complete year of monthly SWE in {first}-{last}.")
+    sd = sd.isel({TIME: np.flatnonzero(np.isin(year, complete))})
     capped = (sd >= SWE_CAP_MM).any(TIME)
     yearly_min = sd.groupby(sd[TIME].dt.year).min(TIME)
     perennial = (yearly_min > PERENNIAL_MIN_MM).mean("year") >= PERENNIAL_YEAR_FRACTION
@@ -78,11 +87,11 @@ def april1_regional(april1: xr.DataArray, masks: xr.DataArray,
 
 
 def april1_table(regional: xr.Dataset, winters: pd.DataFrame) -> pd.DataFrame:
-    """Tidy region x year table; every winter kept, whatever its phase."""
+    """Tidy region x year table; every winter kept, whatever its phase. April 1
+    1950 has no winter before it in ERA5-Land and is dropped (era5.join_enso)."""
     table = regional.to_dataframe().reset_index()
     table["year"] = table["year"].astype(int)
-    table = table.merge(winters, on="year", how="inner", validate="many_to_one")
-    table["enso_index"] = ENSO_INDEX
+    table = join_enso(table, winters)
     return table[["region", "year", "winter", "swe_apr1_mm", "swe_apr1_mm_all_cells",
                   "enso_index", "enso_djf", "phase", "strong"]]
 
@@ -117,7 +126,7 @@ def main() -> None:
     table["region"] = pd.Categorical(table["region"], categories=list(REGIONS), ordered=True)
     table = table.sort_values(["region", "year"]).reset_index(drop=True)
     table["region"] = table["region"].astype(str)
-    table.to_csv(OUT, index=False)
+    table.to_csv(OUT, index=False, lineterminator="\n")
     print(f"wrote {OUT}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
     summary = table.groupby("region", sort=False)[["swe_apr1_mm", "swe_apr1_mm_all_cells"]].mean()
     print(pd.concat([pd.concat(counts), summary.round(0)], axis=1).to_string())

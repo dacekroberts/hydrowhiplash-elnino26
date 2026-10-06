@@ -151,3 +151,34 @@ def test_whiplash_is_summer_minus_winter():
     z = (base - base.mean()) / base.std(ddof=1)
     assert out["spei3_djf"].sel(year=years).values == pytest.approx(z)
     assert out["whiplash"].sel(year=years).values == pytest.approx(-2 * z)
+
+
+def test_restandardise_sorts_unsorted_years():
+    years = np.arange(1951, 2031)
+    s = xr.DataArray(np.concatenate([np.tile([1.0, 3.0], 35), np.full(10, 10.0)]),
+                     dims="year", coords={"year": years})
+    shuffled = s.isel(year=np.random.default_rng(1).permutation(len(years)))
+    z = whiplash.restandardise(shuffled, (1951, 2020))
+    assert list(z["year"].values) == list(years)
+    xr.testing.assert_allclose(z, whiplash.restandardise(s, (1951, 2020)))
+
+
+def test_restandardise_needs_two_calibration_values():
+    s = xr.DataArray([1.0, 2.0, 3.0], dims="year", coords={"year": [2019, 2021, 2022]})
+    with pytest.raises(ValueError, match="Fewer than 2 values"):
+        whiplash.restandardise(s, (2018, 2020))
+
+
+def test_whiplash_table_raises_on_a_year_without_enso():
+    years = [1951, 1952, 1953]
+    ones = (("region", "year"), np.ones((1, 3)))
+    regional = xr.Dataset({name: ones for name in (
+        "spei3_djf", "spei3_jja", "whiplash", "spei3_djf_cellmean", "spei3_jja_cellmean")},
+        coords={"region": ["R"], "year": years})
+    winters = pd.DataFrame({"year": [1951, 1952], "winter": ["1950-1951", "1951-1952"],
+                            "enso_index": "RONI", "enso_djf": 0.0, "phase": "neutral",
+                            "strong": False})
+    with pytest.raises(ValueError, match=r"year\(s\) \[1953\]"):
+        whiplash.whiplash_table(regional, winters)
+    table = whiplash.whiplash_table(regional.sel(year=[1951, 1952]), winters)
+    assert list(table.columns).count("enso_index") == 1 and len(table) == 2

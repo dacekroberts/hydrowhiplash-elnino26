@@ -161,15 +161,14 @@ def winter_precip_table(ds: xr.Dataset, masks: xr.DataArray,
                         winters: pd.DataFrame) -> pd.DataFrame:
     """Tidy region x year table of winter precipitation with ENSO columns.
 
-    `winters` is data/processed/el_nino_winters.csv (year, winter, enso_djf,
-    phase, strong). Every winter is kept, whatever its phase.
+    `winters` is data/processed/el_nino_winters.csv (year, winter, enso_index,
+    enso_djf, phase, strong). Every winter is kept, whatever its phase.
     """
     series = regional_series(winter_total(ds["tp"]), masks).compute()
     table = series.rename("precip_djf_mm").to_dataframe().reset_index()
     table = table[["region", "year", "precip_djf_mm"]]
     table["year"] = table["year"].astype(int)
-    table = table.merge(winters, on="year", how="left", validate="many_to_one")
-    table["enso_index"] = ENSO_INDEX
+    table = join_enso(table, winters)
     return table[["region", "year", "winter", "precip_djf_mm", "enso_index",
                   "enso_djf", "phase", "strong"]]
 
@@ -200,6 +199,31 @@ def open_domains(names) -> dict[str, xr.Dataset]:
         raise FileNotFoundError(f"ERA5 domain(s) {missing} not downloaded; run "
                                 f"python -m src.download_era5 {' '.join(missing)}.")
     return {n: open_era5(domain_dir(n)) for n in names}
+
+
+def join_enso(table: pd.DataFrame, winters: pd.DataFrame,
+              index: str = ENSO_INDEX) -> pd.DataFrame:
+    """Left join of the ENSO columns (winter, enso_index, enso_djf, phase,
+    strong) on `year`.
+
+    Years before the first ENSO winter are dropped: ERA5-Land starts in
+    January 1950, so the first complete winter is 1950-51. Any later year
+    without an ENSO value raises instead of vanishing (an inner join drops it
+    silently). `winters` may carry its own `enso_index` column; it must name
+    `index`, and the table gets exactly one such column.
+    """
+    if "enso_index" in winters and not (winters["enso_index"] == index).all():
+        found = sorted(winters["enso_index"].astype(str).unique())
+        raise ValueError(f"ENSO table is for {found}, expected {index}.")
+    winters = winters.drop(columns="enso_index", errors="ignore")
+    table = table[table["year"] >= winters["year"].min()]
+    out = table.merge(winters, on="year", how="left", validate="many_to_one")
+    missing = sorted(int(y) for y in out.loc[out["enso_djf"].isna(), "year"].unique())
+    if missing:
+        raise ValueError(f"No {index} DJF value for year(s) {missing}; re-run "
+                         f"python -m src.download_oni.")
+    out["enso_index"] = index
+    return out
 
 
 def build_winter_precip_table(regions: gpd.GeoDataFrame, winters: pd.DataFrame,
@@ -239,7 +263,7 @@ def main() -> None:
     if list(dict.fromkeys(table["region"])) != list(REGIONS):
         raise SystemExit("Region list differs from config.REGIONS.")
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    table.to_csv(OUT, index=False)
+    table.to_csv(OUT, index=False, lineterminator="\n")
     print(f"wrote {OUT}: {len(table)} rows, winters "
           f"{table['winter'].iloc[0]} to {table['winter'].iloc[-1]}")
     print(cells.to_string())
