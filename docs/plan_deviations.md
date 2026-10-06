@@ -25,6 +25,29 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-06 (gate)
+
+### D46 · Tracker from October; California verification after January 2028
+- **Plan:** `ACTION_PLAN.md` "Second goal": Live 2026-27 tracker *Nov 2026 →
+  spring 2027*, and (D44) a November-April season timeline; Verification
+  panel *Fall 2027*.
+- **Actual:** the timeline runs October-April. H5's `precip_anom` as the
+  October-March total was decided before the freeze (DECISIONS.md
+  2026-10-05 "Hypotheses"), so October 2026 is an input and its data,
+  expected in early November, is the first the page waits for. The California fire windows now run June
+  to January of Y+1 (D43), so the 2027 season can be verified in fall 2027
+  for PNW, BC, AB, AK and YT, but for NorCal and SoCal only after January
+  2028. The private mockup was updated to match (version 2).
+- **Why:** follows from two pre-freeze decisions (H5's months, D43);
+  D44's November start predates them.
+- **Recorded:** `DECISIONS.md` 2026-10-06 "Tracker window and verification
+  dates follow the pre-freeze decisions".
+- **Substantial:** yes, as a correction to D44's plan edit (owner,
+  2026-10-06).
+- **Plan doc:** updated, each changed spot marked `[mid-project: D46]`:
+  `ACTION_PLAN.md` "Second goal", the tracker's time span and timeline
+  months, and the Verification panel's timing. D44 is left as written.
+
 ## 2026-10-05 (gate)
 
 ### D45 · H4 errors Driscoll-Kraay, not clustered by year
