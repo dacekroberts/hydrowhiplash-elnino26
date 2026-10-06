@@ -14,8 +14,9 @@ from src import download_era5, download_oni  # noqa: E402
 def test_classify_winters_columns_and_start():
     raw = io.StringIO("SEAS YR TOTAL ANOM\nDJF 1950 24.7 -1.5\nDJF 1951 25.0 -0.8\n"
                       "DJF 1998 29.0 2.4\nDJF 2017 26.3 -0.3\n")
-    out = download_oni.classify_winters(download_oni.parse(raw))
-    assert list(out.columns) == ["year", "winter", "enso_djf", "phase", "strong"]
+    out = download_oni.classify_winters(download_oni.parse(raw), "RONI")
+    assert list(out.columns) == ["year", "winter", "enso_index", "enso_djf", "phase", "strong"]
+    assert set(out["enso_index"]) == {"RONI"}
     assert out["year"].min() == 1951  # winter 1949-50 dropped: no ERA5-Land
     row = out.set_index("year").loc[1998]
     assert row["phase"] == "el_nino" and bool(row["strong"])

@@ -301,3 +301,43 @@ def test_effects_by_group_splits_stations_and_measures_differences():
     assert out.loc[1, "strong_minus_all"] == pytest.approx(-50.0)
     assert out.loc[2, "strong_minus_all"] == pytest.approx(0.0)
     assert list(out["stations"]) == [2, 2]
+
+
+def test_nearest_in_window_refuses_missing_dates():
+    df = pd.DataFrame({"key": ["a", "a"], "year": [2000, 2000],
+                       "date": pd.to_datetime(["2000-03-31", None])})
+    with pytest.raises(ValueError, match="drop_missing_dates"):
+        stations.nearest_in_window(df, "key", "date", "year", window=10)
+
+
+def test_missing_date_counted_apart_from_outside_window(tmp_path):
+    # A snow course with no collection date is "missing date", not "outside window".
+    raw = nrcs_files(tmp_path)
+    path = raw / "data_WA_SNOW_001.json"
+    data = json.loads(path.read_text())
+    data[0]["data"][0]["values"].append(
+        {"month": 4, "monthPart": "1", "year": 1963, "collectionDate": None, "value": 30.0})
+    path.write_text(json.dumps(data))
+    table, counts = stations.clean_nrcs(*stations.read_nrcs(raw))
+    assert counts["missing date"] == 1 and counts["outside window"] == 1
+    assert 1963 not in set(table.loc[table["station_id"] == "2:WA:SNOW", "year"])
+
+
+def test_anomalies_need_two_normal_years():
+    with pytest.raises(ValueError, match="at least 2"):
+        stations.anomalies(pd.Series([50.0, 100.0, 300.0]), pd.Series([1990, 1991, 2021]),
+                           normal_years=(1991, 2020))
+
+
+def test_effects_by_group_leaves_out_stations_without_elevation():
+    years = [2000, 2001, 2002, 2003]
+    enso = pd.DataFrame({"year": years, "phase": ["el_nino", "neutral", "neutral", "el_nino"],
+                         "strong": [True, False, False, False]})
+    rows = [station_rows(s, "R", [50.0, 100.0, 100.0, 150.0], start=2000)
+            for s in ("l0", "l1", "h0", "h1", "x")]
+    table = pd.concat(rows)
+    table["elevation"] = table["station_id"].map({"l0": 500, "l1": 600, "h0": 2000,
+                                                  "h1": 2100, "x": np.nan})
+    normals = stations.station_normals(table, years=(2000, 2003), min_years=4)
+    out = stations.effects_by_group(table, normals, enso, groups=2)
+    assert out["stations"].sum() == 4                       # "x" has no elevation

@@ -31,9 +31,9 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from src.config import (DATA_PROCESSED, ENSO_INDEX, PET_METHOD, SPEI_CAL_YEARS, SPEI_CLIP,
+from src.config import (DATA_PROCESSED, PET_METHOD, SPEI_CAL_YEARS, SPEI_CLIP,
                         SPEI_DIST, SPEI_FIT_METHOD, SPEI_SCALE, SUMMER_MONTHS, WINTER_MONTHS)
-from src.era5 import LAT, LON, TIME, regional_series
+from src.era5 import LAT, LON, TIME, join_enso, regional_series
 
 XTIME = "time"  # xclim's time dimension name
 CELL = "cell"
@@ -149,8 +149,18 @@ def season_spei(spei: xr.DataArray, months: tuple[int, ...]) -> xr.DataArray:
 
 
 def restandardise(series: xr.DataArray, years: tuple[int, int] = SPEI_CAL_YEARS) -> xr.DataArray:
-    """z-score along `year` using the mean and SD (ddof=1) of `years`, inclusive."""
+    """z-score along `year` using the mean and SD (ddof=1) of `years`, inclusive.
+
+    Sorted by year first: a label slice on unsorted years selects the wrong
+    span or nothing. Raises when a series has fewer than 2 calibration values
+    (no SD), instead of returning NaN.
+    """
+    series = series.sortby("year")
     cal = series.sel(year=slice(*years))
+    n = cal.count("year")
+    if (n < 2).any():
+        raise ValueError(f"Fewer than 2 values in {years[0]}-{years[1]} to standardise "
+                         f"against (smallest count {int(n.min())}).")
     return (series - cal.mean("year")) / cal.std("year", ddof=1)
 
 
@@ -173,8 +183,7 @@ def whiplash_table(regional: xr.Dataset, winters: pd.DataFrame) -> pd.DataFrame:
     table = regional.to_dataframe().reset_index()
     table = table.dropna(subset=["spei3_djf"])
     table["year"] = table["year"].astype(int)
-    table = table.merge(winters, on="year", how="left", validate="many_to_one")
-    table["enso_index"] = ENSO_INDEX
+    table = join_enso(table, winters)
     return table[["region", "year", "winter", "spei3_djf", "spei3_jja", "whiplash",
                   "spei3_djf_cellmean", "spei3_jja_cellmean", "enso_index", "enso_djf",
                   "phase", "strong"]]

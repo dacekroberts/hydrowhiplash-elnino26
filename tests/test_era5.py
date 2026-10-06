@@ -185,3 +185,13 @@ def test_region_masks_refuse_overlapping_polygons():
                                crs="EPSG:4326")
     with pytest.raises(ValueError, match="overlap"):
         era5.region_masks(regions, grid)
+
+
+def test_join_enso_refuses_a_table_for_another_index():
+    table = pd.DataFrame({"region": "R", "year": [1951]})
+    winters = pd.DataFrame({"year": [1951], "winter": ["1950-1951"], "enso_index": "ONI",
+                            "enso_djf": 0.1, "phase": "neutral", "strong": False})
+    with pytest.raises(ValueError, match="expected RONI"):
+        era5.join_enso(table, winters, index="RONI")
+    out = era5.join_enso(table, winters.drop(columns="enso_index"), index="RONI")
+    assert list(out.columns).count("enso_index") == 1 and out["enso_index"].iloc[0] == "RONI"
