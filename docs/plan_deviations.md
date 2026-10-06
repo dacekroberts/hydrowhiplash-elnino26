@@ -27,7 +27,7 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-06 (gate)
 
-### D?a · Tracker from October; California verification after January 2028
+### D46 · Tracker from October; California verification after January 2028
 - **Plan:** `ACTION_PLAN.md` "Second goal": Live 2026-27 tracker *Nov 2026 →
   spring 2027*, and (D44) a November-April season timeline; Verification
   panel *Fall 2027*.
@@ -44,7 +44,7 @@ additions stay distinguishable from the original plan.
   dates follow the pre-freeze decisions".
 - **Substantial:** yes, as a correction to D44's plan edit (owner,
   2026-10-06).
-- **Plan doc:** updated, each changed spot marked `[mid-project: D?a]`:
+- **Plan doc:** updated, each changed spot marked `[mid-project: D46]`:
   `ACTION_PLAN.md` "Second goal", the tracker's time span and timeline
   months, and the Verification panel's timing. D44 is left as written.
 

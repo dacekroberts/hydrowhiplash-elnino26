@@ -20,7 +20,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 ### 2026-10-06 - Tracker window and verification dates follow the pre-freeze decisions
 
 - **Decided (owner) to start the season timeline in October and to split
-  the verification date by region.** Deviation D?a; supersedes the November
+  the verification date by region.** Deviation D46; supersedes the November
   start in "Season timeline page for the live tracker" (2026-10-05, D44).
   H5's `precip_anom` as the October-March total was decided before the
   freeze (DECISIONS.md 2026-10-05 "Hypotheses"), so October 2026 is an
@@ -31,6 +31,45 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   and for NorCal and SoCal only after January 2028; the page shows both
   dates rather than holding the whole verification panel until 2028.
   Files: `ACTION_PLAN.md`.
+
+### 2026-10-06 - Pre-freeze audit
+
+- **Decided (owner) to audit the climate data and the Phase 2 code before
+  the freeze, read-only, by two research agents** (data in the main
+  checkout, code against the rules; D35's phase-boundary audit).
+  Report: `docs/audit_2026-10-05_phase2.md` (commit audited 5386222). Data
+  largely clean: ENSO columns, SPEI standardisation, whiplash, SWE z and the
+  station index all recomputed exactly; the 111 unfitted north cells are
+  glacier icefields.
+- **Fixed (owner's choice): Thornthwaite PET in polar day and night.**
+  xclim's TW48 leaves day length NaN there, so north of about 68N every DJF
+  and JJA SPEI-3 was missing and regional means skipped those cells (AK
+  15.1% and 17.4% of its weight, YT 5.1% and 6.3%). `pet_thornthwaite` now
+  repeats xclim's TW48 steps with `infill_polar_days` (24 h and 0 h); main
+  domain PET identical (largest difference 3e-15 mm/day), so only the north
+  SPEI was refit (1,947 s). Only the AK and YT SPEI and whiplash columns
+  changed (largest change 0.62 in whiplash; correlation with the old series
+  AK 0.989 DJF, 0.979 JJA; YT 0.999, 0.998). AK El Niño minus neutral
+  whiplash -0.01 to -0.08, YT +0.24 to +0.23 (RONI). No pre-registered test
+  uses these (AK and YT SPEI and whiplash are descriptive). 46 north cells
+  (59-63N, Alaska Range, Wrangell-St Elias) still have no February value;
+  they predate the fix, cause open. Rejected disclosing the gap only and
+  deferring the fix. Tests added.
+- **Fixed (owner's choice): ERA5-Land SWE % and z empty where a region's
+  1991-2020 normal is under 10 mm** (`ERA5_SWE_MIN_NORMAL_MM`), the station
+  index's floor. Only SoCal is affected (normal 0.06 mm; z had reached 4.69,
+  % 1,787); H6 already excluded SoCal from the SWE test.
+- **Decided (owner) to pre-register the Driscoll-Kraay t degrees of freedom
+  as years minus 1** (`POOLED_DF_YEARS_MINUS`): statsmodels counts them from
+  row order (df 0, 4 or 100 for one dataset sorted three ways, standard error
+  0.10722 in all). Removes a choice that would otherwise be made after the
+  fire data.
+- **Decided (owner): the low-severity findings (12 code and data items) go
+  to a side-session PR**, with a main-session re-run after merging; stale
+  register and dictionary wording fixed in the main session. A second,
+  independent audit follows: a separate session with a neutral prompt, plus
+  fresh agents from the main session, compared (owner's choice, for less
+  bias).
 
 ### 2026-10-05 - H1 months and the CLAUDE.md fire window
 

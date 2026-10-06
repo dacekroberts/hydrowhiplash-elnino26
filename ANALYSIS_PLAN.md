@@ -182,7 +182,10 @@ decisions.
       region.
       *Decided 2026-10-05:* `use_t=True` in every HAC and pooled fit; the
       pooled H4 model uses Driscoll-Kraay errors (maxlags 2), with
-      year-clustered errors reported alongside.
+      year-clustered errors reported alongside. The t degrees of freedom for
+      the Driscoll-Kraay fit are set to the number of years minus 1 (about
+      41), not left to the software, which counts them from row order
+      (pre-freeze code audit, 2026-10-05).
 - [x] **Forward validation.** Leave-one-year-out tests interpolation, but
       2027 is a forecast beyond the trend and possibly beyond the observed
       ENSO range. Add expanding-window (forward-chaining) validation.

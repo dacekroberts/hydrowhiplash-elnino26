@@ -48,7 +48,8 @@ import xarray as xr
 
 from src.config import (BC_DROP_CODES, BC_SNOW_RAW, CANSWE_FILES, CANSWE_PILLOW_TYPE,
                         CANSWE_PREFIXES, CANSWE_RAW, CLIMATE_FIRST_YEAR, CRS_GEOGRAPHIC,
-                        DATA_PROCESSED, FOOT_M, INCH_MM, NRCS_DROP_QC, NRCS_PLACEHOLDER_DATE,
+                        DATA_PROCESSED, ERA5_SWE_MIN_NORMAL_MM, FOOT_M, INCH_MM, NRCS_DROP_QC,
+                        NRCS_PLACEHOLDER_DATE,
                         NRCS_SNOW_RAW, REGIONS, RESULTS, STATION_INDEX_TABLE,
                         STATION_MIN_PER_REGION_YEAR, STATION_NORMAL_MIN_YEARS,
                         STATION_NORMAL_YEARS, STATION_PCT_MIN_NORMAL_MM, STATION_TABLE,
@@ -359,6 +360,9 @@ def compare_era5(index: pd.DataFrame, era5: pd.DataFrame) -> pd.DataFrame:
     parts = []
     for region, g in era5.groupby("region", sort=False):
         pct, z = anomalies(g["swe_apr1_mm"], g["year"])
+        normal = g.loc[g["year"].between(*STATION_NORMAL_YEARS), "swe_apr1_mm"].mean()
+        if not normal >= ERA5_SWE_MIN_NORMAL_MM:  # also catches a NaN normal
+            pct, z = pct * np.nan, z * np.nan
         parts.append(g.assign(era5_swe_pct=pct, era5_swe_z=z))
     era5 = pd.concat(parts)
     cols = ["region", "year", "winter", "swe_apr1_mm", "era5_swe_pct", "era5_swe_z",
