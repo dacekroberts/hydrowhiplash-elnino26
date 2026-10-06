@@ -30,23 +30,42 @@ decisions.
 
 **Hypotheses**
 
-- [ ] **Test the core variables.** No hypothesis uses the whiplash index,
+- [x] **Test the core variables.** No hypothesis uses the whiplash index,
       snowpack (SWE) or season length, though Phases 2-3 build all three. Add
       a hypothesis for whiplash or SWE (e.g. "low April 1 SWE predicts more
       burned area in PNW/BC/AB"), or label them descriptive only. Test season
       length or drop it.
-- [ ] **Whiplash timing.** SPEI(JJA) − SPEI(DJF) uses summer, inside the fire
+      *Decided 2026-10-05:* new hypothesis **H6** (snowpack and winter
+      dryness predict burned area; table and methods below). Whiplash is a
+      descriptive mechanism variable, never tested. Season length is
+      computed and reported, descriptive only (undefined with 0-1 fires;
+      CNFDB date completeness unchecked).
+- [x] **Whiplash timing.** SPEI(JJA) − SPEI(DJF) uses summer, inside the fire
       season, so it can't feed a spring forecast. Either call it a concurrent
       mechanism variable or redefine it winter to spring (DJF to MAM).
-- [ ] **Directions and sidedness.** SoCal "higher" in H2 is weakly justified
+      *Decided 2026-10-05:* kept as SPEI-3(JJA) - SPEI-3(DJF), a concurrent,
+      descriptive mechanism variable (option D of
+      `docs/prefreeze_options.md`); the forecastable parts, winter SPEI-3
+      and April 1 SWE, are tested in H6.
+- [x] **Directions and sidedness.** SoCal "higher" in H2 is weakly justified
       (the grass effect tends to lag, and a wet winter can delay the season).
       Suggested: SoCal two-sided, add NorCal expectations, and state one- or
       two-sided for every test.
-- [ ] **H4's actual test.** With SoCal as baseline there are four interaction
+      *Decided 2026-10-05:* see "Directions and sidedness" under
+      Hypotheses below.
+- [x] **H4's actual test.** With SoCal as baseline there are four interaction
       terms. Name the test: a joint Wald test, or one north-vs-south contrast.
-- [ ] **H5 definitions.** Fix `precip_anom`'s months (DJF or Oct-Mar),
+      *Decided 2026-10-05:* one contrast, the mean `enso_djf` slope of PNW,
+      BC and AB minus SoCal's, two-sided; the joint Wald test of the four
+      interaction terms reported as secondary. NorCal stays in the model,
+      outside the contrast; AK and YT are not in the pooled model.
+- [x] **H5 definitions.** Fix `precip_anom`'s months (DJF or Oct-Mar),
       baseline period, and units (mm, % of normal or standardised), and give
       the expected sign of lag0 and lag1 per region.
+      *Decided 2026-10-05:* `precip_anom` = October-March total
+      precipitation (labelled by the March year; ends before every fire
+      window opens), as a z-score against the region's 1991-2020 normal.
+      Signs under "Directions and sidedness" below.
 - [ ] **Alaska and Yukon (added 2026-10-04).** Two new regions, AK (Alaska
       east of 169W) and YT, with the role `north`: their own hypothesis
       family, separate from PNW/BC/AB, because El Niño acts there mainly
@@ -55,6 +74,14 @@ decisions.
       precipitation may not be lower there), and whether Alaska stays one
       region or splits Interior from coast (different biomes; fire is almost
       all Interior). Fire window Apr-Sep is provisional in `config.py`.
+      *Decided 2026-10-05 (hypotheses):* own family; H2, H3a and H3b
+      two-sided (expected higher, positive; H3b smaller than H3a); H1 and
+      H6 descriptive; H4 and H5 not extended to them; March-May mean 2 m
+      temperature from ERA5-Land shown as a descriptive spring mechanism
+      variable. *Region:* Alaska stays one region unless a short probe
+      finds a boundary with clear terms; if it stays one, the likely skews
+      (climate means dominated by the wet south coast, fire almost all
+      Interior) are disclosed in the analysis.
 - [x] **Trend and climate change** [mid-project: D38]. Trend handling below
       covers burned area only. Decide (a) whether the climate variables
       (SWE, snowfall fraction, whiplash, winter precipitation) are compared
@@ -77,19 +104,32 @@ decisions.
 
 **Data rules**
 
-- [ ] **SPEI settings.** Calibration period (e.g. 1951-2020), distribution,
+- [x] **SPEI settings.** Calibration period (e.g. 1951-2020), distribution,
       PET method (Thornthwaite) and scale 3, in `config.py`.
-- [ ] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
+      *Decided 2026-10-04:* calibration 1951-2020, log-logistic by maximum
+      likelihood, Thornthwaite (1948) PET, scale 3, per-cell SPEI clipped at
+      ±3.09, regional means of per-cell SPEI re-standardised over the
+      calibration period (`DECISIONS.md` 2026-10-04 "SPEI settings").
+- [x] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
       both (one as a check on the other); how April 1 is approximated from
       monthly means; glacier cells excluded (ERA5-Land caps them at 10 m).
       *Source decided 2026-10-05:* ERA5-Land April 1 SWE (glacier cells
       excluded) for every test and the forecast, as the z-score against its
       own 1991-2020 regional normal (`era5_swe_z`); every SWE test repeated
       on the station index z (`station_swe_z`) where it exists, both
-      reported. Percent of normal for display only.
-- [ ] **Snowfall and soil moisture.** Say whether snowfall fraction and
+      reported. Percent of normal for display only. *Definition (decided
+      2026-10-04/05):* April 1 is the 00:00 UTC 1 April field of hourly
+      ERA5-Land, so no approximation from monthly means; glacier cells
+      excluded by the cap-or-perennial-snow rule (D27); station cleaning
+      rules and index in `DECISIONS.md` 2026-10-05.
+- [x] **Snowfall and soil moisture.** Say whether snowfall fraction and
       summer soil moisture enter any hypothesis (e.g. as mechanism checks
       for a snowpack or burned-area hypothesis) or are descriptive only.
+      *Decided 2026-10-05:* descriptive mechanism checks shown beside H6,
+      not tested. Seasons and layers as built: snowfall fraction Nov-Mar as
+      a ratio of regional totals; soil moisture JJA, 0-28 cm depth-weighted
+      (`DECISIONS.md` 2026-10-05 "Snowfall fraction and soil moisture
+      columns").
 - [ ] **Fire windows.** Jun-Oct drops California's Nov-Jan wind-driven fires
       (e.g. Thomas, Dec 2017; Camp and Woolsey, Nov 2018), and northeast BC
       has spring boreal fires like Alberta. Suggested: California through
@@ -161,6 +201,23 @@ decisions.
 | H3b | **Direct effect:** ENSO strength still predicts burned area after also controlling for summer temperature | smaller than H3a |
 | H4 | El Niño's effect on burned area differs between northern regions and SoCal | index × region interaction ≠ 0 |
 | H5 | Wet years raise burned area afterwards (whiplash mechanism) | positive lag coefficient, strongest in SoCal |
+| H6 | Low April 1 snowpack and a dry winter predict more burned area (added 2026-10-05) | negative in PNW/BC/AB |
+
+### Directions and sidedness (decided 2026-10-05)
+
+| Test | PNW, BC, AB | NorCal | SoCal | AK, YT (own family) |
+|---|---|---|---|---|
+| H1 winter precipitation | lower, two-sided; a check, not a finding (values seen before the freeze) | two-sided | higher, two-sided | descriptive |
+| H2 burned area after El Niño | higher, one-sided | two-sided | two-sided | higher, two-sided |
+| H3a ENSO strength | positive, one-sided | two-sided | two-sided | positive, two-sided |
+| H3b ENSO strength with `temp_jja` | positive, one-sided; the H3a minus H3b gap reported with a CI, not tested | two-sided | two-sided | positive, two-sided |
+| H4 contrast | mean PNW/BC/AB slope minus SoCal slope, two-sided | in model | baseline | not in model |
+| H5 lag0 / lag1 | negative one-sided / two-sided | two-sided / two-sided | two-sided / positive one-sided | not extended |
+| H6 SWE z / winter SPEI-3 | negative one-sided / negative one-sided | two-sided / two-sided | not applicable / two-sided | descriptive |
+
+Descriptive only, reported but not tested: whiplash (JJA - DJF), season
+length, snowfall fraction, summer soil moisture, AK and YT spring (MAM)
+temperature.
 
 **Why H3 is split.** El Niño makes PNW, BC and Alberta summers warmer, so summer
 temperature sits *on the path* from El Niño to fire. Controlling for it removes
@@ -190,6 +247,11 @@ measure of how much of the effect runs through summer heat.
 - **Lag test** (H5): `log_burn ~ precip_anom_lag0 + precip_anom_lag1 + year`,
   where lag0 = the preceding winter and lag1 = the winter before that.
   HAC errors.
+- **Snowpack and winter dryness** (H6): per region, HAC errors,
+  `log_burn ~ swe_z + year` and `log_burn ~ spei3_djf + year`, each
+  predictor alone (the tests), plus both together reported, not tested
+  (they correlate about 0.6). `swe_z` = ERA5-Land April 1 SWE z (station z
+  as the check); `spei3_djf` = winter SPEI-3, known by 1 March.
 - **Autocorrelation:** report lag-1 autocorrelation of each outcome series;
   moving-block bootstrap (block length 3) as a check on the HAC results.
   `block_bootstrap_ci`.

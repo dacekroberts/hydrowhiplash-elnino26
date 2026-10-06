@@ -337,9 +337,12 @@ stations and grid in mm is meaningless; compare % or z.
 - **Reading it:** negative = a swing from wetter-than-usual winter to
   drier-than-usual summer (e.g. winter +1, summer -1 gives -2). Positive =
   the reverse.
-- **Open:** summer falls inside the fire season, so the index is a
-  concurrent mechanism variable; a winter-to-spring version is the
-  alternative (pre-freeze item "Whiplash timing").
+- **Role (decided 2026-10-05):** a concurrent, descriptive mechanism
+  variable, never tested; summer falls inside the fire season. In the
+  north a positive value is two signals: a dry winter plus a wetter summer
+  (El Niño minus neutral under RONI, BC winter SPEI-3 -0.55, summer +0.41),
+  so it does not mean drier overall. Its forecastable parts, winter SPEI-3
+  and April 1 SWE, are the H6 predictors.
 
 ### 4d. Other regional climate columns
 
@@ -353,10 +356,20 @@ stations and grid in mm is meaningless; compare % or z.
   (`DECISIONS.md` 2026-10-04, "Phase 1 regions and ERA5 loading").
 
 - `temp_jja` (planned): June-August mean 2 m temperature per region, °C.
-- `precip_anom_*` (planned): winter precipitation anomaly per region; months,
-  baseline and units (mm, % of normal or standardised) are fixed at the
-  freeze (H5 definitions). `lag0` = preceding winter, `lag1` = the winter
-  before.
+- `precip_anom_lag0`, `precip_anom_lag1` (planned; defined 2026-10-05):
+  October-March total precipitation per region (`PRECIP_ANOM_MONTHS`;
+  year Y = October Y-1 to March Y), as a z-score against the region's
+  1991-2020 mean and SD (`PRECIP_ANOM_NORMAL_YEARS`). Unitless (SD).
+  `lag0` = the Oct-Mar before fire season Y, `lag1` = the one before that.
+  Longer than DJF so it catches California's autumn and March storms; it
+  ends before every fire window opens (April at the earliest).
+- `swe_z` in the tests = `era5_swe_z` (have): ERA5-Land April 1 SWE as a
+  z-score against the region's own 1991-2020 mean and SD
+  (`SWE_TEST_COLUMN`); the station index z (`station_swe_z`) is the
+  check. Table: `results/tables/station_swe_region_year.csv`.
+- `temp_mam` (planned; AK and YT, descriptive): March-May mean 2 m
+  temperature per region, °C (`SPRING_MONTHS`), the spring warmth and
+  early-melt path El Niño is thought to act through there.
 
 - `snowfall_frac` (have, 2026-10-05): share of November-March
   precipitation that fell as snow, regional mean snowfall / regional mean
@@ -438,6 +451,18 @@ attributes such as fire name, year, type and start date.
   alongside); significance at α = 0.05.
 - **Prediction intervals:** 80% (`PREDICTION_ALPHA = 0.2`), with
   leave-one-year-out coverage reported.
+- **One-sided and two-sided tests:** a one-sided test looks for an effect
+  in one stated direction only (more power, but an effect the other way
+  cannot count); two-sided looks both ways. Each test's direction per
+  region is in `TEST_DIRECTIONS` (`greater`, `less`, `two-sided`, or
+  None for descriptive), from `ANALYSIS_PLAN.md` "Directions and
+  sidedness".
+- **Interaction term:** `a:b` in a model formula lets the effect of `a`
+  change with `b`. In C1 and C2, `enso_djf:year_c` asks whether El Niño's
+  effect grows or shrinks over time; `year_c` is the year minus the mean
+  year, so the `enso_djf` coefficient is the effect at mid-record.
+- **Contrast:** a single combination of coefficients tested as one
+  number. H4's is the mean ENSO slope of PNW, BC and AB minus SoCal's.
 
 ## 9. Time conventions
 

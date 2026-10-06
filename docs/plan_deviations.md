@@ -27,6 +27,26 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (gate)
 
+### D42 · H6 added; whiplash and season length descriptive; H2 and H5 wording stale
+- **Plan:** `ANALYSIS_PLAN.md` Hypotheses has H1-H5, with H2 "higher in
+  SoCal" and H5 "positive lag coefficient, strongest in SoCal";
+  "Outcomes" lists fire-season length as an outcome; `ACTION_PLAN.md`
+  Phase 2 builds whiplash as the project's core index and Phase 4 runs a
+  "lag test for the whiplash mechanism".
+- **Actual (owner, 2026-10-05, pre-freeze items):** H6 added (burned area
+  on April 1 SWE z and on winter SPEI-3); whiplash, season length,
+  snowfall fraction and soil moisture are descriptive only; SoCal H2 is
+  two-sided; H5's expected signs differ by region (north lag0 negative,
+  SoCal lag1 positive); AK and YT tested on H2 and H3 only, two-sided.
+- **Why:** see `DECISIONS.md` 2026-10-05 "Hypotheses".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Hypotheses".
+- **Plan doc:** `ANALYSIS_PLAN.md` items filled in, an H6 row and a
+  "Directions and sidedness" table added; the H2 and H5 rows of the
+  hypotheses table and "Fire-season length" under Outcomes left as written
+  (owner's prose), stale: SoCal H2 is two-sided, H5's signs are per region,
+  season length is descriptive. `ACTION_PLAN.md` left as written.
+  `docs/prefreeze_options.md` numbers are ONI-based (stale under RONI).
+
 ### D41 · ENSO index RONI; plan wording still names ONI
 - **Plan:** `ANALYSIS_PLAN.md` left ONI or RONI to the freeze (recommended
   RONI); `ACTION_PLAN.md` Phase 4 says "burned area on ONI strength" and

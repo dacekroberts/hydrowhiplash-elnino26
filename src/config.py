@@ -145,6 +145,42 @@ RANDOM_SEED = 2026
 # compounding"; DECISIONS.md 2026-10-05 "Trend and climate change").
 COMPOUNDING_REGIONS = ("PNW", "BC", "AB")
 
+# H5 precip_anom (DECISIONS.md 2026-10-05 "Hypotheses"): Oct-Mar total,
+# labelled by the March year, as a z-score against the region's normal over
+# PRECIP_ANOM_NORMAL_YEARS. lag0 = the preceding Oct-Mar, lag1 = the one before.
+PRECIP_ANOM_MONTHS = (10, 11, 12, 1, 2, 3)
+PRECIP_ANOM_NORMAL_YEARS = (1991, 2020)
+# AK and YT descriptive spring mechanism variable: mean 2 m temperature.
+SPRING_MONTHS = (3, 4, 5)  # MAM
+
+# Test directions (ANALYSIS_PLAN.md "Directions and sidedness"), as the
+# alternative of each test per region: "greater", "less", "two-sided", or None
+# where the region is descriptive only or the test does not apply. H4 is one
+# north-vs-SoCal contrast. The tests in src/stats.py are two-sided today; a
+# one-sided p-value needs the sign of the estimate (Phase 4).
+_NORTH = ("PNW", "BC", "AB")
+
+
+def _directions(north, norcal, socal, ak_yt):
+    out = {r: north for r in _NORTH}
+    out.update({"NorCal": norcal, "SoCal": socal, "AK": ak_yt, "YT": ak_yt})
+    return out
+
+
+TEST_DIRECTIONS = {
+    "H1": _directions("two-sided", "two-sided", "two-sided", None),  # a check
+    "H2": _directions("greater", "two-sided", "two-sided", "two-sided"),
+    "H3a": _directions("greater", "two-sided", "two-sided", "two-sided"),
+    "H3b": _directions("greater", "two-sided", "two-sided", "two-sided"),
+    "H4": "two-sided",
+    "H5_lag0": _directions("less", "two-sided", "two-sided", None),
+    "H5_lag1": _directions("two-sided", "two-sided", "greater", None),
+    "H6_swe": _directions("less", "two-sided", None, None),
+    "H6_spei": _directions("less", "two-sided", "two-sided", None),
+    "C1": {r: "less" for r in COMPOUNDING_REGIONS},
+    "C2": {r: "two-sided" for r in COMPOUNDING_REGIONS},
+}
+
 # Station snowpack (Phase 2; DATA_SOURCES.md rows NRCS, BC, Yukon)
 # Raw downloads; cleaning and the April 1 extraction in src/stations.py (below).
 STATIONS_RAW = DATA_RAW / "stations"

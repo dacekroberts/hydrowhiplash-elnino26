@@ -17,6 +17,58 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Hypotheses
+
+Numbers below: El Niño minus neutral under RONI (SPEI in SPEI units, SWE as
+z), 1951-2026, descriptive; no fire data seen.
+
+- **Decided (owner) to add H6, "low April 1 snowpack and a dry winter
+  predict more burned area", and keep whiplash descriptive** (option D of
+  `docs/prefreeze_options.md`). `log_burn ~ swe_z + year` and
+  `log_burn ~ spei3_djf + year` per region, each alone; both together
+  reported, not tested (correlation PNW 0.61, BC 0.67, AB 0.65). Both are
+  known by 1 April in every region, so they can feed the 2027 forecast, and
+  they separate the dry-winter path (winter SPEI-3 PNW -0.42, BC -0.55, AB
+  -0.60) from the warm-winter path (SWE z -0.41, -0.56, -0.69). Whiplash
+  (JJA - DJF) mixes a dry winter with a wetter summer in the north (summer
+  SPEI-3 +0.21, +0.41, +0.48), so its sign for fire is unclear; kept as a
+  descriptive mechanism variable. Rejected whiplash as the only core
+  variable, a winter-to-spring whiplash (still inside the April fire
+  windows), and no new hypothesis.
+- **Decided (owner): season length, snowfall fraction and summer soil
+  moisture are descriptive only.** Season length is undefined with 0-1
+  counted fires and CNFDB date completeness is unchecked; snowfall fraction
+  and soil moisture are shown beside H6 as mechanism checks. Rejected testing
+  season length and soil moisture as an H3b-style control.
+- **Decided (owner) on directions and sidedness for every test**
+  (`ANALYSIS_PLAN.md` "Directions and sidedness"; `config.TEST_DIRECTIONS`).
+  PNW, BC, AB one-sided where theory and precursors agree (H2 higher, H3a
+  and H3b positive, H5 lag0 negative, H6 negative); NorCal and SoCal
+  two-sided except SoCal H5 lag1 (positive, the fuel build-up); H1
+  two-sided and labelled a check, since winter precipitation was seen
+  before the freeze (SoCal +62.9%, PNW -10.7%); the H3a minus H3b gap
+  reported with a CI, not tested. Rejected H1 descriptive and all
+  two-sided.
+- **Decided (owner): H4 is one contrast, the mean `enso_djf` slope of PNW,
+  BC and AB minus SoCal's, two-sided**, with the joint Wald test of the four
+  interaction terms as secondary; AK and YT out of the pooled model.
+  Rejected the joint Wald test as primary (four degrees of freedom for a
+  one-number question).
+- **Decided (owner): H5's `precip_anom` is the October-March total as a
+  z-score against the region's 1991-2020 normal.** Covers California's
+  autumn and March storms that DJF misses and ends before every fire window.
+  Signs: north lag0 negative one-sided, lag1 two-sided; SoCal lag0
+  two-sided (grass grows but a wet winter can delay the season), lag1
+  positive one-sided; NorCal two-sided. Rejected DJF.
+- **Decided (owner) on Alaska and Yukon as their own family (option B):**
+  H2, H3a, H3b two-sided (expected higher, positive); H1 and H6
+  descriptive; H4 and H5 not extended; MAM temperature as a descriptive
+  spring variable. Under RONI an average El Niño barely moves AK (SWE z
+  -0.11, DJF precipitation -0.1%) though strong winters do (SWE z -0.42),
+  so no one-sided claim. Alaska stays one region unless a short probe finds
+  a boundary with clear terms; if none is found, the skews are disclosed. Rejected
+  descriptive only and one-sided (option C). D42.
+
 ### 2026-10-05 - Trend and climate change
 
 - **Decided (owner) that the climate variables follow the burned-area
