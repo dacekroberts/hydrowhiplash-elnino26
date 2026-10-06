@@ -44,3 +44,30 @@ def test_strong_sensitivity_band_catches_the_near_threshold_winters():
     for value in (1.53, 1.46, 1.44):
         assert abs(value - config.STRONG_THRESHOLD) <= config.STRONG_SENSITIVITY_BAND + 1e-9
     assert abs(1.69 - config.STRONG_THRESHOLD) > config.STRONG_SENSITIVITY_BAND
+
+
+def test_correction_families_hold_only_tested_cells_and_match_the_plan_sizes():
+    sizes = {}
+    for family, members in config.CORRECTION_FAMILIES.items():
+        n = 0
+        for test, regions in members:
+            directions = config.TEST_DIRECTIONS[test]
+            n += sum(directions[r] is not None for r in regions)
+        sizes[family] = n
+    assert sizes == {"H1": 5, "H2": 5, "H3a": 5, "H3b": 5, "H5": 10, "H6": 9,
+                     "north_H2": 2, "north_H3a": 2, "north_H3b": 2, "C1": 3, "C2": 3}
+
+
+def test_every_tested_cell_is_in_exactly_one_family():
+    seen = {}
+    for family, members in config.CORRECTION_FAMILIES.items():
+        for test, regions in members:
+            for r in regions:
+                if config.TEST_DIRECTIONS[test][r] is not None:
+                    assert (test, r) not in seen, (test, r)
+                    seen[(test, r)] = family
+    for test, directions in config.TEST_DIRECTIONS.items():
+        if isinstance(directions, dict):
+            for r, d in directions.items():
+                if d is not None:
+                    assert (test, r) in seen, (test, r)

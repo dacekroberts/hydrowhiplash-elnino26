@@ -17,6 +17,31 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Inference
+
+- **Decided (owner): t critical values (`use_t=True`) in every HAC and
+  pooled fit, and Driscoll-Kraay errors (maxlags 2) for the pooled H4
+  model, with year-clustered errors reported alongside.** About 42 fire
+  seasons give about 42 clusters, where normal critical values overstate
+  precision; year clustering allows regions in one year to correlate but
+  ignores each region's correlation with its own nearby years, which
+  Driscoll-Kraay covers. Rejected `use_t` alone. `USE_T`, `POOLED_COV_TYPE`
+  (statsmodels `hac-groupsum`); `src/stats.py` applies neither yet. D45.
+- **Decided (owner) to add expanding-window validation: fit on 1984 to
+  Y-1, predict Y, from 20 training seasons (first prediction 2004, about 23
+  predictions), for H3a and the H6 models**, with coverage and error beside
+  leave-one-year-out. Leave-one-year-out lets each fit see later years; the
+  2027 forecast cannot. Rejected a 15-season start (shakier early fits) and
+  leave-one-year-out alone. `FORWARD_MIN_TRAIN_YEARS`.
+- **Decided (owner) on the correction families: one Holm family per
+  hypothesis across the main regions, BH alongside** (H1 5 tests, H2 5, H3a
+  5, H3b 5, H5 10, H6 9; H4 a single test; AK and YT H2, H3a, H3b 2 each;
+  C1 and C2 3 each; ONI and station-z robustness runs uncorrected). H3a and
+  H3b kept apart: the same coefficient estimated with and without
+  `temp_jja`, so a shared family would penalise one question twice.
+  Rejected H3a and H3b shared. `CORRECTION_FAMILIES`; tests check that
+  every tested cell sits in exactly one family.
+
 ### 2026-10-05 - Season timeline page for the live tracker
 
 - **Decided (owner) to build the live 2026-27 tracker as one site page in

@@ -27,6 +27,43 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-05 (gate)
 
+### D45 · H4 errors Driscoll-Kraay, not clustered by year
+- **Plan:** `ANALYSIS_PLAN.md` "Headline methods" 3: the H4 pooled model
+  with "errors clustered by year (`fit_pooled`)".
+- **Actual:** owner chose Driscoll-Kraay errors (maxlags 2) as H4's primary
+  errors, year-clustered reported alongside, and `use_t=True` in every fit
+  (2026-10-05, pre-freeze item "Small-cluster corrections").
+- **Why:** see `DECISIONS.md` 2026-10-05 "Inference".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Inference".
+- **Plan doc:** pre-freeze item filled in; "Headline methods" 3 left as
+  written (owner's prose), stale: H4's primary errors are Driscoll-Kraay.
+
+### D44 · Scope: live tracker becomes a three-state season timeline page
+- **Plan:** `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker: this
+  winter's precipitation and snowpack against all past winters, updated
+  monthly, *Nov 2026 → spring 2027*. Nothing before November, and the
+  tracker and the results were separate pieces.
+- **Actual:** one page in three states at one URL. Before winter, a
+  November-April timeline with a countdown to the first month of data and
+  the freeze date; while tracking, region × month tiles that fill in as data
+  arrives, with a countdown to the April 1 snowpack; at the end, the
+  countdown goes and the page becomes the results page, keeping the
+  timeline as the record that the forecast came before the season.
+  Countdowns target expected data arrival and run in the browser; the state
+  comes from `results/`; the dates go in `src/config.py` (added by the main
+  session after the freeze). A private mockup of the three states was
+  published for review.
+- **Why:** owner's idea, 2026-10-05: if the build finishes before November,
+  the site can go public with a reason to come back, and the timeline then
+  carries over into the results.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Season timeline page for the live
+  tracker".
+- **Substantial:** yes. The owner decided the scope change warrants editing
+  the plan directly (2026-10-05).
+- **Plan doc:** updated, the changed spot marked `[mid-project: D44]`:
+  `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker bullet. The "Done
+  when" line is left as written (the tracker is still the fourth piece).
+
 ### D43 · Fire windows: California through January, BC from April
 - **Plan:** `ANALYSIS_PLAN.md` "Outcomes" and `ACTION_PLAN.md` Phase 3:
   June-October for US regions and BC, April-October for Alberta,
@@ -79,32 +116,6 @@ additions stay distinguishable from the original plan.
   stale: the index is RONI.
 
 ## 2026-10-05 (Phase 2)
-
-### D44 · Scope: live tracker becomes a three-state season timeline page
-- **Plan:** `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker: this
-  winter's precipitation and snowpack against all past winters, updated
-  monthly, *Nov 2026 → spring 2027*. Nothing before November, and the
-  tracker and the results were separate pieces.
-- **Actual:** one page in three states at one URL. Before winter, a
-  November-April timeline with a countdown to the first month of data and
-  the freeze date; while tracking, region × month tiles that fill in as data
-  arrives, with a countdown to the April 1 snowpack; at the end, the
-  countdown goes and the page becomes the results page, keeping the
-  timeline as the record that the forecast came before the season.
-  Countdowns target expected data arrival and run in the browser; the state
-  comes from `results/`; the dates go in `src/config.py` (added by the main
-  session after the freeze). A private mockup of the three states was
-  published for review.
-- **Why:** owner's idea, 2026-10-05: if the build finishes before November,
-  the site can go public with a reason to come back, and the timeline then
-  carries over into the results.
-- **Recorded:** `DECISIONS.md` 2026-10-05 "Season timeline page for the live
-  tracker".
-- **Substantial:** yes. The owner decided the scope change warrants editing
-  the plan directly (2026-10-05).
-- **Plan doc:** updated, the changed spot marked `[mid-project: D44]`:
-  `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker bullet. The "Done
-  when" line is left as written (the tracker is still the fourth piece).
 
 ### D40 · Side-session deviation numbers given at merge
 - **Plan:** `docs/session3_kickoff.md` and `docs/session4_kickoff.md` split

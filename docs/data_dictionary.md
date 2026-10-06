@@ -465,6 +465,26 @@ attributes such as fire name, year, type and start date.
   year, so the `enso_djf` coefficient is the effect at mid-record.
 - **Contrast:** a single combination of coefficients tested as one
   number. H4's is the mean ENSO slope of PNW, BC and AB minus SoCal's.
+- **Holm correction:** within a family of m tests, sort the p-values; the
+  smallest must be below α/m, the next below α/(m-1), and so on; at the
+  first failure it and all larger ones are not significant. Controls the
+  family-wise error rate, the chance of even one false positive in the
+  family (5 tests at 0.05 uncorrected: about 23%).
+- **Benjamini-Hochberg (BH):** controls the false discovery rate, the
+  expected share of false positives among results called significant:
+  the largest rank k with p ≤ (k/m)·α, and tests 1 to k pass. More
+  lenient; a result passing BH but not Holm reads as suggestive.
+- **t critical values (`use_t`):** with about 42 seasons, confidence
+  intervals and p-values use the t distribution (n minus parameters
+  degrees of freedom) rather than the normal, a little wider.
+- **Driscoll-Kraay errors:** standard errors for the pooled H4 model that
+  allow regions in the same year to be correlated and each region to be
+  correlated with itself over nearby years (statsmodels `hac-groupsum`,
+  maxlags 2); year clustering allows only the first.
+- **Expanding-window validation:** fit on seasons 1984 to Y-1 only and
+  predict Y, moving Y forward from 2004 (20 training seasons). Unlike
+  leave-one-year-out, the model never sees years after the one predicted,
+  as in the 2027 forecast.
 
 ## 9. Time conventions
 

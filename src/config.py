@@ -198,6 +198,35 @@ TEST_DIRECTIONS = {
     "C2": {r: "two-sided" for r in COMPOUNDING_REGIONS},
 }
 
+# Small-cluster corrections (decided 2026-10-05; DECISIONS.md "Inference"):
+# t critical values in every HAC and pooled fit; the pooled H4 model uses
+# Driscoll-Kraay errors (statsmodels cov_type "hac-groupsum") with
+# HAC_MAXLAGS, year-clustered errors reported alongside. src/stats.py does
+# not apply these yet (Phase 4).
+USE_T = True
+POOLED_COV_TYPE = "hac-groupsum"
+# Expanding-window validation: fit on seasons FIRE_FIRST_YEAR..Y-1, predict Y,
+# once this many training seasons exist (first prediction 2004).
+FORWARD_MIN_TRAIN_YEARS = 20
+# Holm families (BH alongside): family -> tests in it. Region lists for each
+# test come from TEST_DIRECTIONS (None = not tested). ONI and station-z
+# robustness runs are not corrected.
+_MAIN = ("PNW", "BC", "AB", "NorCal", "SoCal")
+_AK_YT = ("AK", "YT")
+CORRECTION_FAMILIES = {
+    "H1": [("H1", _MAIN)],
+    "H2": [("H2", _MAIN)],
+    "H3a": [("H3a", _MAIN)],
+    "H3b": [("H3b", _MAIN)],
+    "H5": [("H5_lag0", _MAIN), ("H5_lag1", _MAIN)],
+    "H6": [("H6_swe", _MAIN), ("H6_spei", _MAIN)],
+    "north_H2": [("H2", _AK_YT)],
+    "north_H3a": [("H3a", _AK_YT)],
+    "north_H3b": [("H3b", _AK_YT)],
+    "C1": [("C1", COMPOUNDING_REGIONS)],
+    "C2": [("C2", COMPOUNDING_REGIONS)],
+}
+
 # Station snowpack (Phase 2; DATA_SOURCES.md rows NRCS, BC, Yukon)
 # Raw downloads; cleaning and the April 1 extraction in src/stations.py (below).
 STATIONS_RAW = DATA_RAW / "stations"

@@ -175,16 +175,30 @@ decisions.
 
 **Inference**
 
-- [ ] **Small-cluster corrections.** About 40 years means about 40 clusters:
+- [x] **Small-cluster corrections.** About 40 years means about 40 clusters:
       use `use_t=True` (t rather than normal critical values) in the HAC and
       clustered fits, and consider Driscoll-Kraay errors for the pooled
       model, since clustering by year ignores serial correlation within a
       region.
-- [ ] **Forward validation.** Leave-one-year-out tests interpolation, but
+      *Decided 2026-10-05:* `use_t=True` in every HAC and pooled fit; the
+      pooled H4 model uses Driscoll-Kraay errors (maxlags 2), with
+      year-clustered errors reported alongside.
+- [x] **Forward validation.** Leave-one-year-out tests interpolation, but
       2027 is a forecast beyond the trend and possibly beyond the observed
       ENSO range. Add expanding-window (forward-chaining) validation.
-- [ ] **Correction families.** Define each family explicitly (e.g. one per
+      *Decided 2026-10-05:* expanding window: fit on fire seasons 1984 to
+      Y-1, predict Y, from the first year with 20 training seasons (2004),
+      for H3a and the H6 models; 80% interval coverage and prediction
+      error reported beside leave-one-year-out.
+- [x] **Correction families.** Define each family explicitly (e.g. one per
       hypothesis across regions) and whether H3a and H3b share one.
+      *Decided 2026-10-05:* Holm within each family, Benjamini-Hochberg
+      alongside. Main regions (PNW, BC, AB, NorCal, SoCal): H1 (5 tests, a
+      check), H2 (5), H3a (5), H3b (5, separate from H3a: the same
+      coefficient estimated two ways), H5 (10: lag0 and lag1), H6 (9: SWE
+      in four regions, winter SPEI in five); H4 is one test. North (AK,
+      YT): H2, H3a, H3b, a family of 2 each. C1 and C2: 3 each. ONI and
+      station-z robustness runs are not corrected.
 
 ## Data and years
 
