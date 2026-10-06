@@ -52,14 +52,35 @@ def pet_thornthwaite(t2m_c: xr.DataArray) -> xr.DataArray:
     """Thornthwaite PET in mm/day from monthly mean 2 m temperature in deg C.
 
     Uses latitude for day length. Zero in months at or below 0 deg C.
-    """
-    from xclim.core.units import convert_units_to
-    from xclim.indices import potential_evapotranspiration
 
-    tas = _to_xclim(t2m_c).assign_attrs(units="degC")
+    The steps of xclim's TW48 method (`potential_evapotranspiration`), with
+    one change: day lengths in polar day and night are set to 24 h and 0 h
+    (`infill_polar_days`). xclim leaves them NaN, so PET was NaN in June and
+    December north of about 68N and every DJF and JJA SPEI-3 there was
+    missing (pre-freeze data audit, 2026-10-05: 15% of AK's area weight).
+    South of the polar circles the day lengths, and so PET, are unchanged.
+    """
+    from xclim.core.units import amount2rate
+    from xclim.indices.helpers import day_lengths
+
+    if PET_METHOD != "TW48":
+        raise ValueError(f"pet_thornthwaite implements TW48 only, not {PET_METHOD!r}")
+    tas = _to_xclim(t2m_c).clip(min=0)
+    months = tas[XTIME]
+    days = xr.DataArray(
+        pd.date_range(months[0].dt.strftime("%Y-%m-01").item(),
+                      months[-1].dt.strftime("%Y-%m").item() + f"-{int(months[-1].dt.daysinmonth)}",
+                      freq="D"), dims=XTIME, name=XTIME)
     lat = tas[LAT].assign_attrs(units="degrees_north")  # xclim reads the units
-    pet = potential_evapotranspiration(tas=tas, lat=lat, method=PET_METHOD)
-    pet = convert_units_to(pet, "mm/d", context="hydro")
+    # Thornthwaite measures day length in units of 12 hours.
+    dl = day_lengths(days, lat, infill_polar_days=True) / 12
+    dl_m = dl.resample({XTIME: "MS"}).mean()
+    dl_m = dl_m.assign_coords({XTIME: months.values})
+    heat = ((tas / 5) ** 1.514).groupby(f"{XTIME}.year").sum()  # annual heat index
+    heat_m = heat.sel(year=tas[XTIME].dt.year).drop_vars("year")
+    a = 6.75e-7 * heat_m**3 - 7.71e-5 * heat_m**2 + 0.01791 * heat_m + 0.49239
+    pet = 10 * 1.6 * dl_m * (10 * tas / heat_m) ** a  # mm/month
+    pet = amount2rate(pet.assign_attrs(units="mm"), out_units="mm/d")
     return _from_xclim(pet).assign_attrs(units="mm/d", long_name="Thornthwaite PET")
 
 

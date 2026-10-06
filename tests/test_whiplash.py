@@ -35,6 +35,30 @@ def test_thornthwaite_zero_below_freezing_positive_in_summer():
     assert pet.attrs["units"] == "mm/d"
 
 
+def test_thornthwaite_has_values_in_polar_day_and_night():
+    # North of the polar circle xclim's day length is NaN in polar day and
+    # night; the infill gives 24 h and 0 h, so every month has a PET value.
+    t = grid(seasonal_temperature(), lat=(70.0,))
+    pet = whiplash.pet_thornthwaite(t).squeeze()
+    assert pet.notnull().all()
+    june = pet.sel({TIME: pet[TIME].dt.month == 6})
+    assert (june > 0).all()
+    december = pet.sel({TIME: pet[TIME].dt.month == 12})
+    assert (december == 0).all()
+
+
+def test_thornthwaite_matches_xclim_south_of_the_polar_circle():
+    from xclim.core.units import convert_units_to
+    from xclim.indices import potential_evapotranspiration
+
+    t = grid(seasonal_temperature(), lat=(45.0, 60.0))
+    tas = t.rename({TIME: "time"}).assign_attrs(units="degC")
+    ref = potential_evapotranspiration(tas=tas, lat=tas[LAT].assign_attrs(units="degrees_north"),
+                                       method="TW48")
+    ref = convert_units_to(ref, "mm/d", context="hydro").rename({"time": TIME})
+    assert np.allclose(whiplash.pet_thornthwaite(t), ref, atol=1e-12)
+
+
 def test_water_balance_converts_precip_back_to_mm_per_day():
     tp = grid([31.0, 28.0, 31.0])           # mm/month: 1 mm/day in Jan-Mar 1950
     pet = grid([0.25, 0.25, 0.25])

@@ -270,6 +270,22 @@ def test_compare_era5_keeps_every_era5_year():
     assert out["station_swe_pct"].isna().sum() == 2
 
 
+def test_compare_era5_leaves_snowless_regions_empty():
+    # A region whose 1991-2020 normal is under ERA5_SWE_MIN_NORMAL_MM (SoCal,
+    # 0.06 mm) gets no % or z: they explode on a near-zero normal.
+    era5 = pd.DataFrame({"region": ["R"] * 3 + ["Dry"] * 3, "year": [1991, 1992, 1993] * 2,
+                         "winter": "w", "swe_apr1_mm": [100.0, 200.0, 300.0, 0.0, 0.1, 0.5],
+                         "enso_index": "RONI", "enso_djf": 0.0, "phase": "neutral",
+                         "strong": False})
+    index = pd.DataFrame(columns=["region", "year", "n_stations", "station_swe_z",
+                                  "n_stations_pct", "station_swe_pct"])
+    out = stations.compare_era5(index.astype({"year": int}), era5)
+    dry = out[out["region"] == "Dry"]
+    assert dry["era5_swe_z"].isna().all() and dry["era5_swe_pct"].isna().all()
+    assert out.loc[out["region"] == "R", "era5_swe_z"].notna().all()
+    assert dry["era5_swe_apr1_mm"].notna().all()  # the mm values stay
+
+
 def test_effects_by_group_splits_stations_and_measures_differences():
     years = [2000, 2001, 2002, 2003]
     enso = pd.DataFrame({"year": years, "phase": ["el_nino", "neutral", "neutral", "el_nino"],

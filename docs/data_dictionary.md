@@ -310,6 +310,15 @@ stations and grid in mm is meaningless; compare % or z.
   tends to overstate drying as temperatures rise. Penman-Monteith (humidity,
   radiation, wind) would need extra ERA5-Land variables.
 - **Units:** mm/day in `src.whiplash` (xclim works in rates).
+- **Trap (fixed 2026-10-05):** day length is undefined in polar day and
+  night, and xclim's TW48 returns NaN there, so north of about 68N every
+  DJF and JJA SPEI-3 was missing and regional means silently skipped
+  those cells (AK 15-17% of its area weight, YT 5-6%). `pet_thornthwaite`
+  now repeats xclim's TW48 steps with polar day lengths set to 24 h and
+  0 h; south of the polar circles PET is unchanged (largest difference
+  3e-15 mm/day). Months partly in polar day (May, July far north) also
+  change, by up to 0.42 mm/day, since xclim averaged only the non-polar
+  days.
 
 ### 4b. SPEI-3 (Standardised Precipitation-Evapotranspiration Index)
 
@@ -329,7 +338,7 @@ stations and grid in mm is meaningless; compare % or z.
 
 ### 4c. Whiplash index
 
-- **Definition (draft):** SPEI-3(JJA) - SPEI-3(preceding DJF), every year,
+- **Definition:** SPEI-3(JJA) - SPEI-3(preceding DJF), every year,
   from the re-standardised regional values (`src.whiplash`). Table:
   `data/processed/whiplash_region_year.csv`; joined with April 1 SWE in
   `data/processed/whiplash_swe_region_year.csv` (`src.phase2`).

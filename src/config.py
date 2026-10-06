@@ -207,6 +207,10 @@ TEST_DIRECTIONS = {
 # not apply these yet (Phase 4).
 USE_T = True
 POOLED_COV_TYPE = "hac-groupsum"
+# t degrees of freedom for the Driscoll-Kraay fit: number of years minus
+# this. statsmodels 0.15 counts them from the row order of the time groups
+# (df 0, 4 or 100 for the same data sorted three ways; code audit 2026-10-05).
+POOLED_DF_YEARS_MINUS = 1
 # Expanding-window validation: fit on seasons FIRE_FIRST_YEAR..Y-1, predict Y,
 # once this many training seasons exist (first prediction 2004).
 FORWARD_MIN_TRAIN_YEARS = 20
@@ -322,6 +326,10 @@ STATION_INDEX_TABLE = DATA_PROCESSED / "station_swe_region_year.csv"
 # robustness check where it exists. Both columns are in STATION_INDEX_TABLE.
 SWE_TEST_COLUMN = "era5_swe_z"
 SWE_CHECK_COLUMN = "station_swe_z"
+# ERA5-Land SWE % and z are left empty for a region whose normal is under
+# this (SoCal: 0.06 mm, z reached 4.7 and % 1,787; pre-freeze data audit,
+# 2026-10-05), the same floor as STATION_PCT_MIN_NORMAL_MM.
+ERA5_SWE_MIN_NORMAL_MM = 10
 
 # Snowfall fraction and soil moisture (src/snow_soil.py; descriptive unless
 # ANALYSIS_PLAN.md adds them; DECISIONS.md 2026-10-05 "Snowfall fraction and
