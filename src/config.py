@@ -20,8 +20,10 @@ CRS_GEOGRAPHIC = "EPSG:4326"
 CRS_EQUAL_AREA = "ESRI:102008"  # North America Albers Equal Area Conic
 M2_PER_HA = 10_000
 
-# ENSO classification (see ANALYSIS_PLAN.md: "Decisions to make before freezing")
-ENSO_INDEX = "ONI"  # "ONI" or "RONI"
+# ENSO classification. RONI chosen 2026-10-05 (owner; DECISIONS.md "ENSO
+# index: RONI"); ONI is the robustness check, re-run for every headline test.
+ENSO_INDEX = "RONI"  # "ONI" or "RONI"
+ENSO_ROBUSTNESS_INDEX = "ONI"
 ENSO_INDEX_URLS = {
     "ONI": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
     # Same layout as the ONI table minus TOTAL; confirmed 2026-10-04. Official
@@ -120,15 +122,32 @@ REGIONS = {  # name -> role, in display order
 
 # Fire data
 MIN_FIRE_HA = 405  # 1,000 acres: MTBS western mapping threshold, applied everywhere
-FIRE_SEASON_MONTHS = {  # first and last month, inclusive
+# First and last month of fire season Y, inclusive, by ignition date. A last
+# month below the first wraps into the next calendar year: (6, 1) is June Y
+# to January Y+1, so a January fire counts for the season before it.
+# Decided 2026-10-05 (DECISIONS.md "Data rules"): California through January
+# (wind-driven Oct-Jan fires), BC from April (northeast BC spring boreal
+# fires), Alaska and Yukon the statutory season 1 Apr-30 Sep.
+FIRE_SEASON_MONTHS = {
     "PNW": (6, 10),
-    "BC": (6, 10),
+    "BC": (4, 10),
     "AB": (4, 10),
-    "AK": (4, 9),  # provisional: Alaska and Yukon statutory season, 1 Apr-30 Sep
+    "AK": (4, 9),
     "YT": (4, 9),
-    "NorCal": (6, 10),
-    "SoCal": (6, 10),
+    "NorCal": (6, 1),
+    "SoCal": (6, 1),
 }
+# Fire record rules (ANALYSIS_PLAN.md "Fire record rules"). MTBS incident
+# types kept; "Prescribed Fire" dropped. The MIN_FIRE_HA floor applies to the
+# whole fire's area_ha before clipping to regions.
+MTBS_KEEP_TYPES = ("Wildfire", "Wildland Fire Use", "Unknown")
+# Zero-fire region-years: kept (log_burn = 0); excluded in a sensitivity run;
+# no percent-change reporting where they exceed this share of seasons.
+ZERO_YEAR_PCT_LIMIT = 0.10
+# Strong-only results (exploratory): sensitivity run with the strong flag
+# flipped for winters within this distance of STRONG_THRESHOLD (under RONI:
+# 1965-66 1.53, 1986-87 1.46, 2009-10 1.44).
+STRONG_SENSITIVITY_BAND = 0.06
 
 # Statistics (values mirror ANALYSIS_PLAN.md)
 ALPHA = 0.05
@@ -138,6 +157,46 @@ HAC_MAXLAGS = 2
 BLOCK_LEN = 3
 PREDICTION_ALPHA = 0.2  # 80% prediction intervals
 RANDOM_SEED = 2026
+# Secondary compounding tests C1 (SWE) and C2 (burned area): enso_djf x
+# centred year, per region below (ANALYSIS_PLAN.md "Secondary tests:
+# compounding"; DECISIONS.md 2026-10-05 "Trend and climate change").
+COMPOUNDING_REGIONS = ("PNW", "BC", "AB")
+
+# H5 precip_anom (DECISIONS.md 2026-10-05 "Hypotheses"): Oct-Mar total,
+# labelled by the March year, as a z-score against the region's normal over
+# PRECIP_ANOM_NORMAL_YEARS. lag0 = the preceding Oct-Mar, lag1 = the one before.
+PRECIP_ANOM_MONTHS = (10, 11, 12, 1, 2, 3)
+PRECIP_ANOM_NORMAL_YEARS = (1991, 2020)
+# AK and YT descriptive spring mechanism variable: mean 2 m temperature.
+SPRING_MONTHS = (3, 4, 5)  # MAM
+
+# Test directions (ANALYSIS_PLAN.md "Directions and sidedness"), as the
+# alternative of each test per region: "greater", "less", "two-sided", or None
+# where the region is descriptive only or the test does not apply. H4 is one
+# north-vs-SoCal contrast. The tests in src/stats.py are two-sided today; a
+# one-sided p-value needs the sign of the estimate (Phase 4).
+_NORTH = ("PNW", "BC", "AB")
+
+
+def _directions(north, norcal, socal, ak_yt):
+    out = {r: north for r in _NORTH}
+    out.update({"NorCal": norcal, "SoCal": socal, "AK": ak_yt, "YT": ak_yt})
+    return out
+
+
+TEST_DIRECTIONS = {
+    "H1": _directions("two-sided", "two-sided", "two-sided", None),  # a check
+    "H2": _directions("greater", "two-sided", "two-sided", "two-sided"),
+    "H3a": _directions("greater", "two-sided", "two-sided", "two-sided"),
+    "H3b": _directions("greater", "two-sided", "two-sided", "two-sided"),
+    "H4": "two-sided",
+    "H5_lag0": _directions("less", "two-sided", "two-sided", None),
+    "H5_lag1": _directions("two-sided", "two-sided", "greater", None),
+    "H6_swe": _directions("less", "two-sided", None, None),
+    "H6_spei": _directions("less", "two-sided", "two-sided", None),
+    "C1": {r: "less" for r in COMPOUNDING_REGIONS},
+    "C2": {r: "two-sided" for r in COMPOUNDING_REGIONS},
+}
 
 # Station snowpack (Phase 2; DATA_SOURCES.md rows NRCS, BC, Yukon)
 # Raw downloads; cleaning and the April 1 extraction in src/stations.py (below).
@@ -226,6 +285,12 @@ STATION_NORMAL_MIN_YEARS = 20
 STATION_PCT_MIN_NORMAL_MM = 10
 STATION_MIN_PER_REGION_YEAR = 5   # owner: may be widened for AB and YT if too short
 STATION_INDEX_TABLE = DATA_PROCESSED / "station_swe_region_year.csv"
+# SWE in the tests (owner, 2026-10-05; DECISIONS.md "SWE source for the
+# tests"): ERA5-Land April 1 SWE as a z-score against its own regional
+# STATION_NORMAL_YEARS normal is the predictor; the station index z is the
+# robustness check where it exists. Both columns are in STATION_INDEX_TABLE.
+SWE_TEST_COLUMN = "era5_swe_z"
+SWE_CHECK_COLUMN = "station_swe_z"
 
 # Snowfall fraction and soil moisture (src/snow_soil.py; descriptive unless
 # ANALYSIS_PLAN.md adds them; DECISIONS.md 2026-10-05 "Snowfall fraction and

@@ -20,7 +20,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 ### 2026-10-05 - Season timeline page for the live tracker
 
 - **Decided (owner) to build the live 2026-27 tracker as one site page in
-  three states: before winter, tracking and final.** Deviation D?a. The
+  three states: before winter, tracking and final.** Deviation D44. The
   owner proposed a countdown page if the build finishes before November,
   kept through the winter and then replaced by the results; adopted in the
   form of a November-April season timeline, which holds both countdowns
@@ -43,6 +43,176 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   go in `src/config.py` (main session, after the freeze), and the page
   picks its state from what the pipeline has written to `results/`, so
   nobody flips it by hand.
+
+### 2026-10-05 - Alaska stays one region
+
+- **Decided (owner) to keep Alaska as one region (east of 169W) and state
+  the coast-interior limitation for AK, BC and PNW together.** Supersedes
+  the conditional in "Hypotheses" below (one region unless a probe found a
+  licensed boundary). A research agent found one (read-only, no fire pages
+  opened): NOAA NCEI Alaska climate divisions (Bieniek et al. 2012, 13
+  polygons, 391 KB, https://www.ncei.noaa.gov/pub/data/cirs/climdiv/AK_climate_divisions.zip;
+  NOAA: "in the public domain"), Interior = divisions 3, 4, 5; coastline
+  from Alaska DNR, terms not read. Fallbacks EPA Level III ecoregions ("Use
+  constraints: None") and USGS Unified Ecoregions (public domain). Kept one
+  region because every region is a whole state or province, and BC and PNW
+  share the mismatch (wet coasts that rarely burn); splitting only Alaska
+  would treat one region differently, and consistency would mean splitting
+  BC too. The tested predictors are standardised, which limits how much the
+  coast's large totals weigh. Cost: AK predictors partly describe places
+  that don't burn, likely diluting an El Niño signal toward zero; an AK
+  null is read with that in mind. A descriptive check with the NCEI
+  Interior boundary in Phase 4 stays a flagged option (scope), not decided.
+
+### 2026-10-05 - Data rules
+
+No fire data seen; choices rest on the sources and fire regimes. General
+knowledge of large California fires outside June-October (Thomas, Dec 2017;
+Camp and Woolsey, Nov 2018; the Los Angeles fires of January 2025) informed
+the window.
+
+- **Decided (owner) on fire windows: NorCal and SoCal June to January of the
+  next year, BC April-October, PNW June-October, AB April-October, AK and YT
+  April-September (no longer provisional).** A January Y+1 fire counts for
+  season Y, paired with winter (Y-1)-Y. Rejected June-December (January
+  fires would fall outside every season) and keeping June-October. Cost:
+  California season Y closes in February Y+1, so the fall 2027 check is
+  preliminary for California. `FIRE_SEASON_MONTHS` now allows a wrapping
+  window ((6, 1)). D43.
+- **Decided (owner) on the fire record rules:** MTBS Wildfire, Wildland Fire
+  Use and Unknown kept (Unknown counted), Prescribed Fire dropped, Canadian
+  prescribed burns dropped where flagged; the 405 ha floor on each fire's
+  whole `area_ha`, then clipped to each region; ignition date; MTBS then
+  WFIGS with the cutover recorded at download and the overlap year compared;
+  CNFDB date completeness reported by decade. Rejected the floor on the
+  clipped part (a large fire crossing a border would drop out of a region).
+  `MTBS_KEEP_TYPES`.
+- **Decided (owner): zero-fire region-years kept, counted and excluded in a
+  sensitivity run; no percent change where they exceed 10% of seasons**
+  (`ZERO_YEAR_PCT_LIMIT`). Rejected excluding them from the main analysis
+  (drops the quietest seasons, biasing burned area up).
+- **Decided (owner): near-threshold winters get a flip-flag sensitivity run
+  for the strong-only (exploratory) results, no exclusion**
+  (`STRONG_SENSITIVITY_BAND` 0.06; RONI 1965-66 1.53, 1986-87 1.46, 2009-10
+  1.44). Rejected excluding them and doing nothing extra.
+
+### 2026-10-05 - Hypotheses
+
+Numbers below: El Niño minus neutral under RONI (SPEI in SPEI units, SWE as
+z), 1951-2026, descriptive; no fire data seen.
+
+- **Decided (owner) to add H6, "low April 1 snowpack and a dry winter
+  predict more burned area", and keep whiplash descriptive** (option D of
+  `docs/prefreeze_options.md`). `log_burn ~ swe_z + year` and
+  `log_burn ~ spei3_djf + year` per region, each alone; both together
+  reported, not tested (correlation PNW 0.61, BC 0.67, AB 0.65). Both are
+  known by 1 April in every region, so they can feed the 2027 forecast, and
+  they separate the dry-winter path (winter SPEI-3 PNW -0.42, BC -0.55, AB
+  -0.60) from the warm-winter path (SWE z -0.41, -0.56, -0.69). Whiplash
+  (JJA - DJF) mixes a dry winter with a wetter summer in the north (summer
+  SPEI-3 +0.21, +0.41, +0.48), so its sign for fire is unclear; kept as a
+  descriptive mechanism variable. Rejected whiplash as the only core
+  variable, a winter-to-spring whiplash (still inside the April fire
+  windows), and no new hypothesis.
+- **Decided (owner): season length, snowfall fraction and summer soil
+  moisture are descriptive only.** Season length is undefined with 0-1
+  counted fires and CNFDB date completeness is unchecked; snowfall fraction
+  and soil moisture are shown beside H6 as mechanism checks. Rejected testing
+  season length and soil moisture as an H3b-style control.
+- **Decided (owner) on directions and sidedness for every test**
+  (`ANALYSIS_PLAN.md` "Directions and sidedness"; `config.TEST_DIRECTIONS`).
+  PNW, BC, AB one-sided where theory and precursors agree (H2 higher, H3a
+  and H3b positive, H5 lag0 negative, H6 negative); NorCal and SoCal
+  two-sided except SoCal H5 lag1 (positive, the fuel build-up); H1
+  two-sided and labelled a check, since winter precipitation was seen
+  before the freeze (SoCal +62.9%, PNW -10.7%); the H3a minus H3b gap
+  reported with a CI, not tested. Rejected H1 descriptive and all
+  two-sided.
+- **Decided (owner): H4 is one contrast, the mean `enso_djf` slope of PNW,
+  BC and AB minus SoCal's, two-sided**, with the joint Wald test of the four
+  interaction terms as secondary; AK and YT out of the pooled model.
+  Rejected the joint Wald test as primary (four degrees of freedom for a
+  one-number question).
+- **Decided (owner): H5's `precip_anom` is the October-March total as a
+  z-score against the region's 1991-2020 normal.** Covers California's
+  autumn and March storms that DJF misses and ends before every fire window.
+  Signs: north lag0 negative one-sided, lag1 two-sided; SoCal lag0
+  two-sided (grass grows but a wet winter can delay the season), lag1
+  positive one-sided; NorCal two-sided. Rejected DJF.
+- **Decided (owner) on Alaska and Yukon as their own family (option B):**
+  H2, H3a, H3b two-sided (expected higher, positive); H1 and H6
+  descriptive; H4 and H5 not extended; MAM temperature as a descriptive
+  spring variable. Under RONI an average El Niño barely moves AK (SWE z
+  -0.11, DJF precipitation -0.1%) though strong winters do (SWE z -0.42),
+  so no one-sided claim. Alaska stays one region unless a short probe finds
+  a boundary with clear terms; if none is found, the skews are disclosed. Rejected
+  descriptive only and one-sided (option C). D42.
+
+### 2026-10-05 - Trend and climate change
+
+- **Decided (owner) that the climate variables follow the burned-area
+  one-method trend rule.** Permutation and bootstrap comparisons use
+  residuals from `value ~ year` per region; regressions carry a `year`
+  term; figures stay raw. Measured on the RONI tables (2026-10-05): trends
+  are large (ERA5-Land April 1 SWE z PNW -0.21, BC -0.16 SD per decade, -1.55
+  and -1.19 SD over 1951-2026; snowfall fraction -0.11 to -0.15 SD per decade
+  everywhere but YT), but detrending moves the El Niño minus other-years
+  differences by 0.04 SD at most (e.g. PNW SWE -0.47 to -0.51), since RONI is
+  nearly unrelated to the trend. Rejected raw comparisons (two methods in
+  one plan).
+- **Decided (owner) to pre-register two secondary compounding tests in their
+  own family:** C1 `swe_z ~ enso_djf + year_c + enso_djf:year_c` (PNW, BC,
+  AB; 1951-2026; interaction expected negative, one-sided; repeated on the
+  station z) and C2 the same on `log_burn` (1984+; expected positive,
+  two-sided for low power). Early and late halves as a figure only.
+  Rejected exploratory only (a real signal could never count as confirmed)
+  and the snowpack test alone. The El Niño x year interaction was not
+  computed before registering; the session 3 elevation finding (low-third
+  stations -42, high third +3 points of normal) hints at C1, so the plan
+  says it is only partly blind. `config.COMPOUNDING_REGIONS`.
+- **Decided (owner) to report RONI as the trend-adjusted index for these
+  tests, ONI as the check.** Closes the open decision in D38.
+
+### 2026-10-05 - SWE source for the tests
+
+- **Decided (owner) that every SWE test and the 2027 forecast use ERA5-Land
+  April 1 SWE, with the station index as a named robustness check.**
+  ERA5-Land covers 1951-2026 in all seven regions and is available about
+  8 April 2027; the station index starts AK 1960, AB 1963, YT 1975, ends
+  2025 in AB, has no NorCal series, and its sites sit high (PNW median
+  station normal 3.1 times the grid mean), missing the low-elevation loss
+  (strong winters: low third -42, high third +3 points of normal). Yearly z
+  correlation with stations PNW 0.95, BC 0.84, AB 0.77, AK 0.80, YT 0.84.
+  El Niño minus neutral under RONI (SD), ERA5-Land / stations: PNW -0.34 /
+  -0.17, BC -0.53 / -0.48, AB -0.70 / -0.84. Rejected stations primary (no
+  NorCal, no Alberta value until about March 2028) and both co-primary
+  (doubles the SWE tests in every family). Agrees with
+  `docs/alberta_swe_sources.md`.
+- **Decided (owner) on the z-score against the 1991-2020 regional normal
+  (`era5_swe_z`) as the predictor's unit.** Coefficients read per SD of
+  snowpack, comparable across regions and with the station z. Rejected
+  percent of normal (skewed; the PNW station median fell to 3.3% in 2015)
+  and mm (not comparable across regions); percent stays for display.
+  `config.SWE_TEST_COLUMN`, `SWE_CHECK_COLUMN`.
+
+### 2026-10-05 - ENSO index: RONI
+
+- **Decided (owner) on RONI as the ENSO index for every test, with ONI as
+  the robustness check re-run for each headline test.** RONI is NOAA's
+  official index (PIS 26-05), so the 2026-27 value the forecast uses and the
+  index the models are trained on match, and it puts 1950s and 2020s winters
+  on one scale. Measured 2026-10-05: correlation with ONI 0.96; 17 of 76
+  winters change class; RONI 26 El Niño (7 strong), 26 neutral, 24 La Niña;
+  fire record 14 El Niño (3 strong: 2023-24 falls to 1.13; 1965-66 becomes
+  strong at 1.53), 9 neutral, 20 La Niña. Correlation with year: ONI -0.01,
+  RONI -0.22 (1951+), -0.18 (1984+); the `year` term in the regressions
+  covers this. The descriptive climate numbers point both ways (RONI widens
+  El Niño minus neutral, e.g. AB SWE -0.56 to -0.70 SD, SoCal DJF
+  precipitation +0.62 to +1.02 SD; ONI correlates more with northern SWE,
+  PNW r -0.38 vs -0.29), so they were set aside as a reason. Rejected ONI
+  primary and both co-primary (doubles the tests). Committed tables and
+  figures rebuilt with RONI (figure names now end `_roni`). `ENSO_INDEX`,
+  new `ENSO_ROBUSTNESS_INDEX` in `src/config.py`. D41.
 
 ### 2026-10-05 - Deviation numbers given at merge
 

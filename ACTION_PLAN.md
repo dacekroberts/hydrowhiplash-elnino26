@@ -173,7 +173,7 @@ already makes, so add it when its phase is done; don't design ahead of results.
 - [ ] **Live 2026–27 tracker** — this winter's precipitation and snowpack so
       far against all past winters, El Niño winters highlighted, updated
       monthly through spring. *Nov 2026 → spring 2027.*
-      One page in three states, at one URL [mid-project: D?a]:
+      One page in three states, at one URL [mid-project: D44]:
       - *Before winter* (if the build is done before November): a
         November-April season timeline with a countdown to the first month
         of data, and the date the analysis plan was frozen.

@@ -25,9 +25,62 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-05 (gate)
+
+### D43 · Fire windows: California through January, BC from April
+- **Plan:** `ANALYSIS_PLAN.md` "Outcomes" and `ACTION_PLAN.md` Phase 3:
+  June-October for US regions and BC, April-October for Alberta,
+  April-September for Alaska and Yukon (provisional); `CLAUDE.md`
+  measurement rules say the same; the pre-freeze item suggested California
+  through December.
+- **Actual:** owner chose NorCal and SoCal June to January of the next year,
+  BC April-October, AK and YT April-September confirmed (2026-10-05, before
+  any fire data).
+- **Why:** see `DECISIONS.md` 2026-10-05 "Data rules".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Data rules".
+- **Plan doc:** `ANALYSIS_PLAN.md` item filled in; its "Fire season" line
+  under Outcomes, `ACTION_PLAN.md` Phase 3 and `CLAUDE.md` "Fire-season
+  window" left as written, stale (owner's prose; `CLAUDE.md` wording
+  proposed to the owner).
+
+### D42 · H6 added; whiplash and season length descriptive; H2 and H5 wording stale
+- **Plan:** `ANALYSIS_PLAN.md` Hypotheses has H1-H5, with H2 "higher in
+  SoCal" and H5 "positive lag coefficient, strongest in SoCal";
+  "Outcomes" lists fire-season length as an outcome; `ACTION_PLAN.md`
+  Phase 2 builds whiplash as the project's core index and Phase 4 runs a
+  "lag test for the whiplash mechanism".
+- **Actual (owner, 2026-10-05, pre-freeze items):** H6 added (burned area
+  on April 1 SWE z and on winter SPEI-3); whiplash, season length,
+  snowfall fraction and soil moisture are descriptive only; SoCal H2 is
+  two-sided; H5's expected signs differ by region (north lag0 negative,
+  SoCal lag1 positive); AK and YT tested on H2 and H3 only, two-sided.
+- **Why:** see `DECISIONS.md` 2026-10-05 "Hypotheses".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Hypotheses".
+- **Plan doc:** `ANALYSIS_PLAN.md` items filled in, an H6 row and a
+  "Directions and sidedness" table added; the H2 and H5 rows of the
+  hypotheses table and "Fire-season length" under Outcomes left as written
+  (owner's prose), stale: SoCal H2 is two-sided, H5's signs are per region,
+  season length is descriptive. `ACTION_PLAN.md` left as written.
+  `docs/prefreeze_options.md` numbers are ONI-based (stale under RONI).
+
+### D41 · ENSO index RONI; plan wording still names ONI
+- **Plan:** `ANALYSIS_PLAN.md` left ONI or RONI to the freeze (recommended
+  RONI); `ACTION_PLAN.md` Phase 4 says "burned area on ONI strength" and
+  "ONI × region"; Session 0 calls the ONI list provisional until the choice;
+  the project ran on ONI through Phase 2.
+- **Actual:** RONI chosen (owner, 2026-10-05), ONI as the robustness check.
+  Committed tables and figures rebuilt with RONI; figure files renamed from
+  `*_oni.png` to `*_roni.png`. Fire record: 14 El Niño winters either way,
+  strong 4 (ONI) to 3 (RONI), neutral 13 to 9.
+- **Why:** see `DECISIONS.md` 2026-10-05 "ENSO index: RONI".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "ENSO index: RONI".
+- **Plan doc:** `ANALYSIS_PLAN.md` item filled in; `ACTION_PLAN.md`'s
+  "ONI strength" and "ONI × region" wording left as written (owner's prose),
+  stale: the index is RONI.
+
 ## 2026-10-05 (Phase 2)
 
-### D?a · Scope: live tracker becomes a three-state season timeline page
+### D44 · Scope: live tracker becomes a three-state season timeline page
 - **Plan:** `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker: this
   winter's precipitation and snowpack against all past winters, updated
   monthly, *Nov 2026 → spring 2027*. Nothing before November, and the
@@ -49,7 +102,7 @@ additions stay distinguishable from the original plan.
   tracker".
 - **Substantial:** yes. The owner decided the scope change warrants editing
   the plan directly (2026-10-05).
-- **Plan doc:** updated, the changed spot marked `[mid-project: D?a]`:
+- **Plan doc:** updated, the changed spot marked `[mid-project: D44]`:
   `ACTION_PLAN.md` "Second goal", Live 2026-27 tracker bullet. The "Done
   when" line is left as written (the tracker is still the fourth piece).
 
