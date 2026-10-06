@@ -15,7 +15,7 @@ Status: **have** = downloaded; **planned** = in `ACTION_PLAN.md`.
 
 | Data | Source | Phase | Status | Native units | Project units |
 |---|---|---|---|---|---|
-| ENSO index (ONI, RONI) | NOAA CPC | 0 | have (ONI) | °C anomaly | °C anomaly |
+| ENSO index (ONI, RONI) | NOAA CPC | 0 | have (both; RONI used, ONI as check, 2026-10-05) | °C anomaly | °C anomaly |
 | Precipitation | ERA5-Land | 0 | have | m/day | mm/month |
 | 2 m air temperature | ERA5-Land | 0 | have | K | °C |
 | Snow water equivalent (gridded) | ERA5-Land | 0 | have | m water equivalent | mm |
@@ -70,10 +70,18 @@ winter (Y-1)-Y, paired with fire season Y (see section 9).
 - The project classifies on one DJF value. NOAA's official episode
   definition needs ≥ 0.5 for five consecutive overlapping seasons, so a few
   winters can differ from NOAA's own lists.
-- Near-threshold winters flip with small changes (2009-10 is ONI 1.47).
+- Near-threshold winters flip with small changes (2009-10 is ONI 1.47,
+  RONI 1.44; 1965-66 is RONI 1.53, strong only under RONI).
 - The latest values are provisional: RONI values may change for up to two
   months after first posting.
 - ONI and RONI disagree on 17 of 76 winters (`docs/plan_deviations.md` D15).
+- RONI runs cooler than ONI in recent decades (mean difference -0.29 for
+  2006-26) and so drifts down over the record (correlation with year -0.22,
+  ONI -0.01): a regression with a `year` term separates the two.
+
+**Index used.** RONI, chosen 2026-10-05 (`ENSO_INDEX`); every headline
+test is repeated with ONI (`ENSO_ROBUSTNESS_INDEX`). Every table carries
+an `enso_index` column naming the index behind its `phase` labels.
 
 ## 2. ERA5-Land (gridded climate)
 

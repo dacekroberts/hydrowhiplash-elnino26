@@ -17,6 +17,72 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-05 - Trend and climate change
+
+- **Decided (owner) that the climate variables follow the burned-area
+  one-method trend rule.** Permutation and bootstrap comparisons use
+  residuals from `value ~ year` per region; regressions carry a `year`
+  term; figures stay raw. Measured on the RONI tables (2026-10-05): trends
+  are large (ERA5-Land April 1 SWE z PNW -0.21, BC -0.16 SD per decade, -1.55
+  and -1.19 SD over 1951-2026; snowfall fraction -0.11 to -0.15 SD per decade
+  everywhere but YT), but detrending moves the El Niño minus other-years
+  differences by 0.04 SD at most (e.g. PNW SWE -0.47 to -0.51), since RONI is
+  nearly unrelated to the trend. Rejected raw comparisons (two methods in
+  one plan).
+- **Decided (owner) to pre-register two secondary compounding tests in their
+  own family:** C1 `swe_z ~ enso_djf + year_c + enso_djf:year_c` (PNW, BC,
+  AB; 1951-2026; interaction expected negative, one-sided; repeated on the
+  station z) and C2 the same on `log_burn` (1984+; expected positive,
+  two-sided for low power). Early and late halves as a figure only.
+  Rejected exploratory only (a real signal could never count as confirmed)
+  and the snowpack test alone. The El Niño x year interaction was not
+  computed before registering; the session 3 elevation finding (low-third
+  stations -42, high third +3 points of normal) hints at C1, so the plan
+  says it is only partly blind. `config.COMPOUNDING_REGIONS`.
+- **Decided (owner) to report RONI as the trend-adjusted index for these
+  tests, ONI as the check.** Closes the open decision in D38.
+
+### 2026-10-05 - SWE source for the tests
+
+- **Decided (owner) that every SWE test and the 2027 forecast use ERA5-Land
+  April 1 SWE, with the station index as a named robustness check.**
+  ERA5-Land covers 1951-2026 in all seven regions and is available about
+  8 April 2027; the station index starts AK 1960, AB 1963, YT 1975, ends
+  2025 in AB, has no NorCal series, and its sites sit high (PNW median
+  station normal 3.1 times the grid mean), missing the low-elevation loss
+  (strong winters: low third -42, high third +3 points of normal). Yearly z
+  correlation with stations PNW 0.95, BC 0.84, AB 0.77, AK 0.80, YT 0.84.
+  El Niño minus neutral under RONI (SD), ERA5-Land / stations: PNW -0.34 /
+  -0.17, BC -0.53 / -0.48, AB -0.70 / -0.84. Rejected stations primary (no
+  NorCal, no Alberta value until about March 2028) and both co-primary
+  (doubles the SWE tests in every family). Agrees with
+  `docs/alberta_swe_sources.md`.
+- **Decided (owner) on the z-score against the 1991-2020 regional normal
+  (`era5_swe_z`) as the predictor's unit.** Coefficients read per SD of
+  snowpack, comparable across regions and with the station z. Rejected
+  percent of normal (skewed; the PNW station median fell to 3.3% in 2015)
+  and mm (not comparable across regions); percent stays for display.
+  `config.SWE_TEST_COLUMN`, `SWE_CHECK_COLUMN`.
+
+### 2026-10-05 - ENSO index: RONI
+
+- **Decided (owner) on RONI as the ENSO index for every test, with ONI as
+  the robustness check re-run for each headline test.** RONI is NOAA's
+  official index (PIS 26-05), so the 2026-27 value the forecast uses and the
+  index the models are trained on match, and it puts 1950s and 2020s winters
+  on one scale. Measured 2026-10-05: correlation with ONI 0.96; 17 of 76
+  winters change class; RONI 26 El Niño (7 strong), 26 neutral, 24 La Niña;
+  fire record 14 El Niño (3 strong: 2023-24 falls to 1.13; 1965-66 becomes
+  strong at 1.53), 9 neutral, 20 La Niña. Correlation with year: ONI -0.01,
+  RONI -0.22 (1951+), -0.18 (1984+); the `year` term in the regressions
+  covers this. The descriptive climate numbers point both ways (RONI widens
+  El Niño minus neutral, e.g. AB SWE -0.56 to -0.70 SD, SoCal DJF
+  precipitation +0.62 to +1.02 SD; ONI correlates more with northern SWE,
+  PNW r -0.38 vs -0.29), so they were set aside as a reason. Rejected ONI
+  primary and both co-primary (doubles the tests). Committed tables and
+  figures rebuilt with RONI (figure names now end `_roni`). `ENSO_INDEX`,
+  new `ENSO_ROBUSTNESS_INDEX` in `src/config.py`. D41.
+
 ### 2026-10-05 - Deviation numbers given at merge
 
 - **Decided (owner, relayed by the main session) that side sessions write

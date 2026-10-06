@@ -10,12 +10,18 @@ with a date and reason; don't edit the plan above it after freezing.
 
 ## Decisions to make before freezing
 
-- [ ] **ENSO index: ONI or RONI.** NOAA now classifies events with the
+- [x] **ENSO index: ONI or RONI.** NOAA now classifies events with the
       Relative Oceanic Niño Index (RONI), which subtracts the warming of the
       whole tropical ocean so events from 1950 and 2026 are judged on the same
       scale. Recommended: **RONI**, with ONI as a robustness check. Confirm
       which index CPC's file provides and set `ENSO_INDEX` (and its URL) in
-      `src/config.py`. Chosen: ______ Reason: ______
+      `src/config.py`. Chosen: **RONI** (`RONI.ascii.txt`), with every
+      headline test re-run on ONI (`ENSO_ROBUSTNESS_INDEX`) and reported in
+      one robustness table; conclusions rest on RONI. Reason: NOAA's
+      official index (PIS 26-05), so the 2026-27 forecast input and the
+      training index match, and 1950s and 2020s winters sit on one scale.
+      Chosen on these grounds, not on the descriptive climate numbers, which
+      point both ways (`DECISIONS.md` 2026-10-05 "ENSO index: RONI").
 
 Raised by the pre-start review (2026-10-04). Each one changes what a test
 means, so settle it here, put any numbers in `src/config.py`, and log the
@@ -49,7 +55,7 @@ decisions.
       precipitation may not be lower there), and whether Alaska stays one
       region or splits Interior from coast (different biomes; fire is almost
       all Interior). Fire window Apr-Sep is provisional in `config.py`.
-- [ ] **Trend and climate change** [mid-project: D38]. Trend handling below
+- [x] **Trend and climate change** [mid-project: D38]. Trend handling below
       covers burned area only. Decide (a) whether the climate variables
       (SWE, snowfall fraction, whiplash, winter precipitation) are compared
       across ENSO phases raw or detrended, by the same one-method rule; and
@@ -61,6 +67,13 @@ decisions.
       the lowest third, +3 in the highest). Also decide whether the ONI/RONI
       choice above is reported as the trend-adjusted index for this purpose.
       Pre-register it here or label it exploratory.
+      *Decided 2026-10-05:* (a) the climate variables follow the same
+      one-method rule as burned area (see "Trend handling" below); (b) two
+      secondary compounding tests are pre-registered (see "Secondary tests:
+      compounding" below); (c) RONI is reported as the trend-adjusted index
+      for them, ONI as the check. The snowpack test is only partly blind:
+      session 3's elevation finding hints at it; the interaction itself had
+      not been computed when it was registered.
 
 **Data rules**
 
@@ -69,6 +82,11 @@ decisions.
 - [ ] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
       both (one as a check on the other); how April 1 is approximated from
       monthly means; glacier cells excluded (ERA5-Land caps them at 10 m).
+      *Source decided 2026-10-05:* ERA5-Land April 1 SWE (glacier cells
+      excluded) for every test and the forecast, as the z-score against its
+      own 1991-2020 regional normal (`era5_swe_z`); every SWE test repeated
+      on the station index z (`station_swe_z`) where it exists, both
+      reported. Percent of normal for display only.
 - [ ] **Snowfall and soil moisture.** Say whether snowfall fraction and
       summer soil moisture enter any hypothesis (e.g. as mechanism checks
       for a snowpack or burned-area hypothesis) or are descriptive only.
@@ -127,6 +145,11 @@ decisions.
     `log_burn`. No moving-baseline anomaly is applied first.
   - In permutation and bootstrap tests, which have no control terms, the
     outcome is `burn_detr`: residuals from `log_burn ~ year` per region.
+  - The climate variables (SWE, snowfall fraction, whiplash, SPEI, winter
+    precipitation, soil moisture) follow the same rule: detrended values
+    (residuals from `value ~ year` per region, over the years the variable
+    covers) in permutation and bootstrap tests, a `year` term in
+    regressions; figures show raw values. Decided 2026-10-05 [mid-project: D38].
 
 ## Hypotheses
 
@@ -173,6 +196,23 @@ measure of how much of the effect runs through summer heat.
 - **Multiple comparisons:** Holm correction across all region × outcome tests
   within each hypothesis; Benjamini-Hochberg reported alongside.
   `adjust_pvalues`.
+
+## Secondary tests: compounding (decided 2026-10-05 [mid-project: D38])
+
+Their own family, outside the headline results; Holm within the family.
+`year_c` is the year centred on the mean year of the model's data, so the
+`enso_djf` coefficient is the effect at mid-record. Per primary region
+(PNW, BC, AB), HAC errors as in H3:
+
+- **C1, snowpack:** `swe_z ~ enso_djf + year_c + enso_djf:year_c`,
+  winters 1951-2026, `swe_z` = ERA5-Land April 1 SWE z. Expected
+  interaction **negative** (El Niño's snowpack loss deepens over time);
+  one-sided. Repeated on the station index z where it exists.
+- **C2, burned area:** `log_burn ~ enso_djf + year_c + enso_djf:year_c`,
+  fire seasons 1984-present. Expected interaction **positive**;
+  **two-sided** (about 14 El Niño seasons give little power).
+- Early versus late halves of the record are shown as a figure only, not
+  tested.
 
 ## Reporting rules
 

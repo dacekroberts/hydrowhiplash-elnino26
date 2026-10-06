@@ -25,6 +25,23 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-05 (gate)
+
+### D41 · ENSO index RONI; plan wording still names ONI
+- **Plan:** `ANALYSIS_PLAN.md` left ONI or RONI to the freeze (recommended
+  RONI); `ACTION_PLAN.md` Phase 4 says "burned area on ONI strength" and
+  "ONI × region"; Session 0 calls the ONI list provisional until the choice;
+  the project ran on ONI through Phase 2.
+- **Actual:** RONI chosen (owner, 2026-10-05), ONI as the robustness check.
+  Committed tables and figures rebuilt with RONI; figure files renamed from
+  `*_oni.png` to `*_roni.png`. Fire record: 14 El Niño winters either way,
+  strong 4 (ONI) to 3 (RONI), neutral 13 to 9.
+- **Why:** see `DECISIONS.md` 2026-10-05 "ENSO index: RONI".
+- **Recorded:** `DECISIONS.md` 2026-10-05 "ENSO index: RONI".
+- **Plan doc:** `ANALYSIS_PLAN.md` item filled in; `ACTION_PLAN.md`'s
+  "ONI strength" and "ONI × region" wording left as written (owner's prose),
+  stale: the index is RONI.
+
 ## 2026-10-05 (Phase 2)
 
 ### D40 · Side-session deviation numbers given at merge

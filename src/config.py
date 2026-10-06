@@ -20,8 +20,10 @@ CRS_GEOGRAPHIC = "EPSG:4326"
 CRS_EQUAL_AREA = "ESRI:102008"  # North America Albers Equal Area Conic
 M2_PER_HA = 10_000
 
-# ENSO classification (see ANALYSIS_PLAN.md: "Decisions to make before freezing")
-ENSO_INDEX = "ONI"  # "ONI" or "RONI"
+# ENSO classification. RONI chosen 2026-10-05 (owner; DECISIONS.md "ENSO
+# index: RONI"); ONI is the robustness check, re-run for every headline test.
+ENSO_INDEX = "RONI"  # "ONI" or "RONI"
+ENSO_ROBUSTNESS_INDEX = "ONI"
 ENSO_INDEX_URLS = {
     "ONI": "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
     # Same layout as the ONI table minus TOTAL; confirmed 2026-10-04. Official
@@ -138,6 +140,10 @@ HAC_MAXLAGS = 2
 BLOCK_LEN = 3
 PREDICTION_ALPHA = 0.2  # 80% prediction intervals
 RANDOM_SEED = 2026
+# Secondary compounding tests C1 (SWE) and C2 (burned area): enso_djf x
+# centred year, per region below (ANALYSIS_PLAN.md "Secondary tests:
+# compounding"; DECISIONS.md 2026-10-05 "Trend and climate change").
+COMPOUNDING_REGIONS = ("PNW", "BC", "AB")
 
 # Station snowpack (Phase 2; DATA_SOURCES.md rows NRCS, BC, Yukon)
 # Raw downloads; cleaning and the April 1 extraction in src/stations.py (below).
@@ -226,6 +232,12 @@ STATION_NORMAL_MIN_YEARS = 20
 STATION_PCT_MIN_NORMAL_MM = 10
 STATION_MIN_PER_REGION_YEAR = 5   # owner: may be widened for AB and YT if too short
 STATION_INDEX_TABLE = DATA_PROCESSED / "station_swe_region_year.csv"
+# SWE in the tests (owner, 2026-10-05; DECISIONS.md "SWE source for the
+# tests"): ERA5-Land April 1 SWE as a z-score against its own regional
+# STATION_NORMAL_YEARS normal is the predictor; the station index z is the
+# robustness check where it exists. Both columns are in STATION_INDEX_TABLE.
+SWE_TEST_COLUMN = "era5_swe_z"
+SWE_CHECK_COLUMN = "station_swe_z"
 
 # Snowfall fraction and soil moisture (src/snow_soil.py; descriptive unless
 # ANALYSIS_PLAN.md adds them; DECISIONS.md 2026-10-05 "Snowfall fraction and
