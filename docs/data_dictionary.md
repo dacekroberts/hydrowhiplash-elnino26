@@ -63,7 +63,8 @@ project uses the **DJF** value only. The DJF value labelled year Y is the
 winter (Y-1)-Y, paired with fire season Y (see section 9).
 
 **Project columns** (`data/processed/el_nino_winters.csv`): `year`,
-`winter` (e.g. "1997-1998"), `enso_djf` (°C), `phase` (`el_nino` if
+`winter` (e.g. "1997-1998"), `enso_index` (the index named in
+`ENSO_INDEX`; added 2026-10-06), `enso_djf` (°C), `phase` (`el_nino` if
 ≥ +0.5, `la_nina` if ≤ -0.5, else `neutral`), `strong` (≥ +1.5).
 
 **Traps.**

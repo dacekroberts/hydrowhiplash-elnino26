@@ -76,6 +76,8 @@ python -m src.download_era5
 python -m src.regions
 :: Phase 1 winter precipitation figures -> results\figures\
 python -m src.winter_figures
+:: Phase 2 figures from results\tables\ -> results\figures\
+python -m src.phase2_figures
 :: tests for the statistics, spatial and log helpers
 python -m pytest
 :: style check before committing

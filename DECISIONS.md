@@ -17,6 +17,57 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-06 - Phase 2 audit fixes (side session)
+
+- **Fixed the low-severity code findings of the pre-freeze audit in a side
+  PR, code only, each with a test** (owner's choice, relayed by the main
+  session; `docs/audit_2026-10-05_phase2.md` findings 5, 6, 8, 9, 11-15).
+  `snow.glacier_mask` uses complete years only; `whiplash.restandardise`
+  sorts by year and raises below 2 calibration values; `stations.anomalies`
+  raises below 2 normal years; `stations.effects_by_group` leaves out
+  stations with no elevation instead of crashing in `qcut`;
+  `el_nino_winters.csv` gains `enso_index`; the `data/processed/` writers in
+  `era5`, `snow`, `download_oni` and `stations` write LF; the em-dash check
+  scans notebook code cells; `python -m src.phase2_figures` rebuilds the
+  five Phase 2 figures from `results/tables/`. Expected effect after the
+  re-runs: values unchanged; line endings and the new column differ. Files:
+  `src/era5.py`, `src/snow.py`, `src/snow_soil.py`, `src/whiplash.py`,
+  `src/stations.py`, `src/download_oni.py`, `src/phase2_figures.py`,
+  `scripts/check_no_em_dashes.py`, tests.
+
+- **Decided one ENSO join for every region x year table
+  (`era5.join_enso`).** A left join validated many-to-one; years before the
+  first ENSO winter are dropped (April 1 1950 and soil moisture 1950 have no
+  December 1949 before them, which the inner joins dropped without saying
+  so); any later year with no ENSO value raises. `winters`' own
+  `enso_index` must name `ENSO_INDEX`, and the table keeps one such column,
+  so the new column can't duplicate in a merge. Applied to
+  `era5.winter_precip_table` as well as the three tables named in the
+  audit, so all four follow one rule. Rejected raising on 1950 too: those
+  rows are expected and every table already starts in 1951.
+
+- **Decided that a survey with no date is counted as "missing date", never
+  as "outside window".** `stations.nearest_in_window` now refuses undated
+  rows, so every caller has to drop and count them first
+  (`drop_missing_dates`: NRCS snow courses, BC, Yukon). CanSWE dates come
+  from the file's time axis and can't be missing. Rejected counting inside
+  `nearest_in_window`, which returns only rows and would need a second
+  return value at every call.
+
+- **Decided that `src.phase2_figures` picks regions by rule, not by name.**
+  The SWE series leaves out regions whose ERA5-Land April 1 normal is below
+  `ERA5_SWE_MIN_NORMAL_MM` (the rule `compare_era5` already uses; SoCal
+  0.06 mm), and the station comparison shows regions with a station index.
+  Same regions as notebooks 02 and 03 today; the notebooks' own literals
+  (finding 10) are left for the main session.
+
+- **Left for the main session:** the whiplash table's CSV writer sits in
+  `whiplash.main`, outside this PR's boundary, so it still writes CRLF on
+  Windows (one argument, `lineterminator="\n"`); findings 7 and 16 (in
+  `stations.compare_era5` and `stations.combine`) and 10 (notebooks) were
+  not part of this task. `figures.winter_series` fails with a single region
+  (`plt.subplots` returns one Axes); not changed.
+
 ### 2026-10-06 - Pre-freeze audit
 
 - **Decided (owner) to audit the climate data and the Phase 2 code before
