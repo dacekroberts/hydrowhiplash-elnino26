@@ -17,6 +17,29 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - NBAC documentation probe for D56 (side session)
+
+- **Read the NBAC documentation and licence, without opening any data,
+  so the owner can choose among the D56 options (2), (3a) and (3b) before
+  any Canadian fire numbers are seen; no option chosen.** Found:
+  - release v20260513 covers 1972-2025, but no document says whether
+    the 2025 BC, AB and YT polygons rest on agency perimeters or on
+    satellite mapping alone;
+  - polygons are grouped into fire events (`NFIREID`, `GID`) but split
+    at provincial, territorial and park boundaries;
+  - there is no true ignition date: `AG_SDATE` (agency start, recorded
+    or detection date) and `HS_SDATE` (first hotspot, from 1989 only);
+  - a `PRESCRIBED` flag exists, from agency reports;
+  - NBAC replaces many agency (CNFDB) polygons with Landsat mapping, and
+    the method papers document NBAC area as mostly lower than CNFDB's,
+    by about 11-17% on average;
+  - how 1984-1985 were built is undocumented;
+  - past years are revised between releases.
+  Licence: Open Government Licence - Canada 2.0, PERMITTED WITH
+  CONDITIONS (provider's citation, licence link; no act owed). Answers
+  and sources: `docs/nbac_probe.md`. Files: `docs/nbac_probe.md`,
+  `DATA_SOURCES.md`.
+
 ### 2026-10-07 - Fire perimeter licences read (side session)
 
 - **Found MTBS burned-area boundaries public domain, with acknowledgement
