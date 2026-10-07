@@ -17,6 +17,57 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Fire record rules settled at download (session 6)
+
+- **Decided (owner, 16:40 UTC-07:00, before the comparison was computed):
+  the last fire season of every region is set by a fixed source-agreement
+  rule on the 2024 MTBS-WFIGS overlap** (D60). For PNW, AK, NorCal and
+  SoCal, burned area of fires ignited in calendar 2024 (the window both
+  sources hold complete; California's January 2025 fires left out because
+  MTBS lacks Border 2) is built twice under identical rules, once from
+  MTBS only and once from WFIGS only, and d = log(1 + ha_WFIGS) -
+  log(1 + ha_MTBS). If |d| >= 0.10 in any of the four regions, every
+  region's fire tests end at 2024 (one perimeter product per country in
+  every tested season, a balanced panel); otherwise the frozen plan's 2025
+  stands for the US regions. Threshold from D57: NBAC's 11-17% area gap
+  (a log step of 0.12 to 0.19) was judged too large to splice into the
+  last season. Fire data had been opened when this was set (attribute
+  profiles, MTBS fire counts and acres by state and year); nothing had
+  been joined to ENSO. Owner's question was whether a project-wide 2024
+  end is the better call; rejected: ending at 2024 outright (gives up a
+  season without evidence that the splice harms it) and keeping 2025
+  without a rule. Either outcome is a dated row in `ANALYSIS_PLAN.md`'s
+  deviations log only if the years change.
+- **Decided (owner): MTBS incident type "Other" is the plan's "Unknown"**
+  (D58): kept, counted and reported separately. The release of 2026-10-07
+  holds Wildfire 16,779, Prescribed Fire 9,639, Other 4,311 and Wildland
+  Fire Use 203 polygons and no "Unknown"; its own metadata documents the
+  fourth type as "Unknown" (UNK). In WA, OR, ID, CA and AK, Other is 128
+  fires and 1.04 M acres (1.0% of Wildfire acres), peaking June-September,
+  including wildfires such as KAN 7 (AK 1990, 367,541 acres) and Bear
+  Wallow Complex (CA 2008). Rejected: dropping Other. `MTBS_KEEP_TYPES`.
+- **Decided (owner): the MTBS-to-WFIGS cutover is by ignition date, on
+  2025-01-01**: MTBS for fires ignited through 2024-12-31, WFIGS from
+  2025-01-01. MTBS holds 2023 and 2024 at their usual counts and only 14
+  fires from 2025 in the five states (none in AK or WA); its January 2025
+  holds Palisades, Eaton and Hughes but not Border 2. Cutting by season
+  year would have taken California's season-2024 January fires from an
+  incomplete MTBS year. California's season 2024 therefore takes its
+  January 2025 fires from WFIGS. `MTBS_WFIGS_CUTOVER`.
+- **Decided (owner): CNFDB fires with a year but no month or day count for
+  season YEAR** (D59), flagged, and are left out of season length. Large
+  fires (>= 405 ha, CFS area, 1984-2024, by agency): YT 102 undated of
+  1,038 (97 in 2022; 3.4% of area), AB 39 of 648 (5.0%), BC 0 of 1,140.
+  Among dated fires the area outside the season window is 0.04% (BC),
+  0.9% (AB) and 0.01% (YT), so an undated fire is almost surely in season.
+  Rejected: dropping them (YT 2022 would lose 97 fires).
+- **Decided: each region takes fires only from its own country's sources**:
+  PNW, AK, NorCal and SoCal from MTBS and WFIGS, BC, AB and YT from CNFDB.
+  A cross-border fire's whole polygon in its source sets the 405 ha floor;
+  the part across the border is counted from the other country's record,
+  so no area is counted twice. Rejected: clipping every source to every
+  region (double counts border fires such as those on the WA-BC line).
+
 ### 2026-10-07 - Canadian fire series end at 2024
 
 - **Decided (owner): BC, AB and YT fire tests use seasons 1984-2024; PNW,

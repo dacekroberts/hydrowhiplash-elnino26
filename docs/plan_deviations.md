@@ -25,6 +25,52 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-07 (Phase 3, session 6)
+
+### D60 · Last fire season set by a source-agreement rule on 2024
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": "MTBS for
+  every year it holds complete, WFIGS after; the cutover year is fixed and
+  recorded at download, and the last overlapping year is compared as a
+  reported check"; "Execution details" and the deviations log (D57): US
+  regions' fire tests 1984-2025.
+- **Actual:** owner asked whether every region should end at 2024. Decided
+  (16:40 UTC-07:00, before the comparison was computed) that the 2024
+  overlap check also decides it: if |log(1 + ha_WFIGS) - log(1 + ha_MTBS)|
+  >= 0.10 for 2024 ignitions in any of PNW, AK, NorCal, SoCal, every
+  region ends at 2024; otherwise 2025 stands. The check stops being
+  report-only. Fire data had been opened (attribute profiles, MTBS counts
+  and acres by state and year), nothing joined to ENSO.
+- **Why:** D57 rejected a splice of a different product into the last
+  season at a gap of 11-17%; the same test applied to the US splice.
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Fire record rules settled at
+  download (session 6)".
+- **Plan doc:** left as written (frozen); if the rule ends the US series at
+  2024, a dated row goes in the plan's deviations log.
+
+### D59 · CNFDB fires without a month or day counted by YEAR
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules" and "Fire
+  windows": fires "assigned by ignition date"; CNFDB date completeness
+  reported by decade (for season length). Undated fires are not mentioned.
+- **Actual:** large CNFDB fires without month or day (YT 102, 97 of them in
+  2022; AB 39; BC 0) cannot be checked against the window; owner chose to
+  count them for season YEAR (flagged, out of season length). Dated fires
+  outside the windows hold 0.01-0.9% of area.
+- **Why:** dropping them would remove most of Yukon's 2022 fires.
+- **Recorded:** same entry.
+- **Plan doc:** left as written (frozen).
+
+### D58 · MTBS has "Other", not "Unknown"
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": MTBS incident
+  types "Wildfire, Wildland Fire Use and Unknown kept (Unknown counted and
+  reported)"; `src/config.py` `MTBS_KEEP_TYPES`.
+- **Actual:** the 2026-10-07 release has no "Unknown"; its fourth type is
+  "Other" (4,311 polygons; 128 fires and 1.0% of Wildfire acres in the five
+  states), while its metadata still documents "Unknown" (UNK). Owner chose
+  to read Other as Unknown.
+- **Why:** label changed in the data, not the rule.
+- **Recorded:** same entry.
+- **Plan doc:** left as written (frozen); `MTBS_KEEP_TYPES` lists "Other".
+
 ## 2026-10-07 (after freeze)
 
 ### D56 · CNFDB polygons end in 2024; fire tests run to 2025
