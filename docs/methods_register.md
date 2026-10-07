@@ -151,7 +151,7 @@ measurement the row says "not measured".
 
 | Control | Value | Code | Why | Measured effect | Status | Record |
 |---|---|---|---|---|---|---|
-| ERA5-Land publication lag | 3 months (`ERA5_LAG_MONTHS`) | `config.py`; `download_era5.py` `months_available` | unpublished months | first version gave June for October, fixed to July; data ends 2026-07 | applied | DECISIONS "Pre-start review"; log 2026-10-04 |
+| ERA5-Land publication lag | 3 months (`ERA5_LAG_MONTHS`) | `config.py`; `download_era5.py` `months_available` | unpublished months | first version gave June for October, fixed to July; data ends 2026-07 because of this setting, not the publisher: a CDS probe on 2026-10-07 found July, August and September 2026 published (D55), so the true lag is about a week; set to 1 at the first tracker update (early November 2026), logged in the frozen plan's deviations table | applied | DECISIONS "Pre-start review"; log 2026-10-04 |
 | Hourly ERA5-Land lag | 7 days (`ERA5_HOURLY_LAG_DAYS`) | `download_era5_april1.py` `april1_years` | hourly data publishes about 5 days behind | none | applied | DECISIONS "ERA5-Land SWE: glacier exclusion and April 1" |
 | Partial-year files | `_partial.nc`, re-requested every run, deleted once the full year exists; read by the `era5_land_*.nc` glob | `download_era5.py` `download_domain`; `era5.py` `open_era5` | | 919 months loaded | applied | same |
 | Atomic downloads | write to `.tmp`, then rename | `download_era5.py` `retrieve`; `download_era5_april1.py` | no truncated files that later runs would skip | none | applied | same |

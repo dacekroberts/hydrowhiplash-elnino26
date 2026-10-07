@@ -94,11 +94,11 @@ committed copy in `results/tables/`.
 
 ## Gate — freeze the analysis plan (end of week 2)
 
-- [ ] Fill in and commit `ANALYSIS_PLAN.md` (including the ONI/RONI choice)
+- [x] Fill in and commit `ANALYSIS_PLAN.md` (including the ONI/RONI choice)
       **before any fire data is downloaded or opened.** Climate data can be
       looked at freely; the fire outcomes can't, or the tests could end up
       chosen after seeing results. The dated commit is the proof.
-- [ ] Consider setting up the Claude Code Project here. First commit
+- [x] Consider setting up the Claude Code Project here. First commit
       analysis-ready tables to `results/tables/`; checklist in
       `docs/claude_code_project_setup.md`.
 
@@ -163,6 +163,13 @@ technique was chosen.
 
 - [ ] Plug in the observed 2026–27 winter as it arrives (ERA5 updates monthly)
       and place it on the full-record charts
+- [ ] **Hard-line, first tracker update (early November 2026)**
+      [mid-project: D55]: set `ERA5_LAG_MONTHS` from 3 to 1 in
+      `src/config.py`, download every published 2026 month, refit SPEI and
+      rebuild the tables, and report the changed numbers. Decided
+      2026-10-07, before any fire data, and logged in the frozen plan's
+      deviations table that day; no registered test changes. Recheck the
+      arrival day (`TRACKER_DATA_DAY`, 7) against when October appears.
 - [ ] Spring 2027: update with the final winter data and publish
 - [ ] Fall 2027: verify against the actual season, which could become a preprint
 

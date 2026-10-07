@@ -45,6 +45,21 @@ FIRE_FIRST_YEAR = 1984     # fire-perimeter records start (MTBS)
 FIRE_LAST_YEAR = 2025
 FORECAST_YEAR = 2027
 
+# Live 2026-27 tracker (ACTION_PLAN "Second goal"; D44, D46; dates from PR
+# #19's table). Window: Oct-Mar precipitation (H5's months) through the
+# April 1 snowpack. The freeze date is the analysis-plan-frozen commit
+# (acf7a80, 2026-10-07 13:35 UTC-07:00). Verification dates follow
+# FIRE_SEASON_MONTHS: after each region's last fire month of FORECAST_YEAR
+# (California's season ends in January 2028). ERA5-Land monthly means
+# arrive within about a week: a CDS probe on 2026-10-07 found September 2026
+# published (D55), so a month's data is expected by TRACKER_DATA_DAY of the
+# next month (October 2026 by 7 November; recheck at the first update).
+# ERA5_LAG_MONTHS (3) is a margin, not the lag; it becomes 1 at the first
+# tracker update (ACTION_PLAN Phase 5, hard-line item).
+TRACKER_WINDOW = ("2026-10-01", "2027-04-30")
+TRACKER_FREEZE_DATE = "2026-10-07"
+TRACKER_DATA_DAY = 7
+
 # Alaska is clipped at this longitude: west of it lie only the outer Aleutian
 # and Bering Sea islands (1.1 Mha, 0.7% of the state, almost no fire), and the
 # Near Islands cross the antimeridian.
@@ -78,7 +93,7 @@ ERA5_VARIABLE_SETS = {
     "core": (ERA5_VARIABLES, ""),
     "snow_soil": (ERA5_SNOW_SOIL_VARIABLES, "_snow_soil"),
 }
-ERA5_LAG_MONTHS = 3  # months behind real time before a month is safely published
+ERA5_LAG_MONTHS = 3  # download margin; months are published within about a week (D55; to 1 in Nov)
 
 # Seasons. A season that crosses the new year is labelled by the year of its
 # last month: (12, 1, 2) labelled Y is Dec of Y-1 plus Jan and Feb of Y.

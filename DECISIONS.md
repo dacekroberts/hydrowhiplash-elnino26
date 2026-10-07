@@ -48,12 +48,60 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   the provider's citation and a licence link are the conditions
   (`DATA_SOURCES.md` notice 10), no act is owed. The polygons cover BC,
   AB and YT through 2024 only, so the frozen plan's 2025 fire season has
-  no Canadian polygons yet (deviation D?a). Not decided here: waiting for
+  no Canadian polygons yet (deviation D56). Not decided here: waiting for
   the next release, ending the Canadian series at 2024, or using the NFDB
   points or NBAC (1972-2025, same licence, a satellite-based composite and
   so a different method from the agency polygons) for 2025; each is a
   change to a pre-registered setting or source and is the owner's call.
   Files: `DATA_SOURCES.md`, `docs/plan_deviations.md`.
+
+### 2026-10-07 - Tracker data arrival measured
+
+- **Probed CDS for ERA5-Land monthly means (owner's go-ahead)**: one cell,
+  2 m temperature, July, August and September 2026, all published on
+  2026-10-07 (41-54 s per request; probe files in the session scratchpad,
+  not kept). Monthly means arrive within about a week of the month's end,
+  so the live tracker runs as PR #19 planned. Supersedes the arrival claim
+  in "Freeze and tracker" below (D55 supersedes D54): the "measured
+  3-month lag" was the pre-start review's download margin
+  (`ERA5_LAG_MONTHS`), and the July end of the data followed from it.
+  Rejected building monthly totals from hourly ERA5-Land (not needed).
+- **Set `TRACKER_DATA_DAY` = 7** (the day observed; September's exact
+  release day unknown, rechecked at the first update).
+- **Decided (owner) to change `ERA5_LAG_MONTHS` from 3 to 1 at the first
+  tracker update (early November 2026), as a hard-line item**, not now: it
+  needs a SPEI refit (about 55 min), and the October download is due then
+  anyway. Logged today as the first row of the frozen plan's deviations
+  table, so the decision is dated before any fire data was downloaded or
+  opened, in keeping with the freeze. Its effect: 2026's summer values
+  (JJA SPEI, whiplash, soil moisture; descriptive) fill in; no registered
+  test changes (fire tests end with 2025, climate tests use DJF through
+  2026, calibration 1951-2020).
+
+### 2026-10-07 - Freeze and tracker
+
+- **Froze `ANALYSIS_PLAN.md` (owner's explicit yes)**: commit acf7a80,
+  2026-10-07 13:35:38 UTC-07:00, tag `analysis-plan-frozen` (annotated,
+  pushed), building on 96a1908; the "Frozen on" line gives the minute
+  (owner's request). No fire data had been downloaded or opened anywhere.
+  Three audit rounds that day (one prefreeze audit, two fix reviews, the
+  last on a whole-plan read) found nothing high by the end.
+- **Decided (owner) to keep the Claude Code Project on standby and decide
+  when the Phase 4 statistics code starts** (the D51 gate), and to send the
+  three fire licence reads (MTBS, WFIGS/NIFC, CNFDB) to the standing side
+  session. Rejected setting the Project up at the freeze: its draft
+  instructions predate the frozen plan, and the licence reads fit the side
+  session's existing rules. The reminder note moved to the statistics
+  code.
+- **Added the settled tracker settings to `src/config.py`**
+  (`TRACKER_WINDOW` 2026-10-01 to 2027-04-30, `TRACKER_FREEZE_DATE`),
+  from PR #19's table; verification dates follow `FIRE_SEASON_MONTHS`.
+  **Left out the data-arrival dates** (D54): PR #19 assumed monthly data by
+  the 6th of the next month (October's data in early November) and flagged
+  it as an assumption to measure; the project's own measured lag
+  (`ERA5_LAG_MONTHS` = 3) has ERA5-Land monthly means ending in July 2026
+  on 2026-10-07, so October would arrive about January. Owner's decision
+  pending.
 
 ### 2026-10-07 - Second fix review settled
 
