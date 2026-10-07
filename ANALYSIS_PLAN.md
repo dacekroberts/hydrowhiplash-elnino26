@@ -8,6 +8,8 @@ with a date and reason; don't edit the plan above it after freezing.
 - **Author:** Dace Roberts
 - **Frozen on:** ____-__-__ (commit hash: ________)
 
+Where the original text and a dated decided note or "Execution details" disagree, the dated note governs; each such spot is listed in `docs/plan_deviations.md` (D9, D41-D43, D45, D48).
+
 ## Decisions to make before freezing
 
 - [x] **ENSO index: ONI or RONI.** NOAA now classifies events with the
@@ -121,6 +123,12 @@ decisions.
       month-length factor is included, PET is 0 at or below 0 °C, and polar
       day lengths are 24 h and 0 h. Glacier and perennial-snow cells (the SWE
       glacier mask) are left out of SPEI, as of the SWE means.
+      *Revised 2026-10-07 (pre-freeze audit P5, P6; D49):* PET and SPEI
+      follow the SPEI reference implementation (R package SPEI, Beguería and
+      Vicente-Serrano): exponent constant 0.01792, the power law at every
+      temperature (Thornthwaite's separate table for monthly means at or
+      above 26.5 °C is not used), and the 3-month window sums monthly
+      amounts of P - PET in mm.
 - [x] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
       both (one as a check on the other); how April 1 is approximated from
       monthly means; glacier cells excluded (ERA5-Land caps them at 10 m).
@@ -209,6 +217,9 @@ decisions.
       in four regions, winter SPEI in five); H4 is one test. North (AK,
       YT): H2, H3a, H3b, a family of 2 each. C1 and C2: 3 each. ONI and
       station-z robustness runs are not corrected.
+      *Clarified 2026-10-07 (D50):* significance at α = 0.05 after
+      correction ("Reporting rules") is decided by Holm; BH is reported
+      alongside.
 
 ## Data and years
 
@@ -334,7 +345,10 @@ Outside the headline results; C1 and C2 are each a Holm family of 3 tests.
 ## Execution details (decided 2026-10-06, before the freeze)
 
 Closing the choices the pre-freeze audits found open (`DECISIONS.md`
-2026-10-06 "Plan gaps closed"):
+2026-10-06 "Plan gaps closed"; the one-sided regression tail, H4's F test,
+the forecast intervals, expanding-window scope and error, zero-fire
+indicators, glacier cells and strong-only scope added 2026-10-07 from
+`docs/audit_2026-10-07_prefreeze.md`, `DECISIONS.md` 2026-10-07):
 
 - **Years.** Fire tests use fire seasons 1984 to 2025 (`FIRE_LAST_YEAR`);
   2026 is described only (CNFDB 2026 not yet published, WFIGS provisional,
@@ -343,21 +357,41 @@ Closing the choices the pre-freeze audits found open (`DECISIONS.md`
   1951-2026. Expanding-window validation predicts 2004-2025 (22 seasons).
 - **One-sided tests.** The p-value is the one tail in the stated direction:
   for permutation tests the share of permuted differences at least as large
-  in that direction; for regressions the one-tailed t probability for the
-  coefficient's sign. Confidence intervals are always two-sided 95%.
+  in that direction; for regressions the one-tailed t probability in the
+  stated direction, so an estimate of the opposite sign gives p above 0.5
+  (never half the two-sided p). Confidence intervals are always two-sided
+  95%.
 - **H4's registered model** is the one without `temp_jja` (the total effect,
   as H3a); the model with `temp_jja` is secondary. The joint Wald test of
-  the four interaction terms uses the same Driscoll-Kraay errors and df.
+  the four interaction terms uses the same Driscoll-Kraay errors and df,
+  as an F test with (4, years - 1) degrees of freedom.
 - **The 2027 forecast** comes from the H3a model, for all seven regions,
   with 80% intervals; forecasts from the single-predictor H6 models are
-  secondary. The RONI input is the DJF 2027 value in CPC's first release
-  after February 2027, with its retrieval date recorded; later revisions
-  are reported, not substituted.
+  secondary. The intervals are OLS prediction intervals from the fit on all
+  training seasons (t with the fit's residual df); leave-one-year-out and
+  expanding-window coverage report how often such intervals held. The RONI
+  input is the DJF 2027 value in CPC's first release after February 2027,
+  with its retrieval date recorded; later revisions are reported, not
+  substituted.
+- **Expanding-window validation** covers H3a and the two single-predictor
+  H6 models (the tests; the combined model is not validated). Prediction
+  error is the RMSE and the MAE of `log_burn`. The same RMSE and MAE are
+  computed for a trend-only model (`log_burn ~ year`) per region, and each
+  validated model's skill is reported as 1 - RMSE(model) / RMSE(trend-only)
+  (0 = no gain over the trend); descriptive, not tested (22 held-out
+  seasons are too few for a forecast-accuracy test). Added 2026-10-07
+  (D50).
 - **H3a minus H3b gap:** 95% CI from a moving-block bootstrap (blocks of 3
   years, 10,000 draws) of the difference in the `enso_djf` coefficients.
 - **Block bootstrap check:** on the `enso_djf` coefficients of H3a and H3b.
 - **Zero-fire sensitivity:** covers every burned-area test (H2, H3a, H3b,
-  H4, H5, H6, C2); `burn_detr` is re-detrended without the zero years.
+  H4, H5, H6, C2). Permutation tests (H2) drop the zero years, with
+  `burn_detr` re-detrended without them. Regressions (H3a, H3b, H4, H5, H6,
+  C2) keep every row and give each zero region-year its own 0/1 indicator:
+  the coefficients and residual df equal those of a fit without those
+  years (H4 keeps its df of years - 1), and the series stays contiguous
+  for the HAC and Driscoll-Kraay lags (2026-10-07, pre-freeze audit P1;
+  D50).
 - **HAC series** must be contiguous runs of years (fire tests 1984-2025).
   The station-z checks use each region's contiguous station record (AK from
   1960, AB 1963-2025, YT from 1975).
@@ -365,10 +399,15 @@ Closing the choices the pre-freeze audits found open (`DECISIONS.md`
   widening for AB or YT).
 - **Built variables:** `temp_jja` is the June-August mean 2 m temperature,
   `temp_mam` the March-May mean, both regional means via
-  `src.geo.regional_mean`; z-scores use the SD with ddof = 1.
+  `src.geo.regional_mean`; z-scores use the SD with ddof = 1. `temp_jja`,
+  `temp_mam`, `precip_anom` and `precip_djf_mm` use every land cell in the
+  region, glacier cells included; only the SWE means and SPEI leave glacier
+  cells out.
 - **Strong-only results** (exploratory) compare strong El Niño winters with
-  all other years. The near-threshold band is applied after rounding the
-  distance to the index's 2 published decimals.
+  all other years, for H1 and H2 (permutation test and bootstrap CI) and
+  their near-threshold flip; the regressions use the continuous index. The
+  near-threshold band is applied after rounding the distance to the index's
+  2 published decimals.
 
 ## Reporting rules
 

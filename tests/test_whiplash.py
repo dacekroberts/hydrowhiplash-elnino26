@@ -57,7 +57,7 @@ def test_thornthwaite_matches_the_1948_formula_with_a_climatological_heat_index(
     temps = seasonal_temperature()
     normal = np.clip(temps[12:].reshape(2, 12).mean(axis=0), 0, None)
     heat = ((normal / 5) ** 1.514).sum()
-    a = 6.75e-7 * heat**3 - 7.71e-5 * heat**2 + 0.01791 * heat + 0.49239
+    a = 6.75e-7 * heat**3 - 7.71e-5 * heat**2 + 0.01792 * heat + 0.49239
     july = pd.Timestamp("1951-07-01")
     days = xr.DataArray(pd.date_range("1951-07-01", "1951-07-31"), dims="time", name="time")
     hours = float(day_lengths(days, xr.DataArray(45.0, attrs={"units": "degrees_north"})).mean())
@@ -88,11 +88,14 @@ def test_thornthwaite_needs_every_month_of_the_normal_period():
         whiplash.pet_thornthwaite(t, normal_years=(1990, 2000))
 
 
-def test_water_balance_converts_precip_back_to_mm_per_day():
+def test_water_balance_is_a_monthly_amount():
+    """PET in mm/day becomes a monthly amount, so February weighs 28/31 of
+    January in the 3-month sum (pre-freeze audit P5)."""
     tp = grid([31.0, 28.0, 31.0])           # mm/month: 1 mm/day in Jan-Mar 1950
-    pet = grid([0.25, 0.25, 0.25])
-    wb = whiplash.water_balance(tp, pet).squeeze().values
-    assert wb == pytest.approx([0.75, 0.75, 0.75])
+    pet = grid([0.25, 0.25, 0.25])           # mm/day
+    wb = whiplash.water_balance(tp, pet)
+    assert wb.squeeze().values == pytest.approx([23.25, 21.0, 23.25])
+    assert wb.attrs["units"] == "mm/month"
 
 
 @pytest.fixture(scope="module")

@@ -318,6 +318,24 @@ def test_dedupe_sites_keeps_the_lower_priority_copys_own_years():
     assert list(kept_b) == list(range(1990, 1995)) and counts["rows dropped"] == 5
 
 
+
+def test_dedupe_sites_ignores_agreement_on_bare_ground():
+    """Two distinct low sites, bare most years, agree within the tolerance
+    every snow-free year; only snowy years count (pre-freeze audit P4)."""
+    def site(sid, values):
+        return pd.DataFrame({"station_id": sid, "source": "nrcs", "region": "PNW",
+                             "lat": 44.0, "lon": -121.0, "year": range(2000, 2000 + len(values)),
+                             "swe_apr1_mm": values})
+    bare = [0.0] * 8
+    a = site("23G12:OR:SNOW", bare + [150.0, 90.0])
+    b = site("23G13:OR:SNOW", bare + [40.0, 10.0])   # 80% agree, but never in a snowy year
+    out, counts = stations.dedupe_sites(pd.concat([a, b], ignore_index=True))
+    assert counts["duplicate site pairs"] == 0 and len(out) == 20
+    c = site("23G14:OR:SNOW", bare[:5] + [150.0, 90.0, 60.0, 151.0, 90.5])
+    d = site("23G15:OR:SNOW", bare[:5] + [150.5, 90.0, 61.0, 150.0, 90.0])  # same in 5 snowy years
+    out, counts = stations.dedupe_sites(pd.concat([c, d], ignore_index=True))
+    assert counts["duplicate site pairs"] == 1 and counts["rows dropped"] == 10
+
 def test_effects_by_group_splits_stations_and_measures_differences():
     years = [2000, 2001, 2002, 2003]
     enso = pd.DataFrame({"year": years, "phase": ["el_nino", "neutral", "neutral", "el_nino"],

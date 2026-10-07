@@ -4,7 +4,7 @@ Pipeline (settings in src/config.py; reasoning in DECISIONS.md 2026-10-04
 "SPEI settings"):
   pet_thornthwaite()   PET per cell, mm/day (Thornthwaite 1948, climatological
                        heat index; zero at or below 0 deg C)
-  water_balance()      P - PET per cell, mm/day
+  water_balance()      P - PET per cell, mm per month (monthly amounts)
   spei_cells()         SPEI-3 per cell: log-logistic fitted by maximum
                        likelihood per calendar month over SPEI_CAL_YEARS,
                        clipped to +-SPEI_CLIP; runs in parallel processes
@@ -16,9 +16,13 @@ Pipeline (settings in src/config.py; reasoning in DECISIONS.md 2026-10-04
 
 Regional values are the cos(latitude)-weighted mean of per-cell SPEI
 (src.geo.regional_mean), then re-standardised: a mean of correlated z-scores
-has SD below 1, by different amounts in different regions. xclim's 3-month
-window is a rolling mean of monthly rates (mm/day), equal to the 3-month sum
-up to month-length weighting.
+has SD below 1, by different amounts in different regions. The 3-month
+window accumulates monthly amounts (mm per month), as the SPEI reference
+implementation (R package SPEI) does: xclim's rolling mean of three amounts is
+their sum / 3, which standardises to the same SPEI (fitting is scale-free;
+largest difference 6e-6 in a 60-year test). Until 2026-10-07 the window
+averaged daily rates, so February counted as a full month (pre-freeze audit
+P5; mean change 0.04 SD in February, 0.01 in August).
 
 Run:  python -m src.whiplash   (per-cell SPEI cached in data/processed/,
                                 table written to data/processed/)
@@ -69,6 +73,11 @@ def pet_thornthwaite(t2m_c: xr.DataArray,
     2026-10-06; DECISIONS.md "PET heat index"). A cell with I = 0 (no month
     above 0 deg C in the normal) gets PET 0.
 
+    The power law applies at every temperature, as in the SPEI reference
+    implementation (R SPEI::thornthwaite); Thornthwaite's separate table for
+    means at or above 26.5 deg C is not used (pre-freeze audit P6: 60% of
+    SoCal's area weight has a monthly normal above it, mostly in summer).
+
     Day lengths in polar day and night are 24 h and 0 h (`infill_polar_days`);
     xclim leaves them NaN (data audit 2026-10-05).
     """
@@ -84,7 +93,9 @@ def pet_thornthwaite(t2m_c: xr.DataArray,
                          f"for the heat index.")
     monthly_normal = normal.groupby(f"{XTIME}.month").mean().clip(min=0)
     heat = ((monthly_normal / 5) ** 1.514).sum("month")
-    a = 6.75e-7 * heat**3 - 7.71e-5 * heat**2 + 0.01791 * heat + 0.49239
+    # 1.792e-2 as in Thornthwaite (1948) and R SPEI::thornthwaite (xclim has 0.01791;
+    # PET changes by at most 0.14%; pre-freeze audit P6).
+    a = 6.75e-7 * heat**3 - 7.71e-5 * heat**2 + 0.01792 * heat + 0.49239
     months = tas[XTIME]
     days = xr.DataArray(
         pd.date_range(months[0].dt.strftime("%Y-%m-01").item(),
@@ -102,9 +113,11 @@ def pet_thornthwaite(t2m_c: xr.DataArray,
 
 
 def water_balance(tp_mm_month: xr.DataArray, pet_mm_day: xr.DataArray) -> xr.DataArray:
-    """P - PET in mm/day; precipitation converted back from mm/month."""
-    pr = tp_mm_month / tp_mm_month[TIME].dt.days_in_month
-    return (pr - pet_mm_day).assign_attrs(units="mm/d", long_name="P - PET")
+    """P - PET as a monthly amount in mm (per month): PET in mm/day times the
+    days in the month, so a 3-month window sums amounts as published SPEI
+    does (February weighs 28/31 of a 31-day month)."""
+    pet = pet_mm_day * pet_mm_day[TIME].dt.days_in_month
+    return (tp_mm_month - pet).assign_attrs(units="mm/month", long_name="P - PET")
 
 
 def _spei_block(wb: xr.DataArray) -> xr.DataArray:
@@ -116,7 +129,7 @@ def _spei_block(wb: xr.DataArray) -> xr.DataArray:
     warnings.filterwarnings("ignore")  # scipy fit warnings on degenerate cells
     first, last = SPEI_CAL_YEARS
     out = standardized_precipitation_evapotranspiration_index(
-        wb.assign_attrs(units="mm/d"), freq="MS", window=SPEI_SCALE, dist=SPEI_DIST,
+        wb.assign_attrs(units="mm/month"), freq="MS", window=SPEI_SCALE, dist=SPEI_DIST,
         method=SPEI_FIT_METHOD, cal_start=f"{first}-01-01", cal_end=f"{last}-12-31")
     return out.load()
 
@@ -125,7 +138,7 @@ def spei_cells(wb: xr.DataArray, keep: xr.DataArray | None = None,
                workers: int | None = None, n_blocks: int | None = None) -> xr.DataArray:
     """SPEI-3 per grid cell, clipped to +-SPEI_CLIP.
 
-    `wb` is P - PET in mm/day (valid_time, latitude, longitude). Only cells
+    `wb` is P - PET in mm per month (valid_time, latitude, longitude). Only cells
     where `keep` is True (default: every cell with data) are fitted; others
     stay NaN. Cells are split into blocks fitted in parallel processes
     (workers=1 runs in this process).

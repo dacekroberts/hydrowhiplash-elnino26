@@ -338,9 +338,10 @@ def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
 
     Two stations are one site when they lie within `max_km` (geodesic
     distance on the WGS84 ellipsoid) and, over at least `min_years` shared
-    years, at least `min_share` of their April 1 values agree within
-    `tol_mm`. The lower-priority copy loses its shared years and keeps the
-    rest. Priority: SITE_SOURCE_PRIORITY (NRCS for US sites, the provincial
+    years with snow at either site (a value above `tol_mm`), at least
+    `min_share` of their April 1 values agree within `tol_mm`; bare-ground
+    years don't count as agreement (pre-freeze audit 2026-10-07, P4). The
+    lower-priority copy loses all its shared years and keeps the rest. Priority: SITE_SOURCE_PRIORITY (NRCS for US sites, the provincial
     file for Canadian ones, CanSWE last), then more values, then station_id.
     Found by the pre-freeze audits (2026-10-06): e.g. NRCS 19A01:WA:SNOW and
     BC's BCE-WA07 (51 identical years), Yukon 09BA-SC02 and SC02A.
@@ -367,9 +368,14 @@ def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
     for a, b in zip(i[near], j[near]):  # a ranks above b (sites is sorted)
         keep_id, lose_id = sites.at[a, "station_id"], sites.at[b, "station_id"]
         both = values[[keep_id, lose_id]].dropna()
-        if len(both) < min_years:
+        # Agreement counts only in years with snow at either site (a value
+        # above tol_mm): two bare low sites agree every year without being
+        # one record (pre-freeze audit P4: 23G12/23G13:OR, 22F28/22F27:OR,
+        # 945:OR:SNTL/21G04:OR).
+        snowy = both[(both > tol_mm).any(axis=1)]
+        if len(snowy) < min_years:
             continue
-        if ((both[keep_id] - both[lose_id]).abs() <= tol_mm).mean() >= min_share:
+        if ((snowy[keep_id] - snowy[lose_id]).abs() <= tol_mm).mean() >= min_share:
             drop.update((lose_id, int(y)) for y in both.index)
             pairs.append((keep_id, lose_id))
     key = pd.MultiIndex.from_frame(table[["station_id", "year"]].astype({"year": int}))

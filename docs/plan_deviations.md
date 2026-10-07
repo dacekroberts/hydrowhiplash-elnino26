@@ -25,6 +25,76 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-07 (gate)
+
+### D51 · Phase 4 gains a pre-results audit gate
+- **Plan:** `ACTION_PLAN.md` Phase 4: "Before starting", confirm the freeze
+  commit and set up the Claude Code Project; "All functions are in
+  `src/stats.py`, tested on synthetic data with known effects". No review
+  step between building the statistics code and running it on fire data.
+- **Actual:** the pre-freeze audit (2026-10-07, Info) found that none of
+  the inference the plan specifies beyond the basics exists in code yet
+  (one-sided p, `use_t`, Driscoll-Kraay, expanding window, the contrast),
+  and `temp_jja`, `temp_mam`, `precip_anom` are unbuilt; all of it will be
+  written after fire data exists. Owner chose a gate: each piece built and
+  tested on synthetic data, then a read-only audit with a neutral prompt,
+  before anything runs on the fire table.
+- **Why:** code written after the outcomes exist is where an error could
+  meet the results unseen; an audit before the first run keeps the
+  pre-registration's protection.
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Pre-freeze audit findings
+  settled".
+- **Substantial:** yes (owner, 2026-10-07).
+- **Plan doc:** updated, the changed spot marked `[mid-project: D51]`:
+  `ACTION_PLAN.md` Phase 4, after "Before starting". Phase 4's stale
+  "ONI strength" and "ONI × region" stay as written (D41).
+
+### D50 · Zero-fire sensitivity by indicators; execution details completed; trend-only baseline; precedence sentence
+- **Plan:** `ANALYSIS_PLAN.md` "Execution details" (2026-10-06): the
+  zero-fire sensitivity covers every burned-area test "without the zero
+  years", while HAC series "must be contiguous runs of years"; one-sided
+  regression p "for the coefficient's sign"; the forecast's 80% intervals,
+  the expanding-window error and "the H6 models", the H4 Wald test's
+  distribution, glacier cells in `temp_jja`, `temp_mam`, `precip_anom`, and
+  the scope of strong-only results unstated; "α = 0.05 after correction"
+  did not name the deciding correction. No rule said which text wins
+  where stale passages contradict decided notes.
+- **Actual:** the pre-freeze audit (2026-10-07, P1-P3) found the plan could
+  not be run as written (dropping zero years leaves gaps that
+  `fit_ols_hac` refuses) and six choices still open. Owner chose
+  per-year indicators in the regressions (permutation tests drop the
+  years), the six answers in `DECISIONS.md`, and a precedence sentence in
+  the owner's wording under "Frozen on". Scope addition (owner, same
+  day): a trend-only baseline and skill score in the expanding-window
+  validation, descriptive.
+- **Why:** see `DECISIONS.md` 2026-10-07 "Pre-freeze audit findings
+  settled".
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Pre-freeze audit findings
+  settled".
+- **Plan doc:** updated before the freeze: "Execution details" (dated
+  2026-10-07 in its opening line, the zero-fire bullet and the
+  trend-only baseline), a dated
+  clarification under "Correction families" (Holm decides) and the
+  precedence sentence. The stale passages stay as written (owner's prose).
+
+### D49 · SPEI as in the reference implementation: summed amounts, 0.01792, no hot-range table
+- **Plan:** `ANALYSIS_PLAN.md` "SPEI settings" (revised 2026-10-06, D47):
+  "Thornthwaite (1948) as published"; `docs/data_dictionary.md`: monthly
+  P - PET "summed over 3 months".
+- **Actual:** the code averaged daily rates over 3 months (February counted
+  as a full month), used xclim's exponent constant 0.01791 instead of
+  0.01792, and extended the power law above 26.5 °C, where Thornthwaite
+  (1948) used a separate table (pre-freeze audit 2026-10-07, P5, P6). The
+  R package SPEI, the index's reference implementation, sums monthly
+  amounts, uses 0.01792 and has no hot-range table. Owner chose to follow
+  it; both domains refit.
+- **Why:** see `DECISIONS.md` 2026-10-07 "Pre-freeze audit findings
+  settled".
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Pre-freeze audit findings
+  settled".
+- **Plan doc:** `ANALYSIS_PLAN.md` "SPEI settings" carries a dated
+  2026-10-07 revision note (before the freeze); data dictionary updated.
+
 ## 2026-10-06 (gate)
 
 ### D48 · More stale plan wording; D43's CLAUDE.md claim no longer true

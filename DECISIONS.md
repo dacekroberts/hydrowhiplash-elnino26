@@ -17,7 +17,102 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
-### 2026-10-06 - PET heat index
+### 2026-10-07 - Pre-freeze audit findings settled
+
+- **Ran a targeted read-only audit in a separate cold session with a neutral
+  prompt** (owner's choice; Part 3 of `docs/session5_kickoff.md`) over
+  every change since bfbc802 and the plan's executability. Report saved
+  unchanged as `docs/audit_2026-10-07_prefreeze.md` (eeebbe5). Nothing high:
+  every committed table and every recorded refit number reproduced
+  independently, and a multi-start optimiser found no better SPEI fit than
+  the cache. Findings P1-P6 (medium to low), stale records (R), two info
+  items. The owner accepted every recommendation below.
+- **Decided (owner) that the zero-fire sensitivity keeps every row in the
+  regressions and gives each zero region-year its own 0/1 indicator**
+  (P1; D50): one dummy per year fits that year exactly, so the coefficients
+  and residual df equal a fit without it, while the series stays one row
+  per year for the HAC and Driscoll-Kraay lags (`fit_ols_hac` refuses
+  gaps, as decided 2026-10-06). Permutation tests (H2) drop the zero years.
+  Rejected the longest gap-free run (could discard many years) and HAC
+  across gaps (the fault removed on 2026-10-06).
+- **Decided (owner) on a precedence sentence under "Frozen on"** in
+  `ANALYSIS_PLAN.md` (P2; owner's wording): where the original text and a
+  dated decided note or "Execution details" disagree, the dated note
+  governs, with the deviations listed. Rejected rewriting the stale
+  passages (owner's prose).
+- **Decided (owner) on six open execution choices** (P3; "Execution
+  details"): regression one-sided p is the tail in the stated direction (an
+  opposite-sign estimate gives p above 0.5); the 2027 intervals are OLS
+  prediction intervals from the full training fit, with LOYO and
+  expanding-window coverage reported; expanding-window validation covers
+  H3a and the two single-predictor H6 models, error as RMSE and MAE of
+  `log_burn`; the H4 joint Wald test is F(4, years - 1), matching `use_t`
+  and the frozen df (chi-square rejected as large-sample); `temp_jja`,
+  `temp_mam`, `precip_anom` and `precip_djf_mm` use all land cells, glacier
+  cells included (only SWE and SPEI exclude them); strong-only exploratory
+  results cover H1 and H2 and their near-threshold flip. Also clarified
+  (owner) that Holm decides significance at α = 0.05 after correction,
+  BH reported alongside (the Inference note; "Reporting rules" did not
+  name the correction).
+- **Decided (owner) to add a trend-only baseline to the expanding-window
+  validation** (scope addition, before any fire data; D50): RMSE and MAE
+  of `log_burn ~ year` per region, and a skill score 1 - RMSE(model) /
+  RMSE(trend-only) for H3a and the two single-predictor H6 models;
+  descriptive, no significance test. A significant H3a slope shows El
+  Niño relates to burned area; the skill score shows whether it improves
+  the forecast over the region's trend, which is the 2027 forecast's
+  claim. Registered now so either outcome is clean. Rejected adding it
+  later as exploratory (a baseline chosen after the results) and a
+  Diebold-Mariano test (22 held-out seasons give it little power).
+- **Decided (owner) that duplicate station sites must agree in years with
+  snow** (P4): agreement within 2.6 mm counts only where either site holds
+  more than 2.6 mm, at least 3 such years. Two bare low sites had agreed
+  every snow-free year. Dry run: 18 pairs instead of 24, 509 station-years
+  dropped instead of 576, 71,250 rows and 2,168 stations; all 6 pairs no
+  longer merged are low Oregon sites with 0-3 snowy shared years that
+  disagree in them (the audit named 3; the rule found 3 more of the same
+  kind); station z changes by at most 0.016 (PNW). The 11 near-identical
+  pairs 3-12 km apart stay unmerged, recorded as a known gap (no effect on
+  the index today). Rejected a wider distance threshold (one more arbitrary
+  cut).
+- **Decided (owner) that PET and SPEI follow the SPEI reference
+  implementation (R package SPEI)** (P5, P6; D49): exponent constant
+  0.01792 (xclim's 0.01791 changed PET by at most 0.14%); the power law at
+  every temperature, as `SPEI::thornthwaite` does (Thornthwaite's 1948
+  table for monthly means at or above 26.5 °C is not used; the R source was
+  read 2026-10-07); the 3-month window sums monthly amounts of P - PET in mm
+  (the code averaged daily rates, so February counted as a full month).
+  xclim accepts `mm/month` input; its rolling mean of three amounts is
+  their sum / 3, which standardises identically (6e-6 in a 60-year test).
+  Rejected rewording only (the freeze is the last cheap refit) and the
+  hot-range formula (departs from the SPEI reference). Measured (full
+  refit of both domains, 2026-10-07; main 1,586 s, north 1,618 s):
+  per-cell mean change 0.03 SD in February, 0.01 in August, largest 0.77;
+  regional series against the 2026-10-06 values over 1951-2025, DJF
+  SPEI-3 r 0.9990-0.9995 (largest change 0.15, AB), JJA r 0.9999 (0.05),
+  whiplash r 0.9994-0.9997 (0.16); El Niño minus neutral moves by at most
+  0.02 (PNW whiplash +0.60 to +0.58, PNW DJF -0.42 to -0.40, BC JJA +0.33
+  to +0.34); DJF 2026 SoCal -0.72 to -0.70 (cells at the clip 9.9% to
+  9.0%), NorCal +0.17 to +0.15, AK +0.75 to +0.69, YT +2.16 to +2.10;
+  calibration mean -0.0069/-0.0076, SD 0.985; fitted cells unchanged
+  (33,867 main, 33,850 north). Station index after the dedupe change:
+  PNW z by at most 0.016 (one station in one year), other regions
+  unchanged. Tables, Phase 2 figures and notebooks 02-03 rebuilt; of the
+  figures only `whiplash_series_roni.png` changed (the rest byte-identical).
+- **Decided (owner) on two checks for the gaps the audits leave**: a short
+  read-only review of this session's fix diff by a fresh session or agent
+  with a neutral prompt before the freeze; and a pre-results audit gate in
+  Phase 4 (D51): the statistics code and variables not yet built are
+  tested on synthetic data and audited before anything runs on the fire
+  table. Rejected freezing on self-review of the fixes alone (the bias the
+  cold sessions exist to avoid).
+- **Fixed the stale records the audit listed** (R): data dictionary station
+  counts, BC summer SPEI, PET and SPEI wording; `config.py` comments
+  (`PET_METHOD`, `SPEI_SCALE`, station minimum frozen at 5); every
+  `file.py:line` reference in `docs/methods_register.md` replaced by a
+  function name. Recorded the log-logistic shape running to about 1e7-1e8
+  in some cell-months (no finite optimum, effectively a logistic; values
+  stable to 0.003) in the register.
 
 - **Decided (owner) to compute Thornthwaite PET as Thornthwaite (1948)
   defined it: a climatological heat index per cell from its 1951-2020

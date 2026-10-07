@@ -85,8 +85,8 @@ WINTER_MONTHS = (12, 1, 2)  # DJF
 SUMMER_MONTHS = (6, 7, 8)   # JJA
 
 # SPEI and whiplash (DECISIONS.md 2026-10-04 "SPEI settings"; pre-freeze item)
-PET_METHOD = "TW48"          # xclim Thornthwaite (1948); zero below 0 deg C
-SPEI_SCALE = 3               # months summed in the water balance
+PET_METHOD = "TW48"          # Thornthwaite (1948) as in R SPEI (src.whiplash.pet_thornthwaite)
+SPEI_SCALE = 3               # months of P - PET amounts (mm) summed
 SPEI_DIST = "fisk"           # log-logistic
 SPEI_FIT_METHOD = "ML"       # maximum likelihood
 SPEI_CAL_YEARS = (1951, 2020)  # calibration period, inclusive
@@ -336,7 +336,7 @@ STATION_TABLE = DATA_PROCESSED / "station_swe_apr1.csv"
 STATION_NORMAL_YEARS = (1991, 2020)
 STATION_NORMAL_MIN_YEARS = 20
 STATION_PCT_MIN_NORMAL_MM = 10
-STATION_MIN_PER_REGION_YEAR = 5   # owner: may be widened for AB and YT if too short
+STATION_MIN_PER_REGION_YEAR = 5   # frozen at 5 for every region (ANALYSIS_PLAN "Execution details")
 STATION_INDEX_TABLE = DATA_PROCESSED / "station_swe_region_year.csv"
 # One site under two station IDs (another network's copy or a renamed
 # course; pre-freeze audits 2026-10-06): within SITE_DUP_MAX_KM and at least

@@ -275,8 +275,9 @@ unfiltered under `data/raw/stations/`; cleaned by `src.stations`, below):
 built 2026-10-05): one row per station and year, columns `station_id`,
 `source` (nrcs, bc, yukon, canswe), `network`, `method` (manual, pillow),
 `lat`, `lon`, `elevation` (m), `year`, `swe_apr1_mm`, `sample_date` (empty
-when unknown), `flags`, `region`. 71,759 station-years, 2,180 stations,
-1950-2026, five regions (no California stations). Rules and their counts:
+when unknown), `flags`, `region`. 71,250 station-years, 2,168 stations
+after duplicate sites are counted once (71,759 and 2,180 before;
+`dedupe_sites`), 1950-2026, five regions (no California stations). Rules and their counts:
 `docs/methods_register.md` "Station snowpack".
 
 **Regional station index** (`station_swe_region_year.csv`, also in
@@ -311,7 +312,12 @@ stations and grid in mm is meaningless; compare % or z.
   below 0 °C and cold winters' water balance is precipitation alone), L the
   mean day length in hours, N the days in the month, I the cell's **heat
   index** (how warm its climate is, from the 12 monthly normals: the sum of
-  (Tm/5)^1.514 over 1951-2020 monthly means) and a a cubic in I. Simple, but
+  (Tm/5)^1.514 over 1951-2020 monthly means) and a a cubic in I
+  (6.75e-7 I^3 - 7.71e-5 I^2 + 0.01792 I + 0.49239). As in the SPEI
+  reference implementation (R package SPEI), the power law holds at every
+  temperature: Thornthwaite's separate table for monthly means at or above
+  26.5 °C is not used, which matters mostly in SoCal summers (pre-freeze
+  audit 2026-10-07, P6; D49). Simple, but
   temperature-only PET tends to overstate drying as temperatures rise.
   Penman-Monteith (humidity, radiation, wind) would need extra ERA5-Land
   variables.
@@ -329,8 +335,8 @@ stations and grid in mm is meaningless; compare % or z.
   night, and xclim's TW48 returns NaN there, so north of about 68N every
   DJF and JJA SPEI-3 was missing and regional means silently skipped
   those cells (AK 15-17% of its area weight, YT 5-6%). `pet_thornthwaite`
-  now repeats xclim's TW48 steps with polar day lengths set to 24 h and
-  0 h; south of the polar circles PET is unchanged (largest difference
+  then repeated xclim's TW48 steps (its own Thornthwaite form since
+  2026-10-06, above) with polar day lengths set to 24 h and 0 h; south of the polar circles PET is unchanged (largest difference
   3e-15 mm/day). Months partly in polar day (May, July far north) also
   change, by up to 0.42 mm/day, since xclim averaged only the non-polar
   days.
@@ -346,7 +352,10 @@ stations and grid in mm is meaningless; compare % or z.
   extreme. Typical range -3 to +3.
 - **Settings (decided 2026-10-04, `DECISIONS.md` "SPEI settings"):**
   scale 3; log-logistic fitted by maximum likelihood per calendar month;
-  calibration 1951-2020; per-cell values clipped to ±3.09; regional SPEI is
+  calibration 1951-2020; D summed as monthly amounts in mm (until
+  2026-10-07 daily rates were averaged, so February counted as a full
+  month; pre-freeze audit P5, D49); per-cell values clipped to ±3.09;
+  regional SPEI is
   the cos(latitude) mean of per-cell SPEI, re-standardised to mean 0 and
   SD 1 over 1951-2020 for each season. Per-cell SPEI is cached in
   `data/processed/spei3_cells_<domain>.nc`.
@@ -364,7 +373,8 @@ stations and grid in mm is meaningless; compare % or z.
 - **Role (decided 2026-10-05):** a concurrent, descriptive mechanism
   variable, never tested; summer falls inside the fire season. In the
   north a positive value is two signals: a dry winter plus a wetter summer
-  (El Niño minus neutral under RONI, BC winter SPEI-3 -0.55, summer +0.41),
+  (El Niño minus neutral under RONI, BC winter SPEI-3 -0.54, summer +0.34;
+  2026-10-07 refit),
   so it does not mean drier overall. Its forecastable parts, winter SPEI-3
   and April 1 SWE, are the H6 predictors.
 

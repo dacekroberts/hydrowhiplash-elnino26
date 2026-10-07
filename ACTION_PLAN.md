@@ -126,6 +126,16 @@ the Claude Code Project (on standby since 2026-10-04) using
 `docs/claude_code_project_setup.md`, so H1-H5 and the site pages can run as
 parallel threads.
 
+**Pre-results audit gate** [mid-project: D51]: every piece of statistics
+code the plan needs but `src/stats.py` lacks at the freeze (one-sided
+p-values, `use_t`, Driscoll-Kraay errors with df = years - 1, the H4
+contrast and its F test, expanding-window validation, zero-fire indicators,
+the Holm/BH family runner) and every variable not yet built (`temp_jja`,
+`temp_mam`, `precip_anom`) is built and tested on synthetic data with known
+answers first, then checked by a read-only audit with a neutral prompt,
+before any of it runs on the fire table. No hypothesis result is computed
+until that audit's findings are settled.
+
 - [ ] **Full-record view:** fire-season anomaly for every year 1984–present
       (climate variables 1950–present), El Niño years highlighted
 - [ ] **Headline 1 — permutation test + bootstrap CI:** El Niño years vs
