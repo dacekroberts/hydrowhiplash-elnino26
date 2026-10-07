@@ -344,14 +344,20 @@ def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
     lower-priority copy loses all its shared years and keeps the rest.
     Priority: SITE_SOURCE_PRIORITY (NRCS for US sites, the provincial file
     for Canadian ones, CanSWE last), read from each copy's rows in the shared
-    years, then more values, then station_id. An ID can mix sources: CanSWE
-    files Yukon course 09CA-SC04's 1978-84 values under SC05, the course that
-    replaced it 15 km away, so SC05's shared rows are CanSWE copies and SC05
-    loses them; ranking a whole ID by its first row (5 provincial IDs ranked
-    as CanSWE) or by its best row (SC05 kept SC04's record) gets mixed IDs
+    years; on a tie, the ID's best source over all its rows, then more
+    values, then station_id. An ID can mix sources: CanSWE files Yukon
+    course 09CA-SC04's 1978-84 values under SC05, the course that replaced
+    it 15 km away, so SC05's shared rows are CanSWE copies and SC05 loses
+    them; ranking a whole ID by its first row (5 provincial IDs ranked as
+    CanSWE) or by its best row (SC05 kept SC04's record) gets mixed IDs
     wrong (fix review 2026-10-07, F1).
     Found by the pre-freeze audits (2026-10-06): e.g. NRCS 19A01:WA:SNOW and
     BC's BCE-WA07 (51 identical years), Yukon 09BA-SC02 and SC02A.
+
+    A site's coordinates are its ID's first row's, so a copy filed under
+    another ID is found only where its rows sort first (SC05's CanSWE rows
+    carry SC04's coordinates and do); a known limitation, unchanged at the
+    freeze (second fix review 2026-10-07, finding 4).
     """
     from pyproj import Geod
 

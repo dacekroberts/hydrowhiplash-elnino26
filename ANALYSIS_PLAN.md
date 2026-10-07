@@ -189,6 +189,9 @@ decisions.
       (`log_burn` = 0) and counted per region; a sensitivity analysis
       excludes them; where they exceed 10% of a region's seasons, results
       are given as `log_burn` coefficients with CIs, not percent changes.
+      *How each test excludes them, clarified 2026-10-07 (D50, D53):* see
+      "Execution details", zero-fire sensitivity (regressions use per-year
+      indicators, permutation tests drop the years).
       *Near-threshold winters (operational call, decided 2026-10-05):*
       no exclusion; strong-only results (exploratory) get one sensitivity
       run with the strong flag flipped for winters within 0.06 of 1.5
@@ -313,6 +316,8 @@ measure of how much of the effect runs through summer heat.
    (a separate trend per region; reported with and without `temp_jja`).
 4. **Leave-one-year-out prediction intervals** for the 2027 forecast: 80%
    intervals from the H3a model; report empirical coverage. `loyo_prediction`.
+   *Added 2026-10-07 (D53):* the same leave-one-year-out coverage is
+   reported for the two single-predictor H6 models (secondary forecasts).
 
 ## Supporting methods
 
@@ -356,7 +361,9 @@ the forecast intervals, expanding-window scope and error, zero-fire
 indicators, glacier cells and strong-only scope added 2026-10-07 from
 `docs/audit_2026-10-07_prefreeze.md`; the permutation count, the indicator
 standard errors, the joint flip and the ONI scope from
-`docs/audit_2026-10-07_fixreview.md`; `DECISIONS.md` 2026-10-07):
+`docs/audit_2026-10-07_fixreview.md`; the ONI band and the strong-only
+regions and sidedness from `docs/audit_2026-10-07_fixreview2.md`;
+`DECISIONS.md` 2026-10-07):
 
 - **Years.** Fire tests use fire seasons 1984 to 2025 (`FIRE_LAST_YEAR`);
   2026 is described only (CNFDB 2026 not yet published, WFIGS provisional,
@@ -419,11 +426,15 @@ standard errors, the joint flip and the ONI scope from
   their near-threshold flip; the regressions use the continuous index. The
   near-threshold band is applied after rounding the distance to the index's
   2 published decimals; the flip is one run with all three winters
-  (1965-66, 1986-87, 2009-10) flipped together (D52).
+  (1965-66, 1986-87, 2009-10) flipped together (D52). They cover the
+  regions of their parent test (H1 the five main regions, H2 all seven),
+  every one two-sided and uncorrected (D53).
 - **ONI robustness runs** cover every registered test that uses the ENSO
   index (H1, H2, H3a, H3b, H4, C1, C2 and the strong-only results), each
   repeated with ONI in place of RONI and reported in one table, uncorrected;
-  H5 and H6 do not use the index (D52).
+  H5 and H6 do not use the index (D52). Under ONI the strong set and the
+  near-threshold band are ONI's own, by the same rules (within 0.06 of 1.5
+  after rounding: 1972-73 1.55, 1991-92 1.54, 2009-10 1.47) (D53).
 
 ## Reporting rules
 

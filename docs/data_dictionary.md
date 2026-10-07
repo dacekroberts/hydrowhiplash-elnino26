@@ -80,8 +80,10 @@ winter (Y-1)-Y, paired with fire season Y (see section 9).
   2006-26) and so drifts down over the record (correlation with year -0.22,
   ONI -0.01): a regression with a `year` term separates the two.
 
-**Index used.** RONI, chosen 2026-10-05 (`ENSO_INDEX`); every headline
-test is repeated with ONI (`ENSO_ROBUSTNESS_INDEX`). Every table carries
+**Index used.** RONI, chosen 2026-10-05 (`ENSO_INDEX`); every registered
+test that uses the index (H1, H2, H3a, H3b, H4, C1, C2, strong-only) is
+repeated with ONI (`ENSO_ROBUSTNESS_INDEX`), with ONI's own strong set and
+near-threshold band. Every table carries
 an `enso_index` column naming the index behind its `phase` labels.
 
 ## 2. ERA5-Land (gridded climate)

@@ -27,6 +27,24 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (gate)
 
+### D53 · ONI band, strong-only scope, H6 coverage; zero-fire pointer
+- **Plan:** `ANALYSIS_PLAN.md` at b9153a4: the ONI robustness runs repeat
+  "the strong-only results" without saying which winters flip under ONI;
+  strong-only results name no regions or sidedness; leave-one-year-out
+  coverage (Headline methods 4) for H3a only; the 2026-10-05 "Zero-fire
+  years" note says "a sensitivity analysis excludes them", while
+  "Execution details" (2026-10-07) keeps the rows in regressions.
+- **Actual:** the second fix review (2026-10-07, findings 1, 2, 8, 9) found
+  each open or in conflict. Owner chose: ONI's own strong set and band;
+  the parent test's regions, two-sided, uncorrected; leave-one-year-out
+  coverage also for the two H6 models; a dated pointer from the zero-fire
+  note to "Execution details".
+- **Why:** see `DECISIONS.md` 2026-10-07 "Second fix review settled".
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Second fix review settled".
+- **Plan doc:** updated before the freeze, each spot marked D53: the
+  "Zero-fire years" note, Headline methods 4, and "Execution details"
+  (strong-only results, ONI robustness runs, opening line).
+
 ### D52 · Plan clarifications from the fix review
 - **Plan:** `ANALYSIS_PLAN.md` (after D49-D51): "PET and SPEI follow the
   SPEI reference implementation"; one-sided permutation p as "the share of

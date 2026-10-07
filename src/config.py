@@ -21,7 +21,8 @@ CRS_EQUAL_AREA = "ESRI:102008"  # North America Albers Equal Area Conic
 M2_PER_HA = 10_000
 
 # ENSO classification. RONI chosen 2026-10-05 (owner; DECISIONS.md "ENSO
-# index: RONI"); ONI is the robustness check, re-run for every headline test.
+# index: RONI"); ONI is the robustness check, re-run for every registered test
+# that uses the index (ANALYSIS_PLAN "Execution details", ONI robustness runs).
 ENSO_INDEX = "RONI"  # "ONI" or "RONI"
 ENSO_ROBUSTNESS_INDEX = "ONI"
 ENSO_INDEX_URLS = {
@@ -155,12 +156,15 @@ FIRE_SEASON_MONTHS = {
 # types kept; "Prescribed Fire" dropped. The MIN_FIRE_HA floor applies to the
 # whole fire's area_ha before clipping to regions.
 MTBS_KEEP_TYPES = ("Wildfire", "Wildland Fire Use", "Unknown")
-# Zero-fire region-years: kept (log_burn = 0); excluded in a sensitivity run;
-# no percent-change reporting where they exceed this share of seasons.
+# Zero-fire region-years: kept (log_burn = 0); a sensitivity run leaves them
+# out (permutation tests drop them, regressions give each its own 0/1
+# indicator; ANALYSIS_PLAN "Execution details"); no percent-change reporting
+# where they exceed this share of seasons.
 ZERO_YEAR_PCT_LIMIT = 0.10
-# Strong-only results (exploratory): sensitivity run with the strong flag
-# flipped for winters within this distance of STRONG_THRESHOLD (under RONI:
-# 1965-66 1.53, 1986-87 1.46, 2009-10 1.44).
+# Strong-only results (exploratory): one sensitivity run with the strong flag
+# flipped together for every winter within this distance of STRONG_THRESHOLD,
+# on the index in use (RONI: 1965-66 1.53, 1986-87 1.46, 2009-10 1.44; ONI:
+# 1972-73 1.55, 1991-92 1.54, 2009-10 1.47).
 STRONG_SENSITIVITY_BAND = 0.06
 # Index values are published to 2 decimals; distances to a threshold are
 # rounded to this many decimals before comparing, or abs(1.44 - 1.5) =

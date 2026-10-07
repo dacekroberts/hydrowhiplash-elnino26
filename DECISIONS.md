@@ -17,6 +17,48 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Second fix review settled
+
+- **Ran a second read-only review in a fresh cold session** (owner's
+  choice, "one more just to be safe"; the first review session retired),
+  of ee9503d..b9153a4 and the whole `ANALYSIS_PLAN.md` as it would be
+  frozen. Report: `docs/audit_2026-10-07_fixreview2.md` (the session's own
+  file, line endings normalised). Nothing high; one medium-low open choice,
+  eight low items. It confirmed the station outputs byte-identical to
+  ee9503d, that each new test fails under the rule it guards against
+  (the SC04/SC05 test under the rejected best-row rule), every plan
+  setting against `config.py`, and the four dedupe variants' dry-run
+  numbers. The owner accepted every recommendation below.
+- **Decided (owner) that the ONI robustness runs use ONI's own strong set
+  and near-threshold band** (finding 1; D53), by the same rules: within
+  0.06 of 1.5 after rounding, 1972-73 1.55, 1991-92 1.54, 2009-10 1.47
+  (checked from the cached ONI file); ONI's strong set adds 2023-24 and
+  drops 1965-66. Rejected flipping RONI's three winters under ONI (1.24,
+  1.18, 1.47 there) and no flip under ONI.
+- **Decided (owner) on the strong-only scope** (finding 8): the regions of
+  the parent test (H1 the five main regions, H2 all seven), every test
+  two-sided and uncorrected, exploratory. Rejected carrying H2's one-sided
+  directions to 3 strong seasons.
+- **Decided (owner) to report leave-one-year-out coverage for the two
+  single-predictor H6 forecasts too** (finding 9), as for H3a.
+- **Closed the zero-fire wording gap** (finding 2): a dated pointer on the
+  2026-10-05 "Zero-fire years" note to "Execution details", and the
+  `ZERO_YEAR_PCT_LIMIT` comment in `config.py`. The precedence sentence
+  covers original text against a dated note, not two dated notes.
+- **Records** (findings 3-7): the `dedupe_sites` docstring now states the
+  tie-break the code uses (shared-row rank, then the ID's best rank, then
+  values, then ID) and that site coordinates come from an ID's first row,
+  a known limitation left unchanged at the freeze (checking every
+  coordinate could find new pairs); register: YT first has 3 stations in
+  1968, not 1965 (2 in 1965-67); the strong-only row carries D52 and D53;
+  "every headline test" replaced in the register, dictionary and
+  `config.py` by every registered test that uses the index.
+- **Corrected** "Fix review findings settled" (this date): restricting the
+  ONI runs to the four headline methods would have left C1 and C2 without
+  the index check, not "C1, C2 and H4's contrast" (H4 is headline method
+  3). Season length's dating (ignition) is in the data dictionary, not the
+  plan; left (descriptive).
+
 ### 2026-10-07 - Fix review findings settled
 
 - **Ran a read-only review of the pre-freeze fixes (97663e5..ee9503d) in a
