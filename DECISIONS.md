@@ -17,6 +17,20 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Fire perimeter licences read (side session)
+
+- **Found MTBS burned-area boundaries public domain, with acknowledgement
+  the only condition (PERMITTED WITH CONDITIONS).** Read with the
+  `read-licence` skill after the freeze (acf7a80), terms only, no data
+  fetched. The ScienceBase release (ver. 12.0, April 2025, 1984-2024) is
+  marked CC0, and both FGDC records say "There are no restrictions on use,
+  except for reasonable and proper acknowledgement of information
+  sources." Derived region x year tables can be committed and shown on the
+  site with the citation and credit line (`DATA_SOURCES.md` notice 8); no
+  act is owed. Direct Download serves a newer quarterly-updated file than
+  the citable release, so the release name and download date are recorded
+  at download. Files: `DATA_SOURCES.md`.
+
 ### 2026-10-07 - Second fix review settled
 
 - **Ran a second read-only review in a fresh cold session** (owner's
