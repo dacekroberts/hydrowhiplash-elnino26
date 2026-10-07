@@ -42,6 +42,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   WFIGS holds perimeters "starting in 2021", so the MTBS-to-WFIGS cutover
   cannot fall earlier. Footer copyright and non-federal contributors leave
   a low, open risk. Files: `DATA_SOURCES.md`.
+- **Found the CNFDB fire polygons under the Open Government Licence -
+  Canada (PERMITTED WITH CONDITIONS), and found they end in 2024.** The
+  CWFIS catalogue record and the ISO metadata both name OGL-Canada 2.0;
+  the provider's citation and a licence link are the conditions
+  (`DATA_SOURCES.md` notice 10), no act is owed. The polygons cover BC,
+  AB and YT through 2024 only, so the frozen plan's 2025 fire season has
+  no Canadian polygons yet (deviation D?a). Not decided here: waiting for
+  the next release, ending the Canadian series at 2024, or using the NFDB
+  points or NBAC (1972-2025, same licence, a satellite-based composite and
+  so a different method from the agency polygons) for 2025; each is a
+  change to a pre-registered setting or source and is the owner's call.
+  Files: `DATA_SOURCES.md`, `docs/plan_deviations.md`.
 
 ### 2026-10-07 - Second fix review settled
 
