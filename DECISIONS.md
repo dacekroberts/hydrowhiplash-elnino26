@@ -17,6 +17,32 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Canadian fire series end at 2024
+
+- **Decided (owner): BC, AB and YT fire tests use seasons 1984-2024; PNW,
+  AK, NorCal and SoCal keep 1984-2025** (D57; settles D56), before any
+  fire data was downloaded or opened. CNFDB polygons end in 2024. A
+  documentation-only NBAC probe (PR #22) found NBAC holds 2025 but its
+  area runs 11-17% below CNFDB on average (method papers), it has no true
+  ignition date (agency start date or first hotspot; 82% of polygons
+  dated, 1986-2020), splits events at boundaries and remaps past years
+  each release. A 2025-only fill-in would build a step of about -0.12 to
+  -0.19 in `log_burn` into the last season, the size of the effects under
+  test. H4's pooled model uses 1984-2024 for all five regions (balanced,
+  Driscoll-Kraay df 40); expanding-window predictions 2004-2024 for the
+  Canadian regions; the Canadian 2027 forecasts are trained to 2024. CNFDB
+  2025, when released (about January 2027), is reported beside the
+  results, not substituted (as later RONI revisions are). Rejected:
+  waiting for that release, NBAC for 2025 only, NBAC for the whole
+  Canadian series (a post-freeze swap of the named source with new
+  handling rules), the NFDB points (agency-reported areas, against the
+  project's own-measurement rule). `CNFDB_LAST_YEAR`,
+  `FIRE_LAST_YEAR_BY_REGION`, `POOLED_LAST_YEAR`; second row of the
+  frozen plan's deviations log.
+- **Merged PR #21 (fire licence reads) and PR #22 (NBAC probe)** after
+  clean pre-screens and the owner's yes; NBAC's ledger row and notice 11
+  stay for reference (notice 11 applies only if NBAC is used).
+
 ### 2026-10-07 - NBAC documentation probe for D56 (side session)
 
 - **Read the NBAC documentation and licence, without opening any data,

@@ -38,12 +38,24 @@ STRONG_THRESHOLD = 1.5    # deg C, strong El Nino
 # Year ranges
 CLIMATE_FIRST_YEAR = 1950  # ERA5-Land and ENSO index start
 FIRE_FIRST_YEAR = 1984     # fire-perimeter records start (MTBS)
-# Last fire season in every pre-registered fire test, and the forecast year,
+# Last fire season of the US regions' pre-registered fire tests, and the forecast year,
 # never used in training (DECISIONS.md 2026-10-06 "Plan gaps closed"):
 # CNFDB 2026 is not out before the analysis, WFIGS 2026 is provisional and
 # California's 2026 season closes in February 2027.
 FIRE_LAST_YEAR = 2025
 FORECAST_YEAR = 2027
+# CNFDB polygons end in 2024 (release files dated 28 Jan 2026; D56), so the
+# Canadian regions' fire tests end at 2024 and the US regions' at 2025; the
+# pooled H4 model uses the years every region has (owner, 2026-10-07, before
+# any fire data; D57, frozen plan's deviations log). CNFDB 2025, when
+# released, is reported beside the results, not substituted.
+CNFDB_LAST_YEAR = 2024
+FIRE_LAST_YEAR_BY_REGION = {
+    "PNW": FIRE_LAST_YEAR, "BC": CNFDB_LAST_YEAR, "AB": CNFDB_LAST_YEAR,
+    "AK": FIRE_LAST_YEAR, "YT": CNFDB_LAST_YEAR,
+    "NorCal": FIRE_LAST_YEAR, "SoCal": FIRE_LAST_YEAR,
+}
+POOLED_LAST_YEAR = CNFDB_LAST_YEAR  # H4: 1984-2024 for all five regions
 
 # Live 2026-27 tracker (ACTION_PLAN "Second goal"; D44, D46; dates from PR
 # #19's table). Window: Oct-Mar precipitation (H5's months) through the

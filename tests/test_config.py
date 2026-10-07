@@ -89,3 +89,15 @@ def test_tracker_window_spans_the_h5_months_and_april_1():
 
 def test_tracker_data_day_is_a_day_of_every_month():
     assert 1 <= config.TRACKER_DATA_DAY <= 28
+
+
+def test_fire_last_year_by_region_covers_every_region():
+    """Canadian regions end with CNFDB's last polygon year, US regions at
+    FIRE_LAST_YEAR; the pooled H4 model uses the common years (D57)."""
+    assert set(config.FIRE_LAST_YEAR_BY_REGION) == set(config.REGIONS)
+    for region in ("BC", "AB", "YT"):
+        assert config.FIRE_LAST_YEAR_BY_REGION[region] == config.CNFDB_LAST_YEAR == 2024
+    for region in ("PNW", "AK", "NorCal", "SoCal"):
+        assert config.FIRE_LAST_YEAR_BY_REGION[region] == config.FIRE_LAST_YEAR == 2025
+    pooled = ("PNW", "BC", "AB", "NorCal", "SoCal")
+    assert config.POOLED_LAST_YEAR == min(config.FIRE_LAST_YEAR_BY_REGION[r] for r in pooled)

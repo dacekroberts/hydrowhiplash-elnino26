@@ -49,6 +49,30 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (gate)
 
+### D57 · Canadian fire series end at 2024 (D56 settled)
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Execution details", Years: fire
+  tests on seasons 1984-2025 in every region; D56 left the Canadian 2025
+  season open.
+- **Actual:** owner chose (2026-10-07, before any fire data was downloaded
+  or opened) to end the BC, AB and YT fire tests at 2024, the last CNFDB
+  polygon year, after a documentation-only NBAC probe (PR #22,
+  `docs/nbac_probe.md`): NBAC's area runs 11-17% below CNFDB on average,
+  so filling 2025 from NBAC would put a step into the last season, and
+  NBAC throughout would need new handling rules. US regions keep 2025;
+  H4 uses 1984-2024 for all five regions; Canadian expanding-window
+  predictions 2004-2024. CNFDB 2025 is reported beside the results when
+  released, not substituted. Rejected waiting for the next CNFDB release
+  (about January 2027; Phase 4 at the mercy of a release date), NBAC for
+  2025 only, NBAC throughout, and the NFDB points (agency-reported areas).
+- **Why:** see `DECISIONS.md` 2026-10-07 "Canadian fire series end at
+  2024".
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Canadian fire series end at
+  2024".
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, second row
+  (2026-10-07); `src/config.py` `CNFDB_LAST_YEAR`,
+  `FIRE_LAST_YEAR_BY_REGION`, `POOLED_LAST_YEAR`. The frozen text above the
+  log stays as written; D56 is left as written.
+
 ### D55 · ERA5-Land monthly means arrive within a week; supersedes D54
 - **Plan:** D54 (this date) said ERA5-Land monthly means run about 3
   months behind, citing a "measured" lag, and held the tracker's arrival
