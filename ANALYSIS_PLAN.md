@@ -24,6 +24,9 @@ Where the original text and a dated decided note or "Execution details" disagree
       training index match, and 1950s and 2020s winters sit on one scale.
       Chosen on these grounds, not on the descriptive climate numbers, which
       point both ways (`DECISIONS.md` 2026-10-05 "ENSO index: RONI").
+      *Scope clarified 2026-10-07 (D52):* "every headline test" means every
+      registered test that uses the ENSO index ("Execution details", ONI
+      robustness runs).
 
 Raised by the pre-start review (2026-10-04). Each one changes what a test
 means, so settle it here, put any numbers in `src/config.py`, and log the
@@ -128,7 +131,10 @@ decisions.
       Vicente-Serrano): exponent constant 0.01792, the power law at every
       temperature (Thornthwaite's separate table for monthly means at or
       above 26.5 °C is not used), and the 3-month window sums monthly
-      amounts of P - PET in mm.
+      amounts of P - PET in mm. Only these three points follow the R
+      package: the fit stays the log-logistic by maximum likelihood (not
+      its default probability-weighted moments), and the heat index and
+      calibration stay 1951-2020 (D52).
 - [x] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
       both (one as a check on the other); how April 1 is approximated from
       monthly means; glacier cells excluded (ERA5-Land caps them at 10 m).
@@ -348,7 +354,9 @@ Closing the choices the pre-freeze audits found open (`DECISIONS.md`
 2026-10-06 "Plan gaps closed"; the one-sided regression tail, H4's F test,
 the forecast intervals, expanding-window scope and error, zero-fire
 indicators, glacier cells and strong-only scope added 2026-10-07 from
-`docs/audit_2026-10-07_prefreeze.md`, `DECISIONS.md` 2026-10-07):
+`docs/audit_2026-10-07_prefreeze.md`; the permutation count, the indicator
+standard errors, the joint flip and the ONI scope from
+`docs/audit_2026-10-07_fixreview.md`; `DECISIONS.md` 2026-10-07):
 
 - **Years.** Fire tests use fire seasons 1984 to 2025 (`FIRE_LAST_YEAR`);
   2026 is described only (CNFDB 2026 not yet published, WFIGS provisional,
@@ -357,7 +365,8 @@ indicators, glacier cells and strong-only scope added 2026-10-07 from
   1951-2026. Expanding-window validation predicts 2004-2025 (22 seasons).
 - **One-sided tests.** The p-value is the one tail in the stated direction:
   for permutation tests the share of permuted differences at least as large
-  in that direction; for regressions the one-tailed t probability in the
+  in that direction, counted as (count + 1) / (n + 1), as
+  `permutation_test` does, so p is never 0; for regressions the one-tailed t probability in the
   stated direction, so an estimate of the opposite sign gives p above 0.5
   (never half the two-sided p). Confidence intervals are always two-sided
   95%.
@@ -391,7 +400,9 @@ indicators, glacier cells and strong-only scope added 2026-10-07 from
   the coefficients and residual df equal those of a fit without those
   years (H4 keeps its df of years - 1), and the series stays contiguous
   for the HAC and Driscoll-Kraay lags (2026-10-07, pre-freeze audit P1;
-  D50).
+  D50). Their standard errors differ slightly from a fit without those
+  years, since the zero residuals still enter the lag sums; accepted as
+  the cost of contiguous years (D52).
 - **HAC series** must be contiguous runs of years (fire tests 1984-2025).
   The station-z checks use each region's contiguous station record (AK from
   1960, AB 1963-2025, YT from 1975).
@@ -407,7 +418,12 @@ indicators, glacier cells and strong-only scope added 2026-10-07 from
   all other years, for H1 and H2 (permutation test and bootstrap CI) and
   their near-threshold flip; the regressions use the continuous index. The
   near-threshold band is applied after rounding the distance to the index's
-  2 published decimals.
+  2 published decimals; the flip is one run with all three winters
+  (1965-66, 1986-87, 2009-10) flipped together (D52).
+- **ONI robustness runs** cover every registered test that uses the ENSO
+  index (H1, H2, H3a, H3b, H4, C1, C2 and the strong-only results), each
+  repeated with ONI in place of RONI and reported in one table, uncorrected;
+  H5 and H6 do not use the index (D52).
 
 ## Reporting rules
 

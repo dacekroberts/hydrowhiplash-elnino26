@@ -27,6 +27,27 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (gate)
 
+### D52 · Plan clarifications from the fix review
+- **Plan:** `ANALYSIS_PLAN.md` (after D49-D51): "PET and SPEI follow the
+  SPEI reference implementation"; one-sided permutation p as "the share of
+  permuted differences"; zero-fire indicators "equal those of a fit without
+  those years"; one near-threshold "sensitivity run"; "every headline test
+  re-run on ONI" (ENSO index note).
+- **Actual:** the fix review (2026-10-07, F4, F5) found each open to a
+  stranger's reading: the R package's default fit and heat index differ
+  from the project's; the code counts (count + 1) / (n + 1); HAC and
+  Driscoll-Kraay standard errors are not those of a dropped fit; joint or
+  separate flips; headline methods or every test. Owner chose: the fit
+  stays ML with 1951-2020; (count + 1) / (n + 1); the standard-error
+  difference stated and accepted; one joint flip; ONI for every test that
+  uses the ENSO index.
+- **Why:** see `DECISIONS.md` 2026-10-07 "Fix review findings settled".
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Fix review findings settled".
+- **Plan doc:** updated before the freeze: the "SPEI settings" 2026-10-07
+  note and "Execution details" (one-sided tests, zero-fire sensitivity,
+  strong-only results, a new ONI robustness bullet) and a dated scope note
+  under the ENSO-index item, each marked D52.
+
 ### D51 · Phase 4 gains a pre-results audit gate
 - **Plan:** `ACTION_PLAN.md` Phase 4: "Before starting", confirm the freeze
   commit and set up the Claude Code Project; "All functions are in

@@ -336,6 +336,56 @@ def test_dedupe_sites_ignores_agreement_on_bare_ground():
     out, counts = stations.dedupe_sites(pd.concat([c, d], ignore_index=True))
     assert counts["duplicate site pairs"] == 1 and counts["rows dropped"] == 10
 
+
+def test_dedupe_sites_needs_agreement_in_the_snowy_years():
+    """The 23G10/23G12:OR pattern: 21 shared years, 18 bare at both sites
+    (86% agreement over all years), 3 snowy years that disagree. Not one
+    site (fix review 2026-10-07, F2)."""
+    def site(sid, values):
+        return pd.DataFrame({"station_id": sid, "source": "nrcs", "region": "PNW",
+                             "lat": 44.0, "lon": -121.0, "year": range(1990, 1990 + len(values)),
+                             "swe_apr1_mm": values})
+    a = site("23G10:OR:SNOW", [0.0] * 18 + [38.0, 8.0, 18.0])
+    b = site("23G12:OR:SNOW", [0.0] * 21)
+    out, counts = stations.dedupe_sites(pd.concat([a, b], ignore_index=True))
+    assert counts["duplicate site pairs"] == 0 and len(out) == 42
+
+
+def test_dedupe_sites_ranks_by_the_source_of_the_shared_rows():
+    """An ID with an early CanSWE row and later provincial rows holds the
+    provincial copy in the shared years, so its CanSWE-only twin loses them
+    even with more values (fix review 2026-10-07, F1)."""
+    vals = [100.0 + 10 * i for i in range(6)]
+    mixed = pd.DataFrame({"station_id": "BCE-1A01", "source": ["canswe"] + ["bc"] * 5,
+                          "region": "BC", "lat": 50.0, "lon": -120.0,
+                          "year": range(2000, 2006), "swe_apr1_mm": vals})
+    twin = mixed.assign(station_id="BC-1A01-CANSWE", source="canswe")
+    twin = pd.concat([twin, twin.iloc[:1].assign(year=1999)], ignore_index=True)  # more values
+    out, counts = stations.dedupe_sites(pd.concat([mixed, twin], ignore_index=True))
+    assert counts["duplicate site pairs"] == 1
+    assert set(out.loc[out["station_id"] == "BC-1A01-CANSWE", "year"]) == {1999}
+    assert (out["station_id"] == "BCE-1A01").sum() == 6
+
+
+def test_dedupe_sites_drops_canswe_copies_filed_under_a_successor_course():
+    """CanSWE files Yukon 09CA-SC04's 1978-84 values under SC05 (the course
+    that replaced it), with SC04's coordinates first. SC04 keeps its record,
+    SC05 keeps only its own Yukon-file years (F1)."""
+    old = [80.0 + 15 * i for i in range(7)]
+    sc04 = pd.DataFrame({"station_id": "YT-09CA-SC04", "source": "yukon", "region": "YT",
+                         "lat": 61.1167, "lon": -138.8833, "year": range(1978, 1985),
+                         "swe_apr1_mm": old})
+    sc05 = pd.concat([
+        sc04.assign(station_id="YT-09CA-SC05", source="canswe"),
+        pd.DataFrame({"station_id": "YT-09CA-SC05", "source": "yukon", "region": "YT",
+                      "lat": 61.25, "lon": -138.9833, "year": range(1985, 2011),
+                      "swe_apr1_mm": 120.0}),
+    ], ignore_index=True)
+    out, counts = stations.dedupe_sites(pd.concat([sc04, sc05], ignore_index=True))
+    assert counts["duplicate site pairs"] == 1 and counts["rows dropped"] == 7
+    assert (out["station_id"] == "YT-09CA-SC04").sum() == 7
+    assert set(out.loc[out["station_id"] == "YT-09CA-SC05", "source"]) == {"yukon"}
+
 def test_effects_by_group_splits_stations_and_measures_differences():
     years = [2000, 2001, 2002, 2003]
     enso = pd.DataFrame({"year": years, "phase": ["el_nino", "neutral", "neutral", "el_nino"],

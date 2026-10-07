@@ -17,6 +17,52 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Fix review findings settled
+
+- **Ran a read-only review of the pre-freeze fixes (97663e5..ee9503d) in a
+  cold session with a neutral prompt, on a different model (Fable 5.1)**
+  (owner's choice). Report saved as `docs/audit_2026-10-07_fixreview.md`
+  (the session's own file, unchanged but for line endings). Nothing high or
+  medium; every number recorded at ee9503d reproduced, the SPEI cache again
+  the ML optimum, the three D49 claims confirmed against the R source. The
+  owner accepted every recommendation below.
+- **Fixed the duplicate-site priority for station IDs that mix sources**
+  (F1). The review found the priority read from an ID's first row (5
+  provincial IDs ranked as CanSWE) and proposed the best source present.
+  That rule changed the table: CanSWE files Yukon course 09CA-SC04's
+  1978-84 values under SC05, the course that replaced it 15 km away, so
+  SC05 ranked as Yukon-file, kept the CanSWE copies and SC04 vanished
+  (2,167 stations; the index changed). Decided instead to read priority
+  from each copy's rows in the shared years: the copy holding the
+  lower-priority rows there loses them. Output byte-identical to ee9503d
+  (18 pairs, 509 station-years, 2,168 stations). Tests for the shared-row
+  rule and the SC04/SC05 pattern, and for the snowy-years case the first
+  test missed (F2: 21 shared years, 3 snowy, all disagreeing).
+- **Corrected two records of 2026-10-07** (F3, Info): one of the six pairs
+  no longer merged (22F05/710:OR:SNTL) agreed in its single snowy year and
+  dropped out for having fewer than 3, not for disagreeing ("Pre-freeze
+  audit findings settled" says all six disagree); and the offset
+  near-duplicates under the snowy-years rule number 5, not 11. Register:
+  933 stations with a normal (YT 54).
+- **Decided (owner) on four plan clarifications** (F4, F5; D52): the R
+  SPEI note covers only its three points (the fit stays ML, heat index and
+  calibration 1951-2020); one-sided permutation p is (count + 1) / (n + 1);
+  zero-fire indicator fits have slightly different HAC and Driscoll-Kraay
+  standard errors from a fit without those years (accepted); the
+  near-threshold flip is one run with all three winters flipped together;
+  ONI robustness runs cover every registered test that uses the ENSO index
+  (H1, H2, H3a, H3b, H4, C1, C2, strong-only), not H5 and H6. Rejected the
+  four headline methods only (would leave C1, C2 and H4's contrast
+  without the index check).
+- **Recorded, not changed** (G1-G3): no test checks Thornthwaite against an
+  independently published worked example (R not installed; no PET values
+  written from memory; constants confirmed against the R source by two
+  sessions). The per-cell change statistics of the refit (0.03 and 0.01
+  SD, largest 0.77) come from the refit session's comparison with a scratch
+  backup of the old cache, not kept in the repo. Notebooks 02-03 were
+  re-executed with nbconvert in ee9503d (the review compared their outputs
+  but did not run them).
+
 ### 2026-10-07 - Pre-freeze audit findings settled
 
 - **Ran a targeted read-only audit in a separate cold session with a neutral

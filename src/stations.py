@@ -341,19 +341,26 @@ def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
     years with snow at either site (a value above `tol_mm`), at least
     `min_share` of their April 1 values agree within `tol_mm`; bare-ground
     years don't count as agreement (pre-freeze audit 2026-10-07, P4). The
-    lower-priority copy loses all its shared years and keeps the rest. Priority: SITE_SOURCE_PRIORITY (NRCS for US sites, the provincial
-    file for Canadian ones, CanSWE last), then more values, then station_id.
+    lower-priority copy loses all its shared years and keeps the rest.
+    Priority: SITE_SOURCE_PRIORITY (NRCS for US sites, the provincial file
+    for Canadian ones, CanSWE last), read from each copy's rows in the shared
+    years, then more values, then station_id. An ID can mix sources: CanSWE
+    files Yukon course 09CA-SC04's 1978-84 values under SC05, the course that
+    replaced it 15 km away, so SC05's shared rows are CanSWE copies and SC05
+    loses them; ranking a whole ID by its first row (5 provincial IDs ranked
+    as CanSWE) or by its best row (SC05 kept SC04's record) gets mixed IDs
+    wrong (fix review 2026-10-07, F1).
     Found by the pre-freeze audits (2026-10-06): e.g. NRCS 19A01:WA:SNOW and
     BC's BCE-WA07 (51 identical years), Yukon 09BA-SC02 and SC02A.
     """
     from pyproj import Geod
 
-    sites = (table.groupby("station_id")
-             .agg(source=("source", "first"), lat=("lat", "first"), lon=("lon", "first"),
+    ranked = table.assign(
+        rank=table["source"].map(SITE_SOURCE_PRIORITY).fillna(len(SITE_SOURCE_PRIORITY)))
+    sites = (ranked.groupby("station_id")
+             .agg(rank=("rank", "min"), lat=("lat", "first"), lon=("lon", "first"),
                   n=("year", "size")).reset_index())
-    rank = sites["source"].map(SITE_SOURCE_PRIORITY).fillna(len(SITE_SOURCE_PRIORITY))
-    sites = sites.assign(rank=rank).sort_values(["rank", "n", "station_id"],
-                                                ascending=[True, False, True])
+    sites = sites.sort_values(["rank", "n", "station_id"], ascending=[True, False, True])
     sites = sites.reset_index(drop=True)
     # Coarse degree box first, then the geodesic distance for the candidates.
     lat, lon = sites["lat"].to_numpy(), sites["lon"].to_numpy()
@@ -364,6 +371,8 @@ def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
     _, _, dist_m = Geod(ellps="WGS84").inv(lon[i], lat[i], lon[j], lat[j])
     near = dist_m <= max_km * 1000
     values = table.pivot_table(index="year", columns="station_id", values="swe_apr1_mm")
+    row_rank = ranked.pivot_table(index="year", columns="station_id", values="rank",
+                                  aggfunc="min")
     drop, pairs = set(), []
     for a, b in zip(i[near], j[near]):  # a ranks above b (sites is sorted)
         keep_id, lose_id = sites.at[a, "station_id"], sites.at[b, "station_id"]
@@ -376,6 +385,9 @@ def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
         if len(snowy) < min_years:
             continue
         if ((snowy[keep_id] - snowy[lose_id]).abs() <= tol_mm).mean() >= min_share:
+            shared_rank = row_rank.loc[both.index, [keep_id, lose_id]].min()
+            if shared_rank[lose_id] < shared_rank[keep_id]:
+                keep_id, lose_id = lose_id, keep_id
             drop.update((lose_id, int(y)) for y in both.index)
             pairs.append((keep_id, lose_id))
     key = pd.MultiIndex.from_frame(table[["station_id", "year"]].astype({"year": int}))
