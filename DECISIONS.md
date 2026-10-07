@@ -30,6 +30,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   act is owed. Direct Download serves a newer quarterly-updated file than
   the citable release, so the release name and download date are recorded
   at download. Files: `DATA_SOURCES.md`.
+- **Found WFIGS Interagency Fire Perimeters usable with its disclaimer
+  carried along (PERMITTED WITH CONDITIONS), with no licence named.** The
+  item's Terms of Use field is a liability and warranty disclaimer only;
+  permission rests on the WFIGS site ("Public Data is freely accessible to
+  anyone that wishes to use it"), the ArcGIS Online grant for public items
+  (use, reproduce, derivative works, distribute) and federal public
+  domain. Chose the all-years item (5e72b169..., `NIFC_Authoritative`) for
+  recent seasons; rejected the year-to-date item (rolls over each
+  January) and a 2025 copy owned by an unrelated account (no terms).
+  WFIGS holds perimeters "starting in 2021", so the MTBS-to-WFIGS cutover
+  cannot fall earlier. Footer copyright and non-federal contributors leave
+  a low, open risk. Files: `DATA_SOURCES.md`.
 
 ### 2026-10-07 - Second fix review settled
 
