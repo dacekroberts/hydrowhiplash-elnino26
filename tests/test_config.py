@@ -74,3 +74,14 @@ def test_every_tested_cell_is_in_exactly_one_family():
             for r, d in directions.items():
                 if d is not None:
                     assert (test, r) in seen, (test, r)
+
+
+def test_tracker_window_spans_the_h5_months_and_april_1():
+    """The tracker runs from October (first month of H5's Oct-Mar total)
+    to the end of April (the April 1 snowpack), for FORECAST_YEAR's winter."""
+    from datetime import date
+
+    start, end = (date.fromisoformat(d) for d in config.TRACKER_WINDOW)
+    assert (start.month, start.day) == (config.PRECIP_ANOM_MONTHS[0], 1)
+    assert start.year == config.FORECAST_YEAR - 1 and end == date(config.FORECAST_YEAR, 4, 30)
+    assert date.fromisoformat(config.TRACKER_FREEZE_DATE) < end

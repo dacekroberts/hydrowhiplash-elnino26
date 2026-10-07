@@ -17,6 +17,31 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Freeze and tracker
+
+- **Froze `ANALYSIS_PLAN.md` (owner's explicit yes)**: commit acf7a80,
+  2026-10-07 13:35:38 UTC-07:00, tag `analysis-plan-frozen` (annotated,
+  pushed), building on 96a1908; the "Frozen on" line gives the minute
+  (owner's request). No fire data had been downloaded or opened anywhere.
+  Three audit rounds that day (one prefreeze audit, two fix reviews, the
+  last on a whole-plan read) found nothing high by the end.
+- **Decided (owner) to keep the Claude Code Project on standby and decide
+  when the Phase 4 statistics code starts** (the D51 gate), and to send the
+  three fire licence reads (MTBS, WFIGS/NIFC, CNFDB) to the standing side
+  session. Rejected setting the Project up at the freeze: its draft
+  instructions predate the frozen plan, and the licence reads fit the side
+  session's existing rules. The reminder note moved to the statistics
+  code.
+- **Added the settled tracker settings to `src/config.py`**
+  (`TRACKER_WINDOW` 2026-10-01 to 2027-04-30, `TRACKER_FREEZE_DATE`),
+  from PR #19's table; verification dates follow `FIRE_SEASON_MONTHS`.
+  **Left out the data-arrival dates** (D54): PR #19 assumed monthly data by
+  the 6th of the next month (October's data in early November) and flagged
+  it as an assumption to measure; the project's own measured lag
+  (`ERA5_LAG_MONTHS` = 3) has ERA5-Land monthly means ending in July 2026
+  on 2026-10-07, so October would arrive about January. Owner's decision
+  pending.
+
 ### 2026-10-07 - Second fix review settled
 
 - **Ran a second read-only review in a fresh cold session** (owner's

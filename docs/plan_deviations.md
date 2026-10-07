@@ -27,6 +27,23 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (gate)
 
+### D54 · Tracker data arrival: monthly means run about 3 months behind
+- **Plan:** `ACTION_PLAN.md` "Second goal" (D44, D46): October's data
+  "arrives in early November", with the first countdown to it; PR #19's
+  table: monthly data by the 6th of the following month (marked an
+  assumption to measure), first data 2026-11-06, last 2027-04-06.
+- **Actual:** ERA5-Land monthly means run about 3 months behind
+  (`ERA5_LAG_MONTHS`, measured 2026-10-04: data ended in July 2026, still
+  so on 2026-10-07); only the hourly product is about 5 days behind
+  (`ERA5_HOURLY_LAG_DAYS`). From monthly means, October 2026 would arrive
+  about January 2027 and March 2027 about June. The April 1 snowpack
+  (hourly) is unaffected.
+- **Why:** an assumption in the tracker plan, found when the dates were
+  added to `src/config.py` after the freeze.
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Freeze and tracker".
+- **Plan doc:** left as written pending the owner's decision (arrival
+  dates not set in `config.py`).
+
 ### D53 · ONI band, strong-only scope, H6 coverage; zero-fire pointer
 - **Plan:** `ANALYSIS_PLAN.md` at b9153a4: the ONI robustness runs repeat
   "the strong-only results" without saying which winters flip under ONI;

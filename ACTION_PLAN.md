@@ -94,11 +94,11 @@ committed copy in `results/tables/`.
 
 ## Gate — freeze the analysis plan (end of week 2)
 
-- [ ] Fill in and commit `ANALYSIS_PLAN.md` (including the ONI/RONI choice)
+- [x] Fill in and commit `ANALYSIS_PLAN.md` (including the ONI/RONI choice)
       **before any fire data is downloaded or opened.** Climate data can be
       looked at freely; the fire outcomes can't, or the tests could end up
       chosen after seeing results. The dated commit is the proof.
-- [ ] Consider setting up the Claude Code Project here. First commit
+- [x] Consider setting up the Claude Code Project here. First commit
       analysis-ready tables to `results/tables/`; checklist in
       `docs/claude_code_project_setup.md`.
 

@@ -45,6 +45,18 @@ FIRE_FIRST_YEAR = 1984     # fire-perimeter records start (MTBS)
 FIRE_LAST_YEAR = 2025
 FORECAST_YEAR = 2027
 
+# Live 2026-27 tracker (ACTION_PLAN "Second goal"; D44, D46; dates from PR
+# #19's table). Window: Oct-Mar precipitation (H5's months) through the
+# April 1 snowpack. The freeze date is the analysis-plan-frozen commit
+# (acf7a80, 2026-10-07 13:35 UTC-07:00). Verification dates follow
+# FIRE_SEASON_MONTHS: after each region's last fire month of FORECAST_YEAR
+# (California's season ends in January 2028). Data-arrival dates are not
+# set: PR #19 assumed monthly data by the 6th of the next month, but
+# ERA5-Land monthly means run about ERA5_LAG_MONTHS behind (data ended in
+# July 2026 on 2026-10-07; DECISIONS.md 2026-10-07 "Freeze and tracker").
+TRACKER_WINDOW = ("2026-10-01", "2027-04-30")
+TRACKER_FREEZE_DATE = "2026-10-07"
+
 # Alaska is clipped at this longitude: west of it lie only the outer Aleutian
 # and Bering Sea islands (1.1 Mha, 0.7% of the state, almost no fire), and the
 # Near Islands cross the antimeridian.
