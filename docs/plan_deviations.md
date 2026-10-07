@@ -25,6 +25,28 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-07 (after freeze)
+
+### D56 · CNFDB polygons end in 2024; fire tests run to 2025
+- **Plan:** `ANALYSIS_PLAN.md` (frozen, acf7a80) "Execution details",
+  Years: "Fire tests use fire seasons 1984 to 2025 (`FIRE_LAST_YEAR`);
+  2026 is described only (CNFDB 2026 not yet published, ...)", which
+  assumes CNFDB holds 2025; `src/config.py` `FIRE_LAST_YEAR = 2025`.
+- **Actual:** the licence read (2026-10-07) found the current NFDB
+  polygon release (files dated 28 Jan 2026) covers BC 1917-2024, AB
+  1931-2024 and YT 1946-2024. The 2025 season is only in the NFDB points
+  (Aug 2026) and NBAC (1972-2025, May 2026, same licence); the next
+  polygon release is expected about a year after the last.
+- **Why:** CNFDB polygons are released annually, about 13 months after
+  the season they add. No data was opened; coverage is from the
+  catalogue record.
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Fire perimeter licences read
+  (side session)"; `DATA_SOURCES.md` CNFDB row. How to handle 2025 for
+  BC, AB and YT (wait for a release, end the Canadian series at 2024, or
+  another product) is open for the owner; a change to the pre-registered
+  years goes in `ANALYSIS_PLAN.md`'s deviations log.
+- **Plan doc:** left as written (frozen).
+
 ## 2026-10-07 (gate)
 
 ### D55 · ERA5-Land monthly means arrive within a week; supersedes D54
