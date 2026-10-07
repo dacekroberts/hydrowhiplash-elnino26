@@ -6,7 +6,7 @@ the p-values honest. Any later change goes in the deviations log at the bottom,
 with a date and reason; don't edit the plan above it after freezing.
 
 - **Author:** Dace Roberts
-- **Frozen on:** ____-__-__ (commit hash: ________)
+- **Frozen on:** 2026-10-07 13:35 (UTC-07:00) (the freeze commit is the one tagged `analysis-plan-frozen`; it builds on `96a1908`)
 
 Where the original text and a dated decided note or "Execution details" disagree, the dated note governs; each such spot is listed in `docs/plan_deviations.md` (D9, D41-D43, D45, D48).
 
