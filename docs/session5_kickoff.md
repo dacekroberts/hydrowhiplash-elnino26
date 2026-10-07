@@ -1,7 +1,8 @@
 # Session 5 kickoff: freeze, then Phase 3
 
-Written at the end of session 4 (2026-10-05 21:15 to 2026-10-06, main
-checkout). Part 1 is the handoff: the state the next session starts from.
+Written during session 4 (2026-10-05 21:15 to 2026-10-06 17:30, main
+checkout); updated at its end, after the second audit round (main at
+4928b71 or later). Part 1 is the handoff: the state the next session starts from.
 Part 2 is the prompt to paste into a new Claude Code session in the main
 checkout.
 
@@ -35,22 +36,33 @@ checkout.
     expanding-window validation from 20 seasons, Holm families
     (`CORRECTION_FAMILIES`) (D45).
   - H1 uses DJF precipitation; `CLAUDE.md` fire-window line updated.
-- Pre-freeze audit (`docs/audit_2026-10-05_phase2.md`): data and code
-  largely clean. Fixed in session 4: polar PET (north SPEI refit; AK and YT
-  SPEI and whiplash changed, see `DECISIONS.md` "Pre-freeze audit"), SoCal
-  SWE z blanked, stale register wording. The 111 unfitted north cells are
-  glacier icefields. Low-severity code items queued as a side-session task
-  ("Fix low-severity Phase 2 audit findings"); its PR needs a main-session
-  re-run of the tables after merging.
-- PR #18 merged (live tracker as a three-state season timeline page, D44).
-  The tracker's config dates come after the freeze, and its window must
-  start in October (H5 uses Oct-Mar precipitation).
-- Deviations: up to D45. Main numbers its own from D46.
+- Audits: a first audit (`docs/audit_2026-10-05_phase2.md`, follow-up
+  section added), two re-audits and an independent audit in a separate
+  session with a neutral prompt (`docs/audit_2026-10-06_climate.md`). Fixed:
+  polar-day PET; Thornthwaite heat index made climatological with N/30 (the
+  per-year index had inflated 2026 PET; D47); glacier cells out of SPEI;
+  SoCal SWE z blanked; 24 duplicate station sites counted once; stats.py
+  guards (NaN, contiguous HAC years, repeated index); 0.06 band rounding;
+  plan gaps closed in ANALYSIS_PLAN "Execution details" (last fire season
+  2025, one-sided convention, H4 model, forecast, gap CI, zero-year scope,
+  station minimum frozen at 5). All SPEI refit, tables and notebooks rebuilt
+  (4928b71); pytest 209 passed.
+- Side PRs merged: #18 (tracker in three states, D44), #19 (tracker from
+  October, California verification after January 2028, D46), #20
+  (low-severity audit fixes; its 6 review findings fixed in main).
+- Known limitation to state with the 2027 forecast input: SoCal's 2025-26
+  winter was 3.0 °C above normal and Thornthwaite PET is very temperature
+  sensitive (DJF 2026 SPEI ranks 58 of 76, precipitation 20; 9.9% of cells
+  at the clip).
+- Deviations: up to D48. Main numbers its own from D49.
 
 **Stale wording left as written (owner's prose; logged):** `ANALYSIS_PLAN.md`
 hypotheses table H2 "higher in SoCal" and H5 "positive lag coefficient,
-strongest in SoCal" (D42), Outcomes "Fire-season length" and "Fire season"
-lines (D42, D43), Headline methods 3 "errors clustered by year" (D45);
+strongest in SoCal" (D42), H4 "interaction ≠ 0" (D48), Outcomes
+"Fire-season length" and "Fire season" lines (D42, D43), Headline methods 3
+"errors clustered by year" (D45), Supporting methods "lag0 = the preceding
+winter" and Data and years "Climate tests (... temperature, whiplash ...)"
+(D48);
 `ACTION_PLAN.md` "ONI strength" / "ONI × region" (D41) and Phase 3 windows
 (D43).
 
@@ -73,18 +85,18 @@ Session 5 for hydrowhiplash-elnino26: freeze the analysis plan, then start Phase
 
 1. Orient: read CLAUDE.md, ANALYSIS_PLAN.md (all of it), docs/session5_kickoff.md
    (Part 1), the latest log in logs/ ("Next" and the session 4 block),
-   docs/audit_2026-10-05_phase2.md, docs/plan_deviations.md D41-D45 and the
+   docs/audit_2026-10-06_climate.md, docs/plan_deviations.md D41-D48 and the
    top of DECISIONS.md. Then read the roadmap artifact with the Artifact tool
    (action "read"): https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from the next free number (D46 as of the end of session 4).
+   deviations from the next free number (D49 as of the end of session 4).
 
 2. Explain each data type and concept as it comes up, and give a short
    summary beside every hypothesis ID (memory notes).
 
-3. If the side PR "Fix low-severity Phase 2 audit findings" is open: pre-screen
-   and merge it only with the merge-side-pr skill and my yes, then re-run the
-   modules it names and report any changed number before committing.
+3. Side PRs, if any are open: pre-screen and merge only with the
+   merge-side-pr skill and my yes; re-run any module a merge names and report
+   changed numbers before committing.
 
 4. Walk me through ANALYSIS_PLAN.md once more and answer my questions. Freeze
    only with my explicit yes: fill in "Frozen on" with the date and a note that
