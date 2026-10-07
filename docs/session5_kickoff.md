@@ -4,7 +4,8 @@ Written during session 4 (2026-10-05 21:15 to 2026-10-06 17:30, main
 checkout); updated at its end, after the second audit round (main at
 4928b71 or later). Part 1 is the handoff: the state the next session starts from.
 Part 2 is the prompt to paste into a new Claude Code session in the main
-checkout.
+checkout. Part 3 is the prompt for a separate, read-only audit session that
+runs first, before the freeze (owner's choice, 2026-10-06).
 
 ## Part 1 · Handoff
 
@@ -94,24 +95,78 @@ Session 5 for hydrowhiplash-elnino26: freeze the analysis plan, then start Phase
 2. Explain each data type and concept as it comes up, and give a short
    summary beside every hypothesis ID (memory notes).
 
-3. Side PRs, if any are open: pre-screen and merge only with the
+3. Targeted audit before the freeze: before changing anything, ask me to
+   start a separate read-only audit session with the Part 3 prompt of
+   docs/session5_kickoff.md (a cold session with a neutral prompt; it reviews
+   every change since bfbc802, which only main-session agents have checked,
+   and whether the plan can be run as written). Keep main unchanged while it
+   runs. When its report arrives, save it unchanged as
+   docs/audit_<date>_prefreeze.md, compare it with the earlier audits, and
+   walk me through its findings; fix only what I choose, recording each as
+   usual. Freeze only once its findings are settled.
+
+4. Side PRs, if any are open: pre-screen and merge only with the
    merge-side-pr skill and my yes; re-run any module a merge names and report
    changed numbers before committing.
 
-4. Walk me through ANALYSIS_PLAN.md once more and answer my questions. Freeze
+5. Walk me through ANALYSIS_PLAN.md once more and answer my questions. Freeze
    only with my explicit yes: fill in "Frozen on" with the date and a note that
    the freeze commit is the one tagged analysis-plan-frozen (plus the hash of
    the commit it builds on), commit, tag analysis-plan-frozen, push the tag.
    Then raise the Claude Code Project reminder (memory note). No fire data
    anywhere before the tag exists.
 
-5. After the freeze: add the live tracker's dates to src/config.py (PR #18's
-   table, window starting October), and queue the three fire licence reads
+6. After the freeze: add the live tracker's dates to src/config.py (PR #19's
+   table: window from 1 October 2026), and queue the three fire licence reads
    (read-licence skill, one source per run) as side tasks or run them here.
    Phase 3 downloads only after their licences are read.
 
-6. End of session: daily-log skill, python scripts/log.py list,
+7. End of session: daily-log skill, python scripts/log.py list,
    python scripts/check_no_em_dashes.py, commit and push; refresh the data guide
    artifact (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P) and offer to
    update the roadmap artifact; write the next kickoff the same way.
+```
+
+## Part 3 · Prompt for the targeted audit session
+
+Start this in a separate Claude Code session in the same folder, before the
+main session changes anything. Neutral on purpose: it names the scope, not
+what anyone expects to find.
+
+```text
+Read-only audit of hydrowhiplash-elnino26 (this folder). Change no files; put
+any scripts in a temp folder outside the repo. Do not run any module in src/
+that writes files (e.g. python -m src.whiplash, src.phase2, src.stations,
+src.era5, src.snow, src.snow_soil, src.download_*): import their functions
+instead. Do not run git commands that change state (checkout, stash, pull,
+commit, reset). Another session works in this folder at the same time. No
+fire data: do not open, download or search for fire perimeters or
+burned-area data.
+
+Scope: every change since commit bfbc802 (git diff bfbc802..HEAD and git log
+bfbc802..HEAD), in code, config, tests, committed tables and documents; and
+whether ANALYSIS_PLAN.md can be executed by a stranger without making choices
+of their own.
+
+Goal: find anything wrong before the analysis plan is frozen: wrong numbers,
+silent errors, formulas that differ from their published definitions, code
+that doesn't do what its docstring or the docs say, tests that don't test
+what they claim, settings that differ between ANALYSIS_PLAN.md and
+src/config.py, and records that disagree with the code.
+
+Work in this order:
+1. Read CLAUDE.md, docs/data_dictionary.md and ANALYSIS_PLAN.md only.
+2. Read the diff and form your own view from the code and the data in data/
+   (raw and processed): recompute values independently where you can, from
+   raw inputs where possible, and test edge cases.
+3. Only then read DECISIONS.md, docs/methods_register.md,
+   docs/plan_deviations.md and docs/audit_*.md, and check whether the code
+   matches them. Report where the records and the code disagree.
+
+Run Python through C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash
+--no-capture-output python <script file>, from the repo root with
+PYTHONPATH set to it (multi-line Python only in script files). Report: the
+commit audited, what passed (with numbers), findings ranked by severity with
+file:line, and what you could not check. Send the report to the main session
+when the owner asks.
 ```
