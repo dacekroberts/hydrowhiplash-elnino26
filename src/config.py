@@ -37,6 +37,12 @@ STRONG_THRESHOLD = 1.5    # deg C, strong El Nino
 # Year ranges
 CLIMATE_FIRST_YEAR = 1950  # ERA5-Land and ENSO index start
 FIRE_FIRST_YEAR = 1984     # fire-perimeter records start (MTBS)
+# Last fire season in every pre-registered fire test, and the forecast year,
+# never used in training (DECISIONS.md 2026-10-06 "Plan gaps closed"):
+# CNFDB 2026 is not out before the analysis, WFIGS 2026 is provisional and
+# California's 2026 season closes in February 2027.
+FIRE_LAST_YEAR = 2025
+FORECAST_YEAR = 2027
 
 # Alaska is clipped at this longitude: west of it lie only the outer Aleutian
 # and Bering Sea islands (1.1 Mha, 0.7% of the state, almost no fire), and the
@@ -87,6 +93,14 @@ SPEI_CAL_YEARS = (1951, 2020)  # calibration period, inclusive
 # Clip per-cell SPEI to +-3.09 (probability 0.001 per tail): a fitted tail
 # gave -8.21 in a 900-cell probe.
 SPEI_CLIP = 3.09
+# Thornthwaite heat index: climatological, from each cell's monthly mean
+# temperatures over these years (Thornthwaite 1948), not recomputed per
+# calendar year as in xclim's TW48 (DECISIONS.md 2026-10-06 "PET heat
+# index"; D47). The N/30 month-length factor is included.
+PET_HEAT_INDEX_YEARS = SPEI_CAL_YEARS
+# Glacier and perennial-snow cells (the SWE glacier mask, src.snow) are left
+# out of the per-cell SPEI fit and the regional SPEI means (2026-10-06).
+GLACIER_SPEI_EXCLUDED = True
 
 # ERA5-Land SWE (DECISIONS.md 2026-10-04 "ERA5-Land SWE: glacier exclusion
 # and April 1"). A cell is excluded from every SWE regional mean if it reaches
@@ -148,6 +162,10 @@ ZERO_YEAR_PCT_LIMIT = 0.10
 # flipped for winters within this distance of STRONG_THRESHOLD (under RONI:
 # 1965-66 1.53, 1986-87 1.46, 2009-10 1.44).
 STRONG_SENSITIVITY_BAND = 0.06
+# Index values are published to 2 decimals; distances to a threshold are
+# rounded to this many decimals before comparing, or abs(1.44 - 1.5) =
+# 0.06000000000000005 would drop 2009-10 from the band (independent audit F7).
+ENSO_DECIMALS = 2
 
 # Statistics (values mirror ANALYSIS_PLAN.md)
 ALPHA = 0.05
@@ -320,6 +338,16 @@ STATION_NORMAL_MIN_YEARS = 20
 STATION_PCT_MIN_NORMAL_MM = 10
 STATION_MIN_PER_REGION_YEAR = 5   # owner: may be widened for AB and YT if too short
 STATION_INDEX_TABLE = DATA_PROCESSED / "station_swe_region_year.csv"
+# One site under two station IDs (another network's copy or a renamed
+# course; pre-freeze audits 2026-10-06): within SITE_DUP_MAX_KM and at least
+# SITE_DUP_MIN_SHARE of at least SITE_DUP_MIN_YEARS shared years within
+# SITE_DUP_TOL_MM (0.1 inch, NRCS's reporting step). The lower-priority copy
+# loses the shared years (src.stations.dedupe_sites).
+SITE_DUP_MAX_KM = 3
+SITE_DUP_TOL_MM = 2.6
+SITE_DUP_MIN_SHARE = 0.8
+SITE_DUP_MIN_YEARS = 3
+SITE_SOURCE_PRIORITY = {"nrcs": 0, "bc": 1, "yukon": 1, "canswe": 2}
 # SWE in the tests (owner, 2026-10-05; DECISIONS.md "SWE source for the
 # tests"): ERA5-Land April 1 SWE as a z-score against its own regional
 # STATION_NORMAL_YEARS normal is the predictor; the station index z is the

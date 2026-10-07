@@ -286,6 +286,38 @@ def test_compare_era5_leaves_snowless_regions_empty():
     assert dry["era5_swe_apr1_mm"].notna().all()  # the mm values stay
 
 
+def test_dedupe_sites_counts_one_site_once():
+    years = list(range(2000, 2010))
+    def site(sid, source, lat, lon, values, start=2000):
+        return pd.DataFrame({"station_id": sid, "source": source, "region": "PNW",
+                             "lat": lat, "lon": lon, "year": range(start, start + len(values)),
+                             "swe_apr1_mm": values})
+    vals = [100.0 + 10 * i for i in range(10)]
+    table = pd.concat([
+        site("19A01:WA:SNOW", "nrcs", 48.90, -121.00, vals),
+        site("BCE-WA07", "bc", 48.905, -121.01, [v + 1.0 for v in vals[:8]] + [1.0, 2.0],
+             ),                                                     # same site, 2 bad years
+        site("FAR", "nrcs", 48.90, -120.90, vals),                   # identical, 7 km away
+        site("NEAR-DIFF", "canswe", 48.901, -121.0, [v * 2 for v in vals]),  # near, different
+        site("BCE-SHORT", "bc", 48.9, -121.0, vals[:2]),             # under 3 shared years
+    ], ignore_index=True)
+    out, counts = stations.dedupe_sites(table)
+    assert counts["duplicate site pairs"] == 1
+    assert counts["rows dropped"] == 10
+    assert "BCE-WA07" not in set(out["station_id"])        # all its years shared with NRCS
+    assert {"19A01:WA:SNOW", "FAR", "NEAR-DIFF", "BCE-SHORT"} <= set(out["station_id"])
+
+
+def test_dedupe_sites_keeps_the_lower_priority_copys_own_years():
+    a = pd.DataFrame({"station_id": "YT-09BA-SC02", "source": "yukon", "region": "YT",
+                      "lat": 60.0, "lon": -135.0, "year": range(1980, 1990),
+                      "swe_apr1_mm": 50.0})
+    b = a.assign(station_id="YT-09BA-SC02A", source="canswe", year=range(1985, 1995))
+    out, counts = stations.dedupe_sites(pd.concat([a, b], ignore_index=True))
+    kept_b = out.loc[out["station_id"] == "YT-09BA-SC02A", "year"]
+    assert list(kept_b) == list(range(1990, 1995)) and counts["rows dropped"] == 5
+
+
 def test_effects_by_group_splits_stations_and_measures_differences():
     years = [2000, 2001, 2002, 2003]
     enso = pd.DataFrame({"year": years, "phase": ["el_nino", "neutral", "neutral", "el_nino"],

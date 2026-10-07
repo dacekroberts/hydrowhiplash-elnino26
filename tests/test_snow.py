@@ -127,5 +127,13 @@ def test_april1_table_drops_1950_and_keeps_one_enso_index():
 
 
 def test_april1_table_raises_on_a_year_without_enso():
-    with pytest.raises(ValueError, match=r"No RONI DJF value for year\(s\) \[1953\]"):
-        snow.april1_table(april1_ds([1951, 1952, 1953]), winters_table([1951, 1952]))
+    with pytest.raises(ValueError, match=r"No RONI DJF value for year\(s\) \[1952\]"):
+        snow.april1_table(april1_ds([1951, 1952, 1953]), winters_table([1951, 1953]))
+
+
+def test_april1_table_keeps_a_winter_not_yet_published():
+    # During the live tracker the coming winter has data before CPC posts its
+    # DJF value: kept, with empty ENSO columns, instead of stopping the run.
+    table = snow.april1_table(april1_ds([1951, 1952, 1953]), winters_table([1951, 1952]))
+    assert list(table["year"]) == [1951, 1952, 1953]
+    assert table.loc[table["year"] == 1953, ["enso_djf", "phase"]].isna().all(axis=None)

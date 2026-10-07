@@ -9,7 +9,7 @@ Headline methods (see ANALYSIS_PLAN.md):
   permutation_test       El Niño years vs the rest, no normality assumption
   bootstrap_ci_diff      confidence interval for that difference
   fit_ols_hac            regression with controls, Newey-West (HAC) errors
-  fit_pooled             pooled regions with ONI x region interaction
+  fit_pooled             pooled regions with ENSO index x region interaction
   loyo_prediction        leave-one-year-out prediction intervals + coverage
 Supporting:
   block_bootstrap_ci     CI that respects year-to-year autocorrelation
@@ -34,6 +34,27 @@ def _mean_diff(values: np.ndarray, in_group: np.ndarray) -> float:
     return values[in_group].mean() - values[~in_group].mean()
 
 
+def _no_nan(values: np.ndarray, name: str) -> np.ndarray:
+    """Raise on NaN: a NaN made permutation_test return p = 1/(n + 1), the
+    smallest possible p, for a NaN difference (independent audit F3)."""
+    if np.isnan(values).any():
+        raise ValueError(f"{name} has {int(np.isnan(values).sum())} missing value(s); "
+                         f"drop those years first.")
+    return values
+
+
+def _contiguous_years(df: pd.DataFrame, model, year_col: str) -> None:
+    """HAC weights neighbouring rows as neighbouring years, so the rows a fit
+    uses must be one per year, sorted, with no gaps (independent audit F4:
+    shuffled rows changed an HAC SE from 0.320 to 0.290; a dropped year was
+    treated as adjacent)."""
+    years = df.loc[model.data.row_labels, year_col].to_numpy()
+    if len(years) and not (np.diff(years) == 1).all():
+        raise ValueError(f"fit_ols_hac needs consecutive {year_col!r} values, sorted, one "
+                         f"row each, in the rows the model uses (got {years.min()}-"
+                         f"{years.max()}, {len(years)} rows); use a contiguous run.")
+
+
 def permutation_test(values, in_group, n_perm: int = N_PERMUTATIONS,
                      seed: int = DEFAULT_SEED) -> dict:
     """Two-sided permutation test for a difference in means.
@@ -42,7 +63,7 @@ def permutation_test(values, in_group, n_perm: int = N_PERMUTATIONS,
     in_group  boolean per year (e.g. year followed an El Niño winter)
     Returns the observed difference and the permutation p-value.
     """
-    values = np.asarray(values, dtype=float)
+    values = _no_nan(np.asarray(values, dtype=float), "values")
     in_group = np.asarray(in_group, dtype=bool)
     rng = np.random.default_rng(seed)
     observed = _mean_diff(values, in_group)
@@ -61,7 +82,7 @@ def bootstrap_ci_diff(values, in_group, n_boot: int = N_BOOTSTRAP,
 
     Resamples within each group so group sizes stay fixed.
     """
-    values = np.asarray(values, dtype=float)
+    values = _no_nan(np.asarray(values, dtype=float), "values")
     in_group = np.asarray(in_group, dtype=bool)
     rng = np.random.default_rng(seed)
     g, r = values[in_group], values[~in_group]
@@ -115,16 +136,21 @@ def block_bootstrap_ci(df: pd.DataFrame, statistic: Callable[[pd.DataFrame], flo
             "level": 1 - alpha, "block_len": block_len}
 
 
-def fit_ols_hac(formula: str, df: pd.DataFrame, maxlags: int = HAC_MAXLAGS):
+def fit_ols_hac(formula: str, df: pd.DataFrame, maxlags: int = HAC_MAXLAGS,
+                year_col: str = "year"):
     """OLS for one region's yearly series with Newey-West (HAC) errors.
 
     Example:
       fit_ols_hac("log_burn ~ enso_djf + year", region_df)          # H3a
       fit_ols_hac("log_burn ~ enso_djf + temp_jja + year", region_df)  # H3b
     The `year` term is the trend control; `temp_jja` the temperature control.
+    Raises unless the rows used hold consecutive years in order (ANALYSIS_PLAN
+    "Small-cluster corrections": HAC fits use contiguous runs).
     """
-    return smf.ols(formula, data=df).fit(cov_type="HAC",
-                                         cov_kwds={"maxlags": maxlags})
+    df = df.reset_index(drop=True)
+    model = smf.ols(formula, data=df)
+    _contiguous_years(df, model, year_col)
+    return model.fit(cov_type="HAC", cov_kwds={"maxlags": maxlags})
 
 
 def fit_pooled(formula: str, df: pd.DataFrame, cluster: str = "year"):
@@ -141,6 +167,7 @@ def fit_pooled(formula: str, df: pd.DataFrame, cluster: str = "year"):
     plain OLS (`fit.nobs` gives the rows used); the cluster groups are taken
     from those same rows (DECISIONS.md 2026-10-05 "Phase 1 audit").
     """
+    df = df.reset_index(drop=True)  # repeated labels (pd.concat) broke .loc (audit F8)
     model = smf.ols(formula, data=df)
     groups = df.loc[model.data.row_labels, cluster]
     if groups.isna().any():
@@ -150,8 +177,10 @@ def fit_pooled(formula: str, df: pd.DataFrame, cluster: str = "year"):
 
 
 def adjust_pvalues(pvalues, method: str = "holm") -> np.ndarray:
-    """Multiple-comparison correction. method: 'holm' or 'fdr_bh'."""
-    return multipletests(np.asarray(pvalues, dtype=float), method=method)[1]
+    """Multiple-comparison correction. method: 'holm' or 'fdr_bh'. Raises on a
+    missing p-value, which would otherwise count in the family size."""
+    pvalues = _no_nan(np.asarray(pvalues, dtype=float), "pvalues")
+    return multipletests(pvalues, method=method)[1]
 
 
 def loyo_prediction(formula: str, df: pd.DataFrame, alpha: float = PREDICTION_ALPHA,

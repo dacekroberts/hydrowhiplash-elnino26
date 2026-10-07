@@ -2,7 +2,8 @@
 
 Pipeline (settings in src/config.py; reasoning in DECISIONS.md 2026-10-04
 "SPEI settings"):
-  pet_thornthwaite()   PET per cell, mm/day (xclim TW48; zero below 0 deg C)
+  pet_thornthwaite()   PET per cell, mm/day (Thornthwaite 1948, climatological
+                       heat index; zero at or below 0 deg C)
   water_balance()      P - PET per cell, mm/day
   spei_cells()         SPEI-3 per cell: log-logistic fitted by maximum
                        likelihood per calendar month over SPEI_CAL_YEARS,
@@ -31,7 +32,8 @@ import numpy as np
 import pandas as pd
 import xarray as xr
 
-from src.config import (DATA_PROCESSED, PET_METHOD, SPEI_CAL_YEARS, SPEI_CLIP,
+from src.config import (DATA_PROCESSED, GLACIER_SPEI_EXCLUDED, PET_HEAT_INDEX_YEARS,
+                        PET_METHOD, SPEI_CAL_YEARS, SPEI_CLIP,
                         SPEI_DIST, SPEI_FIT_METHOD, SPEI_SCALE, SUMMER_MONTHS, WINTER_MONTHS)
 from src.era5 import LAT, LON, TIME, join_enso, regional_series
 
@@ -48,24 +50,41 @@ def _from_xclim(da: xr.DataArray) -> xr.DataArray:
     return da.rename({XTIME: TIME}) if XTIME in da.dims else da
 
 
-def pet_thornthwaite(t2m_c: xr.DataArray) -> xr.DataArray:
-    """Thornthwaite PET in mm/day from monthly mean 2 m temperature in deg C.
+def pet_thornthwaite(t2m_c: xr.DataArray,
+                     normal_years: tuple[int, int] = PET_HEAT_INDEX_YEARS) -> xr.DataArray:
+    """Thornthwaite (1948) PET in mm/day from monthly mean 2 m temperature in deg C.
 
-    Uses latitude for day length. Zero in months at or below 0 deg C.
+    PET = 16 (L/12) (N/30) (10 T / I)^a mm/month, with T the month's mean
+    temperature clipped at 0 (so PET is 0 at or below 0 deg C), L the mean day
+    length in hours, N the days in the month, I the cell's heat index and a a
+    cubic in I. Divided by N for mm/day, which leaves 16 (L/12) (10 T/I)^a / 30.
 
-    The steps of xclim's TW48 method (`potential_evapotranspiration`), with
-    one change: day lengths in polar day and night are set to 24 h and 0 h
-    (`infill_polar_days`). xclim leaves them NaN, so PET was NaN in June and
-    December north of about 68N and every DJF and JJA SPEI-3 there was
-    missing (pre-freeze data audit, 2026-10-05: 15% of AK's area weight).
-    South of the polar circles the day lengths, and so PET, are unchanged.
+    I is climatological, as in Thornthwaite's definition: the sum over the 12
+    calendar months of (Tm / 5)^1.514, Tm each month's mean over
+    `normal_years` clipped at 0. xclim's TW48 (followed until 2026-10-06)
+    recomputed I from each calendar year, which inflated PET in an incomplete
+    year (2026: x1.5-2.1 in Jan-Apr, so SoCal DJF 2026 SPEI-3 about 1 SD too
+    dry), gave 0/0 = NaN in years with no month above 0 deg C, and damped
+    PET's response to warming; it also left out N/30 (pre-freeze audits,
+    2026-10-06; DECISIONS.md "PET heat index"). A cell with I = 0 (no month
+    above 0 deg C in the normal) gets PET 0.
+
+    Day lengths in polar day and night are 24 h and 0 h (`infill_polar_days`);
+    xclim leaves them NaN (data audit 2026-10-05).
     """
-    from xclim.core.units import amount2rate
     from xclim.indices.helpers import day_lengths
 
     if PET_METHOD != "TW48":
         raise ValueError(f"pet_thornthwaite implements TW48 only, not {PET_METHOD!r}")
-    tas = _to_xclim(t2m_c).clip(min=0)
+    tas = _to_xclim(t2m_c)
+    first, last = normal_years
+    normal = tas.sel({XTIME: slice(f"{first}-01-01", f"{last}-12-31")})
+    if normal.sizes[XTIME] == 0 or normal[XTIME].dt.month.to_series().nunique() < 12:
+        raise ValueError(f"pet_thornthwaite needs every calendar month in {first}-{last} "
+                         f"for the heat index.")
+    monthly_normal = normal.groupby(f"{XTIME}.month").mean().clip(min=0)
+    heat = ((monthly_normal / 5) ** 1.514).sum("month")
+    a = 6.75e-7 * heat**3 - 7.71e-5 * heat**2 + 0.01791 * heat + 0.49239
     months = tas[XTIME]
     days = xr.DataArray(
         pd.date_range(months[0].dt.strftime("%Y-%m-01").item(),
@@ -74,14 +93,12 @@ def pet_thornthwaite(t2m_c: xr.DataArray) -> xr.DataArray:
     lat = tas[LAT].assign_attrs(units="degrees_north")  # xclim reads the units
     # Thornthwaite measures day length in units of 12 hours.
     dl = day_lengths(days, lat, infill_polar_days=True) / 12
-    dl_m = dl.resample({XTIME: "MS"}).mean()
-    dl_m = dl_m.assign_coords({XTIME: months.values})
-    heat = ((tas / 5) ** 1.514).groupby(f"{XTIME}.year").sum()  # annual heat index
-    heat_m = heat.sel(year=tas[XTIME].dt.year).drop_vars("year")
-    a = 6.75e-7 * heat_m**3 - 7.71e-5 * heat_m**2 + 0.01791 * heat_m + 0.49239
-    pet = 10 * 1.6 * dl_m * (10 * tas / heat_m) ** a  # mm/month
-    pet = amount2rate(pet.assign_attrs(units="mm"), out_units="mm/d")
-    return _from_xclim(pet).assign_attrs(units="mm/d", long_name="Thornthwaite PET")
+    dl_m = dl.resample({XTIME: "MS"}).mean().assign_coords({XTIME: months.values})
+    ratio = xr.where(heat > 0, 10 * tas.clip(min=0) / heat.where(heat > 0), 0.0)
+    pet = 16 * dl_m * ratio**a / 30  # mm/day (mm/month x 1/N)
+    pet = pet.where(tas.notnull())
+    return _from_xclim(pet).transpose(*t2m_c.dims).assign_attrs(
+        units="mm/d", long_name="Thornthwaite PET")
 
 
 def water_balance(tp_mm_month: xr.DataArray, pet_mm_day: xr.DataArray) -> xr.DataArray:
@@ -224,6 +241,9 @@ def main(refresh: bool = False) -> None:
         ds = datasets[name]
         masks = region_masks(sub, ds)
         keep = masks.any("region") & ds["tp"].isel({TIME: 0}).notnull()
+        if GLACIER_SPEI_EXCLUDED:  # same cells as the SWE means (src.snow)
+            glacier = xr.open_dataarray(DATA_PROCESSED / f"glacier_mask_{name}.nc")
+            keep = keep & ~glacier.reindex_like(keep, fill_value=False).astype(bool)
         t0 = time.time()
         print(f"{name}: SPEI-3 for {int(keep.sum())} region cells...", flush=True)
         spei = domain_spei(name, ds, keep, refresh=refresh)
@@ -234,7 +254,7 @@ def main(refresh: bool = False) -> None:
     table = table.sort_values(["region", "year"]).reset_index(drop=True)
     table["region"] = table["region"].astype(str)
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    table.to_csv(OUT, index=False)
+    table.to_csv(OUT, index=False, lineterminator="\n")
     print(f"wrote {OUT}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
 
 

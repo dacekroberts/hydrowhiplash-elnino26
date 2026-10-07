@@ -117,3 +117,33 @@ quality beyond NaN and clip counts; station values against the raw downloads
 (the index was re-derived from the cleaned table only); variables not yet
 built (`temp_jja`, `temp_mam`, `precip_anom`); later revisions of the 2026
 ERA5-Land months; anything involving fire data.
+
+## Follow-up, 2026-10-06: re-audits and the independent audit
+
+Two re-audits by fresh agents of the main session (fixes and raw traces;
+plan against config and code) and an independent audit in a separate session
+with a neutral prompt (`docs/audit_2026-10-06_climate.md`), all at `bfbc802`.
+Corrections to this report:
+
+- **Missed, high:** Thornthwaite's heat index was summed per calendar year
+  (xclim TW48), so PET in the incomplete current year was 1.5-2.1 times too
+  high in January-April (SoCal DJF 2026 SPEI-3 about 1 SD too dry, 33% of
+  its cells at the clip), and the 2027 forecast input would have been worse.
+  This report's "SPEI fit ... as decided" pass did not cover it. Also
+  missed: the N/30 month-length factor, and that a per-year index damps
+  PET's warming response (independent audit F2).
+- **Wrong:** the 46 cells with no February SPEI are not all in AK (22 AK, 24
+  YT), and their cause is known: in years with no month above 0 °C the heat
+  index is 0 and PET 0/0 = NaN. Finding 17 (BC glacier cells) and the 111
+  unfitted cells have the same cause.
+- **Understated:** "no duplicates" in the station table held only by station
+  ID and year; 24 sites are filed under two IDs (576 station-years).
+  Finding 16 understated the Yukon overlap (78 of 82 Yukon IDs are in
+  CanSWE; the provincial file correctly wins).
+- **Missed, latent:** `stats.permutation_test` returns p = 1/(n + 1) for a
+  NaN input; `fit_ols_hac` depends on row order; `fit_pooled` breaks on
+  repeated index labels; Holm counts a NaN; the 0.06 near-threshold band
+  dropped 2009-10 by float rounding.
+
+All of these were fixed on 2026-10-06 (`DECISIONS.md` "PET heat index",
+"Duplicate station sites", "stats.py guards", "Plan gaps closed"; D47).

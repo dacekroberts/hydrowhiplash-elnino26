@@ -27,6 +27,41 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-06 (gate)
 
+### D48 · More stale plan wording; D43's CLAUDE.md claim no longer true
+- **Plan:** `ANALYSIS_PLAN.md` Hypotheses table, H4 "index × region
+  interaction ≠ 0"; Supporting methods, H5 "lag0 = the preceding winter and
+  lag1 = the winter before that"; Data and years, "Climate tests
+  (precipitation, temperature, whiplash, SWE)". D43's *Plan doc* line says
+  `CLAUDE.md` was "left as written".
+- **Actual:** H4's test is one north-vs-SoCal contrast (D45, "H4's actual
+  test"); H5's lags are Oct-Mar totals, not winters (DJF); whiplash and
+  temperature are not tested (descriptive and a control). `CLAUDE.md`'s
+  fire-window line was updated with the owner's yes in 5386222, after D43
+  was written. Found by the plan-versus-config re-audit (2026-10-06).
+- **Why:** pre-freeze decisions superseded the owner's original wording.
+- **Recorded:** `DECISIONS.md` 2026-10-05 "Hypotheses", "Inference", "H1
+  months and the CLAUDE.md fire window".
+- **Plan doc:** left as written (owner's prose); the decided notes and
+  "Execution details" resolve each spot.
+
+### D47 · Thornthwaite PET with a climatological heat index; glacier cells out of SPEI
+- **Plan:** `ANALYSIS_PLAN.md` "SPEI settings" (decided 2026-10-04):
+  "Thornthwaite (1948) PET", implemented as xclim's TW48; SPEI over every
+  region land cell.
+- **Actual:** the pre-freeze re-audit and the independent audit (2026-10-06)
+  found xclim's TW48 recomputes the heat index per calendar year (inflating
+  PET in the incomplete current year and in the 2027 forecast input, giving
+  NaN in years with no month above 0 °C, damping the warming response) and
+  omits the N/30 factor. The owner chose Thornthwaite's own form: a
+  climatological heat index from 1951-2020, N/30 included, PET 0 at or below
+  0 °C; and glacier cells left out of SPEI as of SWE. Every SPEI and
+  whiplash value was refit (both domains); changes in `DECISIONS.md`.
+- **Why:** see `DECISIONS.md` 2026-10-06 "PET heat index".
+- **Recorded:** `DECISIONS.md` 2026-10-06 "PET heat index".
+- **Plan doc:** `ANALYSIS_PLAN.md` "SPEI settings" carries a dated revision
+  note (before the freeze); `src/config.py` `PET_HEAT_INDEX_YEARS`,
+  `GLACIER_SPEI_EXCLUDED`.
+
 ### D46 · Tracker from October; California verification after January 2028
 - **Plan:** `ACTION_PLAN.md` "Second goal": Live 2026-27 tracker *Nov 2026 →
   spring 2027*, and (D44) a November-April season timeline; Verification

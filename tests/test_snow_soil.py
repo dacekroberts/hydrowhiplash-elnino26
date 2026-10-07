@@ -65,7 +65,10 @@ def test_snow_soil_table_left_join_raises_on_a_year_without_enso():
     winters = pd.DataFrame({"year": [1951, 1952], "winter": ["1950-1951", "1951-1952"],
                             "enso_index": "RONI", "enso_djf": 0.0, "phase": "neutral",
                             "strong": False})
-    with pytest.raises(ValueError, match=r"year\(s\) \[1953\]"):
-        snow_soil.snow_soil_table(regional, winters)
+    gap = winters.assign(year=[1951, 1953], winter=["1950-1951", "1952-1953"])
+    with pytest.raises(ValueError, match=r"year\(s\) \[1952\]"):  # a gap inside the record
+        snow_soil.snow_soil_table(regional, gap)
+    pending = snow_soil.snow_soil_table(regional, winters)  # 1953 not yet published
+    assert pending.loc[pending["year"] == 1953, "phase"].isna().all()
     table = snow_soil.snow_soil_table(regional.sel(year=[1950, 1951, 1952]), winters)
     assert list(table["year"]) == [1951, 1952]              # 1950 precedes the first winter

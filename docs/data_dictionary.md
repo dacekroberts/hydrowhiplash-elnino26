@@ -235,7 +235,7 @@ Alberta. Point measurements and ERA5-Land's 9 km cells measure different
 things, so expect level differences between them.
 
 **What "April 1" means in each raw file** (downloaded 2026-10-05, raw and
-unfiltered under `data/raw/stations/`; cleaning not yet built):
+unfiltered under `data/raw/stations/`; cleaned by `src.stations`, below):
 - NRCS SNOTEL (`MONTHLY`, period reference START): month 4 is the midnight
   reading opening 1 April (the daily value dated 31 March).
 - NRCS snow courses (`SEMIMONTHLY`, START): the April 1 survey is month 4,
@@ -305,12 +305,26 @@ stations and grid in mm is meaningless; compare % or z.
 
 - **Measures:** how much water the air could draw from a fully wet
   surface: the atmosphere's demand for water.
-- **Method:** Thornthwaite (xclim `TW48`), from monthly mean temperature
-  and latitude (day length) only. Zero in months at or below 0 °C, so in
-  cold winters the water balance is precipitation alone. Simple, but temperature-only PET
-  tends to overstate drying as temperatures rise. Penman-Monteith (humidity,
-  radiation, wind) would need extra ERA5-Land variables.
-- **Units:** mm/day in `src.whiplash` (xclim works in rates).
+- **Method:** Thornthwaite (1948), from monthly mean temperature and
+  latitude (day length) only: PET = 16 (L/12) (N/30) (10 T / I)^a mm per
+  month, T the month's mean temperature (clipped at 0, so PET is 0 at or
+  below 0 °C and cold winters' water balance is precipitation alone), L the
+  mean day length in hours, N the days in the month, I the cell's **heat
+  index** (how warm its climate is, from the 12 monthly normals: the sum of
+  (Tm/5)^1.514 over 1951-2020 monthly means) and a a cubic in I. Simple, but
+  temperature-only PET tends to overstate drying as temperatures rise.
+  Penman-Monteith (humidity, radiation, wind) would need extra ERA5-Land
+  variables.
+- **Units:** mm/day in `src.whiplash`.
+- **Trap (fixed 2026-10-06):** xclim's TW48, followed until then, recomputes
+  I from each calendar year. In an incomplete year (2026 to July) I is about
+  half-size, so PET came out 1.5-2.1 times too high in January-April and
+  SoCal's DJF 2026 SPEI-3 about 1 SD too dry; the 2027 forecast input
+  (Jan-Feb only) would have been worse. In a year with no month above 0 °C,
+  I = 0 and PET was 0/0 = NaN for the whole year (the icefield cells with no
+  February SPEI). A per-year I also damps PET's response to warming, and
+  xclim leaves out N/30. Now I is climatological, N/30 is in, and a cell
+  whose normal never thaws has PET 0 (pre-freeze audits; D47).
 - **Trap (fixed 2026-10-05):** day length is undefined in polar day and
   night, and xclim's TW48 returns NaN there, so north of about 68N every
   DJF and JJA SPEI-3 was missing and regional means silently skipped
@@ -416,7 +430,7 @@ attributes such as fire name, year, type and start date.
   June-October; BC and Alberta April-October; Alaska and Yukon
   April-September; NorCal and SoCal June to January of the next year (a
   January Y+1 fire counts for season Y), by ignition date
-  (`FIRE_SEASON_MONTHS`; California and BC windows are pre-freeze items).
+  (`FIRE_SEASON_MONTHS`; decided 2026-10-05, D43).
 
 **Derived fire columns.**
 - Burned area per region per season: sum of counted fires' clipped area, ha.
@@ -486,7 +500,9 @@ attributes such as fire name, year, type and start date.
   lenient; a result passing BH but not Holm reads as suggestive.
 - **t critical values (`use_t`):** with about 42 seasons, confidence
   intervals and p-values use the t distribution (n minus parameters
-  degrees of freedom) rather than the normal, a little wider.
+  degrees of freedom; for the Driscoll-Kraay H4 fit, number of years minus
+  1, set explicitly because statsmodels counts it from row order) rather
+  than the normal, a little wider.
 - **Driscoll-Kraay errors:** standard errors for the pooled H4 model that
   allow regions in the same year to be correlated and each region to be
   correlated with itself over nearby years (statsmodels `hac-groupsum`,

@@ -147,3 +147,41 @@ def test_stats_defaults_come_from_config():
     sig = inspect.signature(stats.permutation_test)
     assert sig.parameters["n_perm"].default == config.N_PERMUTATIONS
     assert inspect.signature(stats.block_bootstrap_ci).parameters["n_boot"].default == config.N_BOOTSTRAP
+
+
+def test_permutation_and_bootstrap_refuse_missing_values():
+    values = np.array([1.0, 2.0, np.nan, 4.0])
+    group = np.array([True, False, True, False])
+    with pytest.raises(ValueError, match="missing"):
+        stats.permutation_test(values, group, n_perm=50)
+    with pytest.raises(ValueError, match="missing"):
+        stats.bootstrap_ci_diff(values, group, n_boot=50)
+
+
+def test_adjust_pvalues_refuses_missing_values():
+    with pytest.raises(ValueError, match="missing"):
+        stats.adjust_pvalues([0.01, np.nan, 0.04])
+
+
+def test_hac_fit_needs_consecutive_sorted_years(synthetic):
+    formula = "log_burn ~ enso_djf + year"
+    with pytest.raises(ValueError, match="consecutive"):
+        stats.fit_ols_hac(formula, synthetic.sample(frac=1, random_state=1))
+    with pytest.raises(ValueError, match="consecutive"):
+        stats.fit_ols_hac(formula, synthetic.drop(index=10))
+    gap = synthetic.copy()
+    gap.loc[10, "log_burn"] = np.nan  # a missing outcome leaves a gap too
+    with pytest.raises(ValueError, match="consecutive"):
+        stats.fit_ols_hac(formula, gap)
+    stats.fit_ols_hac(formula, synthetic.iloc[5:30])  # a contiguous run is fine
+
+
+def test_pooled_fit_accepts_repeated_index_labels():
+    rng = np.random.default_rng(6)
+    frames = [pd.DataFrame({"year": YEARS, "region": r, "enso_djf": rng.normal(0, 1, N),
+                            "log_burn": rng.normal(0, 1, N)}) for r in ["SoCal", "PNW"]]
+    formula = "log_burn ~ enso_djf * C(region, Treatment('SoCal'))"
+    repeated = stats.fit_pooled(formula, pd.concat(frames))  # index 0..41 twice
+    clean = stats.fit_pooled(formula, pd.concat(frames, ignore_index=True))
+    assert np.allclose(repeated.params, clean.params)
+    assert np.allclose(repeated.bse, clean.bse)

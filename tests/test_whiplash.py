@@ -47,16 +47,45 @@ def test_thornthwaite_has_values_in_polar_day_and_night():
     assert (december == 0).all()
 
 
-def test_thornthwaite_matches_xclim_south_of_the_polar_circle():
-    from xclim.core.units import convert_units_to
-    from xclim.indices import potential_evapotranspiration
+def test_thornthwaite_matches_the_1948_formula_with_a_climatological_heat_index():
+    # Hand computation: I from the 1951-1952 monthly means, then
+    # PET = 16 (L/12) (N/30) (10 T / I)^a mm/month, divided by N.
+    from xclim.indices.helpers import day_lengths
 
-    t = grid(seasonal_temperature(), lat=(45.0, 60.0))
-    tas = t.rename({TIME: "time"}).assign_attrs(units="degC")
-    ref = potential_evapotranspiration(tas=tas, lat=tas[LAT].assign_attrs(units="degrees_north"),
-                                       method="TW48")
-    ref = convert_units_to(ref, "mm/d", context="hydro").rename({"time": TIME})
-    assert np.allclose(whiplash.pet_thornthwaite(t), ref, atol=1e-12)
+    t = grid(seasonal_temperature(), lat=(45.0,))
+    pet = whiplash.pet_thornthwaite(t, normal_years=(1951, 1952)).squeeze()
+    temps = seasonal_temperature()
+    normal = np.clip(temps[12:].reshape(2, 12).mean(axis=0), 0, None)
+    heat = ((normal / 5) ** 1.514).sum()
+    a = 6.75e-7 * heat**3 - 7.71e-5 * heat**2 + 0.01791 * heat + 0.49239
+    july = pd.Timestamp("1951-07-01")
+    days = xr.DataArray(pd.date_range("1951-07-01", "1951-07-31"), dims="time", name="time")
+    hours = float(day_lengths(days, xr.DataArray(45.0, attrs={"units": "degrees_north"})).mean())
+    expected_month = 16 * (hours / 12) * (31 / 30) * (10 * temps[18] / heat) ** a
+    assert float(pet.sel({TIME: july})) == pytest.approx(expected_month / 31, rel=1e-9)
+
+
+def test_thornthwaite_month_does_not_change_when_later_months_are_missing():
+    # The heat index comes from the normal period, not the calendar year, so an
+    # incomplete final year gets the same PET as a complete one (2026 audit).
+    full = grid(seasonal_temperature(4), lat=(45.0,))
+    partial = full.isel({TIME: slice(0, 12 * 3 + 2)})  # last year Jan-Feb only
+    a = whiplash.pet_thornthwaite(full).isel({TIME: slice(0, 12 * 3 + 2)})
+    b = whiplash.pet_thornthwaite(partial)
+    np.testing.assert_allclose(a.values, b.values, rtol=1e-12)
+
+
+def test_thornthwaite_is_zero_not_nan_where_the_normal_never_thaws():
+    t = grid(np.full(36, -5.0), lat=(62.0,))
+    t[18] = 3.0  # one warm month in a year of an always-frozen normal
+    pet = whiplash.pet_thornthwaite(t).squeeze()
+    assert pet.notnull().all() and (pet == 0).all()
+
+
+def test_thornthwaite_needs_every_month_of_the_normal_period():
+    t = grid(seasonal_temperature(), lat=(45.0,))
+    with pytest.raises(ValueError, match="every calendar month"):
+        whiplash.pet_thornthwaite(t, normal_years=(1990, 2000))
 
 
 def test_water_balance_converts_precip_back_to_mm_per_day():
@@ -178,7 +207,10 @@ def test_whiplash_table_raises_on_a_year_without_enso():
     winters = pd.DataFrame({"year": [1951, 1952], "winter": ["1950-1951", "1951-1952"],
                             "enso_index": "RONI", "enso_djf": 0.0, "phase": "neutral",
                             "strong": False})
-    with pytest.raises(ValueError, match=r"year\(s\) \[1953\]"):
-        whiplash.whiplash_table(regional, winters)
+    gap = winters.assign(year=[1951, 1953], winter=["1950-1951", "1952-1953"])
+    with pytest.raises(ValueError, match=r"year\(s\) \[1952\]"):  # a gap inside the record
+        whiplash.whiplash_table(regional, gap)
+    pending = whiplash.whiplash_table(regional, winters)  # 1953 not yet published
+    assert pending.loc[pending["year"] == 1953, "enso_djf"].isna().all()
     table = whiplash.whiplash_table(regional.sel(year=[1951, 1952]), winters)
     assert list(table.columns).count("enso_index") == 1 and len(table) == 2

@@ -55,7 +55,7 @@ def parse(path: Path) -> pd.DataFrame:
     return df.rename(columns={"seas": "season", "yr": "year"})
 
 
-def classify_winters(index: pd.DataFrame, name: str = ENSO_INDEX) -> pd.DataFrame:
+def classify_winters(index: pd.DataFrame, name: str) -> pd.DataFrame:
     """One row per winter, every phase kept, so all years stay analysable.
     `name` is the index the values come from, written to `enso_index` like
     every other table's ENSO columns."""
@@ -79,7 +79,7 @@ def main() -> None:
     index = parse(download())
     index.to_csv(DATA_PROCESSED / "enso_index.csv", index=False, lineterminator="\n")
 
-    winters = classify_winters(index)
+    winters = classify_winters(index, ENSO_INDEX)
     winters.to_csv(DATA_PROCESSED / "el_nino_winters.csv", index=False, lineterminator="\n")
 
     nino = winters[winters["phase"] == "el_nino"]

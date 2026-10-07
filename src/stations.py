@@ -18,6 +18,9 @@ rules"; measured effects in docs/methods_register.md.
                     sample nearest 1 April inside the window
   combine()         provincial files win over CanSWE for the same station-year
   assign_regions()  point in polygon; Yukon network sites outside Yukon dropped
+  dedupe_sites()    one site filed under two IDs (another network or a renamed
+                    course) counted once: the lower-priority copy's shared
+                    years are dropped
   station_index()   region x year: median % of each station's normal and mean
                     standardised anomaly, normals over STATION_NORMAL_YEARS
   compare_era5()    the index beside ERA5-Land April 1 SWE on the same scales
@@ -53,7 +56,9 @@ from src.config import (BC_DROP_CODES, BC_SNOW_RAW, CANSWE_FILES, CANSWE_PILLOW_
                         NRCS_SNOW_RAW, REGIONS, RESULTS, STATION_INDEX_TABLE,
                         STATION_MIN_PER_REGION_YEAR, STATION_NORMAL_MIN_YEARS,
                         STATION_NORMAL_YEARS, STATION_PCT_MIN_NORMAL_MM, STATION_TABLE,
-                        STATION_WINDOW_DAYS, YUKON_NETWORK_REGION, YUKON_SNOW_RAW)
+                        SITE_DUP_MAX_KM, SITE_DUP_MIN_SHARE, SITE_DUP_MIN_YEARS,
+                        SITE_DUP_TOL_MM, SITE_SOURCE_PRIORITY, STATION_WINDOW_DAYS,
+                        YUKON_NETWORK_REGION, YUKON_SNOW_RAW)
 
 COLUMNS = ["station_id", "source", "network", "method", "lat", "lon", "elevation",
            "year", "swe_apr1_mm", "sample_date", "flags"]
@@ -197,7 +202,8 @@ def clean_bc(raw: pd.DataFrame, coords: pd.DataFrame) -> tuple[pd.DataFrame, dic
     n = len(df)
     df = df[~df["code"].isin(BC_DROP_CODES)]
     counts["estimate codes"] = n - len(df)
-    df["sample_date"] = pd.to_datetime(df["Date of Survey"], format="%Y/%m/%d")
+    df["sample_date"] = pd.to_datetime(df["Date of Survey"], format="%Y/%m/%d",
+                                       errors="coerce")  # malformed: counted as missing
     df = drop_missing_dates(df, "sample_date", counts)
     df["year"] = df["sample_date"].dt.year
     df["station_id"] = "BCE-" + df["Number"].astype(str).str.strip()
@@ -325,6 +331,55 @@ def assign_regions(table: pd.DataFrame, regions: gpd.GeoDataFrame) -> tuple[pd.D
     return out.reset_index(drop=True), counts
 
 
+def dedupe_sites(table: pd.DataFrame, max_km: float = SITE_DUP_MAX_KM,
+                 tol_mm: float = SITE_DUP_TOL_MM, min_share: float = SITE_DUP_MIN_SHARE,
+                 min_years: int = SITE_DUP_MIN_YEARS) -> tuple[pd.DataFrame, dict]:
+    """Count a site once when two station IDs hold the same record.
+
+    Two stations are one site when they lie within `max_km` (geodesic
+    distance on the WGS84 ellipsoid) and, over at least `min_years` shared
+    years, at least `min_share` of their April 1 values agree within
+    `tol_mm`. The lower-priority copy loses its shared years and keeps the
+    rest. Priority: SITE_SOURCE_PRIORITY (NRCS for US sites, the provincial
+    file for Canadian ones, CanSWE last), then more values, then station_id.
+    Found by the pre-freeze audits (2026-10-06): e.g. NRCS 19A01:WA:SNOW and
+    BC's BCE-WA07 (51 identical years), Yukon 09BA-SC02 and SC02A.
+    """
+    from pyproj import Geod
+
+    sites = (table.groupby("station_id")
+             .agg(source=("source", "first"), lat=("lat", "first"), lon=("lon", "first"),
+                  n=("year", "size")).reset_index())
+    rank = sites["source"].map(SITE_SOURCE_PRIORITY).fillna(len(SITE_SOURCE_PRIORITY))
+    sites = sites.assign(rank=rank).sort_values(["rank", "n", "station_id"],
+                                                ascending=[True, False, True])
+    sites = sites.reset_index(drop=True)
+    # Coarse degree box first, then the geodesic distance for the candidates.
+    lat, lon = sites["lat"].to_numpy(), sites["lon"].to_numpy()
+    lat_box = max_km / 100           # degrees; 1 degree of latitude is about 111 km
+    lon_box = max_km / (111 * 0.30)  # 1 degree of longitude is over 33 km south of 72N
+    i, j = np.nonzero(np.triu((np.abs(lat[:, None] - lat[None, :]) < lat_box)
+                              & (np.abs(lon[:, None] - lon[None, :]) < lon_box), k=1))
+    _, _, dist_m = Geod(ellps="WGS84").inv(lon[i], lat[i], lon[j], lat[j])
+    near = dist_m <= max_km * 1000
+    values = table.pivot_table(index="year", columns="station_id", values="swe_apr1_mm")
+    drop, pairs = set(), []
+    for a, b in zip(i[near], j[near]):  # a ranks above b (sites is sorted)
+        keep_id, lose_id = sites.at[a, "station_id"], sites.at[b, "station_id"]
+        both = values[[keep_id, lose_id]].dropna()
+        if len(both) < min_years:
+            continue
+        if ((both[keep_id] - both[lose_id]).abs() <= tol_mm).mean() >= min_share:
+            drop.update((lose_id, int(y)) for y in both.index)
+            pairs.append((keep_id, lose_id))
+    key = pd.MultiIndex.from_frame(table[["station_id", "year"]].astype({"year": int}))
+    lost = key.isin(list(drop))
+    out = table[~lost].reset_index(drop=True)
+    counts = {"duplicate site pairs": len(pairs), "rows dropped": int(lost.sum()),
+              "rows dropped by region": table.loc[lost, "region"].value_counts().to_dict()}
+    return out, counts
+
+
 # ---------------------------------------------------------------- regional index
 
 def station_normals(table: pd.DataFrame, years: tuple[int, int] = STATION_NORMAL_YEARS,
@@ -371,6 +426,15 @@ def anomalies(values: pd.Series, years: pd.Series,
     return 100 * values / inside.mean(), (values - inside.mean()) / inside.std(ddof=1)
 
 
+def swe_normal_ok(swe_mm: pd.Series, years: pd.Series,
+                  min_normal_mm: float = ERA5_SWE_MIN_NORMAL_MM) -> bool:
+    """True when a region's April 1 SWE normal (mean over STATION_NORMAL_YEARS)
+    is at least `min_normal_mm`; below it (SoCal, 0.06 mm) % and z are not
+    meaningful. One rule for compare_era5 and src.phase2_figures."""
+    normal = swe_mm[years.between(*STATION_NORMAL_YEARS)].mean()
+    return bool(normal >= min_normal_mm)  # False for a NaN normal
+
+
 def compare_era5(index: pd.DataFrame, era5: pd.DataFrame) -> pd.DataFrame:
     """Region x year: the station index next to ERA5-Land April 1 SWE (glacier
     cells excluded) on the same scales, plus the ENSO columns from `era5`."""
@@ -378,8 +442,7 @@ def compare_era5(index: pd.DataFrame, era5: pd.DataFrame) -> pd.DataFrame:
     parts = []
     for region, g in era5.groupby("region", sort=False):
         pct, z = anomalies(g["swe_apr1_mm"], g["year"])
-        normal = g.loc[g["year"].between(*STATION_NORMAL_YEARS), "swe_apr1_mm"].mean()
-        if not normal >= ERA5_SWE_MIN_NORMAL_MM:  # also catches a NaN normal
+        if not swe_normal_ok(g["swe_apr1_mm"], g["year"]):
             pct, z = pct * np.nan, z * np.nan
         parts.append(g.assign(era5_swe_pct=pct, era5_swe_z=z))
     era5 = pd.concat(parts)
@@ -433,6 +496,8 @@ def effects_by_group(table: pd.DataFrame, normals: pd.DataFrame, enso: pd.DataFr
     rows = []
     for region, d in df.groupby("region", sort=False):
         site = d.drop_duplicates("station_id").set_index("station_id")[column].dropna()
+        if site.empty:
+            continue
         labels = pd.qcut(site, groups, labels=False, duplicates="drop")
         for k in sorted(labels.unique()):
             ids = labels.index[labels == k]
@@ -462,6 +527,7 @@ def build() -> tuple[pd.DataFrame, dict]:
     table, report["combine"] = combine(pd.concat([nrcs, bc, yt], ignore_index=True), canswe)
     table = table[table["year"] >= CLIMATE_FIRST_YEAR]
     table, report["regions"] = assign_regions(table, load_regions())
+    table, report["duplicate sites"] = dedupe_sites(table)
     return table, report
 
 

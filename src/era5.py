@@ -207,10 +207,12 @@ def join_enso(table: pd.DataFrame, winters: pd.DataFrame,
     strong) on `year`.
 
     Years before the first ENSO winter are dropped: ERA5-Land starts in
-    January 1950, so the first complete winter is 1950-51. Any later year
-    without an ENSO value raises instead of vanishing (an inner join drops it
-    silently). `winters` may carry its own `enso_index` column; it must name
-    `index`, and the table gets exactly one such column.
+    January 1950, so the first complete winter is 1950-51. Years after the
+    last published winter (the coming winter before CPC posts its DJF value,
+    during the live tracker) are kept with empty ENSO columns. A missing year
+    in between raises instead of vanishing (an inner join drops it silently).
+    `winters` may carry its own `enso_index` column; it must name `index`,
+    and the table gets exactly one such column.
     """
     if "enso_index" in winters and not (winters["enso_index"] == index).all():
         found = sorted(winters["enso_index"].astype(str).unique())
@@ -218,7 +220,8 @@ def join_enso(table: pd.DataFrame, winters: pd.DataFrame,
     winters = winters.drop(columns="enso_index", errors="ignore")
     table = table[table["year"] >= winters["year"].min()]
     out = table.merge(winters, on="year", how="left", validate="many_to_one")
-    missing = sorted(int(y) for y in out.loc[out["enso_djf"].isna(), "year"].unique())
+    gap = out["enso_djf"].isna() & (out["year"] <= winters["year"].max())
+    missing = sorted(int(y) for y in out.loc[gap, "year"].unique())
     if missing:
         raise ValueError(f"No {index} DJF value for year(s) {missing}; re-run "
                          f"python -m src.download_oni.")

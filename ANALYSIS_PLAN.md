@@ -114,6 +114,13 @@ decisions.
       likelihood, Thornthwaite (1948) PET, scale 3, per-cell SPEI clipped at
       ±3.09, regional means of per-cell SPEI re-standardised over the
       calibration period (`DECISIONS.md` 2026-10-04 "SPEI settings").
+      *Revised 2026-10-06 (pre-freeze audits; D47):* PET is Thornthwaite
+      (1948) as published: the heat index comes from each cell's 1951-2020
+      monthly mean temperatures (not from each calendar year, as in xclim's
+      TW48, which inflated PET in the incomplete current year), the N/30
+      month-length factor is included, PET is 0 at or below 0 °C, and polar
+      day lengths are 24 h and 0 h. Glacier and perennial-snow cells (the SWE
+      glacier mask) are left out of SPEI, as of the SWE means.
 - [x] **SWE source and definition.** Station surveys, ERA5-Land `sd`, or
       both (one as a check on the other); how April 1 is approximated from
       monthly means; glacier cells excluded (ERA5-Land caps them at 10 m).
@@ -323,6 +330,45 @@ Outside the headline results; C1 and C2 are each a Holm family of 3 tests.
   **two-sided** (about 14 El Niño seasons give little power).
 - Early versus late halves of the record are shown as a figure only, not
   tested.
+
+## Execution details (decided 2026-10-06, before the freeze)
+
+Closing the choices the pre-freeze audits found open (`DECISIONS.md`
+2026-10-06 "Plan gaps closed"):
+
+- **Years.** Fire tests use fire seasons 1984 to 2025 (`FIRE_LAST_YEAR`);
+  2026 is described only (CNFDB 2026 not yet published, WFIGS provisional,
+  California's 2026 season closes in February 2027). 2027
+  (`FORECAST_YEAR`) is never used in training. Climate tests use winters
+  1951-2026. Expanding-window validation predicts 2004-2025 (22 seasons).
+- **One-sided tests.** The p-value is the one tail in the stated direction:
+  for permutation tests the share of permuted differences at least as large
+  in that direction; for regressions the one-tailed t probability for the
+  coefficient's sign. Confidence intervals are always two-sided 95%.
+- **H4's registered model** is the one without `temp_jja` (the total effect,
+  as H3a); the model with `temp_jja` is secondary. The joint Wald test of
+  the four interaction terms uses the same Driscoll-Kraay errors and df.
+- **The 2027 forecast** comes from the H3a model, for all seven regions,
+  with 80% intervals; forecasts from the single-predictor H6 models are
+  secondary. The RONI input is the DJF 2027 value in CPC's first release
+  after February 2027, with its retrieval date recorded; later revisions
+  are reported, not substituted.
+- **H3a minus H3b gap:** 95% CI from a moving-block bootstrap (blocks of 3
+  years, 10,000 draws) of the difference in the `enso_djf` coefficients.
+- **Block bootstrap check:** on the `enso_djf` coefficients of H3a and H3b.
+- **Zero-fire sensitivity:** covers every burned-area test (H2, H3a, H3b,
+  H4, H5, H6, C2); `burn_detr` is re-detrended without the zero years.
+- **HAC series** must be contiguous runs of years (fire tests 1984-2025).
+  The station-z checks use each region's contiguous station record (AK from
+  1960, AB 1963-2025, YT from 1975).
+- **Station index minimum:** 5 stations per region-year, frozen (no later
+  widening for AB or YT).
+- **Built variables:** `temp_jja` is the June-August mean 2 m temperature,
+  `temp_mam` the March-May mean, both regional means via
+  `src.geo.regional_mean`; z-scores use the SD with ddof = 1.
+- **Strong-only results** (exploratory) compare strong El Niño winters with
+  all other years. The near-threshold band is applied after rounding the
+  distance to the index's 2 published decimals.
 
 ## Reporting rules
 

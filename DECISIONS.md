@@ -17,6 +17,124 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-06 - PET heat index
+
+- **Decided (owner) to compute Thornthwaite PET as Thornthwaite (1948)
+  defined it: a climatological heat index per cell from its 1951-2020
+  monthly mean temperatures, the N/30 month-length factor, PET 0 at or below
+  0 °C** (`pet_thornthwaite`, `PET_HEAT_INDEX_YEARS`; D47). Supersedes the
+  PET part of 2026-10-04 "SPEI settings" (xclim TW48). xclim recomputes the
+  index from each calendar year: in the incomplete 2026 it was about half
+  size and PET 1.5-2.1 times too high in January-April; the 2027 forecast
+  input (January-February only) would have been worse; years with no month
+  above 0 °C gave 0/0 = NaN (the 46 icefield cells with no February value,
+  22 AK and 24 YT); and a per-year index damps PET's warming response
+  (independent audit: JJA sensitivity 0.14 vs 0.22 mm/day per °C). Found by
+  the re-audit and the independent audit, missed by the first audit.
+  Rejected the climatological index without N/30 and complete-year indices.
+- **Decided (owner) to leave glacier cells out of SPEI**, as out of the SWE
+  means (`GLACIER_SPEI_EXCLUDED`): main 33,867 and north 33,850 fitted cells.
+- **Measured (full refit, 2026-10-06):** correlation with the old regional
+  series over 1951-2025, DJF SPEI-3 0.992 (SoCal) to 1.000, JJA 0.947 (AK)
+  to 0.998, whiplash 0.973 to 0.998. El Niño minus neutral: DJF within 0.04
+  of before (SoCal +0.93 to +0.89); JJA smaller by 0.01-0.08 (PNW +0.21 to
+  +0.18, BC +0.41 to +0.33, AB +0.48 to +0.44, AK -0.11 to -0.18); whiplash
+  PNW +0.63 to +0.60, BC +0.96 to +0.89, AB +1.08 to +1.03, SoCal -0.99 to
+  -0.96. DJF 2026: SoCal -1.37 to -0.72, NorCal -0.02 to +0.17, PNW -0.32
+  to -0.26. Calibration mean -0.007 and -0.008, SD 0.985 in both domains; no
+  fitted cell lacks a February value. SoCal's 2025-26 winter was 3.0 °C
+  above its 1951-2020 DJF mean (12.6 vs 9.6 °C), so its DJF 2026 SPEI ranks
+  58 of 76 though its precipitation ranks 20, with 9.9% of cells at the
+  clip (0% in 2015 and 1998): real warmth, amplified by Thornthwaite's
+  temperature sensitivity, a known limitation to state with the 2027
+  forecast input. Station index after the dedupe: YT z changed by at most
+  0.070, PNW 0.016, others unchanged.
+
+### 2026-10-06 - Plan gaps closed
+
+- **Decided (owner) on the execution details the audits found open, as one
+  package** (`ANALYSIS_PLAN.md` "Execution details"): fire tests on seasons
+  1984-2025 (`FIRE_LAST_YEAR`; CNFDB 2026 not out in time, WFIGS 2026
+  provisional, California's 2026 season closes February 2027), 2027
+  (`FORECAST_YEAR`) never in training, expanding-window predictions
+  2004-2025 (22, correcting "about 23" in "Inference"); one-sided p = the
+  tail in the stated direction, CIs always two-sided 95%; H4's registered
+  model without `temp_jja`, its joint Wald test with the same Driscoll-Kraay
+  errors; the 2027 forecast from H3a for all seven regions, H6
+  single-predictor forecasts secondary, RONI input from CPC's first release
+  after February 2027 with the retrieval date, revisions reported; the H3a
+  minus H3b gap CI by moving-block bootstrap (3 years, 10,000 draws); the
+  block bootstrap checks the `enso_djf` coefficients of H3a and H3b;
+  zero-year sensitivity over every burned-area test with `burn_detr`
+  re-detrended; station minimum frozen at 5 (no widening for AB or YT);
+  `temp_jja`, `temp_mam` via `src.geo.regional_mean`, z-scores with ddof 1;
+  strong-only runs against all other years. Rejected going through each
+  item separately (owner's choice). Sources: the plan-versus-config re-audit
+  and the independent audit (`docs/audit_2026-10-06_climate.md` s.3).
+- **Decided (owner): HAC fits use contiguous runs of years only**, and
+  `stats.fit_ols_hac` raises otherwise. The fire tests are contiguous
+  (1984-2025); station-z checks use each region's contiguous record (AK
+  1960+, AB 1963-2025, YT 1975+). Rejected allowing gaps (HAC would treat
+  the years either side of a gap as neighbours).
+- **Fixed the near-threshold band comparison**: distances to 1.5 are rounded
+  to the index's 2 published decimals before comparing (`ENSO_DECIMALS`);
+  abs(1.44 - 1.5) is 0.06000000000000005, so 2009-10 would have dropped out
+  of the band the plan names (independent audit F7). The earlier config test
+  had hidden this with a `+1e-9` tolerance; it now checks the rounded rule.
+
+### 2026-10-06 - Duplicate station sites
+
+- **Decided (owner) to count one site once when two station IDs hold the
+  same record:** within 3 km (geodesic, WGS84) and at least 80% of at least
+  3 shared years within 2.6 mm (0.1 inch); the lower-priority copy (NRCS,
+  then provincial files, then CanSWE; then more values) loses its shared
+  years and keeps the rest (`src.stations.dedupe_sites`). Dry run on the
+  current table: 24 pairs, 576 station-years dropped (PNW 419, YT 123, AK
+  34), 71,759 to 71,183 rows; e.g. NRCS 19A01:WA:SNOW and BC's BCE-WA07 (51
+  identical years), Yukon 09BA-SC02 and SC02A. Rejected the narrower rule
+  first chosen (same coordinates within about 100 m, identical values):
+  the independent audit showed most duplicates sit across networks with
+  slightly different coordinates. Affects only the station index (the
+  robustness check). `SITE_DUP_*`, `SITE_SOURCE_PRIORITY`.
+
+### 2026-10-06 - stats.py guards
+
+- **Fixed (owner's choice, before Phase 4) four latent faults the
+  independent audit found:** `permutation_test` returned the smallest
+  possible p (1/(n + 1)) for a NaN difference, now raises on a missing value
+  (as `bootstrap_ci_diff` and `adjust_pvalues`, where a NaN counted in the
+  Holm family size); `fit_ols_hac` depended on row order (an SE moved from
+  0.320 to 0.290 when rows were shuffled) and treated gaps as adjacent, now
+  raises unless the rows used are consecutive years in order; `fit_pooled`
+  broke on repeated index labels from `pd.concat`, now resets the index.
+  Rejected leaving them to Phase 4. Tests added.
+
+### 2026-10-06 - PR #20 review fixes
+
+- **Fixed the six review findings on PR #20 in the main session**, after
+  merging it (owner's choice): `join_enso` keeps years after the last
+  published ENSO winter with empty ENSO columns (a missing year inside the
+  record still raises), so a monthly tracker run before CPC posts DJF 2027
+  doesn't stop; `classify_winters` needs the index name (no default that
+  could label ONI values RONI); `effects_by_group` skips a region with no
+  elevations; malformed BC survey dates are counted as missing, not fatal;
+  one SWE-normal rule (`stations.swe_normal_ok`) for `compare_era5` and the
+  figures; notebooks 02 and 03 call `src.phase2_figures`, one generator per
+  figure. Rejected sending them back to the side session.
+
+### 2026-10-06 - Independent audit and re-audits
+
+- **Ran two re-audits from the main session and an independent audit in a
+  separate session with a neutral prompt (owner's choice, for less bias),
+  then compared.** Reports: `docs/audit_2026-10-06_climate.md` (independent,
+  commit bfbc802) and the follow-up section of
+  `docs/audit_2026-10-05_phase2.md`. All three agreed on the high finding
+  (the per-year heat index); only the independent audit found the damped
+  warming response, the float band fault and the `stats.py` NaN p-value;
+  the first audit had missed the heat index and the duplicates. Its claim
+  that the 46 cells were all in AK was wrong (22 AK, 24 YT); their cause is
+  the 0/0 heat index.
+
 ### 2026-10-06 - Phase 2 audit fixes (side session)
 
 - **Fixed the low-severity code findings of the pre-freeze audit in a side

@@ -41,9 +41,12 @@ def test_fire_windows_open_after_the_winter_predictors_close():
 
 
 def test_strong_sensitivity_band_catches_the_near_threshold_winters():
-    for value in (1.53, 1.46, 1.44):
-        assert abs(value - config.STRONG_THRESHOLD) <= config.STRONG_SENSITIVITY_BAND + 1e-9
-    assert abs(1.69 - config.STRONG_THRESHOLD) > config.STRONG_SENSITIVITY_BAND
+    # Compared after rounding to the index's published decimals; the bare float
+    # difference for 1.44 is 0.06000000000000005 (independent audit F7).
+    def in_band(value):
+        return round(abs(value - config.STRONG_THRESHOLD), config.ENSO_DECIMALS)             <= config.STRONG_SENSITIVITY_BAND
+    assert all(in_band(v) for v in (1.53, 1.46, 1.44))
+    assert not in_band(1.69) and not in_band(1.43)
 
 
 def test_correction_families_hold_only_tested_cells_and_match_the_plan_sizes():
