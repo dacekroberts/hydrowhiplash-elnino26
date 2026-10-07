@@ -27,6 +27,27 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (gate)
 
+### D55 · ERA5-Land monthly means arrive within a week; supersedes D54
+- **Plan:** D54 (this date) said ERA5-Land monthly means run about 3
+  months behind, citing a "measured" lag, and held the tracker's arrival
+  dates; `src/config.py` `ERA5_LAG_MONTHS` = 3 (pre-start review,
+  2026-10-04); the methods register's "data ends 2026-07".
+- **Actual:** a CDS probe on 2026-10-07 (one cell, 2 m temperature) found
+  July, August and September 2026 monthly means published. The 3 months
+  were a download margin set in the pre-start review, not a measurement;
+  the July end of the data came from the setting. PR #19's assumption (by
+  the 6th of the next month) holds; `TRACKER_DATA_DAY` is set to 7, the day
+  observed. D54's premise was wrong.
+- **Why:** D54 took a setting for a measurement without checking.
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Tracker data arrival measured".
+- **Substantial:** yes (owner, 2026-10-07): a hard-line item for the first
+  tracker update.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, first row (2026-10-07):
+  `ERA5_LAG_MONTHS` 3 to 1 at the first tracker update (early November
+  2026), decided before any fire data, no registered test changed;
+  `ACTION_PLAN.md` Phase 5, hard-line item marked `[mid-project: D55]`.
+  D54 is left as written; `ACTION_PLAN.md`'s "early November" stands.
+
 ### D54 · Tracker data arrival: monthly means run about 3 months behind
 - **Plan:** `ACTION_PLAN.md` "Second goal" (D44, D46): October's data
   "arrives in early November", with the first countdown to it; PR #19's

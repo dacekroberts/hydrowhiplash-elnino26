@@ -85,3 +85,7 @@ def test_tracker_window_spans_the_h5_months_and_april_1():
     assert (start.month, start.day) == (config.PRECIP_ANOM_MONTHS[0], 1)
     assert start.year == config.FORECAST_YEAR - 1 and end == date(config.FORECAST_YEAR, 4, 30)
     assert date.fromisoformat(config.TRACKER_FREEZE_DATE) < end
+
+
+def test_tracker_data_day_is_a_day_of_every_month():
+    assert 1 <= config.TRACKER_DATA_DAY <= 28

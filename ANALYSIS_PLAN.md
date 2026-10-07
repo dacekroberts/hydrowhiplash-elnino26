@@ -449,4 +449,4 @@ regions and sidedness from `docs/audit_2026-10-07_fixreview2.md`;
 
 | Date | Change | Reason |
 |---|---|---|
-| | | |
+| 2026-10-07 | Decided, applied at the first tracker update (early November 2026): `ERA5_LAG_MONTHS` 3 to 1, so the ERA5-Land downloads include every published month; the per-cell SPEI is refit then. No registered test changes: fire tests end with the 2025 season, climate tests use DJF through 2026, the SPEI calibration stays 1951-2020; only 2026's summer values (descriptive) fill in. Decided before any fire data was downloaded or opened. (D55) | A CDS probe on 2026-10-07 found September 2026 monthly means already published; the 3-month setting from the pre-start review was a margin, not a measurement, and leaves published months out. |

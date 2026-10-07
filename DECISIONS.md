@@ -17,6 +17,29 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Tracker data arrival measured
+
+- **Probed CDS for ERA5-Land monthly means (owner's go-ahead)**: one cell,
+  2 m temperature, July, August and September 2026, all published on
+  2026-10-07 (41-54 s per request; probe files in the session scratchpad,
+  not kept). Monthly means arrive within about a week of the month's end,
+  so the live tracker runs as PR #19 planned. Supersedes the arrival claim
+  in "Freeze and tracker" below (D55 supersedes D54): the "measured
+  3-month lag" was the pre-start review's download margin
+  (`ERA5_LAG_MONTHS`), and the July end of the data followed from it.
+  Rejected building monthly totals from hourly ERA5-Land (not needed).
+- **Set `TRACKER_DATA_DAY` = 7** (the day observed; September's exact
+  release day unknown, rechecked at the first update).
+- **Decided (owner) to change `ERA5_LAG_MONTHS` from 3 to 1 at the first
+  tracker update (early November 2026), as a hard-line item**, not now: it
+  needs a SPEI refit (about 55 min), and the October download is due then
+  anyway. Logged today as the first row of the frozen plan's deviations
+  table, so the decision is dated before any fire data was downloaded or
+  opened, in keeping with the freeze. Its effect: 2026's summer values
+  (JJA SPEI, whiplash, soil moisture; descriptive) fill in; no registered
+  test changes (fire tests end with 2025, climate tests use DJF through
+  2026, calibration 1951-2020).
+
 ### 2026-10-07 - Freeze and tracker
 
 - **Froze `ANALYSIS_PLAN.md` (owner's explicit yes)**: commit acf7a80,
