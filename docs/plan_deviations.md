@@ -27,6 +27,27 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (Phase 3, session 6)
 
+### D61 · MTBS complete only through 2023; union area; D60 re-run on 2023
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": "MTBS for
+  every year it holds complete, WFIGS after"; "Outcomes": burned area is
+  "total hectares of counted fires per region per fire season"; D60's
+  rule on 2024; DECISIONS (this date) cutover 2025-01-01.
+- **Actual:** a fire-by-fire match found MTBS missing 22-58% of 2024's
+  WFIGS area (114 fires, 537,228 ha), so 2024 is not complete in MTBS;
+  the products agree within 1-5% on matched fires 2021-2024. Owner chose
+  (20:03, before computing) the cutover 2024-01-01, union area per
+  region, season and source (overlapping polygons once; area counted
+  twice before: CNFDB 46,012 ha, WFIGS 38,439, MTBS 1,767), and D60's
+  rule re-run on 2023 with union areas: pass, frozen years stand; fail,
+  US regions end at 2023.
+- **Why:** the 2025 cutover rested on fire counts, not area; D60 ran on
+  a year that failed its own premise; summing double-counts duplicates
+  and complex outlines (NorCal 2023 "BLOCK", Mosquito).
+- **Recorded:** `DECISIONS.md` 2026-10-07 "MTBS complete through 2023;
+  cutover, union area, D60 re-run".
+- **Plan doc:** left as written (frozen); a dated row goes in the plan's
+  deviations log for union area, and for the years if the re-run fails.
+
 ### D60 · Last fire season set by a source-agreement rule on 2024
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": "MTBS for
   every year it holds complete, WFIGS after; the cutover year is fixed and

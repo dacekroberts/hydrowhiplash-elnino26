@@ -17,6 +17,43 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - MTBS complete through 2023; cutover, union area, D60 re-run
+
+- **Decided (owner, 20:03 UTC-07:00, before the re-run was computed):
+  the MTBS-to-WFIGS cutover moves to 2024-01-01; each region-season's
+  burned area is the union of its counted fire pieces; D60's rule is
+  re-run on 2023** (D61; supersedes the 2025-01-01 cutover and D60's
+  outcome, both below). The D60 check as computed (2024 ignitions) gave
+  d = +0.27 (PNW), +0.90 (AK), +0.24 (NorCal), +0.23 (SoCal), all above
+  0.10. A fire-by-fire match (each WFIGS fire against the MTBS polygons
+  it intersects, 2021-2024) showed the cause: MTBS has not yet mapped
+  114 WFIGS fires of 2024 (537,228 ha; McDonald AK 62,212 ha, Lone Rock
+  OR 55,532, Wapiti ID 52,230), 22-58% of each US region's WFIGS area,
+  against 0-0.1% in 2021-2022 and 0-4.2% in 2023. On fires both hold,
+  the products agree: one-to-one pairs WFIGS/MTBS area median 0.959,
+  0.982, 0.980, 0.983 and total 0.967, 0.972, 0.974, 0.986 (2021-2024;
+  108, 192, 85, 127 pairs). D60's premise ("the window both sources hold
+  complete") failed for 2024, so its d measured MTBS's mapping backlog,
+  not a product difference. The one outlier, NorCal 2023 (d = +0.234),
+  is WFIGS overlap: "BLOCK" (6,504 ha) lies over Elliot, Ufish and Head,
+  also listed, and Mosquito is three overlapping polygons (13,836, 5,668,
+  1,929 ha) against MTBS's one (14,616 ha). The build's overlap check
+  found area counted twice in every source (CNFDB 46,012 ha, WFIGS
+  38,439, MTBS 1,767 over all region-seasons; largest AB 2012 24,692 ha,
+  PNW 2026 WFIGS 24,243, BC 2015 14,147, NorCal 2025 WFIGS 10,349).
+  Cutover 2024-01-01: MTBS for ignitions through 2023, WFIGS from 2024
+  (`MTBS_WFIGS_CUTOVER`). Union area: overlapping polygons of one
+  region, season and source count once; fire counts and the whole-fire
+  floor unchanged. D60 re-run, fixed before computing: d = log(1 +
+  union ha WFIGS) - log(1 + union ha MTBS) for 2023 ignitions in each
+  region's 2023 window, threshold 0.10 (`SOURCE_CHECK_YEAR` 2023). Pass
+  in all four US regions: the frozen years stand (US 1984-2025, Canada
+  1984-2024). Fail in any: PNW, AK, NorCal and SoCal end at 2023 (MTBS
+  only, no WFIGS in any test), Canada stays at 2024. Rejected: keeping
+  the 2025 cutover (US 2024 from an MTBS year missing 22-58%), ending
+  every region at 2023 outright, and D60's literal outcome (all end at
+  2024, which would still need WFIGS for 2024).
+
 ### 2026-10-07 - Fire record rules settled at download (session 6)
 
 - **Decided (owner, 16:40 UTC-07:00, before the comparison was computed):
