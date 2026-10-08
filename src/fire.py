@@ -156,7 +156,37 @@ def read_cnfdb(folder: Path = CNFDB_RAW) -> gpd.GeoDataFrame:
         "name": raw["FIRENAME"], "fire_type": raw["CAUSE"].where(~prescribed, "prescribed"),
         **{k: dates[k] for k in dates}}, geometry=raw.geometry, crs=raw.crs)
     out["cnfdb_year"] = raw["YEAR"].astype(int)
-    return out[COLUMNS + ["cnfdb_year"]]
+    out["fire_key"] = raw["FIRE_ID"].fillna("").astype(str).str.strip() != ""
+    return dissolve_cnfdb(out[COLUMNS + ["cnfdb_year", "fire_key"]])
+
+
+def dissolve_cnfdb(fires: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    """One row per CNFDB fire: polygons sharing agency, YEAR and FIRE_ID
+    (fire_id and cnfdb_year) are merged before the whole-fire floor, so the
+    floor sees each fire's whole area (ANALYSIS_PLAN "Fire record rules";
+    audit 2026-10-08 M3: 136 such groups since 1984, e.g. BC 1998-N40187,
+    349 + 207 ha, was dropped part by part). Polygons with a blank FIRE_ID
+    (`fire_key` False; MB 625, SK 45, Parks Canada 9) are never merged.
+
+    A merged fire takes the ignition date, date flag and fire_type of its
+    earliest part with a known month; it is undated only if no part has a
+    month. Parts disagree on month in 11 groups, on day in 22, on CAUSE in
+    7, on the prescribed flag in none. `n_parts` counts the polygons."""
+    fires = fires.assign(n_parts=1)
+    keyed = fires[fires["fire_key"]]
+    dup = keyed.duplicated(["fire_id", "cnfdb_year"], keep=False)
+    single = pd.concat([fires[~fires["fire_key"]], keyed[~dup]])
+    merged = []
+    for _, g in keyed[dup].groupby(["fire_id", "cnfdb_year"], sort=False):
+        dated = g[g["month_known"]]
+        first = (dated if len(dated) else g).sort_values("ignition").iloc[0].copy()
+        first["n_parts"] = len(g)
+        first["geometry"] = g.geometry.make_valid().union_all()
+        merged.append(first)
+    if merged:
+        single = pd.concat([single, gpd.GeoDataFrame(merged, geometry="geometry", crs=fires.crs)])
+    return gpd.GeoDataFrame(single.drop(columns="fire_key"), geometry="geometry",
+                            crs=fires.crs).reset_index(drop=True)
 
 
 # 2-4. Filter, splice, whole-fire floor ------------------------------------

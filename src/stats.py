@@ -24,6 +24,18 @@ Supporting:
   detrend                residuals of value ~ year per region (burn_detr)
   zscore                 z against reference years, SD with ddof = 1
   with_zero_indicators   zero-fire sensitivity: one 0/1 column per zero year
+Size checks (audit 2026-10-08 M1(b); added, reported beside the registered
+p-values, not registered; scripts/stats_size_check.py measures them; kept
+only where the measured size is near 5%):
+  fit_ols_plain          the same model with ordinary standard errors; kept
+                         for the ENSO tests (H3a, H3b, H4 contrast, C1, C2:
+                         ENSO lag-1 autocorrelation -0.01, size 4-6%; the H4
+                         contrast 0.6% with correlated regions), not for H5
+                         and H6 (predictors up to AR 0.27: 7-9%)
+  block_bootstrap_p      year-block bootstrap p; measured 6-9%, so dropped as
+                         a check (kept to reproduce the measurement)
+Other helpers (audit L6): strong_flags (near-threshold flip), center_year,
+percent_change, lag1_autocorrelation, ols_prediction (the 2027 intervals).
 
 Every fit made here carries `inference_df`, the t degrees of freedom its
 tests use; coef_test, contrast_test and wald_f_test read it and take p from
@@ -41,7 +53,8 @@ import statsmodels.formula.api as smf
 from scipy import stats as sps
 from statsmodels.stats.multitest import multipletests
 
-from src.config import (ALPHA, BLOCK_LEN, CORRECTION_FAMILIES, FORWARD_MIN_TRAIN_YEARS,
+from src.config import (ALPHA, BLOCK_LEN, CORRECTION_FAMILIES, ENSO_DECIMALS,
+                        FORWARD_MIN_TRAIN_YEARS, STRONG_SENSITIVITY_BAND, STRONG_THRESHOLD,
                         H4_NORTH, H4_REFERENCE, H4_REGIONS, HAC_MAXLAGS, N_BOOTSTRAP,
                         N_PERMUTATIONS, POOLED_DF_YEARS_MINUS, PREDICTION_ALPHA,
                         RANDOM_SEED, ROBUST_SMALL_SAMPLE_CORRECTION, TEST_DIRECTIONS, USE_T)
@@ -338,6 +351,85 @@ def fit_pooled(formula: str, df: pd.DataFrame, cluster: str = "year",
     return fit
 
 
+def fit_ols_plain(formula: str, df: pd.DataFrame):
+    """The same model with ordinary (non-robust) standard errors and t with
+    the residual df: one of the two size checks added beside the registered
+    robust p-values (audit 2026-10-08 M1(b); added, reported, not
+    registered). Raises on a missing value, as the registered fits do."""
+    df = df.reset_index(drop=True)
+    model = smf.ols(formula, data=df)
+    _no_dropped_rows(df, model, "fit_ols_plain")
+    fit = model.fit()
+    fit.inference_df = float(fit.df_resid)
+    return fit
+
+
+def block_bootstrap_p(formula: str, df: pd.DataFrame, weights: dict[str, float],
+                      alternative: str = "two-sided", block_len: int = BLOCK_LEN,
+                      n_boot: int = N_BOOTSTRAP, alpha: float = ALPHA,
+                      seed: int = DEFAULT_SEED, year_col: str = "year") -> dict:
+    """Moving-block bootstrap of an OLS coefficient or contrast sum(w x b),
+    with a p-value read from the bootstrap distribution: the other size
+    check beside the registered robust p-values (audit 2026-10-08 M1(b);
+    added, reported, not registered).
+
+    Years are resampled in runs of `block_len` consecutive years; every row
+    of a drawn year comes along, so in a panel the regions of one year stay
+    together (their shared weather is kept) and in one region's series it
+    is the registered block bootstrap. Each draw refits OLS by least
+    squares on the formula's design matrix. p is the share of draws on the
+    far side of 0 in the stated direction, as (count + 1) / (n_boot + 1)
+    ("greater": draws <= 0; "less": draws >= 0; two-sided: twice the
+    smaller tail, at most 1), so p < alpha (two-sided) exactly when the
+    (1 - alpha) percentile CI excludes 0. Measured size 6-9% on synthetic
+    null data like the project's (2026-10-08), no better than the robust
+    tests, so not used as a check (owner's condition, M1(b)). Raises on a
+    missing value, on a
+    draw whose design is rank-deficient (e.g. a zero-fire indicator column
+    with its year not drawn), or on non-consecutive years.
+    """
+    _check_alternative(alternative)
+    df = df.reset_index(drop=True)
+    model = smf.ols(formula, data=df)
+    _no_dropped_rows(df, model, "block_bootstrap_p")
+    names = list(model.exog_names)
+    missing = [n for n in weights if n not in names]
+    if missing:
+        raise KeyError(f"No coefficient(s) {missing}; the model has {names}.")
+    w = np.zeros(len(names))
+    for n, v in weights.items():
+        w[names.index(n)] = v
+    X, y = model.exog, model.endog
+    years = np.sort(df[year_col].unique())
+    if not (np.diff(years) == 1).all():
+        raise ValueError(f"block_bootstrap_p needs consecutive {year_col!r} values.")
+    rows_of = [np.flatnonzero(df[year_col].to_numpy() == yr) for yr in years]
+    n_years = len(years)
+    if n_years < block_len:
+        raise ValueError(f"block_bootstrap_p needs at least block_len={block_len} years.")
+    n_blocks = int(np.ceil(n_years / block_len))
+    rng = np.random.default_rng(seed)
+    k = X.shape[1]
+    draws = np.empty(n_boot)
+    for i in range(n_boot):
+        starts = rng.integers(0, n_years - block_len + 1, n_blocks)
+        picked = np.concatenate([np.arange(s, s + block_len) for s in starts])[:n_years]
+        idx = np.concatenate([rows_of[j] for j in picked])
+        beta, _, rank, _ = np.linalg.lstsq(X[idx], y[idx], rcond=None)
+        if rank < k:
+            raise ValueError("A bootstrap draw has a rank-deficient design; this check "
+                             "does not cover such a model (e.g. zero-fire indicators).")
+        draws[i] = w @ beta
+    estimate = float(w @ np.linalg.lstsq(X, y, rcond=None)[0])
+    low = (np.sum(draws <= 0) + 1) / (n_boot + 1)
+    high = (np.sum(draws >= 0) + 1) / (n_boot + 1)
+    p = {"greater": low, "less": high, "two-sided": min(1.0, 2 * min(low, high))}[alternative]
+    lo, hi = np.quantile(draws, [alpha / 2, 1 - alpha / 2])
+    return {"estimate": estimate, "p": float(p), "alternative": alternative,
+            "ci_low": float(lo), "ci_high": float(hi), "n_boot": n_boot,
+            "block_len": block_len}
+
+
 def _inference_df(fit) -> float:
     if not hasattr(fit, "inference_df"):
         raise ValueError("Fit has no inference_df; fit it with fit_ols_hac, "
@@ -492,6 +584,9 @@ def loyo_prediction(formula: str, df: pd.DataFrame, alpha: float = PREDICTION_AL
     counts only years that can be checked (DECISIONS.md 2026-10-05
     "Phase 1 audit").
     """
+    if df[year_col].duplicated().any():  # audit 2026-10-08 L5
+        raise ValueError(f"loyo_prediction needs one row per {year_col!r} (one region's "
+                         f"series); some {year_col} values repeat.")
     response = formula.split("~")[0].strip()
     rows = []
     for year in df[year_col].unique():
@@ -568,3 +663,63 @@ def forecast_skill(model: pd.DataFrame, trend: pd.DataFrame, year_col: str = "ye
     return {"n": m["n"], "rmse_model": m["rmse"], "rmse_trend": t["rmse"],
             "mae_model": m["mae"], "mae_trend": t["mae"],
             "skill": 1 - m["rmse"] / t["rmse"]}
+
+
+# Helpers for plan steps with no function before audit round 1 (L6) -----------
+
+def strong_flags(enso, flip_band: bool = False, threshold: float = STRONG_THRESHOLD,
+                 band: float = STRONG_SENSITIVITY_BAND, decimals: int = ENSO_DECIMALS) -> np.ndarray:
+    """Strong El Niño flag per winter (index at or above `threshold`). With
+    `flip_band`, every winter whose distance to the threshold, rounded to
+    the index's published decimals, is at most `band` has its flag flipped,
+    all together (ANALYSIS_PLAN "Execution details", strong-only results;
+    D52). Rounding first keeps 2009-10 (RONI 1.44): abs(1.44 - 1.5) is
+    0.06000000000000005 in floating point (independent audit F7)."""
+    enso = _no_nan(np.asarray(enso, dtype=float), "enso")
+    strong = enso >= threshold
+    if flip_band:
+        near = np.round(np.abs(enso - threshold), decimals) <= band
+        strong = np.where(near, ~strong, strong)
+    return strong
+
+
+def center_year(df: pd.DataFrame, year_col: str = "year") -> pd.Series:
+    """year_c for C1 and C2: the year minus the mean year of the rows the
+    model uses, so pass exactly those rows (C1 winters 1951-2026, C2 the
+    region's fire seasons); the enso_djf coefficient is then the effect at
+    that model's mid-record (the interaction does not depend on the centre)."""
+    return (df[year_col] - df[year_col].mean()).rename("year_c")
+
+
+def percent_change(b):
+    """Coefficient on log_burn as a percent change, 100 x (exp(b) - 1)
+    (ANALYSIS_PLAN "Reporting rules"); apply to the estimate and to each CI
+    end separately (the result is not symmetric)."""
+    return 100 * (np.exp(np.asarray(b, dtype=float)) - 1)
+
+
+def lag1_autocorrelation(df: pd.DataFrame, value: str, year_col: str = "year") -> float:
+    """Pearson correlation of each year's value with the previous year's,
+    for one region's series of consecutive years in order (ANALYSIS_PLAN
+    "Supporting methods", autocorrelation)."""
+    years = df[year_col].to_numpy()
+    if len(years) < 3 or not (np.diff(years) == 1).all():
+        raise ValueError(f"lag1_autocorrelation needs at least 3 consecutive, sorted {year_col!r} values.")
+    x = _no_nan(df[value].to_numpy(dtype=float), value)
+    return float(np.corrcoef(x[:-1], x[1:])[0, 1])
+
+
+def ols_prediction(formula: str, train: pd.DataFrame, new: pd.DataFrame,
+                   alpha: float = PREDICTION_ALPHA) -> pd.DataFrame:
+    """(1 - alpha) OLS prediction intervals for `new` rows from a plain OLS
+    fit on `train` (t with the fit's residual df), as the 2027 forecast
+    needs (ANALYSIS_PLAN "Execution details"). A plain fit, not the HAC
+    fit: get_prediction on a HAC fit mixes the robust covariance into the
+    interval (audit 2026-10-08 L6). Raises on a missing value in `train`."""
+    train = train.reset_index(drop=True)
+    model = smf.ols(formula, data=train)
+    _no_dropped_rows(train, model, "ols_prediction")
+    pred = model.fit().get_prediction(new).summary_frame(alpha=alpha)
+    return pd.DataFrame({"predicted": pred["mean"].to_numpy(),
+                         "pi_low": pred["obs_ci_lower"].to_numpy(),
+                         "pi_high": pred["obs_ci_upper"].to_numpy()}, index=new.index)

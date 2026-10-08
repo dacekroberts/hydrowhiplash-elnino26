@@ -4,7 +4,10 @@
                       era5.winter_total (a season crossing the new year takes
                       the year of its last month); seasons missing a month
                       are dropped
-  climate_regional()  temp_jja, temp_mam (deg C) and precip_octmar_mm per
+  climate_regional()  temp_jja, temp_mam (deg C), precip_djf_mm (H1; the
+                      same values as src.era5's DJF table, committed here so
+                      H1's input is pinned, audit 2026-10-08 M4) and
+                      precip_octmar_mm per
                       region, cos(latitude)-weighted (src.geo.regional_mean
                       via src.era5.regional_series), every land cell in the
                       region, glacier cells included (ANALYSIS_PLAN
@@ -35,12 +38,12 @@ import xarray as xr
 
 from src.config import (CLIMATE_CONTROLS_TABLE, DATA_PROCESSED, ERA5_DOMAINS,
                         PRECIP_ANOM_MONTHS, PRECIP_ANOM_NORMAL_YEARS, REGIONS, RESULTS,
-                        SPRING_MONTHS, SUMMER_MONTHS)
+                        SPRING_MONTHS, SUMMER_MONTHS, WINTER_MONTHS)
 from src.era5 import join_enso, regional_series, winter_total
 from src.stats import zscore
 
 COMMITTED = RESULTS / "tables" / CLIMATE_CONTROLS_TABLE.name
-COLUMNS = ["region", "year", "winter", "temp_jja", "temp_mam", "precip_octmar_mm",
+COLUMNS = ["region", "year", "winter", "temp_jja", "temp_mam", "precip_djf_mm", "precip_octmar_mm",
            "precip_anom_lag0", "precip_anom_lag1", "enso_index", "enso_djf", "phase", "strong"]
 
 
@@ -51,12 +54,13 @@ def season_mean(da: xr.DataArray, months: tuple[int, ...]) -> xr.DataArray:
 
 
 def climate_regional(ds: xr.Dataset, masks: xr.DataArray) -> xr.Dataset:
-    """Regional temp_jja, temp_mam (deg C) and Oct-Mar precipitation (mm)
+    """Regional temp_jja, temp_mam (deg C), DJF and Oct-Mar precipitation (mm)
     for one ERA5-Land domain (`t2m` in deg C, `tp` in mm/month, as
     era5.open_era5 returns them)."""
     return xr.Dataset({
         "temp_jja": regional_series(season_mean(ds["t2m"], SUMMER_MONTHS), masks),
         "temp_mam": regional_series(season_mean(ds["t2m"], SPRING_MONTHS), masks),
+        "precip_djf_mm": regional_series(winter_total(ds["tp"], WINTER_MONTHS), masks),
         "precip_octmar_mm": regional_series(winter_total(ds["tp"], PRECIP_ANOM_MONTHS), masks),
     })
 

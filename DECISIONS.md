@@ -17,6 +17,51 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Audit round 1 settled
+
+- **Settled (owner, yes on every finding): the pre-results audit round 1**
+  (`docs/audit_2026-10-08_preresults_round1.md`, Fable 5.1, read-only, at
+  6e79757; no high, 4 medium, 11 low). M1 (robust tests oversized): (a)
+  measured size printed beside every robust p, (c) joint F kept as
+  reported with its size, (b) a size check kept only where its own size
+  is near 5% (D66): plain OLS p for the ENSO tests (H3a, H3b, H4
+  contrast, C1, C2), not for H5 and H6 (7-9% at their predictors' lag-1
+  autocorrelation up to 0.27), the year-block bootstrap p dropped
+  (6-9%). Rejected: the bootstrap as the check (owner's condition: kept
+  only if near 5%). The H4 Driscoll-Kraay contrast with regions
+  correlated 0.5 measured 8.2% from 3,000 datasets, between the audit's
+  10.0% (500) and session 7's 6.3% (1,000).
+- **M2 recorded, no rule change:** 104 CNFDB polygons with no year
+  (YT 85, Parks Canada 19), outside the read; AB about 8% of 1984-89 area,
+  YT about 2% of 1984-99; a stated limitation.
+- **M3 fixed (a defect a check found, under D62's firm line): CNFDB
+  polygons sharing agency, YEAR and FIRE_ID are merged before the floor**
+  (`dissolve_cnfdb`). Owner chose the dissolve over recording the
+  per-polygon rule. Before and after: 8 seasons change, all Canadian,
+  every US season identical; BC 1998 +1,015 ha (n_fires 22 to 24), BC
+  2003 +645 ha (56 to 57), BC 2006 +33 ha, AB 2012 +40 ha; BC 1994, BC
+  2004, YT 1990, YT 1995, AB 2012 one fire fewer. CNFDB fires at the
+  floor 10,774 polygons to 10,751 fires; overlap left out CNFDB 46,012 to
+  46,248 ha. Merged parts disagree on date in some groups; BC
+  1998-N40188 joins a 16 May human-caused part and a 6 August lightning
+  part (459 ha, 0.8% of BC 1998), kept merged under the rule and flagged
+  to the owner. The frozen-rules table rebuilt from the new pieces (YT
+  undated 104 to 103; ratios unchanged to 3 decimals).
+- **M4 fixed:** `precip_djf_mm` added to the climate controls table
+  (identical to `djf_precip_region_year.csv`, 532 of 532 rows, difference
+  0), so H1's input is committed and pinned.
+- **L1-L11 as recommended:** register and dictionary wording (L1 piece
+  counts with a 1 ha tolerance, L2 WFIGS id uniqueness, L3 ERA5 lag, L4
+  Daily perimeter shares, L7 zero-indicator SEs, L8 strict inequality, L9
+  Idaho time zone, L11 n_fires counts pieces); `loyo_prediction` refuses
+  repeated years (L5); helpers `strong_flags`, `center_year`,
+  `percent_change`, `lag1_autocorrelation`, `ols_prediction` with
+  known-answer tests (L6); tests for several seeds, one-sided contrasts,
+  `wald_f_test` alone and every config default (L10).
+- **Null and placeholder sweep (owner's request): nothing beyond M2.**
+  Counts in the register's "Null and placeholder sweep" row; the round 2
+  cold review rechecks it.
+
 ### 2026-10-08 - Pre-results gate code built (session 7)
 
 - **Built and tested on synthetic data: every piece of the D51 gate**

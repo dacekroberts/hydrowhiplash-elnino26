@@ -215,3 +215,41 @@ def test_frozen_rules_table_sums_drops_other_and_undated():
     main = region_year_table(pieces, last_year=last).set_index(["region", "year"])
     assert main.loc[("PNW", 1990), "burn_ha"] == 1800
     assert main.loc[("YT", 1990), "burn_ha"] == 1700
+
+
+def test_dissolve_cnfdb_merges_parts_of_one_fire_before_the_floor():
+    # Audit 2026-10-08 M3: BC 1998-N40187 was two polygons of 349 and 207 ha,
+    # each under the floor, together 556 ha.
+    import geopandas as gpd
+    from shapely.geometry import box
+    from src.fire import dissolve_cnfdb
+
+    def row(fire_id, year, geom, month_known=True, ignition="1998-08-05", key=True,
+            fire_type="N"):
+        return {"source": "CNFDB", "fire_id": fire_id, "name": None, "fire_type": fire_type,
+                "ignition": pd.Timestamp(ignition), "month_known": month_known,
+                "date_known": month_known, "cnfdb_year": year, "fire_key": key,
+                "geometry": geom}
+
+    fires = gpd.GeoDataFrame([
+        row("BC:A", 1998, box(0, 0, 1, 1), ignition="1998-08-05"),
+        row("BC:A", 1998, box(2, 0, 3, 1), ignition="1998-05-16", fire_type="H"),
+        row("BC:A", 1999, box(5, 0, 6, 1)),                       # same id, other year
+        row("MB:", 1998, box(7, 0, 8, 1), key=False),             # blank ids never merge
+        row("MB:", 1998, box(9, 0, 10, 1), key=False),
+        row("NT:B", 1995, box(0, 5, 1, 6), month_known=False, ignition="1995-07-15"),
+        row("NT:B", 1995, box(1, 5, 2, 6), month_known=False, ignition="1995-07-15"),
+        row("NT:C", 1996, box(0, 8, 1, 9), month_known=False, ignition="1996-07-15"),
+        row("NT:C", 1996, box(1, 8, 2, 9), ignition="1996-08-02"),
+    ], geometry="geometry", crs="EPSG:3347")
+    out = dissolve_cnfdb(fires)
+    assert len(out) == 6
+    a = out[(out["fire_id"] == "BC:A") & (out["cnfdb_year"] == 1998)].iloc[0]
+    assert a["n_parts"] == 2 and a.geometry.area == pytest.approx(2.0)
+    assert a["ignition"] == pd.Timestamp("1998-05-16") and a["fire_type"] == "H"
+    assert (out["fire_id"] == "MB:").sum() == 2
+    b = out[out["fire_id"] == "NT:B"].iloc[0]
+    assert not b["month_known"] and b["n_parts"] == 2
+    c = out[out["fire_id"] == "NT:C"].iloc[0]
+    assert c["month_known"] and c["ignition"] == pd.Timestamp("1996-08-02")
+    assert "fire_key" not in out

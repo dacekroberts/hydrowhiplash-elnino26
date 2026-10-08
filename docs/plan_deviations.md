@@ -27,6 +27,34 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-08
 
+### D66 · Test size reported; plain OLS p added as a size check
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Small-cluster corrections",
+  "Headline methods" 2-3, "Supporting methods": Newey-West and
+  Driscoll-Kraay p-values with t critical values, the H4 joint F as
+  secondary; no size check beyond the block bootstrap CI of the H3a and
+  H3b coefficients.
+- **Actual:** audit round 1 (M1) and session 7 simulations
+  (`scripts/stats_size_check.py`) found the registered robust tests reject
+  a true null more often than 5% on synthetic data like the project's
+  (Newey-West H3a shape 7.5-8.9%, H4 contrast Driscoll-Kraay 6.3-8.2%,
+  joint F about 20%). Owner chose (2026-10-08, before any result): (a)
+  the measured size printed beside every Newey-West, Driscoll-Kraay and
+  joint-F p-value; (c) the joint F kept as reported, labelled with its
+  size; (b) a size check beside the registered p-values, kept only where
+  its own measured size is near 5%: plain OLS p kept for the ENSO tests
+  (H3a, H3b, H4 contrast, C1, C2; 3.9-5.7%, the H4 contrast 0.6% with
+  correlated regions), not for H5 and H6 (7-9% at their predictors'
+  persistence, lag-1 up to 0.27); the year-block bootstrap p measured
+  6-9% and dropped everywhere. Registered p-values and Holm verdicts
+  unchanged.
+- **Why:** the size labels alone describe the test, not each result; a
+  check of near-nominal size shows which significant results survive.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 1 settled".
+- **Substantial:** yes (owner, 2026-10-08): scope addition, reported
+  analyses.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, eighth row (added,
+  reported, not registered); frozen text above the log unchanged.
+
 ### D65 · Small-sample correction on in every robust fit
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Small-cluster corrections" and
   "Execution details": `use_t=True`, Newey-West maxlags 2, Driscoll-Kraay

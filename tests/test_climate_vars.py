@@ -41,6 +41,10 @@ def test_seasonal_temperature_and_octmar_total_by_hand():
     octmar = out["precip_octmar_mm"].sel(region="R").dropna("year")
     assert list(octmar["year"].values) == [1991, 1992, 1993]
     assert np.allclose(octmar, 120.0)
+    # DJF: 3 months x 20 = 60 mm, first complete winter 1991 (Dec 1990)
+    djf = out["precip_djf_mm"].sel(region="R").dropna("year")
+    assert list(djf["year"].values) == [1991, 1992, 1993]
+    assert np.allclose(djf, 60.0)
 
 
 def test_incomplete_summer_is_dropped():

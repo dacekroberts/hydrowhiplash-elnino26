@@ -111,7 +111,10 @@ relative difference 7e-7; SWE identical; land/ocean pattern identical), not
 bit for bit: each request's GRIB packing depends on its area. Ocean cells are empty (NaN, 43.7% of
 the domain): the dataset covers land only.
 
-**Time.** Monthly means, 1950 to about 3 months before today. In the NetCDF
+**Time.** Monthly means, 1950 to the last downloaded month. Months are
+published within about a week (CDS probe 2026-10-07, D55); the download
+stops `ERA5_LAG_MONTHS` (3, a margin, not the lag; 1 from the first
+tracker update) before today, so the files end 2026-07. In the NetCDF
 files the time dimension is `valid_time`, stamped on the first of each
 month. Leftover GRIB coordinates `expver` and `number` are dropped before
 combining years.
@@ -394,7 +397,9 @@ stations and grid in mm is meaningless; compare % or z.
 - **Climate controls table** (built 2026-10-08, session 7; `python -m
   src.climate_vars`): `data/processed/climate_controls_region_year.csv` and
   `results/tables/`, 532 rows (7 regions x 1951-2026) with the ENSO
-  columns. Every land cell in the region counts, glacier cells included
+  columns. Also holds `precip_djf_mm` (H1's input, identical to
+  `djf_precip_region_year.csv`, added 2026-10-08 so it is committed and
+  pinned; audit M4). Every land cell in the region counts, glacier cells included
   (only the SWE means and SPEI leave them out); cos(latitude) regional
   means via `src.geo.regional_mean`.
 - `temp_jja` (have, 2026-10-08): June-August mean 2 m temperature per
@@ -462,8 +467,15 @@ both hold, WFIGS/MTBS area is 0.96-0.99 (one-to-one pairs, 2021-2024).
 
 **WFIGS file** (`wfigs_perimeters.geojson`, Hub export of 2026-10-07):
 42,553 perimeters, EPSG:4326, coordinates with Z (73.5 M vertices; read in
-2D). One perimeter per incident, the latest. Fields used:
-`attr_UniqueFireIdentifier` (YYYY-unit-number, unique), `poly_IncidentName`,
+2D). One perimeter per incident, the latest; a "Daily" perimeter can
+predate containment. Share of counted WFIGS area from Daily perimeters in
+the tested seasons (audit 2026-10-08 L4): NorCal 2024 84%, NorCal 2025
+49%, SoCal 2024 42%, PNW 2025 23%, PNW 2024 19%, SoCal 2025 3%, AK 0%;
+the 2023 source-agreement check covered this product mix (|d| at most
+0.032). Fields used:
+`attr_UniqueFireIdentifier` (YYYY-unit-number; unique among the rows the
+build reads, discovered 2023 on; 50 pairs in 2020 share an id, a Final and
+a Daily perimeter under different names, audit 2026-10-08 L2), `poly_IncidentName`,
 `attr_IncidentTypeCategory` (WF 40,968, RX 1,585; no other values),
 `attr_FireDiscoveryDateTime` (text "Sat, 19 Nov 2022 00:52:20 GMT", UTC;
 converted to the origin state's local date, `WFIGS_STATE_TZ`),
@@ -486,7 +498,13 @@ PC = Parks Canada, and the other provinces), `FIRE_ID`, `FIRENAME`,
 polygons for 2018-2020 (update log), so fires inside national parks are
 missing in those years unless the province mapped them; agency minimum
 sizes differ by decade (all far below 405 ha after 1984); Yukon 2022 has
-97 large fires without month or day (D59).
+97 large fires without month or day (D59). 104 polygons have no year at
+all (`YEAR` = -9999, `CFS_NOTE1` "Fire year unknown, refer to decade";
+YT 85, Parks Canada 19) and fall outside the read (`YEAR >= 1984`): they
+cannot be given a season. Clipped to the study regions: AB 1980s 6
+polygons, 10,835 ha (about 8% of AB's 1984-89 area), YT 1980s 6 polygons,
+9,601 ha, and 1990s 21, 37,323 ha (about 2% of YT's 1984-99 area); a
+stated limitation for AB and YT 1984-1999 (audit 2026-10-08 M2).
 
 **Units and measurement rules.**
 - **Area:** hectares, computed only by `src.geo.area_ha`, which projects to
@@ -508,7 +526,14 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   each source's clipped pieces are unioned (overlap counted once, D61) and
   the sources summed. `double_ha`: the overlap left out (ha).
 - `n_fires`: counted fire pieces in the region (a fire in two regions
-  counts in each; 47 such fires). `n_undated`: CNFDB pieces without a
+  counts in each; 47 such fires). Pieces, not fires (audit 2026-10-08 L11): 13 slivers under
+  1 ha of fires crossing an edge count in the neighbouring region (AB 5,
+  BC 5, NorCal 1, PNW 1, YT 1), and WFIGS has 3 pairs sharing a name,
+  region and season under different ids (Whiskey Mountain OR 2024, same
+  unit, likely one fire; Mineral OR/ID and Horseshoe CA, different units),
+  where the union keeps the area right but `n_fires` may count one fire
+  twice; CNFDB fires in several polygons count once since 2026-10-08.
+  `n_undated`: CNFDB pieces without a
   month, counted for season YEAR (D59). `n_unknown_type`: MTBS "Other"
   pieces (the plan's Unknown, D58). `source`: MTBS, WFIGS, CNFDB, or
   "MTBS+WFIGS" (SoCal and NorCal seasons that span the 2024-01-01
@@ -530,7 +555,7 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
 - `winter`, `enso_index`, `enso_djf`, `phase`, `strong`: the ENSO columns of
   the winter before (year Y = winter (Y-1)-Y), from `el_nino_winters.csv`.
 - `data/processed/fire_events.csv` (not committed): one row per fire-region
-  piece (9,758 rows, including 2026 WFIGS pieces outside the tests), with
+  piece (9,756 rows after the CNFDB dissolve of 2026-10-08, 9,758 before; including 2026 WFIGS pieces outside the tests), with
   `fire_ha` (whole fire), `clipped_ha`, `season`, dates and flags.
 - **Frozen-rules variant** (built 2026-10-08, D62; `python -m src.fire
   --frozen-rules`, from `fire_events.csv`):
@@ -636,5 +661,6 @@ revised monthly and WFIGS is live, so the tests use these copies.
   (summer); MAM = March-May.
 - **Record lengths:** climate from winter 1950-51 (76 winters to 2025-26);
   fire from 1984.
-- **Publication lags:** ERA5-Land about 3 months (`ERA5_LAG_MONTHS`);
+- **Publication lags:** ERA5-Land monthly means about a week (D55;
+  `ERA5_LAG_MONTHS` 3 is a download margin, 1 from the first tracker update);
   latest ENSO values revised for up to two months; MTBS about 2 years.

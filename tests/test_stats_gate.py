@@ -232,7 +232,7 @@ def test_h4_contrast_equals_per_region_slopes_and_f_by_hand():
 
 def test_h4_null_contrast_is_not_significant():
     # Only the registered contrast: the joint Driscoll-Kraay F test rejects a
-    # true null in 18.5% of synthetic panels at the 5% level (1,000 panels,
+    # true null in about 20% of synthetic panels at the 5% level (1,000 panels,
     # 2026-10-08; this seed gives p = 0.025), a size property of the method,
     # recorded in docs/methods_register.md "Statistics".
     df = panel(seed=7, slopes={r: 0.0 for r in H4_SLOPES})
@@ -390,3 +390,158 @@ def test_zscore_uses_ddof_one():
     assert z[3] == pytest.approx((10 - 2) / np.std([1, 3], ddof=1))
     with pytest.raises(ValueError, match="at least 2"):
         stats.zscore([1.0, 2.0], reference=[True, False])
+
+
+# --- size checks (audit 2026-10-08 M1(b)) -------------------------------------------
+
+def test_plain_ols_p_matches_statsmodels_ols():
+    df = series()
+    fit = stats.fit_ols_plain("log_burn ~ enso_djf + year", df)
+    ref = smf.ols("log_burn ~ enso_djf + year", df).fit()
+    out = stats.coef_test(fit, "enso_djf")
+    assert fit.inference_df == 39
+    assert out["p"] == pytest.approx(ref.pvalues["enso_djf"])
+    assert out["ci_low"] == pytest.approx(ref.conf_int().loc["enso_djf", 0])
+    gap = df.copy()
+    gap.loc[3, "enso_djf"] = np.nan
+    with pytest.raises(ValueError, match="missing value"):
+        stats.fit_ols_plain("log_burn ~ enso_djf + year", gap)
+
+
+def test_block_bootstrap_p_on_one_series_is_the_registered_block_bootstrap():
+    # Same seed and blocks as block_bootstrap_ci: identical draws, so the CIs agree.
+    df = series(beta=0.5)
+    out = stats.block_bootstrap_p("log_burn ~ enso_djf + year", df, {"enso_djf": 1.0},
+                                  alternative="greater", n_boot=500)
+
+    def coef(d):
+        return smf.ols("log_burn ~ enso_djf + year", d).fit().params["enso_djf"]
+    ref = stats.block_bootstrap_ci(df, coef, n_boot=500)
+    assert out["ci_low"] == pytest.approx(ref["ci_low"])
+    assert out["ci_high"] == pytest.approx(ref["ci_high"])
+    assert out["estimate"] == pytest.approx(ref["estimate"])
+    assert out["p"] < 0.01  # planted 0.5 with noise 0.5
+
+
+def test_block_bootstrap_p_tails_and_ci_agree():
+    df = series(seed=11, beta=0.0)
+    two = stats.block_bootstrap_p("log_burn ~ enso_djf + year", df, {"enso_djf": 1.0},
+                                  n_boot=999)
+    greater = stats.block_bootstrap_p("log_burn ~ enso_djf + year", df, {"enso_djf": 1.0},
+                                      alternative="greater", n_boot=999)
+    less = stats.block_bootstrap_p("log_burn ~ enso_djf + year", df, {"enso_djf": 1.0},
+                                   alternative="less", n_boot=999)
+    assert two["p"] == pytest.approx(min(1.0, 2 * min(greater["p"], less["p"])))
+    assert (two["p"] < 0.05) == (two["ci_low"] > 0 or two["ci_high"] < 0)
+
+
+def test_block_bootstrap_p_panel_contrast_estimate_and_refusals():
+    df = panel()
+    weights = {stats.h4_interaction_name(r): 1 / 3 for r in ("PNW", "BC", "AB")}
+    out = stats.block_bootstrap_p(stats.H4_FORMULA, df, weights, n_boot=300)
+    ols = smf.ols(stats.H4_FORMULA, df).fit()
+    assert out["estimate"] == pytest.approx(sum(ols.params[n] * w for n, w in weights.items()))
+    assert out["ci_low"] < 0.8 < out["ci_high"] and out["p"] < 0.05
+    df["zero_fire"] = False
+    df.loc[(df["region"] == "SoCal") & (df["year"] == 2014), "zero_fire"] = True
+    formula, wide = stats.with_zero_indicators(stats.H4_FORMULA, df)
+    with pytest.raises(ValueError, match="rank-deficient"):
+        stats.block_bootstrap_p(formula, wide, weights, n_boot=300)
+    with pytest.raises(KeyError):
+        stats.block_bootstrap_p(stats.H4_FORMULA, panel(), {"nope": 1.0}, n_boot=10)
+
+
+# --- audit round 1 low findings (L5, L6, L10) ---------------------------------------
+
+def test_loyo_refuses_repeated_years():
+    df = pd.concat([series(seed=1), series(seed=2)], ignore_index=True)
+    with pytest.raises(ValueError, match="one row per"):
+        stats.loyo_prediction("log_burn ~ enso_djf + year", df)
+
+
+def test_strong_flags_and_the_near_threshold_flip():
+    # RONI band winters: 1965-66 1.53, 1986-87 1.46, 2009-10 1.44 (1.44 needs the rounding)
+    enso = np.array([1.53, 1.46, 1.44, 1.43, 1.57, 2.40, 0.8, 1.50])
+    assert list(stats.strong_flags(enso)) == [True, False, False, False, True, True, False, True]
+    flipped = stats.strong_flags(enso, flip_band=True)
+    assert list(flipped) == [False, True, True, False, True, True, False, False]
+    assert abs(1.44 - 1.5) > 0.06  # the floating-point trap the rounding avoids
+
+
+def test_center_year_uses_the_rows_given():
+    df = pd.DataFrame({"year": np.arange(1984, 2025)})
+    assert stats.center_year(df).mean() == pytest.approx(0)
+    assert stats.center_year(df).iloc[0] == -20
+    assert stats.center_year(df[df["year"] >= 2000]).iloc[0] == -12
+
+
+def test_percent_change_by_hand():
+    assert stats.percent_change(0.0) == 0.0
+    assert stats.percent_change(np.log(2)) == pytest.approx(100.0)
+    assert np.allclose(stats.percent_change([-np.log(2), np.log(1.5)]), [-50.0, 50.0])
+
+
+def test_lag1_autocorrelation_known_answers_and_refusals():
+    years = np.arange(1984, 2026)
+    alternating = pd.DataFrame({"year": years, "v": np.tile([1.0, -1.0], 21)})
+    assert stats.lag1_autocorrelation(alternating, "v") == pytest.approx(-1.0)
+    rng = np.random.default_rng(3)
+    x = np.empty(4000)
+    x[0] = 0
+    for i in range(1, 4000):
+        x[i] = 0.6 * x[i - 1] + rng.normal()
+    long = pd.DataFrame({"year": np.arange(4000), "v": x})
+    assert stats.lag1_autocorrelation(long, "v") == pytest.approx(0.6, abs=0.03)
+    with pytest.raises(ValueError, match="consecutive"):
+        stats.lag1_autocorrelation(alternating.drop(index=5), "v")
+
+
+def test_ols_prediction_is_a_plain_ols_interval():
+    df = series()
+    train, new = df.iloc[:-1], df.iloc[[-1]]
+    out = stats.ols_prediction("log_burn ~ enso_djf + year", train, new)
+    ref = smf.ols("log_burn ~ enso_djf + year", train).fit().get_prediction(new).summary_frame(alpha=0.2)
+    assert out["pi_low"].iloc[0] == pytest.approx(ref["obs_ci_lower"].iloc[0])
+    assert out["predicted"].iloc[0] == pytest.approx(ref["mean"].iloc[0])
+
+
+def test_h4_null_contrast_rejection_rate_over_seeds():
+    # L10: more than one seed; 60 null panels, the registered contrast should
+    # not reject far more than the measured ~8% (binomial 60 x 0.08 = 4.8).
+    hits = sum(stats.h4_test(stats.fit_driscoll_kraay(
+        stats.H4_FORMULA, panel(seed=100 + s, slopes={r: 0.0 for r in H4_SLOPES})))
+        ["contrast"]["p"] < 0.05 for s in range(60))
+    assert hits <= 12
+
+
+def test_contrast_one_sided_and_wald_f_on_its_own():
+    df = series(beta=0.5)
+    fit = stats.fit_ols_hac("log_burn ~ enso_djf + temp_jja + year", df)
+    c = stats.contrast_test(fit, {"enso_djf": 1.0}, alternative="greater")
+    single = stats.coef_test(fit, "enso_djf", "greater")
+    assert c["p"] == pytest.approx(single["p"]) and c["estimate"] == pytest.approx(single["estimate"])
+    less = stats.contrast_test(fit, {"enso_djf": 1.0}, alternative="less")
+    assert less["p"] == pytest.approx(1 - c["p"])
+    # one-coefficient F equals t squared, same p as two-sided t
+    f = stats.wald_f_test(fit, ["enso_djf"])
+    t2 = stats.coef_test(fit, "enso_djf")
+    assert f["F"] == pytest.approx(t2["t"] ** 2)
+    assert f["p"] == pytest.approx(t2["p"])
+    assert (f["df_num"], f["df_den"]) == (1, 38)
+
+
+def test_all_stats_defaults_come_from_config():
+    import inspect
+    sig = {name: inspect.signature(getattr(stats, name)).parameters
+           for name in ("fit_ols_hac", "fit_driscoll_kraay", "block_bootstrap_ci",
+                        "bootstrap_ci_diff", "coef_test", "expanding_window", "run_family")}
+    assert sig["fit_ols_hac"]["maxlags"].default == config.HAC_MAXLAGS
+    assert sig["fit_ols_hac"]["use_t"].default == config.USE_T
+    assert sig["fit_ols_hac"]["use_correction"].default == config.ROBUST_SMALL_SAMPLE_CORRECTION
+    assert sig["fit_driscoll_kraay"]["maxlags"].default == config.HAC_MAXLAGS
+    assert sig["block_bootstrap_ci"]["block_len"].default == config.BLOCK_LEN
+    assert sig["bootstrap_ci_diff"]["alpha"].default == config.ALPHA
+    assert sig["coef_test"]["alpha"].default == config.ALPHA
+    assert sig["expanding_window"]["min_train"].default == config.FORWARD_MIN_TRAIN_YEARS
+    assert sig["expanding_window"]["alpha"].default == config.PREDICTION_ALPHA
+    assert sig["run_family"]["alpha"].default == config.ALPHA
