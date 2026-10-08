@@ -40,7 +40,7 @@ import numpy as np
 import pandas as pd
 import pyogrio
 
-from src.config import (CNFDB_PRESCRIBED_CAUSE, CNFDB_RAW, CRS_EQUAL_AREA, DATA_PROCESSED,
+from src.config import (CNFDB_MERGE_KM, CNFDB_PRESCRIBED_CAUSE, CNFDB_RAW, CRS_EQUAL_AREA, DATA_PROCESSED,
                         FIRE_COUNTRY, FIRE_EVENTS_TABLE, FIRE_FIRST_YEAR,
                         FIRE_LAST_YEAR_BY_REGION, FIRE_READ_BBOX, FIRE_REGION_TABLE,
                         FIRE_REGION_TABLE_FROZEN,
@@ -160,29 +160,55 @@ def read_cnfdb(folder: Path = CNFDB_RAW) -> gpd.GeoDataFrame:
     return dissolve_cnfdb(out[COLUMNS + ["cnfdb_year", "fire_key"]])
 
 
-def dissolve_cnfdb(fires: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+def merge_components(geoms: gpd.GeoSeries, max_km: float = CNFDB_MERGE_KM) -> np.ndarray:
+    """Component label for each geometry: parts that touch or lie within
+    max_km of another part (in CRS_EQUAL_AREA) share a label, chained."""
+    g = geoms.make_valid().to_crs(CRS_EQUAL_AREA).to_numpy()
+    label = np.arange(len(g))
+
+    def root(i):
+        while label[i] != i:
+            i = label[i]
+        return i
+
+    for i in range(len(g)):
+        for j in range(i + 1, len(g)):
+            if g[i].distance(g[j]) <= max_km * 1000:
+                label[root(j)] = root(i)
+    return np.array([root(i) for i in range(len(g))])
+
+
+def dissolve_cnfdb(fires: gpd.GeoDataFrame, max_km: float = CNFDB_MERGE_KM) -> gpd.GeoDataFrame:
     """One row per CNFDB fire: polygons sharing agency, YEAR and FIRE_ID
     (fire_id and cnfdb_year) are merged before the whole-fire floor, so the
     floor sees each fire's whole area (ANALYSIS_PLAN "Fire record rules";
-    audit 2026-10-08 M3: 136 such groups since 1984, e.g. BC 1998-N40187,
-    349 + 207 ha, was dropped part by part). Polygons with a blank FIRE_ID
-    (`fire_key` False; MB 625, SK 45, Parks Canada 9) are never merged.
+    audit 2026-10-08 M3: 136 such groups since 1984, e.g. BC 2003-N40570).
+    Within a group only parts that touch or lie within max_km of another
+    part merge (D67; audit round 2 H1): agencies reuse FIRE_ID within a
+    year, so BC 1998-N40187 (349 + 207 ha, 25 km apart) is two fires.
+    Further parts stay separate fires under the same fire_id. Polygons
+    with a blank FIRE_ID (`fire_key` False; MB 625, SK 45, Parks Canada 9)
+    are never merged.
 
     A merged fire takes the ignition date, date flag and fire_type of its
     earliest part with a known month; it is undated only if no part has a
-    month. Parts disagree on month in 11 groups, on day in 22, on CAUSE in
-    7, on the prescribed flag in none. `n_parts` counts the polygons."""
+    month. `n_parts` counts the polygons."""
     fires = fires.assign(n_parts=1)
     keyed = fires[fires["fire_key"]]
     dup = keyed.duplicated(["fire_id", "cnfdb_year"], keep=False)
-    single = pd.concat([fires[~fires["fire_key"]], keyed[~dup]])
+    single = [fires[~fires["fire_key"]], keyed[~dup]]
     merged = []
     for _, g in keyed[dup].groupby(["fire_id", "cnfdb_year"], sort=False):
-        dated = g[g["month_known"]]
-        first = (dated if len(dated) else g).sort_values("ignition").iloc[0].copy()
-        first["n_parts"] = len(g)
-        first["geometry"] = g.geometry.make_valid().union_all()
-        merged.append(first)
+        for _, part in g.groupby(merge_components(g.geometry, max_km), sort=False):
+            if len(part) == 1:
+                single.append(part)
+                continue
+            dated = part[part["month_known"]]
+            first = (dated if len(dated) else part).sort_values("ignition").iloc[0].copy()
+            first["n_parts"] = len(part)
+            first["geometry"] = part.geometry.make_valid().union_all()
+            merged.append(first)
+    single = pd.concat(single)
     if merged:
         single = pd.concat([single, gpd.GeoDataFrame(merged, geometry="geometry", crs=fires.crs)])
     return gpd.GeoDataFrame(single.drop(columns="fire_key"), geometry="geometry",

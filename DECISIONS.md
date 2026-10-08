@@ -17,6 +17,42 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Audit round 2 settled
+
+- **Settled (owner, 2026-10-08): the pre-results audit round 2**
+  (`docs/audit_2026-10-08_preresults_round2.md`, Fable 5.1, read-only, at
+  32e8d42; 1 high, 1 medium, 7 low). H1 (high): the round 1 CNFDB
+  dissolve merged different fires sharing a reused FIRE_ID; fixed by
+  merging only parts within 1 km, chained (D67). BC 1998 back to
+  60,120.5 ha and 22 fires (was 61,135.5 and 24 after round 1), BC 1994
+  back to 11 fires; the other six changed seasons kept; 58 merged fires
+  from 121 polygons, 10 among the counted pieces, all within 0.5 km.
+  Rejected: reverting to per polygon (loses the 10 sound merges); the NFDB
+  points file as a check (new download; the 25 km gap decides it).
+- **M1: plain OLS check dropped for the H4 contrast** (D68; size 0.7%,
+  power about half the registered test's), recorded internally only;
+  kept for H3a, H3b, C1, C2.
+- **L1-L7 as the report suggested:** `scripts/stats_size_check.py`
+  writes `results/tables/test_size.csv` with the tests each shape labels,
+  adding the H3b, persistent-predictor, C2 and C1 shapes (new: the C2
+  Newey-West interaction test measures 10.0-10.4%, its plain OLS check
+  4.6-5.2%; the bootstrap behind `--bootstrap`) (L1); register counts
+  for wildfire types, country assignment and the null sweep corrected
+  (L2, L4, L7); `n_parts` and `cnfdb_year` documented, ACTION_PLAN
+  progress line updated (L3); `lag1_autocorrelation` now the sample ACF
+  (one mean), predictors' values recomputed, largest change 0.01 (L5);
+  the H4 multi-seed test uses 200 panels with bound 26 (catches a
+  doubling 86% of the time; 18 rejections here), the bootstrap agreement
+  test 5 seeds with both outcomes, and a dissolve test with parts 25 km
+  apart, a 3-part chain and the 1 km edge (L6). A stale config comment
+  corrected while counting L2: the prescribed flags mark 309 CNFDB
+  polygons since 1984 (Parks Canada 297, AB 7, Ontario 5), not "304 in
+  BC, AB, YT and Parks Canada".
+- **NBAC downloaded (owner's yes, 2026-10-08) for the Parks Canada gap
+  and the NBAC vs CNFDB comparison:** `src/download_nbac.py`, release
+  v20260513; exploratory, not an input to any registered test, not in the
+  input pins. Findings go to the owner before anything is adopted.
+
 ### 2026-10-08 - Audit round 1 settled
 
 - **Settled (owner, yes on every finding): the pre-results audit round 1**

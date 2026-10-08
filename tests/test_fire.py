@@ -253,3 +253,38 @@ def test_dissolve_cnfdb_merges_parts_of_one_fire_before_the_floor():
     c = out[out["fire_id"] == "NT:C"].iloc[0]
     assert c["month_known"] and c["ignition"] == pd.Timestamp("1996-08-02")
     assert "fire_key" not in out
+
+
+def test_dissolve_cnfdb_keeps_far_apart_parts_separate_and_chains_near_ones():
+    # Audit 2026-10-08 round 2 H1 (D67): agencies reuse FIRE_ID within a year;
+    # BC 1998-N40187 was two fires 25 km apart. Built in CRS_EQUAL_AREA (metres)
+    # so the distances are exact.
+    import geopandas as gpd
+    from shapely.geometry import box
+    from src.config import CRS_EQUAL_AREA
+    from src.fire import dissolve_cnfdb, merge_components
+
+    def row(fire_id, geom, ignition="1998-08-05", fire_type="N"):
+        return {"source": "CNFDB", "fire_id": fire_id, "name": None, "fire_type": fire_type,
+                "ignition": pd.Timestamp(ignition), "month_known": True, "date_known": True,
+                "cnfdb_year": 1998, "fire_key": True, "geometry": geom}
+
+    far = [row("BC:F", box(0, 0, 1000, 1000), ignition="1998-05-16", fire_type="H"),
+           row("BC:F", box(26000, 0, 27000, 1000))]                      # 25 km gap
+    chain = [row("BC:G", box(0, 50000, 1000, 51000)),
+             row("BC:G", box(1600, 50000, 2600, 51000)),                 # 0.6 km from the first
+             row("BC:G", box(3200, 50000, 4200, 51000))]                 # 0.6 km from the second
+    edge = [row("BC:H", box(0, 90000, 1000, 91000)),
+            row("BC:H", box(2000, 90000, 3000, 91000))]                  # exactly 1 km: merged
+    fires = gpd.GeoDataFrame(far + chain + edge, geometry="geometry", crs=CRS_EQUAL_AREA)
+    out = dissolve_cnfdb(fires, max_km=1.0)
+    f = out[out["fire_id"] == "BC:F"].sort_values("ignition")
+    assert len(f) == 2 and (f["n_parts"] == 1).all()
+    assert list(f["fire_type"]) == ["H", "N"]            # each part keeps its own attributes
+    assert f.geometry.area.tolist() == pytest.approx([1e6, 1e6])
+    g = out[out["fire_id"] == "BC:G"]
+    assert len(g) == 1 and g["n_parts"].iloc[0] == 3     # chained, though first and last are 2.2 km apart
+    assert g.geometry.area.iloc[0] == pytest.approx(3e6)
+    assert (out["fire_id"] == "BC:H").sum() == 1
+    # a smaller distance splits the chain
+    assert len(set(merge_components(fires.geometry.iloc[2:5], max_km=0.5))) == 3

@@ -27,6 +27,64 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-08
 
+### D68 · Plain OLS check dropped for the H4 contrast (narrows D66)
+- **Plan:** D66 and `ANALYSIS_PLAN.md` deviations log, eighth row: a
+  plain OLS p reported beside the registered p of the ENSO tests (H3a,
+  H3b, H4 contrast, C1, C2), kept only where its own measured size is
+  near 5%.
+- **Actual:** audit round 2 (M1) found the H4 contrast's plain OLS p fails
+  that condition: size 0.7% with regions correlated 0.5 (0.000 at 0.8,
+  0.045 at 0; session 7 measured 0.6%), and power at a true
+  north-minus-SoCal slope difference of 0.10 / 0.15 / 0.20 of 0.11 /
+  0.30 / 0.58 against the registered Driscoll-Kraay test's 0.38 / 0.64 /
+  0.88. The shared year shock cancels in a between-region contrast, so
+  plain OLS overstates the contrast's variance. Owner chose (2026-10-08,
+  before any result): drop it for the H4 contrast; the measurement and
+  reason are kept in the internal records (methods register "Test size
+  (simulated)", `results/tables/test_size.csv`), not reported beside the
+  results. Kept for H3a, H3b, C1, C2 (3.8-5.6% in the second run).
+  Registered p-values and Holm verdicts unchanged.
+- **Why:** beside the registered p, a non-significant plain OLS p would
+  read as a failed check that the check could not have passed.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 2 settled".
+- **Substantial:** no (narrows D66's reported addition).
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, tenth row (added);
+  frozen text above the log unchanged.
+
+### D67 · CNFDB fires: parts merged only within 1 km
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules" and
+  "Outcomes": the 405 ha floor applies to each whole fire's area before
+  clipping; silent on CNFDB fires recorded as several polygons. The round 1
+  fix (32e8d42, audit M3) merged every polygon sharing agency, YEAR and
+  FIRE_ID before the floor, with no plan log row.
+- **Actual:** audit round 2 (H1) found agencies reuse FIRE_ID within a
+  year: the parts of the 136 groups lie a median 25 km apart, over 300 km
+  in 75%, up to 1,109 km. Among counted fires the round 1 merge joined
+  three pairs of separate fires: BC 1998-N40187 and N40188 (each two
+  sub-floor fires 25-26 km apart, now passing the floor together: BC 1998
+  +1,015 ha, 22 to 24 fires) and BC 1994-K50087 (43 km; 11 to 10 fires).
+  Owner chose (2026-10-08): merge only parts that touch or lie within
+  1 km of another part of the group, chained (`CNFDB_MERGE_KM` = 1.0,
+  distance in ESRI:102008); further parts stay separate fires. Rebuild:
+  58 merged fires from 121 polygons; 10 among the counted pieces, all with
+  parts within 0.5 km, the next counted pair 25 km apart (any distance
+  from 0.5 to 25 km gives the same tables). Against per polygon, 6
+  Canadian seasons change, no US season: BC 2003 +645 ha (56 to 57 fires),
+  BC 2006 +33 ha, AB 2012 +40 ha, and BC 2004, YT 1990, YT 1995, AB 2012
+  one fire fewer; BC 1998 (60,120.5 ha, 22 fires) and BC 1994 (11) as per
+  polygon. The frozen-rules table rebuilt the same way. Decided after fire
+  data was opened, before any test; a defect fix under D62's firm line.
+- **Why:** the frozen rule floors each fire's whole area; a merge of two
+  fires floors their sum. Rejected: reverting to per polygon (round 1
+  option b), which would undo the 10 sound merges; the NFDB points file
+  as a check (a new download, not needed with a 25 km gap and, for
+  N40188, different months and causes).
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 2 settled";
+  `docs/methods_register.md` "CNFDB fires in several polygons".
+- **Substantial:** no.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, ninth row (added, also
+  covering the round 1 merge); frozen text above the log unchanged.
+
 ### D66 · Test size reported; plain OLS p added as a size check
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Small-cluster corrections",
   "Headline methods" 2-3, "Supporting methods": Newey-West and

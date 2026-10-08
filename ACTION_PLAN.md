@@ -151,7 +151,8 @@ that sets burned area beside ENSO until Phase 4 [mid-project: D62].
 Gate code built 2026-10-08 (session 7): `src/stats.py`, `src/climate_vars.py`,
 the frozen-rules fire table (`python -m src.fire --frozen-rules`) and input
 pins (`src/pin_inputs.py`); small-sample correction on everywhere (D65).
-Audit round 1 next.
+Audit round 1 settled 2026-10-08 (D66); round 2 settled 2026-10-08 (D67,
+D68); round 3 cold review of the round 2 fixes next.
 
 - [ ] **Frozen-rules robustness run** [mid-project: D62]: every burned-area
       test (H2, H3a, H3b, H4, H5, H6, C2) rerun on a fire table built under

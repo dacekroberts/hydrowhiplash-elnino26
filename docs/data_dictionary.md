@@ -526,13 +526,14 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   each source's clipped pieces are unioned (overlap counted once, D61) and
   the sources summed. `double_ha`: the overlap left out (ha).
 - `n_fires`: counted fire pieces in the region (a fire in two regions
-  counts in each; 47 such fires). Pieces, not fires (audit 2026-10-08 L11): 13 slivers under
+  counts in each; 48 such fires, a fire being source, id and year). Pieces, not fires (audit 2026-10-08 L11): 13 slivers under
   1 ha of fires crossing an edge count in the neighbouring region (AB 5,
   BC 5, NorCal 1, PNW 1, YT 1), and WFIGS has 3 pairs sharing a name,
   region and season under different ids (Whiskey Mountain OR 2024, same
   unit, likely one fire; Mineral OR/ID and Horseshoe CA, different units),
   where the union keeps the area right but `n_fires` may count one fire
-  twice; CNFDB fires in several polygons count once since 2026-10-08.
+  twice; CNFDB fires in several polygons count once since 2026-10-08 where
+  the parts lie within 1 km (D67).
   `n_undated`: CNFDB pieces without a
   month, counted for season YEAR (D59). `n_unknown_type`: MTBS "Other"
   pieces (the plan's Unknown, D58). `source`: MTBS, WFIGS, CNFDB, or
@@ -555,8 +556,12 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
 - `winter`, `enso_index`, `enso_djf`, `phase`, `strong`: the ENSO columns of
   the winter before (year Y = winter (Y-1)-Y), from `el_nino_winters.csv`.
 - `data/processed/fire_events.csv` (not committed): one row per fire-region
-  piece (9,756 rows after the CNFDB dissolve of 2026-10-08, 9,758 before; including 2026 WFIGS pieces outside the tests), with
-  `fire_ha` (whole fire), `clipped_ha`, `season`, dates and flags.
+  piece (9,755 rows after the 1 km CNFDB dissolve of 2026-10-08, D67; 9,756
+  after the round 1 dissolve, 9,758 per polygon; including 2026 WFIGS pieces
+  outside the tests), with `fire_ha` (whole fire), `clipped_ha`, `season`,
+  dates and flags; `cnfdb_year` (the agency YEAR, CNFDB only) and `n_parts`
+  (CNFDB polygons merged into the fire: 1, or 2 for 10 counted fires; empty
+  for MTBS and WFIGS).
 - **Frozen-rules variant** (built 2026-10-08, D62; `python -m src.fire
   --frozen-rules`, from `fire_events.csv`):
   `results/tables/fire_region_year_frozen_rules.csv`, same columns and 291
@@ -569,7 +574,7 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
 
 **Input pins** (`results/tables/input_pins.csv`, `python -m
 src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
-the 25 files the tests read (committed tables, ENSO downloads, fire
+the 26 files the tests read (25 until `test_size.csv`, 2026-10-08) (committed tables, ENSO downloads, fire
 downloads, `fire_events.csv`); `--verify` raises if any changed. RONI is
 revised monthly and WFIGS is live, so the tests use these copies.
 
@@ -647,6 +652,14 @@ revised monthly and WFIGS is live, so the tests use these copies.
   true null far more often than 5%; see `docs/methods_register.md`.
 - **Test size:** the share of datasets with no true effect in which a test
   gives p < 0.05; a correct test gives about 5% (`scripts/stats_size_check.py`).
+  `results/tables/test_size.csv` (audit round 2 L1): `shape`, `labels` (the
+  registered tests whose p it labels), `method`, `sidedness`, `scenario`,
+  `label_scenario` (True for the scenario the printed labels use: AR(1) 0.3
+  errors, regions correlated 0.5), `reps`, `rejection_rate`, `mc_se`,
+  `measured`.
+- **Lag-1 autocorrelation:** the sample autocorrelation at lag 1, one mean
+  and the whole series' sum of squares (`stats.lag1_autocorrelation`, as
+  statsmodels `acf`; round 2 L5).
 - **Expanding-window validation:** fit on seasons 1984 to Y-1 only and
   predict Y, moving Y forward from 2004 (20 training seasons). Unlike
   leave-one-year-out, the model never sees years after the one predicted,

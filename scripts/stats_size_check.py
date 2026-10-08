@@ -1,22 +1,27 @@
 """Size of the gate's tests on synthetic null data (no fire data).
 
 The share of synthetic datasets with no true effect in which each test gives
-p < 0.05: a test with the right size rejects about 5% of them. Covers the H4
-contrast and joint F test (Driscoll-Kraay, df = years - 1, and
-year-clustered) on a 5-region, 41-year panel, and the per-region Newey-West
-coefficient test (H3a shape, 42 years), plus the M1(b) size checks beside
-them (plain OLS p, year-block bootstrap p; audit 2026-10-08). Scenarios:
-errors independent; AR(1) rho 0.3 over years; AR(1) 0.3 with the regions'
-errors correlated 0.5 within a year (the audit's realistic case). Settings
-from src/config.py; the bootstrap uses BOOT draws per dataset here (the
-analysis uses N_BOOTSTRAP).
+p < 0.05: a test with the right size rejects about 5% of them. One row per
+test shape, with the registered tests whose p it labels (D66; audit
+2026-10-08 round 2 L1): the H4 contrast and joint F (Driscoll-Kraay, df =
+years - 1, and year-clustered) on a 5-region, 41-year panel; the
+per-region Newey-West ENSO coefficient (H3a), the same with a persistent
+control (H3b), a persistent predictor (H5, H6, predictor AR(1) 0.27, the
+largest real lag-1 autocorrelation) and the enso x year_c interaction over
+42 fire seasons (C2) and 76 winters (C1); plus the plain OLS check beside
+each (D66; for the H4 contrast measured, not reported, round 2 M1).
+Scenarios: errors independent; AR(1) rho 0.3 over years; AR(1) 0.3 with
+the regions' errors correlated 0.5 within a year (the realistic case, the
+one the printed labels use). `--bootstrap` adds the year-block bootstrap p
+(dropped by D66; slow).
 
-Run from the repo root:  python scripts/stats_size_check.py [reps]
-Measured 2026-10-08: see docs/methods_register.md "Statistics", row "Test
-size (simulated)".
+Run from the repo root:  python scripts/stats_size_check.py [reps] [--bootstrap]
+Writes results/tables/test_size.csv (TEST_SIZE_TABLE); measured values in
+docs/methods_register.md "Statistics", row "Test size (simulated)".
 """
 from __future__ import annotations
 
+import datetime
 import sys
 from pathlib import Path
 
@@ -26,12 +31,35 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src import stats  # noqa: E402
-from src.config import H4_NORTH, H4_REGIONS, RANDOM_SEED  # noqa: E402
+from src.config import H4_NORTH, H4_REGIONS, RANDOM_SEED, TEST_SIZE_TABLE  # noqa: E402
 
 YEARS = np.arange(1984, 2025)
 BOOT = 499
-SCENARIOS = {"independent": (0.0, 0.0), "AR(1) 0.3": (0.3, 0.0),
-             "AR(1) 0.3, regions r 0.5": (0.3, 0.5)}
+LABEL_SCENARIO = "AR(1) 0.3, regions r 0.5"
+SCENARIOS = {"independent": (0.0, 0.0), "AR(1) 0.3": (0.3, 0.0), LABEL_SCENARIO: (0.3, 0.5)}
+PREDICTOR_AR = 0.27
+# shape: (registered tests it labels, method, sidedness)
+SHAPES = {
+    "H4 contrast, DK": ("H4 contrast", "Driscoll-Kraay", "two-sided"),
+    "H4 joint F, DK": ("H4 joint F", "Driscoll-Kraay", "F"),
+    "H4 contrast, clustered": ("H4 contrast, year-clustered model", "year-clustered", "two-sided"),
+    "H4 joint F, clustered": ("H4 joint F, year-clustered model", "year-clustered", "F"),
+    "H4 contrast, plain OLS": ("not reported (round 2 M1)", "plain OLS", "two-sided"),
+    "H3a, NW one-sided": ("H3a PNW/BC/AB", "Newey-West", "one-sided"),
+    "H3a, NW two-sided": ("H3a NorCal, SoCal, AK, YT", "Newey-West", "two-sided"),
+    "H3a, plain OLS two-sided": ("H3a check", "plain OLS", "two-sided"),
+    "H3b, NW one-sided": ("H3b PNW/BC/AB", "Newey-West", "one-sided"),
+    "H3b, NW two-sided": ("H3b NorCal, SoCal, AK, YT", "Newey-West", "two-sided"),
+    "H3b, plain OLS two-sided": ("H3b check", "plain OLS", "two-sided"),
+    "persistent predictor, NW one-sided": ("H5, H6 one-sided", "Newey-West", "one-sided"),
+    "persistent predictor, NW two-sided": ("H5, H6 two-sided", "Newey-West", "two-sided"),
+    "C2 interaction, NW two-sided": ("C2", "Newey-West", "two-sided"),
+    "C2 interaction, plain OLS two-sided": ("C2 check", "plain OLS", "two-sided"),
+    "C1 interaction, NW one-sided": ("C1", "Newey-West", "one-sided"),
+    "C1 interaction, plain OLS one-sided": ("C1 check", "plain OLS", "one-sided"),
+    "H4 contrast, block bootstrap": ("dropped (D66)", "year-block bootstrap", "two-sided"),
+    "H3a, block bootstrap two-sided": ("dropped (D66)", "year-block bootstrap", "two-sided"),
+}
 
 
 def ar1(rng, shape, rho):
@@ -56,21 +84,35 @@ def null_panel(rng, rho, r_regions):
 
 
 def null_series(rng, rho, n=42):
+    """One region's null series: white ENSO, a control persistent at AR 0.5
+    and correlated 0.4 with ENSO (temp_jja, H3b), a predictor at
+    PREDICTOR_AR (H5, H6), centred year; errors AR(1) rho."""
     years = np.arange(1984, 1984 + n)
-    return pd.DataFrame({"year": years, "enso_djf": rng.normal(0, 1, n),
+    enso = rng.normal(0, 1, n)
+    return pd.DataFrame({"year": years, "year_c": years - years.mean(), "enso_djf": enso,
+                         "temp_jja": 0.4 * enso + np.sqrt(1 - 0.16) * ar1(rng, (n,), 0.5),
+                         "x": ar1(rng, (n,), PREDICTOR_AR),
                          "log_burn": 10 + 0.5 * ar1(rng, (n,), rho)})
 
 
-def main(reps: int = 1000) -> None:
+def main(reps: int = 1000, bootstrap: bool = False) -> pd.DataFrame:
     rng = np.random.default_rng(RANDOM_SEED)
     contrast = {stats.h4_interaction_name(r): 1 / len(H4_NORTH) for r in H4_NORTH}
     h3a = "log_burn ~ enso_djf + year"
+    h3b = "log_burn ~ enso_djf + temp_jja + year"
+    pers = "log_burn ~ x + year"
+    inter = "log_burn ~ enso_djf + year_c + enso_djf:year_c"
     rows = []
     for label, (rho, r_regions) in SCENARIOS.items():
         hits: dict[str, int] = {}
 
         def hit(name, p):
             hits[name] = hits.get(name, 0) + (p < 0.05)
+
+        def coef(name, formula, data, term, alternative="two-sided", plain=False):
+            fit = (stats.fit_ols_plain(formula, data) if plain
+                   else stats.fit_ols_hac(formula, data))
+            hit(name, stats.coef_test(fit, term, alternative)["p"])
 
         for _ in range(reps):
             df = null_panel(rng, rho, r_regions)
@@ -81,26 +123,47 @@ def main(reps: int = 1000) -> None:
                 hit(f"H4 joint F, {tag}", out["joint"]["p"])
             hit("H4 contrast, plain OLS",
                 stats.contrast_test(stats.fit_ols_plain(stats.H4_FORMULA, df), contrast)["p"])
-            hit("H4 contrast, block bootstrap",
-                stats.block_bootstrap_p(stats.H4_FORMULA, df, contrast, n_boot=BOOT,
-                                        seed=int(rng.integers(1 << 31)))["p"])
             s = null_series(rng, rho)
-            fit = stats.fit_ols_hac(h3a, s)
-            hit("H3a shape, Newey-West two-sided", stats.coef_test(fit, "enso_djf")["p"])
-            hit("H3a shape, Newey-West one-sided",
-                stats.coef_test(fit, "enso_djf", "greater")["p"])
-            hit("H3a shape, plain OLS two-sided",
-                stats.coef_test(stats.fit_ols_plain(h3a, s), "enso_djf")["p"])
-            hit("H3a shape, block bootstrap two-sided",
-                stats.block_bootstrap_p(h3a, s, {"enso_djf": 1.0}, n_boot=BOOT,
-                                        seed=int(rng.integers(1 << 31)))["p"])
-        rows += [{"scenario": label, "test": k, "rejection_rate": v / reps}
-                 for k, v in hits.items()]
-    table = pd.DataFrame(rows).pivot(index="test", columns="scenario", values="rejection_rate")
+            coef("H3a, NW one-sided", h3a, s, "enso_djf", "greater")
+            coef("H3a, NW two-sided", h3a, s, "enso_djf")
+            coef("H3a, plain OLS two-sided", h3a, s, "enso_djf", plain=True)
+            coef("H3b, NW one-sided", h3b, s, "enso_djf", "greater")
+            coef("H3b, NW two-sided", h3b, s, "enso_djf")
+            coef("H3b, plain OLS two-sided", h3b, s, "enso_djf", plain=True)
+            coef("persistent predictor, NW one-sided", pers, s, "x", "greater")
+            coef("persistent predictor, NW two-sided", pers, s, "x")
+            coef("C2 interaction, NW two-sided", inter, s, "enso_djf:year_c")
+            coef("C2 interaction, plain OLS two-sided", inter, s, "enso_djf:year_c", plain=True)
+            w = null_series(rng, rho, n=76)
+            coef("C1 interaction, NW one-sided", inter, w, "enso_djf:year_c", "less")
+            coef("C1 interaction, plain OLS one-sided", inter, w, "enso_djf:year_c", "less",
+                 plain=True)
+            if bootstrap:
+                hit("H4 contrast, block bootstrap",
+                    stats.block_bootstrap_p(stats.H4_FORMULA, df, contrast, n_boot=BOOT,
+                                            seed=int(rng.integers(1 << 31)))["p"])
+                hit("H3a, block bootstrap two-sided",
+                    stats.block_bootstrap_p(h3a, s, {"enso_djf": 1.0}, n_boot=BOOT,
+                                            seed=int(rng.integers(1 << 31)))["p"])
+        rows += [{"shape": k, "labels": SHAPES[k][0], "method": SHAPES[k][1],
+                  "sidedness": SHAPES[k][2], "scenario": label,
+                  "label_scenario": label == LABEL_SCENARIO, "reps": reps,
+                  "rejection_rate": v / reps} for k, v in hits.items()]
+    table = pd.DataFrame(rows)
+    table["mc_se"] = np.sqrt(0.05 * 0.95 / reps)
+    table["measured"] = datetime.date.today().isoformat()
+    TEST_SIZE_TABLE.parent.mkdir(parents=True, exist_ok=True)
+    table.round(4).to_csv(TEST_SIZE_TABLE, index=False, lineterminator="\n")
+    wide = table.pivot(index="shape", columns="scenario", values="rejection_rate")
     print(f"share of {reps} null datasets with p < 0.05 (nominal 0.05; "
-          f"Monte Carlo SE {np.sqrt(0.05 * 0.95 / reps):.3f}); bootstrap {BOOT} draws")
-    print(table[list(SCENARIOS)].round(3).to_string())
+          f"Monte Carlo SE {np.sqrt(0.05 * 0.95 / reps):.3f})"
+          + (f"; bootstrap {BOOT} draws" if bootstrap else ""))
+    print(wide[list(SCENARIOS)].reindex([k for k in SHAPES if k in wide.index])
+          .round(3).to_string())
+    print(f"wrote {TEST_SIZE_TABLE}")
+    return table
 
 
 if __name__ == "__main__":
-    main(int(sys.argv[1]) if len(sys.argv) > 1 else 1000)
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    main(int(args[0]) if args else 1000, bootstrap="--bootstrap" in sys.argv)

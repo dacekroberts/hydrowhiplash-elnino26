@@ -423,8 +423,11 @@ def test_block_bootstrap_p_on_one_series_is_the_registered_block_bootstrap():
     assert out["p"] < 0.01  # planted 0.5 with noise 0.5
 
 
-def test_block_bootstrap_p_tails_and_ci_agree():
-    df = series(seed=11, beta=0.0)
+@pytest.mark.parametrize("seed,beta", [(11, 0.0), (12, 0.0), (13, 0.15), (14, 0.3), (15, 0.5)])
+def test_block_bootstrap_p_tails_and_ci_agree(seed, beta):
+    # several seeds and effect sizes, so both rejections and non-rejections
+    # are checked (round 2 L6; was one seed)
+    df = series(seed=seed, beta=beta)
     two = stats.block_bootstrap_p("log_burn ~ enso_djf + year", df, {"enso_djf": 1.0},
                                   n_boot=999)
     greater = stats.block_bootstrap_p("log_burn ~ enso_djf + year", df, {"enso_djf": 1.0},
@@ -484,7 +487,10 @@ def test_percent_change_by_hand():
 def test_lag1_autocorrelation_known_answers_and_refusals():
     years = np.arange(1984, 2026)
     alternating = pd.DataFrame({"year": years, "v": np.tile([1.0, -1.0], 21)})
-    assert stats.lag1_autocorrelation(alternating, "v") == pytest.approx(-1.0)
+    assert stats.lag1_autocorrelation(alternating, "v") == pytest.approx(-41 / 42)
+    from statsmodels.tsa.stattools import acf
+    rough = pd.DataFrame({"year": years, "v": np.random.default_rng(8).normal(size=42).cumsum()})
+    assert stats.lag1_autocorrelation(rough, "v") == pytest.approx(acf(rough["v"], nlags=1)[1])
     rng = np.random.default_rng(3)
     x = np.empty(4000)
     x[0] = 0
@@ -506,12 +512,15 @@ def test_ols_prediction_is_a_plain_ols_interval():
 
 
 def test_h4_null_contrast_rejection_rate_over_seeds():
-    # L10: more than one seed; 60 null panels, the registered contrast should
-    # not reject far more than the measured ~8% (binomial 60 x 0.08 = 4.8).
+    # L10: more than one seed; the registered contrast should not reject far
+    # more than the measured ~8%. 200 null panels: 16 expected at 8%; the
+    # bound 26 is passed by chance at 8% with probability under 1% and
+    # catches a doubling to 16% (32 expected) 86% of the time; 18 of 200 here
+    # (round 2 L6; was 60 panels, bound 12).
     hits = sum(stats.h4_test(stats.fit_driscoll_kraay(
         stats.H4_FORMULA, panel(seed=100 + s, slopes={r: 0.0 for r in H4_SLOPES})))
-        ["contrast"]["p"] < 0.05 for s in range(60))
-    assert hits <= 12
+        ["contrast"]["p"] < 0.05 for s in range(200))
+    assert hits <= 26
 
 
 def test_contrast_one_sided_and_wald_f_on_its_own():

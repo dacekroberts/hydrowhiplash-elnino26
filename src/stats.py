@@ -28,10 +28,12 @@ Size checks (audit 2026-10-08 M1(b); added, reported beside the registered
 p-values, not registered; scripts/stats_size_check.py measures them; kept
 only where the measured size is near 5%):
   fit_ols_plain          the same model with ordinary standard errors; kept
-                         for the ENSO tests (H3a, H3b, H4 contrast, C1, C2:
-                         ENSO lag-1 autocorrelation -0.01, size 4-6%; the H4
-                         contrast 0.6% with correlated regions), not for H5
-                         and H6 (predictors up to AR 0.27: 7-9%)
+                         for the per-region ENSO tests (H3a, H3b, C1, C2:
+                         ENSO lag-1 autocorrelation -0.01, size 4-6%), not
+                         for H5 and H6 (predictors up to AR 0.27: 7-9%) nor
+                         the H4 contrast (0.7% with correlated regions, the
+                         shared year shock cancels in a between-region
+                         contrast; measured, not reported: D68)
   block_bootstrap_p      year-block bootstrap p; measured 6-9%, so dropped as
                          a check (kept to reproduce the measurement)
 Other helpers (audit L6): strong_flags (near-threshold flip), center_year,
@@ -699,14 +701,18 @@ def percent_change(b):
 
 
 def lag1_autocorrelation(df: pd.DataFrame, value: str, year_col: str = "year") -> float:
-    """Pearson correlation of each year's value with the previous year's,
-    for one region's series of consecutive years in order (ANALYSIS_PLAN
-    "Supporting methods", autocorrelation)."""
+    """Sample lag-1 autocorrelation of one region's series of consecutive
+    years in order (ANALYSIS_PLAN "Supporting methods", autocorrelation):
+    the textbook estimator, one mean and the whole series' sum of squares
+    in the denominator, as statsmodels `acf` (audit 2026-10-08 round 2 L5;
+    was the Pearson correlation of adjacent pairs, 0.203 against 0.197 on
+    the audit's synthetic series)."""
     years = df[year_col].to_numpy()
     if len(years) < 3 or not (np.diff(years) == 1).all():
         raise ValueError(f"lag1_autocorrelation needs at least 3 consecutive, sorted {year_col!r} values.")
     x = _no_nan(df[value].to_numpy(dtype=float), value)
-    return float(np.corrcoef(x[:-1], x[1:])[0, 1])
+    d = x - x.mean()
+    return float((d[:-1] * d[1:]).sum() / (d * d).sum())
 
 
 def ols_prediction(formula: str, train: pd.DataFrame, new: pd.DataFrame,

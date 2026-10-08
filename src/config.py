@@ -189,8 +189,15 @@ MTBS_UNKNOWN_TYPE = "Other"
 # WFIGS attr_IncidentTypeCategory: WF wildfire kept, RX prescribed dropped.
 WFIGS_KEEP_TYPES = ("WF",)
 # CNFDB prescribed burns: CAUSE "H-PB" or PRESCRIBED "yes" (the two flag the
-# same 304 polygons in BC, AB, YT and Parks Canada, 1984-2024), dropped.
+# same 309 polygons since 1984: Parks Canada 297, AB 7, Ontario 5; 306 fires
+# after the dissolve), dropped.
 CNFDB_PRESCRIBED_CAUSE = "H-PB"
+# CNFDB polygons sharing agency, YEAR and FIRE_ID are one fire only where
+# they touch or lie within this distance of another part, chained (owner,
+# 2026-10-08, D67; audit round 2 H1: agencies reuse FIRE_ID within a year,
+# parts a median 25 km apart). Counted merges: sound parts 0.5 km apart at
+# most, separate fires 25 km or more, so any value between gives one table.
+CNFDB_MERGE_KM = 1.0
 # MTBS for fires ignited before this date, WFIGS from it (owner, 2026-10-07,
 # D61; was 2025-01-01 earlier that day). A fire-by-fire match found MTBS
 # missing 22-58% of each US region's 2024 WFIGS area and complete in
@@ -227,6 +234,9 @@ FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
 # committed tables, the ENSO files and the fire downloads of 2026-10-07;
 # no re-download until the results are in (src.pin_inputs).
 INPUT_PINS_TABLE = RESULTS / "tables" / "input_pins.csv"
+# Simulated size of each test shape (scripts/stats_size_check.py; D66, audit
+# 2026-10-08 round 2 L1): the size labels printed beside robust p-values.
+TEST_SIZE_TABLE = RESULTS / "tables" / "test_size.csv"
 
 # Fire perimeter downloads (Phase 3; DATA_SOURCES.md rows MTBS, WFIGS,
 # CNFDB). Raw files as published; filtering happens in src/fire.py.
@@ -234,6 +244,7 @@ FIRE_RAW = DATA_RAW / "fire"
 MTBS_RAW = FIRE_RAW / "mtbs"
 WFIGS_RAW = FIRE_RAW / "wfigs"
 CNFDB_RAW = FIRE_RAW / "cnfdb"
+NBAC_RAW = FIRE_RAW / "nbac"
 # The file behind "MTBS Burned Areas Boundaries Dataset 1984-2026" on the
 # Direct Download page (checkbox name mtbs_perimeter_data, checked 2026-10-07).
 MTBS_PERIMETER_URL = ("https://edcintl.cr.usgs.gov/downloads/sciweb1/shared/MTBS_Fire/"
@@ -255,6 +266,14 @@ WFIGS_EXPORT_WAIT_S = 900  # give up if the Hub export is not ready by then
 CNFDB_URL = "https://cwfis.cfs.nrcan.gc.ca/downloads/nfdb/fire_poly/current_version/"
 CNFDB_FILES = ["NFDB_poly.zip", "NFDB_documentation_EN.pdf", "NFDB_poly_update_log.txt",
                "NFDB_poly_shapefile_metadata.pdf", "NFDB_Poly_metadata_NAP_ISO_19115_2003.xml"]
+# NBAC (National Burned Area Composite), release v20260513, years 1972-2025
+# (DATA_SOURCES.md NBAC row; docs/nbac_probe.md). Exploratory only (owner,
+# 2026-10-08): the Parks Canada 2018-2020 gap and the NBAC vs CNFDB
+# comparison; not an input to any registered test, so not in the input pins.
+NBAC_URL = "https://cwfis.cfs.nrcan.gc.ca/downloads/nbac/"
+NBAC_RELEASE = "20260513"
+NBAC_FILES = [f"NBAC_1972to2025_{NBAC_RELEASE}_shp.zip",
+              f"NBAC_1972to2025_{NBAC_RELEASE}_shp_metadata.pdf"]
 # Zero-fire region-years: kept (log_burn = 0); a sensitivity run leaves them
 # out (permutation tests drop them, regressions give each its own 0/1
 # indicator; ANALYSIS_PLAN "Execution details"); no percent-change reporting
