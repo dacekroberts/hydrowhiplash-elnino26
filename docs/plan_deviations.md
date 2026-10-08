@@ -25,7 +25,7 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
-## 2026-10-07 (Phase 3, session 6)
+## 2026-10-07 (Phase 3, session 6: after the freeze, after fire data was opened)
 
 ### D61 · MTBS complete only through 2023; union area; D60 re-run on 2023
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": "MTBS for
@@ -45,8 +45,9 @@ additions stay distinguishable from the original plan.
   and complex outlines (NorCal 2023 "BLOCK", Mosquito).
 - **Recorded:** `DECISIONS.md` 2026-10-07 "MTBS complete through 2023;
   cutover, union area, D60 re-run".
-- **Plan doc:** left as written (frozen); a dated row goes in the plan's
-  deviations log for union area, and for the years if the re-run fails.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, fifth row (2026-10-07),
+  stating what had been seen when it was decided; the frozen text above
+  the log unchanged (checked against the tag).
 
 ### D60 · Last fire season set by a source-agreement rule on 2024
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": "MTBS for
@@ -65,8 +66,8 @@ additions stay distinguishable from the original plan.
   season at a gap of 11-17%; the same test applied to the US splice.
 - **Recorded:** `DECISIONS.md` 2026-10-07 "Fire record rules settled at
   download (session 6)".
-- **Plan doc:** left as written (frozen); if the rule ends the US series at
-  2024, a dated row goes in the plan's deviations log.
+- **Plan doc:** superseded by D61 before it changed any year; its rule and
+  re-run are in the plan's deviations log, fifth row.
 
 ### D59 · CNFDB fires without a month or day counted by YEAR
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules" and "Fire
@@ -78,7 +79,7 @@ additions stay distinguishable from the original plan.
   outside the windows hold 0.01-0.9% of area.
 - **Why:** dropping them would remove most of Yukon's 2022 fires.
 - **Recorded:** same entry.
-- **Plan doc:** left as written (frozen).
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, fourth row (2026-10-07).
 
 ### D58 · MTBS has "Other", not "Unknown"
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": MTBS incident
@@ -90,7 +91,8 @@ additions stay distinguishable from the original plan.
   to read Other as Unknown.
 - **Why:** label changed in the data, not the rule.
 - **Recorded:** same entry.
-- **Plan doc:** left as written (frozen); `MTBS_KEEP_TYPES` lists "Other".
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, third row (2026-10-07);
+  `MTBS_KEEP_TYPES` lists "Other".
 
 ## 2026-10-07 (after freeze)
 
