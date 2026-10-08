@@ -176,10 +176,11 @@ Paste everything below into a new Claude Code session in the main checkout.
 ```text
 Session 7 for hydrowhiplash-elnino26: Phase 4, pre-results audit gate.
 
-1. Orient: read CLAUDE.md, docs/session7_kickoff.md (Part 1), the latest log
-   in logs/ ("Next" and the session 6 block), ANALYSIS_PLAN.md (frozen:
-   never edit above the deviations log), ACTION_PLAN.md Phase 4,
-   docs/methods_register.md "Fire" and "Statistics", D58-D62 in
+1. Orient: read CLAUDE.md, docs/session7_kickoff.md (Part 1), the logs
+   logs/2026-10-07.md (session 6 block, 15:35-21:00) and logs/2026-10-08.md
+   (its continuation and "Next"), ANALYSIS_PLAN.md (frozen: never edit
+   above the deviations log), ACTION_PLAN.md Phase 4,
+   docs/methods_register.md "Fire" and "Statistics", D58-D64 in
    docs/plan_deviations.md, src/stats.py and the top of DECISIONS.md.
    Then read the roadmap artifact with the Artifact tool (action "read"):
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
@@ -190,30 +191,40 @@ Session 7 for hydrowhiplash-elnino26: Phase 4, pre-results audit gate.
    hypothesis ID, and quote the actual wording beside every item ID
    (memory notes).
 
-3. If it is early November or later, do the hard-line item in Part 1 first.
+3. If it is early November or later, do the hard-line item in Part 1 first,
+   with its check that every 1951-2025 climate value stays identical.
 
 4. Build the gate's code here in the main session; the Claude Code Project
-   go/no-go comes after the audit (D63), for the hypothesis runs.
+   go/no-go comes after the last audit round (D63), for the hypothesis runs.
 
 5. Build and test on synthetic data with known answers, before anything
    runs on the fire table: one-sided p, use_t, Driscoll-Kraay with
    df = years - 1, the H4 contrast and F test, expanding window with the
    trend-only skill score, zero-fire indicators, the Holm/BH family
    runner, burn_detr, temp_jja, temp_mam, precip_anom, and the D62
-   frozen-rules fire table. Test every trap in Part 1's list; bring me
-   the HAC small-sample correction decision before any result. No hypothesis test runs on fire data, and no
-   view sets burned area beside ENSO.
+   frozen-rules fire table. Address all eleven traps in Part 1's list;
+   bring me the HAC small-sample correction decision before any result.
+   No hypothesis test runs on fire data, and no view sets burned area
+   beside ENSO.
 
 6. Then give me a cold read-only audit prompt covering the statistics code
    and the fire build (D51 extended by D62). The audit runs in rounds
-   (D64): settle and fix each round's findings, then a fresh cold review
-   of the fixes and the whole gate, until a round finds nothing high and
-   I agree. Save every report unchanged in docs/.
+   (D64): I give a yes or no on each finding, you fix, then a fresh cold
+   review of the fixes and the whole gate, until a round finds nothing
+   high and I agree. Save every report unchanged in docs/.
 
-7. Side PRs, if any are open: pre-screen and merge only with the
+7. Investigate before deciding (Part 1, "Investigate before deciding"):
+   the Parks Canada 2018-2020 gap, an NBAC vs CNFDB comparison for the
+   exploratory re-run, and the Interior Alaska check, each measured for
+   its worth to the final product within the listed limits. Bring me the
+   findings; nothing is adopted without my yes. These can wait for
+   session 8 if the gate code fills this one, but the Parks Canada check
+   must finish before the last audit round closes.
+
+8. Side PRs, if any are open: pre-screen and merge only with the
    merge-side-pr skill and my yes.
 
-8. End of session: daily-log skill, python scripts/log.py list,
+9. End of session: daily-log skill, python scripts/log.py list,
    python scripts/check_no_em_dashes.py, commit and push; refresh the data
    guide artifact (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P) and
    offer to update the roadmap artifact; write the next kickoff the same
