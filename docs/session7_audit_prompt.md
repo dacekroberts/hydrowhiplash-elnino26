@@ -154,3 +154,73 @@ suggested fix; then what you checked that passed and what you could not
 check. End with `python -m src.pin_inputs --verify` and `git status`
 output, both before and after.
 ```
+
+## Round 3 · prompt
+
+Written after round 2 was settled (`docs/audit_2026-10-08_preresults_round2.md`;
+fixes in 309de6a; DECISIONS 2026-10-08 "Audit round 2 settled"; D67, D68).
+
+```text
+Cold, read-only review, round 3 of the pre-results audit of
+hydrowhiplash-elnino26, main checkout at commit 309de6a. You did not
+write any of this code and did not take part in rounds 1 or 2. Find what
+is wrong, not what is right.
+
+Rules for this session:
+- Read-only. Do not edit, create or delete anything inside the repository,
+  do not change git state, and do not run any `src` module's main (several
+  write tables or download). Scratch scripts, outputs and your report go
+  in your own scratchpad only; the main session copies the report into
+  docs/.
+- No hypothesis test on fire data: do not compute any registered test, or
+  any statistic relating burned area to ENSO, on the real fire tables.
+  Never print, plot or summarise burned area beside any ENSO column
+  (`enso_djf`, `phase`, `strong`); when reading the fire tables, select
+  columns without them. Synthetic data is unrestricted.
+- Do not re-download anything. Run `python -m src.pin_inputs --verify` at
+  the start and the end. data/raw/fire/nbac/ (NBAC, downloaded for
+  exploratory checks) is outside this review's scope; do not open it.
+- Run commands with
+  C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash --no-capture-output python ...
+  from the repo root (multi-line Python goes in a script file).
+
+Read first: CLAUDE.md; ANALYSIS_PLAN.md in full (frozen at tag
+analysis-plan-frozen; its deviations log lists every later change);
+ACTION_PLAN.md Phases 3-4; docs/audit_2026-10-08_preresults_round1.md and
+docs/audit_2026-10-08_preresults_round2.md; DECISIONS.md entries dated
+2026-10-08; docs/plan_deviations.md D62 and D65-D68;
+docs/methods_register.md "Statistics" and "Fire"; docs/data_dictionary.md
+sections 5 and 8.
+
+Scope:
+1. The fixes: `git diff 32e8d42..309de6a`. Does each settled round 2
+   finding (H1, M1, L1-L7) do what DECISIONS "Audit round 2 settled",
+   D67 and D68 say, correctly, with nothing broken around it? In
+   particular: `merge_components` and `dissolve_cnfdb` in src/fire.py
+   (the distance rule, chaining, the CRS the distance is measured in,
+   invalid geometries, split groups keeping their own attributes, the
+   attributes a merged fire keeps, effect on dates, seasons, the floor
+   and both fire tables); recompute the merged groups from the raw CNFDB
+   download independently and check the before-and-after numbers in the
+   register and D67 against the committed tables at 6e79757, 32e8d42 and
+   309de6a; the size table (scripts/stats_size_check.py,
+   results/tables/test_size.csv): are the shapes the right stand-ins for
+   the tests they label, and do the numbers hold on your own
+   simulations?; lag1_autocorrelation; the strengthened tests.
+2. Anything the round 2 fix could have broken elsewhere in the gate
+   (statistics code, fire build, pins) and anything rounds 1 and 2 missed
+   that you find on the way.
+3. Records: do code, config, register, data dictionary, plan deviations,
+   the plan's deviations log and DECISIONS agree? Anything stale, missing
+   or contradictory?
+
+Report (plain markdown, saved in your scratchpad and sent to the owner):
+start with the commit reviewed, the date and the model you ran on; then
+for each finding an ID, severity (high = a registered result or a fire
+table would be wrong or not computable as registered; medium = a likely
+error, an untested path or a misleading record; low = clarity or
+hygiene), the evidence (file:line, commands and numbers you ran) and a
+suggested fix; then what you checked that passed and what you could not
+check. End with `python -m src.pin_inputs --verify` and `git status`
+output, both before and after.
+```
