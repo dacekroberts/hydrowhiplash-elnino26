@@ -78,3 +78,79 @@ you checked that passed, and what you could not check. Start the report
 with the commit audited and the date. End with `python -m src.pin_inputs
 --verify` and `git status` output, both before and after.
 ```
+
+## Round 2 · prompt
+
+Written after round 1 was settled (`docs/audit_2026-10-08_preresults_round1.md`;
+fixes in 32e8d42; DECISIONS 2026-10-08 "Audit round 1 settled"; D66).
+
+```text
+Cold, read-only review, round 2 of the pre-results audit of
+hydrowhiplash-elnino26, main checkout at commit 32e8d42. You did not
+write any of this code and did not take part in round 1. Find what is
+wrong, not what is right.
+
+Rules for this session:
+- Read-only. Do not edit, create or delete anything inside the repository,
+  do not change git state, and do not run any `src` module's main (several
+  write tables). Scratch scripts, outputs and your report go in your own
+  scratchpad only; the main session copies the report into docs/.
+- No hypothesis test on fire data: do not compute any registered test, or
+  any statistic relating burned area to ENSO, on the real fire tables.
+  Never print, plot or summarise burned area beside any ENSO column
+  (`enso_djf`, `phase`, `strong`); when reading the fire tables, select
+  columns without them. Synthetic data is unrestricted.
+- Do not re-download anything. Run `python -m src.pin_inputs --verify` at
+  the start and the end.
+- Run commands with
+  C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash --no-capture-output python ...
+  from the repo root (multi-line Python goes in a script file).
+
+Read first: CLAUDE.md; ANALYSIS_PLAN.md in full (frozen at tag
+analysis-plan-frozen; its deviations log lists every later change);
+ACTION_PLAN.md Phases 3-4; docs/audit_2026-10-08_preresults_round1.md;
+DECISIONS.md entries dated 2026-10-07 and 2026-10-08;
+docs/plan_deviations.md D51 and D55-D66; docs/methods_register.md
+"Statistics" and "Fire"; docs/data_dictionary.md sections 4d, 5 and 8;
+docs/session7_kickoff.md Part 1 (eleven software traps).
+
+Scope:
+1. The fixes: `git diff 6e79757..32e8d42`. Does each settled round 1
+   finding (M1-M4, L1-L11) do what its DECISIONS entry says, correctly,
+   with nothing broken around it? In particular: the CNFDB dissolve in
+   src/fire.py (grouping key, blank ids, the attributes a merged fire
+   keeps, effect on dates, season assignment, the floor and both fire
+   tables; the before-and-after numbers in the register); the size checks
+   (fit_ols_plain, block_bootstrap_p, scripts/stats_size_check.py) and
+   whether the measured sizes and the keep or drop calls in D66 hold up
+   on your own simulations; the new helpers (strong_flags, center_year,
+   percent_change, lag1_autocorrelation, ols_prediction).
+2. The whole gate again, as round 1 scoped it: for every registered test
+   and reported run in ANALYSIS_PLAN.md and its deviations log (H1-H6,
+   C1-C2, H4 contrast and joint test, zero-fire sensitivity, expanding
+   window and skill score, strong-only and the near-threshold flip, ONI
+   runs, frozen-rules run, size labels and checks, Holm/BH families), can
+   it be computed exactly as stated with these functions, and would the
+   result be right? Check against independent calculations of your own.
+3. Built variables and fire tables: results/tables/climate_controls_region_year.csv
+   (including precip_djf_mm), results/tables/fire_region_year.csv,
+   results/tables/fire_region_year_frozen_rules.csv,
+   data/processed/fire_events.csv; reproduce parts from the raw downloads.
+4. Nulls and placeholders: for every field the pipeline filters, dates
+   or fills on (all sources, all tables, geometry), find any row dropped,
+   filled or misread silently because of a null, a placeholder value
+   (e.g. -9999, 0, blank, a fixed date) or an empty or invalid geometry.
+   Compare with the register's "Null and placeholder sweep" row.
+5. Records: do code, config, register, data dictionary, plan deviations
+   and DECISIONS agree? Anything stale, missing or contradictory?
+
+Report (plain markdown, saved in your scratchpad and sent to the owner):
+start with the commit reviewed, the date and the model you ran on; then
+for each finding an ID, severity (high = a registered result or a fire
+table would be wrong or not computable as registered; medium = a likely
+error, an untested path or a misleading record; low = clarity or
+hygiene), the evidence (file:line, commands and numbers you ran) and a
+suggested fix; then what you checked that passed and what you could not
+check. End with `python -m src.pin_inputs --verify` and `git status`
+output, both before and after.
+```
