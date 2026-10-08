@@ -17,6 +17,35 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - Frozen-rules robustness run; firm line on fire rules
+
+- **Decided (owner, 20:17 UTC-07:00): every burned-area test is also run
+  on a fire table built under the rules as frozen** (D62, scope addition):
+  H2, H3a, H3b, H4, H5, H6 and C2, reported in one table beside the main
+  results, uncorrected (as the ONI runs). The variant reverses each
+  post-freeze fire rule that the frozen text still lets be built: summed
+  clipped area instead of union (D61), MTBS "Other" dropped (the frozen
+  list names Wildfire, Wildland Fire Use and Unknown; D58), CNFDB fires
+  without month dropped (the frozen text assigns by ignition date; D59),
+  the frozen years (US 1984-2025, Canada 1984-2024) whatever the D61
+  re-run gives. The 2024-01-01 cutover is the same in both: it is the
+  frozen rule ("MTBS for every year it holds complete") applied. If the
+  two disagree, the difference is reported as a limitation of the main
+  analysis. Why: six rules changed after the freeze (D55, D57-D61), four
+  after fire data was opened; the variant shows whether they matter
+  instead of asking the reader to trust them. Rejected: headline tests
+  only (the code is shared, the cost small).
+- **Decided (owner): the firm line on fire record rules is the end of the
+  pre-results audit (D51), extended to the fire build.** Until that
+  read-only audit closes, a rule may change only for a defect a check
+  finds, logged with before-and-after numbers and what had been seen;
+  after it, before the first registered test, bug fixes only. No view
+  that sets burned area beside ENSO until Phase 4 (the committed table
+  holds both; a 2023-2025 printout on 2026-10-07 showed them together
+  once). Rejected: the line at this commit (the audit could still find a
+  rule defect) and at the first test without extending the audit.
+  `ACTION_PLAN.md` Phase 4, marked `[mid-project: D62]`.
+
 ### 2026-10-07 - MTBS complete through 2023; cutover, union area, D60 re-run
 
 - **Decided (owner, 20:03 UTC-07:00, before the re-run was computed):
@@ -53,6 +82,25 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   the 2025 cutover (US 2024 from an MTBS year missing 22-58%), ending
   every region at 2023 outright, and D60's literal outcome (all end at
   2024, which would still need WFIGS for 2024).
+
+### 2026-10-07 - CNFDB terms re-read at download (session 6)
+
+- **Found: the CNFDB release carries two terms the first read did not
+  cover; neither stops the committed table, one adds a notice.** (1) The
+  update log says the BC polygons are "Licensed under Open Government
+  License - British Columbia"; OGL-BC 2.0 permits any lawful use with its
+  attribution statement, now notice 12 in `DATA_SOURCES.md`. (2) The
+  release's documentation PDF says "an End-User Agreement is required",
+  linking a page that returns 404; the agreement it names (found by web
+  search; its Datamart page also 404) is the older access contract,
+  internal use only, no distribution without Canada's consent, with "Her
+  Majesty the Queen" as party (before September 2022). The live catalogue
+  record (checked in a browser 2026-10-07) and the release's ISO 19115
+  record name only the Open Government Licence - Canada, so the OGL-C is
+  read as governing and the PDF sentence as stale (its citation is dated
+  2021 too). Left open for the publish decision: confirm with CWFIS only
+  if the catalogue licence changes. The repository is private, so the
+  committed `results/tables/fire_region_year.csv` is not a publication.
 
 ### 2026-10-07 - Fire record rules settled at download (session 6)
 

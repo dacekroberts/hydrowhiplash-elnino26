@@ -134,7 +134,19 @@ the Holm/BH family runner) and every variable not yet built (`temp_jja`,
 `temp_mam`, `precip_anom`) is built and tested on synthetic data with known
 answers first, then checked by a read-only audit with a neutral prompt,
 before any of it runs on the fire table. No hypothesis result is computed
-until that audit's findings are settled.
+until that audit's findings are settled. The same audit also reviews the
+fire build (`src/fire.py`, the download scripts and
+`results/tables/fire_region_year.csv`); until it closes, a fire record rule
+changes only for a defect a check finds, logged with before-and-after
+numbers, and after it, before the first test, only bug fixes. No view
+that sets burned area beside ENSO until Phase 4 [mid-project: D62].
+
+- [ ] **Frozen-rules robustness run** [mid-project: D62]: every burned-area
+      test (H2, H3a, H3b, H4, H5, H6, C2) rerun on a fire table built under
+      the rules as frozen where they can still be built (summed area, MTBS
+      "Other" dropped, undated CNFDB fires dropped, the frozen years), one
+      table beside the main results, uncorrected; a difference from the
+      main results is reported as a limitation of the main analysis
 
 - [ ] **Full-record view:** fire-season anomaly for every year 1984–present
       (climate variables 1950–present), El Niño years highlighted

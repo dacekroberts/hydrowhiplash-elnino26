@@ -27,6 +27,22 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-07 (Phase 3, session 6: after the freeze, after fire data was opened)
 
+### D62 · Frozen-rules robustness run; audit gate covers the fire build
+- **Plan:** `ANALYSIS_PLAN.md` (frozen): no robustness run for the fire
+  record rules; `ACTION_PLAN.md` Phase 4: the pre-results audit (D51)
+  covers the statistics code and unbuilt variables only.
+- **Actual:** owner added (20:17) a rerun of every burned-area test on a
+  fire table built under the frozen rules (summed area, Other dropped,
+  undated CNFDB dropped, frozen years), and extended the D51 audit to
+  the fire build, with the firm line on rule changes at its close.
+- **Why:** four rules changed after fire data was opened (D58-D61).
+- **Recorded:** `DECISIONS.md` 2026-10-07 "Frozen-rules robustness run;
+  firm line on fire rules".
+- **Substantial:** yes (owner, 2026-10-07): scope addition.
+- **Plan doc:** `ACTION_PLAN.md` Phase 4 marked `[mid-project: D62]`;
+  `ANALYSIS_PLAN.md` deviations log, sixth row (an added reported
+  analysis; no registered test changed).
+
 ### D61 · MTBS complete only through 2023; union area; D60 re-run on 2023
 - **Plan:** `ANALYSIS_PLAN.md` (frozen) "Fire record rules": "MTBS for
   every year it holds complete, WFIGS after"; "Outcomes": burned area is
