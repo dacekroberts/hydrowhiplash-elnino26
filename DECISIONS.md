@@ -17,6 +17,37 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Pre-results audit in repeated rounds
+
+- **Decided (owner): the pre-results audit runs in rounds until a round
+  finds nothing high** (D64), as before the freeze (a targeted audit and
+  two fix reviews, 2026-10-07). Round 1 is a cold read-only audit of the
+  statistics code, the new variables, the frozen-rules fire table and the
+  fire build (D51, D62); its findings are settled with the owner and
+  fixed; each later round is a fresh cold read-only review of the fix diff
+  and the whole gate. The gate closes when a round finds nothing high and
+  the owner agrees; that close is D62's firm line. Each report is saved
+  unchanged as `docs/audit_YYYY-MM-DD_*.md`. Owner's reason: "I want to be
+  extra certain we have a solid foundation before the following steps."
+  Rejected: one audit round (the D51 wording); a fixed number of rounds
+  (the pre-freeze series needed three before nothing high remained).
+  The Claude Code Project is decided after the last round (D63).
+
+### 2026-10-08 - Claude Code Project decided after the audits
+
+- **Decided (owner): the Claude Code Project go/no-go waits until the
+  pre-results audit (D51, extended by D62) is settled** (D63). The shared
+  statistics code, the missing variables and the frozen-rules fire table
+  are built in the main session; the decision on parallel threads is made
+  for the hypothesis runs that follow the audit. Why: the gate's pieces
+  share `src/stats.py` and depend on each other, so threads would mostly
+  wait on one another and add PR review while the code is still in flux;
+  the hypothesis runs (H1-H6, C1-C2) are separate tasks that need only the
+  committed tables. Rejected: setting the Project up at the start of
+  session 7 (the reminder's original timing, and `ACTION_PLAN.md` Phase 4
+  "Before starting"). `docs/session7_kickoff.md` and the memory note
+  updated.
+
 ### 2026-10-07 - D60 re-run on 2023: pass, frozen years stand
 
 - **Found: the source-agreement rule passes on 2023 in all four US

@@ -138,7 +138,10 @@ the Holm/BH family runner) and every variable not yet built (`temp_jja`,
 `temp_mam`, `precip_anom`) is built and tested on synthetic data with known
 answers first, then checked by a read-only audit with a neutral prompt,
 before any of it runs on the fire table. No hypothesis result is computed
-until that audit's findings are settled. The same audit also reviews the
+until that audit's findings are settled. The audit runs in rounds: each
+round's findings are settled and fixed, then a fresh cold read-only review
+covers the fixes and the whole gate, until a round finds nothing high and
+the owner agrees [mid-project: D64]. The same audit also reviews the
 fire build (`src/fire.py`, the download scripts and
 `results/tables/fire_region_year.csv`); until it closes, a fire record rule
 changes only for a defect a check finds, logged with before-and-after

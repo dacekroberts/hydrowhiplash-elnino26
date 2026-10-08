@@ -25,6 +25,35 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-08
+
+### D64 · Pre-results audit in repeated rounds
+- **Plan:** `ACTION_PLAN.md` Phase 4 (D51): "then checked by a read-only
+  audit with a neutral prompt, before any of it runs on the fire table".
+- **Actual:** owner chose (2026-10-08) rounds of cold read-only audits,
+  each after the previous round's fixes, until one finds nothing high and
+  the owner agrees.
+- **Why:** owner: "I want to be extra certain we have a solid foundation
+  before the following steps"; the pre-freeze series needed three rounds.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Pre-results audit in repeated
+  rounds".
+- **Substantial:** yes (owner, 2026-10-08): procedure for the gate.
+- **Plan doc:** `ACTION_PLAN.md` Phase 4 marked `[mid-project: D64]`.
+
+### D63 · Claude Code Project set up after the pre-results audit
+- **Plan:** `ACTION_PLAN.md` Phase 4 "Before starting": "Then set up the
+  Claude Code Project (on standby since 2026-10-04) using
+  `docs/claude_code_project_setup.md`, so H1-H5 and the site pages can run
+  as parallel threads"; the reminder (2026-10-07) put the decision at the
+  start of the statistics code.
+- **Actual:** owner chose (2026-10-08) to build the D51 gate's code in the
+  main session and decide on the Project after the audit, for the
+  hypothesis runs.
+- **Why:** the gate's pieces share one module and depend on each other.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Claude Code Project decided
+  after the audits".
+- **Plan doc:** left as written (workflow, not a test); flagged here.
+
 ## 2026-10-07 (Phase 3, session 6: after the freeze, after fire data was opened)
 
 ### D62 · Frozen-rules robustness run; audit gate covers the fire build
