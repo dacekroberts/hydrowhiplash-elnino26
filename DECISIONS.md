@@ -17,6 +17,17 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-07 - D60 re-run on 2023: pass, frozen years stand
+
+- **Found: the source-agreement rule passes on 2023 in all four US
+  regions, so the fire tests keep the frozen years** (US 1984-2025,
+  Canada 1984-2024; D61's rule). Union area of 2023 ignitions in each
+  region's 2023 window, d = log(1 + ha_WFIGS) - log(1 + ha_MTBS): PNW
+  162,501 vs 158,812 ha, d = -0.023; AK 116,540 vs 114,425, -0.018;
+  NorCal 80,397 vs 81,276, +0.011; SoCal 45,158 vs 43,737, -0.032; all
+  under 0.10. NorCal's +0.234 (summed) was the overlapping WFIGS polygons.
+  No year changes, so no new row in `ANALYSIS_PLAN.md`'s deviations log.
+
 ### 2026-10-07 - Frozen-rules robustness run; firm line on fire rules
 
 - **Decided (owner, 20:17 UTC-07:00): every burned-area test is also run

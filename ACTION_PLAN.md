@@ -104,15 +104,19 @@ committed copy in `results/tables/`.
 
 ## Phase 3 — Fire data (week 3)
 
-- [ ] Download US fire perimeters (MTBS for 1984 to about 2 years ago,
+- [x] Download US fire perimeters (MTBS for 1984 to about 2 years ago,
       NIFC/WFIGS for recent years) and Canadian perimeters (CNFDB) for BC and AB;
       MTBS/WFIGS for Alaska and CNFDB for Yukon [mid-project: D20]
-- [ ] Clip to regions and compute **area burned** and **season length**
+- [x] Clip to regions and compute **area burned** and **season length**
       (first to last fire date) for every year, counting only fires ≥ 405 ha
       in all regions so US and Canadian records match: June–October for US
       regions and BC, **April–October for Alberta**, April–September for
       Alaska and Yukon (provisional) [mid-project: D20]
-- [ ] Record dataset versions in `DATA_SOURCES.md`
+- [x] Record dataset versions in `DATA_SOURCES.md`
+
+Done 2026-10-07 (session 6): `src/download_mtbs.py`, `src/download_wfigs.py`,
+`src/download_cnfdb.py`, `src/fire.py`; MTBS through 2023, WFIGS from 2024
+[mid-project: D61]; `results/tables/fire_region_year.csv` (291 rows).
 
 **Done when:** you have a table of regions × all years with area burned,
 season length and ENSO phase, saved in `data/processed/` with a committed

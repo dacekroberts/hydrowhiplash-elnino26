@@ -26,7 +26,7 @@ Status: **have** = downloaded; **planned** = in `ACTION_PLAN.md`.
 | Snow water equivalent (stations) | NRCS SNOTEL and snow courses (WA, OR, ID, AK), BC, Yukon, CanSWE (Alberta; BC and Yukon pillows) | 2 | have, cleaned (2026-10-05) | inches (NRCS; elevation in feet), mm (BC, Yukon), kg m-2 = mm (CanSWE) | mm; index in % of normal and SD |
 | Snowfall fraction, summer soil moisture | derived from ERA5-Land `sf`, `tp`, `swvl1-2` | 2 | built (2026-10-05) | mm/month; m³/m³ | fraction 0-1; m³/m³ |
 | PET, SPEI-3, whiplash | derived | 2 | built (2026-10-04) | mm/day; standardised | as native |
-| Fire perimeters | MTBS, WFIGS/NIFC, CNFDB | 3 | planned (after freeze) | polygons + dates | ha, days |
+| Fire perimeters | MTBS, WFIGS/NIFC, CNFDB | 3 | have (2026-10-07, after the freeze) | polygons + dates (acres, ha fields not used) | ha (computed), days |
 | Region boundaries | Natural Earth admin-1 | 1 | have | degrees (EPSG:4326) | polygons; ha in ESRI:102008 |
 
 ---
@@ -417,19 +417,61 @@ stations and grid in mm is meaningless; compare % or z.
   0-28 cm (0.25 × layer 1 + 0.75 × layer 2, by thickness), m³/m³, regional
   mean. Year Y = summer Y. Same table.
 
-## 5. Fire perimeters (after the freeze only), planned (Phase 3)
-
-No fire data is downloaded, opened or summarised until `ANALYSIS_PLAN.md` is
-frozen.
+## 5. Fire perimeters, have (downloaded 2026-10-07, after the freeze)
 
 **What they are.** Polygons outlining the area each fire burned, with
-attributes such as fire name, year, type and start date.
+attributes such as fire name, year, type and start date. Downloads:
+`python -m src.download_mtbs`, `src.download_wfigs`, `src.download_cnfdb`
+(versions and sizes in `DATA_SOURCES.md`); processing `python -m src.fire`.
 
 | Source | Coverage | How perimeters are mapped |
 |---|---|---|
 | MTBS (USGS / USDA Forest Service) | US, 1984 to about 2 years ago; fires ≥ 1,000 acres in the West | Landsat images before and after the fire; the burned area is mapped from the change in a burn index (dNBR), with analyst review. Includes prescribed burns, which the project removes |
 | WFIGS / NIFC | US, recent years, filling MTBS's 2-year lag | Operational incident mapping: GPS walks, infrared flights, field sketches. Quality varies by incident |
 | CNFDB (Natural Resources Canada) | Canada, decades back, by agency | Compiled from provincial, territorial and Parks Canada records; methods vary (aerial sketch, GPS, satellite). Some polygons lack dates; small and early fires patchy |
+
+**MTBS file** (`mtbs_perims_DD.shp` in `mtbs_perimeter_data.zip`, release
+of 2026-10-07): 30,932 polygons, EPSG:4269 (NAD83 geographic), one per
+fire. Fields used: `event_id` (state code + location + ignition date),
+`incid_name`, `incid_type`, `ig_date` (ignition date, YYYY-MM-DD). Types:
+Wildfire 16,779, Prescribed Fire 9,639, Other 4,311, Wildland Fire Use 203.
+There is no "Unknown" although the metadata documents one; "Other" is read
+as the plan's Unknown (D58). Also `irwinid` (mostly empty for older fires),
+`burnbndac` (acres from pixels, not used), `asmnt_type` (Initial, Extended,
+"(SS)" = single scene), severity thresholds. Trap: boundaries include
+unburned islands. Mapping lags: 2024 still lacks 114 WFIGS fires (22-58%
+of each US region's area; McDonald AK, Lone Rock OR, Wapiti ID) and 2025
+has 14 fires in the five states, so the project takes MTBS for ignitions
+through 2023-12-31 and WFIGS after (`MTBS_WFIGS_CUTOVER`, D61). On fires
+both hold, WFIGS/MTBS area is 0.96-0.99 (one-to-one pairs, 2021-2024).
+
+**WFIGS file** (`wfigs_perimeters.geojson`, Hub export of 2026-10-07):
+42,553 perimeters, EPSG:4326, coordinates with Z (73.5 M vertices; read in
+2D). One perimeter per incident, the latest. Fields used:
+`attr_UniqueFireIdentifier` (YYYY-unit-number, unique), `poly_IncidentName`,
+`attr_IncidentTypeCategory` (WF 40,968, RX 1,585; no other values),
+`attr_FireDiscoveryDateTime` (text "Sat, 19 Nov 2022 00:52:20 GMT", UTC;
+converted to the origin state's local date, `WFIGS_STATE_TZ`),
+`attr_POOState` ("US-WA"). Traps: `attr_IrwinID` is empty on 26,116 rows
+(use the unique fire identifier); `poly_FeatureCategory` (Daily, Final,
+Prescribed Fire) disagrees with the type field on 48 rows in the five
+states, so the type field decides; complexes are stored as their child
+fires only (110 children in the western states, no parent outline), so no
+area is counted twice; the layer is live, so a snapshot date matters.
+
+**CNFDB file** (`NFDB_poly.zip`, release NFDB_poly_20250630): two
+shapefiles, 1972-2020 (41,210 polygons) and 2021-2024 (7,361), NAD83
+Lambert conformal conic (metres). Fields used: `SRC_AGENCY` (BC, AB, YT,
+PC = Parks Canada, and the other provinces), `FIRE_ID`, `FIRENAME`,
+`YEAR`, `MONTH`, `DAY` (agency fire date; 0 or empty when unknown;
+`DATE_TYPE` says whether it is a report, start, ignition or fire date),
+`CAUSE` (N natural, H human, H-PB prescribed burn, U unknown, Re reburn),
+`PRESCRIBED` ("yes" on the same 304 polygons as H-PB). Not used: `SIZE_HA`
+(agency), `CALC_HA` (CFS, Canada Albers). Traps: Parks Canada sent no
+polygons for 2018-2020 (update log), so fires inside national parks are
+missing in those years unless the province mapped them; agency minimum
+sizes differ by decade (all far below 405 ha after 1984); Yukon 2022 has
+97 large fires without month or day (D59).
 
 **Units and measurement rules.**
 - **Area:** hectares, computed only by `src.geo.area_ha`, which projects to
@@ -444,16 +486,34 @@ attributes such as fire name, year, type and start date.
   January Y+1 fire counts for season Y), by ignition date
   (`FIRE_SEASON_MONTHS`; decided 2026-10-05, D43).
 
-**Derived fire columns.**
-- Burned area per region per season: sum of counted fires' clipped area, ha.
-- `log_burn = ln(1 + ha)`: natural log, unitless. Large fire years span
+**Derived fire columns** (built 2026-10-07; `results/tables/fire_region_year.csv`,
+one row per region and season, 1984 to the region's last test year, 291
+rows; every rule and count in `docs/methods_register.md` "Fire").
+- `burn_ha`: burned area of the season's counted fires in the region, ha:
+  each source's clipped pieces are unioned (overlap counted once, D61) and
+  the sources summed. `double_ha`: the overlap left out (ha).
+- `n_fires`: counted fire pieces in the region (a fire in two regions
+  counts in each; 47 such fires). `n_undated`: CNFDB pieces without a
+  month, counted for season YEAR (D59). `n_unknown_type`: MTBS "Other"
+  pieces (the plan's Unknown, D58). `source`: MTBS, WFIGS, CNFDB, or
+  "MTBS+WFIGS" (SoCal and NorCal seasons that span the 2024-01-01
+  cutover), "none" for a zero-fire season.
+- `log_burn = ln(1 + burn_ha)`: natural log, unitless. Large fire years span
   orders of magnitude, and logging tames that. A coefficient b on `log_burn`
   is reported as a percent change, `100 × (exp(b) - 1)`. A region-year with
   no counted fire gives 0, then jumps to about 6 for one 405 ha fire
-  (pre-freeze item "Zero-fire years").
+  (pre-freeze item "Zero-fire years"). `zero_fire`: True for such a season
+  (1 of 291: SoCal 2014).
 - `burn_detr`: residuals of `log_burn ~ year` per region, for tests without
-  a trend term.
-- Season length: days from the first to the last counted fire's start date.
+  a trend term. Planned (Phase 4 statistics code), not in the table.
+- `first_fire`, `last_fire`, `season_days`: first and last ignition date
+  among counted fires with a full date, and the days between; empty with
+  fewer than 2 such fires (9 region-seasons). Descriptive only.
+- `winter`, `enso_index`, `enso_djf`, `phase`, `strong`: the ENSO columns of
+  the winter before (year Y = winter (Y-1)-Y), from `el_nino_winters.csv`.
+- `data/processed/fire_events.csv` (not committed): one row per fire-region
+  piece (9,758 rows, including 2026 WFIGS pieces outside the tests), with
+  `fire_ha` (whole fire), `clipped_ha`, `season`, dates and flags.
 
 ## 6. Region boundaries, have (Phase 1)
 

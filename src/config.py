@@ -182,7 +182,72 @@ FIRE_SEASON_MONTHS = {
 # Fire record rules (ANALYSIS_PLAN.md "Fire record rules"). MTBS incident
 # types kept; "Prescribed Fire" dropped. The MIN_FIRE_HA floor applies to the
 # whole fire's area_ha before clipping to regions.
-MTBS_KEEP_TYPES = ("Wildfire", "Wildland Fire Use", "Unknown")
+# The release of 2026-10-07 has no "Unknown"; its "Other" is the plan's
+# Unknown (owner, 2026-10-07; D58), counted and reported separately.
+MTBS_KEEP_TYPES = ("Wildfire", "Wildland Fire Use", "Other")
+MTBS_UNKNOWN_TYPE = "Other"
+# WFIGS attr_IncidentTypeCategory: WF wildfire kept, RX prescribed dropped.
+WFIGS_KEEP_TYPES = ("WF",)
+# CNFDB prescribed burns: CAUSE "H-PB" or PRESCRIBED "yes" (the two flag the
+# same 304 polygons in BC, AB, YT and Parks Canada, 1984-2024), dropped.
+CNFDB_PRESCRIBED_CAUSE = "H-PB"
+# MTBS for fires ignited before this date, WFIGS from it (owner, 2026-10-07,
+# D61; was 2025-01-01 earlier that day). A fire-by-fire match found MTBS
+# missing 22-58% of each US region's 2024 WFIGS area and complete in
+# 2021-2023 (0-4.2% missing).
+MTBS_WFIGS_CUTOVER = "2024-01-01"
+# Source-agreement rule (D60, re-run on 2023 by D61, fixed before it was
+# computed): d = log(1 + union ha WFIGS) - log(1 + union ha MTBS) for
+# fires ignited in SOURCE_CHECK_YEAR, in each US region's window. If |d|
+# reaches the threshold in any US region, PNW, AK, NorCal and SoCal end at
+# SOURCE_CHECK_YEAR; otherwise the frozen years stand. On 2024 (D60 as
+# first computed) d was 0.23-0.90, from MTBS's unmapped 2024 fires.
+SOURCE_CHECK_YEAR = 2023
+SOURCE_AGREEMENT_MAX_LOG_DIFF = 0.10
+# Each region takes fires only from its own country's records, so a
+# cross-border fire is never counted twice.
+FIRE_COUNTRY = {"PNW": "US", "AK": "US", "NorCal": "US", "SoCal": "US",
+                "BC": "CA", "AB": "CA", "YT": "CA"}
+# WFIGS discovery times are UTC; converted to the local date of the origin
+# state before the season window is applied. Other states: Mountain time.
+WFIGS_STATE_TZ = {"US-WA": "America/Los_Angeles", "US-OR": "America/Los_Angeles",
+                  "US-CA": "America/Los_Angeles", "US-NV": "America/Los_Angeles",
+                  "US-ID": "America/Boise", "US-AK": "America/Anchorage"}
+WFIGS_DEFAULT_TZ = "America/Denver"
+# Read only perimeters intersecting this lon/lat box (EPSG:4326 sources):
+# every study region with a margin, so fires from neighbouring states that
+# reach a region are kept.
+FIRE_READ_BBOX = (-180.0, 30.0, -100.0, 72.0)
+FIRE_EVENTS_TABLE = DATA_PROCESSED / "fire_events.csv"
+FIRE_REGION_TABLE = DATA_PROCESSED / "fire_region_year.csv"
+
+# Fire perimeter downloads (Phase 3; DATA_SOURCES.md rows MTBS, WFIGS,
+# CNFDB). Raw files as published; filtering happens in src/fire.py.
+FIRE_RAW = DATA_RAW / "fire"
+MTBS_RAW = FIRE_RAW / "mtbs"
+WFIGS_RAW = FIRE_RAW / "wfigs"
+CNFDB_RAW = FIRE_RAW / "cnfdb"
+# The file behind "MTBS Burned Areas Boundaries Dataset 1984-2026" on the
+# Direct Download page (checkbox name mtbs_perimeter_data, checked 2026-10-07).
+MTBS_PERIMETER_URL = ("https://edcintl.cr.usgs.gov/downloads/sciweb1/shared/MTBS_Fire/"
+                      "data/composite_data/burned_area_extent_shapefile/"
+                      "mtbs_perimeter_data.zip")
+# WFIGS Interagency Fire Perimeters, all years (ArcGIS Online item). The layer
+# is live (refreshed about every 5 minutes), so the whole layer is taken from
+# the Hub export, one consistent snapshot, not paged through the query API.
+WFIGS_ITEM_ID = "5e72b1699bf74eefb3f3aff6f4ba5511"
+WFIGS_ITEM_URL = "https://www.arcgis.com/sharing/rest/content/items/" + WFIGS_ITEM_ID
+WFIGS_LAYER_URL = ("https://services3.arcgis.com/T4QMspbfLg3qTGWY/arcgis/rest/services/"
+                   "WFIGS_Interagency_Perimeters/FeatureServer/0")
+WFIGS_EXPORT_URL = ("https://hub.arcgis.com/api/download/v1/items/" + WFIGS_ITEM_ID
+                    + "/geojson")
+WFIGS_EXPORT_WAIT_S = 900  # give up if the Hub export is not ready by then
+# CNFDB agency fire polygons, current release (files dated 28 Jan 2026). The
+# whole-record zip, not NFDB_poly_large_fires.zip: that subset is cut on the
+# agency's own area field, and the project's floor is on computed area.
+CNFDB_URL = "https://cwfis.cfs.nrcan.gc.ca/downloads/nfdb/fire_poly/current_version/"
+CNFDB_FILES = ["NFDB_poly.zip", "NFDB_documentation_EN.pdf", "NFDB_poly_update_log.txt",
+               "NFDB_poly_shapefile_metadata.pdf", "NFDB_Poly_metadata_NAP_ISO_19115_2003.xml"]
 # Zero-fire region-years: kept (log_burn = 0); a sensitivity run leaves them
 # out (permutation tests drop them, regressions give each its own 0/1
 # indicator; ANALYSIS_PLAN "Execution details"); no percent-change reporting
