@@ -124,9 +124,10 @@ def test_block_bootstrap_rejects_series_shorter_than_a_block(synthetic):
                                  block_len=3, n_boot=10)
 
 
-def test_pooled_fit_drops_missing_rows_and_matches_complete_case():
-    # A missing outcome used to fail with "The weights and list don't have the
-    # same length"; the result must equal fitting the complete rows only.
+def test_pooled_fit_refuses_missing_rows():
+    # Trap 4 (session 7 kickoff): the formula API drops a row with a missing
+    # value silently, which would unbalance H4's panel; the fit now refuses.
+    # (Before 2026-10-08 it dropped such rows, as plain OLS does.)
     rng = np.random.default_rng(5)
     enso = rng.normal(0, 1, N)
     panel = pd.concat([pd.DataFrame({"year": YEARS, "region": r, "enso_djf": enso,
@@ -134,11 +135,10 @@ def test_pooled_fit_drops_missing_rows_and_matches_complete_case():
                        for r in ["SoCal", "PNW", "BC"]], ignore_index=True)
     panel.loc[[4, 50], "log_burn"] = np.nan
     formula = "log_burn ~ enso_djf * C(region, Treatment('SoCal'))"
-    fit = stats.fit_pooled(formula, panel)
-    complete = stats.fit_pooled(formula, panel.dropna().reset_index(drop=True))
-    assert int(fit.nobs) == len(panel) - 2
-    assert np.allclose(fit.params, complete.params)
-    assert np.allclose(fit.bse, complete.bse)
+    with pytest.raises(ValueError, match="missing value"):
+        stats.fit_pooled(formula, panel)
+    with pytest.raises(ValueError, match="missing value"):
+        stats.fit_driscoll_kraay(formula, panel)
 
 
 def test_stats_defaults_come_from_config():
@@ -170,9 +170,13 @@ def test_hac_fit_needs_consecutive_sorted_years(synthetic):
     with pytest.raises(ValueError, match="consecutive"):
         stats.fit_ols_hac(formula, synthetic.drop(index=10))
     gap = synthetic.copy()
-    gap.loc[10, "log_burn"] = np.nan  # a missing outcome leaves a gap too
-    with pytest.raises(ValueError, match="consecutive"):
+    gap.loc[10, "log_burn"] = np.nan  # a missing outcome is refused outright
+    with pytest.raises(ValueError, match="missing value"):
         stats.fit_ols_hac(formula, gap)
+    tail = synthetic.copy()
+    tail.loc[N - 1, "log_burn"] = np.nan  # contiguous after dropping, still refused
+    with pytest.raises(ValueError, match="missing value"):
+        stats.fit_ols_hac(formula, tail)
     stats.fit_ols_hac(formula, synthetic.iloc[5:30])  # a contiguous run is fine
 
 

@@ -148,6 +148,11 @@ changes only for a defect a check finds, logged with before-and-after
 numbers, and after it, before the first test, only bug fixes. No view
 that sets burned area beside ENSO until Phase 4 [mid-project: D62].
 
+Gate code built 2026-10-08 (session 7): `src/stats.py`, `src/climate_vars.py`,
+the frozen-rules fire table (`python -m src.fire --frozen-rules`) and input
+pins (`src/pin_inputs.py`); small-sample correction on everywhere (D65).
+Audit round 1 next.
+
 - [ ] **Frozen-rules robustness run** [mid-project: D62]: every burned-area
       test (H2, H3a, H3b, H4, H5, H6, C2) rerun on a fire table built under
       the rules as frozen where they can still be built (summed area, MTBS

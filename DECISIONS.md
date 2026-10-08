@@ -17,6 +17,65 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Pre-results gate code built (session 7)
+
+- **Built and tested on synthetic data: every piece of the D51 gate**
+  (`src/stats.py`, `src/climate_vars.py`, `src/fire.py`,
+  `src/pin_inputs.py`; tests 232 to 264). One-sided p (`t_pvalue`,
+  `coef_test`, `permutation_test(alternative=...)`); `use_t` and the D65
+  correction in `fit_ols_hac`; `fit_driscoll_kraay` with `inference_df` =
+  years - 1 and every p from scipy (`coef_test`, `contrast_test`,
+  `wald_f_test`); `h4_test` (contrast and F(4, 40)) on a formula written
+  once with SoCal as reference; `with_zero_indicators`;
+  `expanding_window`, `validation_summary`, `forecast_skill`;
+  `family_tests` and `run_family`; `detrend` (burn_detr); `zscore`
+  (ddof 1). Known answers: Newey-West and Driscoll-Kraay covariances
+  rebuilt by hand, the H4 contrast equal to per-region OLS slope
+  differences, F by hand, Holm and BH by hand, zero indicators equal to
+  dropping the years, first expanding-window prediction 2004 (22 or 21).
+  All eleven traps of the session 7 kickoff handled in code or recorded
+  as methods notes (`docs/methods_register.md` "Statistics").
+- **Changed: `fit_pooled` and `fit_ols_hac` refuse a row with a missing
+  value** (trap 4). Until now `fit_pooled` dropped such rows (a 2026-10-05
+  audit choice, its test replaced) and `fit_ols_hac` accepted a missing
+  value at either end of the series, which shortened it silently while
+  staying contiguous. Rejected: dropping rows with a warning (H4's panel
+  must stay balanced; D57).
+- **Built: `temp_jja`, `temp_mam` and `precip_anom`** (climate data only),
+  `results/tables/climate_controls_region_year.csv`, 532 rows; numbers in
+  the register. Built: the D62 frozen-rules fire table from
+  `fire_events.csv` (no new geometry), 291 rows; burned area 93.2% (AB)
+  to 100.1% (BC) of the main table; AB 1997 and YT 2022 become zero-fire
+  seasons because every fire in them is undated (YT 2022: 97 fires,
+  233,108 ha). Printed by region over all seasons, no ENSO column.
+- **Found (flagged for the owner, not acted on): the robust tests reject
+  a true null more often than 5% on synthetic data**
+  (`scripts/stats_size_check.py`, 1,000 datasets, errors independent /
+  AR(1) rho 0.3): H4 contrast Driscoll-Kraay 0.062 / 0.081, H4 joint F
+  0.175 / 0.192, per-region Newey-West two-sided 0.075 / 0.092, one-sided
+  0.061 / 0.078. The registered methods are frozen; options go to the
+  owner with the first audit round.
+- **Pinned: the 25 input files** (`results/tables/input_pins.csv`, sha256,
+  2.12 GB; trap 7). RONI's file is the download of 2026-10-06, ONI's of
+  2026-10-04.
+
+### 2026-10-08 - Small-sample correction on in every robust fit
+
+- **Decided (owner, before any result): the robust covariances are
+  corrected for the parameters the fit used, in every fit** (D65). Read
+  from the statsmodels 0.15.0 source: `cov_type="HAC"` defaults to no
+  correction (`use_correction=False`), `"hac-groupsum"` (Driscoll-Kraay)
+  to the cluster factor G/(G - 1) x (N - 1)/(N - K), `"cluster"` to the
+  same factor. Leaving the defaults would have corrected H4 but not the
+  per-region tests. Chosen: n/(n - k) for Newey-West, the cluster factor
+  for Driscoll-Kraay and year clustering (`ROBUST_SMALL_SAMPLE_CORRECTION`
+  = True; `src.stats`). Effect on SEs (arithmetic): H3a sqrt(42/39) =
+  +3.8%, H3b sqrt(42/38) = +5.1%, H4 Driscoll-Kraay (41 years, 205 rows,
+  15 parameters) +4.9%; estimates unchanged. Rejected: off everywhere (the
+  kickoff's lean, matching Stata's xtscc per the statsmodels docstring;
+  needs an override of the Driscoll-Kraay default) and the software
+  defaults (two rules in one analysis). Frozen plan deviations log, row 7.
+
 ### 2026-10-08 - Pre-results audit in repeated rounds
 
 - **Decided (owner): the pre-results audit runs in rounds until a round

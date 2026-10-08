@@ -43,6 +43,7 @@ import pyogrio
 from src.config import (CNFDB_PRESCRIBED_CAUSE, CNFDB_RAW, CRS_EQUAL_AREA, DATA_PROCESSED,
                         FIRE_COUNTRY, FIRE_EVENTS_TABLE, FIRE_FIRST_YEAR,
                         FIRE_LAST_YEAR_BY_REGION, FIRE_READ_BBOX, FIRE_REGION_TABLE,
+                        FIRE_REGION_TABLE_FROZEN,
                         FIRE_SEASON_MONTHS, MIN_FIRE_HA, MTBS_KEEP_TYPES, MTBS_RAW,
                         MTBS_UNKNOWN_TYPE, MTBS_WFIGS_CUTOVER, REGIONS, RESULTS,
                         SOURCE_AGREEMENT_MAX_LOG_DIFF, SOURCE_CHECK_YEAR, WFIGS_DEFAULT_TZ,
@@ -55,6 +56,7 @@ MTBS_SHP = "/vsizip/" + (MTBS_RAW / "mtbs_perimeter_data.zip").as_posix() + "/mt
 WFIGS_FILE = WFIGS_RAW / "wfigs_perimeters.geojson"
 CNFDB_SHPS = ["NFDB_poly_1972to2020_20250630.shp", "NFDB_poly_2021to2024_20250630.shp"]
 COMMITTED = RESULTS / "tables" / FIRE_REGION_TABLE.name
+COMMITTED_FROZEN = RESULTS / "tables" / FIRE_REGION_TABLE_FROZEN.name
 WINTERS = DATA_PROCESSED / "el_nino_winters.csv"
 COLUMNS = ["source", "fire_id", "name", "fire_type", "ignition", "month_known",
            "date_known", "geometry"]
@@ -315,6 +317,60 @@ def union_areas(pieces: gpd.GeoDataFrame) -> pd.DataFrame:
     return out
 
 
+def read_events(path: Path = FIRE_EVENTS_TABLE) -> pd.DataFrame:
+    """FIRE_EVENTS_TABLE (one row per counted fire-region piece in a season
+    window, written by main) with its dates and flags typed."""
+    events = pd.read_csv(path, parse_dates=["ignition"], dtype={"fire_id": str})
+    for col in ("month_known", "date_known", "undated"):
+        events[col] = events[col].astype(bool)
+    events["season"] = events["season"].astype("Int64")
+    return events
+
+
+def frozen_rules_pieces(pieces: pd.DataFrame) -> pd.DataFrame:
+    """The pieces the rules as frozen would count (D62): MTBS "Other" fires
+    dropped (the frozen list names Wildfire, Wildland Fire Use and Unknown;
+    D58) and CNFDB fires without a month dropped (the frozen text assigns
+    by ignition date; D59). The cutover and the floor are the same in both."""
+    other = (pieces["source"] == "MTBS") & (pieces["fire_type"] == MTBS_UNKNOWN_TYPE)
+    return pieces[~other & ~pieces["undated"].astype(bool)]
+
+
+def frozen_rules_table(pieces: pd.DataFrame,
+                       last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION) -> pd.DataFrame:
+    """Region x season table under the rules as frozen (D62): summed
+    clipped area instead of the union (D61), frozen_rules_pieces, and the
+    frozen years (US 1984-2025, Canada 1984-2024; FIRE_LAST_YEAR_BY_REGION,
+    set before any fire data, D57, and kept by the D61 re-run)."""
+    return region_year_table(frozen_rules_pieces(pieces), last_year=last_year)
+
+
+def main_frozen() -> None:
+    """Build FIRE_REGION_TABLE_FROZEN and its committed copy from
+    FIRE_EVENTS_TABLE; prints burned-area totals of both tables by region
+    over all seasons (no ENSO column printed; D62 firm line)."""
+    events = read_events()
+    table = join_enso(frozen_rules_table(events), pd.read_csv(WINTERS))
+    for path in (FIRE_REGION_TABLE_FROZEN, COMMITTED_FROZEN):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        table.to_csv(path, index=False, lineterminator="\n")
+        print(f"wrote {path}: {len(table)} rows")
+    main_table = pd.read_csv(FIRE_REGION_TABLE)
+    dropped = events.drop(frozen_rules_pieces(events).index)
+    totals = pd.DataFrame({
+        "main_ha": main_table.groupby("region")["burn_ha"].sum(),
+        "frozen_ha": table.groupby("region")["burn_ha"].sum(),
+        "main_fires": main_table.groupby("region")["n_fires"].sum(),
+        "frozen_fires": table.groupby("region")["n_fires"].sum(),
+        "dropped_other": dropped[dropped["fire_type"] == MTBS_UNKNOWN_TYPE].groupby("region").size(),
+        "dropped_undated": dropped[dropped["undated"]].groupby("region").size(),
+        "zero_seasons_main": main_table.groupby("region")["zero_fire"].sum(),
+        "zero_seasons_frozen": table.groupby("region")["zero_fire"].sum(),
+    }).reindex(list(REGIONS)).fillna(0)
+    totals["ratio"] = totals["frozen_ha"] / totals["main_ha"]
+    print(totals.round(3).to_string())
+
+
 def write_tables(table: pd.DataFrame) -> None:
     for path in (FIRE_REGION_TABLE, COMMITTED):
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -375,4 +431,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main_frozen() if "--frozen-rules" in sys.argv[1:] else main()

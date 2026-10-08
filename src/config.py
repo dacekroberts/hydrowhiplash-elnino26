@@ -220,6 +220,13 @@ WFIGS_DEFAULT_TZ = "America/Denver"
 FIRE_READ_BBOX = (-180.0, 30.0, -100.0, 72.0)
 FIRE_EVENTS_TABLE = DATA_PROCESSED / "fire_events.csv"
 FIRE_REGION_TABLE = DATA_PROCESSED / "fire_region_year.csv"
+# D62 frozen-rules variant: summed clipped area, MTBS "Other" dropped, CNFDB
+# fires without a month dropped, the frozen years (src.fire.frozen_rules_table).
+FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
+# Checksums of every input the tests read (trap 7, session 7 kickoff): the
+# committed tables, the ENSO files and the fire downloads of 2026-10-07;
+# no re-download until the results are in (src.pin_inputs).
+INPUT_PINS_TABLE = RESULTS / "tables" / "input_pins.csv"
 
 # Fire perimeter downloads (Phase 3; DATA_SOURCES.md rows MTBS, WFIGS,
 # CNFDB). Raw files as published; filtering happens in src/fire.py.
@@ -285,12 +292,16 @@ H1_VALUE = "precip_djf_mm"
 PRECIP_ANOM_NORMAL_YEARS = (1991, 2020)
 # AK and YT descriptive spring mechanism variable: mean 2 m temperature.
 SPRING_MONTHS = (3, 4, 5)  # MAM
+# temp_jja (H3b control), temp_mam (descriptive), precip_octmar_mm and
+# precip_anom_lag0/lag1 (H5) per region and year (src.climate_vars).
+CLIMATE_CONTROLS_TABLE = DATA_PROCESSED / "climate_controls_region_year.csv"
 
 # Test directions (ANALYSIS_PLAN.md "Directions and sidedness"), as the
 # alternative of each test per region: "greater", "less", "two-sided", or None
 # where the region is descriptive only or the test does not apply. H4 is one
-# north-vs-SoCal contrast. The tests in src/stats.py are two-sided today; a
-# one-sided p-value needs the sign of the estimate (Phase 4).
+# north-vs-SoCal contrast. Passed as `alternative` to src.stats
+# permutation_test, coef_test and contrast_test (one tail in the stated
+# direction; built 2026-10-08).
 _NORTH = ("PNW", "BC", "AB")
 
 
@@ -317,14 +328,30 @@ TEST_DIRECTIONS = {
 # Small-cluster corrections (decided 2026-10-05; DECISIONS.md "Inference"):
 # t critical values in every HAC and pooled fit; the pooled H4 model uses
 # Driscoll-Kraay errors (statsmodels cov_type "hac-groupsum") with
-# HAC_MAXLAGS, year-clustered errors reported alongside. src/stats.py does
-# not apply these yet (Phase 4).
+# HAC_MAXLAGS, year-clustered errors reported alongside (src.stats
+# fit_ols_hac, fit_driscoll_kraay, fit_pooled; applied 2026-10-08).
 USE_T = True
 POOLED_COV_TYPE = "hac-groupsum"
 # t degrees of freedom for the Driscoll-Kraay fit: number of years minus
 # this. statsmodels 0.15 counts them from the row order of the time groups
-# (df 0, 4 or 100 for the same data sorted three ways; code audit 2026-10-05).
+# (df 0, 4 or 100 for the same data sorted three ways; code audit 2026-10-05),
+# and its t_test and wald_test use that count too (F(4, 4) and t df 4 on a
+# 5-region, 41-year panel; probe 2026-10-08), so src/stats.py takes every
+# p-value from scipy with this df instead.
 POOLED_DF_YEARS_MINUS = 1
+# Small-sample correction of the robust covariances (owner, 2026-10-08,
+# before any result; D65, frozen plan's deviations log). True: Newey-West
+# gets n / (n - k) (statsmodels' HAC default is no correction); Driscoll-Kraay
+# and year-clustered errors keep statsmodels' cluster factor
+# G / (G - 1) x (N - 1) / (N - K) (their default). SEs about 3.8% wider for
+# H3a (n 42, k 3), 5.1% for H3b, 4.9% for the H4 Driscoll-Kraay fit.
+ROBUST_SMALL_SAMPLE_CORRECTION = True
+# H4 pooled model (ANALYSIS_PLAN "Headline methods" 3, "H4's actual test"):
+# the five main regions, SoCal the reference level (patsy would take AB,
+# the first alphabetically), and the contrast's north regions.
+H4_REGIONS = ("PNW", "BC", "AB", "NorCal", "SoCal")
+H4_REFERENCE = "SoCal"
+H4_NORTH = _NORTH
 # Expanding-window validation: fit on seasons FIRE_FIRST_YEAR..Y-1, predict Y,
 # once this many training seasons exist (first prediction 2004).
 FORWARD_MIN_TRAIN_YEARS = 20

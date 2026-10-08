@@ -27,6 +27,28 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-08
 
+### D65 · Small-sample correction on in every robust fit
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Small-cluster corrections" and
+  "Execution details": `use_t=True`, Newey-West maxlags 2, Driscoll-Kraay
+  for H4 with df = years - 1; silent on the small-sample correction of the
+  robust covariance. Session 7 kickoff trap 3: "Decide before any result
+  (lean: off, the default)".
+- **Actual:** a read of statsmodels 0.15.0 found its defaults differ by
+  fit: Newey-West uncorrected, Driscoll-Kraay and year-clustered corrected
+  (cluster factor). Owner chose (2026-10-08, before any result) the
+  correction on everywhere: n/(n - k) for Newey-West, the cluster factor
+  G/(G - 1) x (N - 1)/(N - K) for Driscoll-Kraay and year clustering
+  (`ROBUST_SMALL_SAMPLE_CORRECTION`). SEs about 3.8% wider for H3a, 5.1%
+  for H3b, 4.9% for the H4 Driscoll-Kraay fit.
+- **Why:** one rule for every fit, in the conservative direction for
+  41-42 seasons; the kickoff's lean was written before the defaults were
+  known to differ.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Small-sample correction on in
+  every robust fit".
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, seventh row (an
+  execution detail the frozen text leaves open; no fire data run through
+  the statistics code); frozen text above the log unchanged.
+
 ### D64 · Pre-results audit in repeated rounds
 - **Plan:** `ACTION_PLAN.md` Phase 4 (D51): "then checked by a read-only
   audit with a neutral prompt, before any of it runs on the fire table".

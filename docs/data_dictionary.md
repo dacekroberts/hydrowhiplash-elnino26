@@ -391,21 +391,36 @@ stations and grid in mm is meaningless; compare % or z.
   35.5N grid row sits exactly on the NorCal/SoCal split and goes to SoCal
   (`DECISIONS.md` 2026-10-04, "Phase 1 regions and ERA5 loading").
 
-- `temp_jja` (planned): June-August mean 2 m temperature per region, °C.
-- `precip_anom_lag0`, `precip_anom_lag1` (planned; defined 2026-10-05):
-  October-March total precipitation per region (`PRECIP_ANOM_MONTHS`;
-  year Y = October Y-1 to March Y), as a z-score against the region's
-  1991-2020 mean and SD (`PRECIP_ANOM_NORMAL_YEARS`). Unitless (SD).
-  `lag0` = the Oct-Mar before fire season Y, `lag1` = the one before that.
-  Longer than DJF so it catches California's autumn and March storms; it
-  ends before every fire window opens (April at the earliest).
+- **Climate controls table** (built 2026-10-08, session 7; `python -m
+  src.climate_vars`): `data/processed/climate_controls_region_year.csv` and
+  `results/tables/`, 532 rows (7 regions x 1951-2026) with the ENSO
+  columns. Every land cell in the region counts, glacier cells included
+  (only the SWE means and SPEI leave them out); cos(latitude) regional
+  means via `src.geo.regional_mean`.
+- `temp_jja` (have, 2026-10-08): June-August mean 2 m temperature per
+  region, °C, the mean of the three monthly means (months not weighted by
+  length). Year Y = summer Y; 2026 empty (no August yet). The H3b control.
+  Means 1951-2025: SoCal 27.0 (deserts included), NorCal 21.7, PNW 18.0,
+  AB 15.2, BC 11.4, YT 10.3, AK 10.3 °C.
+- `precip_octmar_mm` and `precip_anom_lag0`, `precip_anom_lag1` (have,
+  2026-10-08; defined 2026-10-05): October-March total precipitation per
+  region (`PRECIP_ANOM_MONTHS`; year Y = October Y-1 to March Y), mm, and
+  its z-score against the region's 1991-2020 mean and SD
+  (`PRECIP_ANOM_NORMAL_YEARS`, SD with ddof 1). Unitless (SD). `lag0` =
+  the Oct-Mar before fire season Y, `lag1` = the one before that (matched
+  on year - 1; 1951 empty). Longer than DJF so it catches California's
+  autumn and March storms; it ends before every fire window opens (April
+  at the earliest). Correlation with DJF precipitation 0.75 (AK) to 0.91
+  (SoCal). Trap: the 1991-2020 normal includes years after an
+  expanding-window training cut (frozen; a stated limitation).
 - `swe_z` in the tests = `era5_swe_z` (have): ERA5-Land April 1 SWE as a
   z-score against the region's own 1991-2020 mean and SD
   (`SWE_TEST_COLUMN`); the station index z (`station_swe_z`) is the
   check. Table: `results/tables/station_swe_region_year.csv`.
-- `temp_mam` (planned; AK and YT, descriptive): March-May mean 2 m
-  temperature per region, °C (`SPRING_MONTHS`), the spring warmth and
-  early-melt path El Niño is thought to act through there.
+- `temp_mam` (have, 2026-10-08; AK and YT, descriptive): March-May mean
+  2 m temperature per region, °C (`SPRING_MONTHS`), the spring warmth and
+  early-melt path El Niño is thought to act through there. Built for all
+  seven regions in the climate controls table, 1951-2026.
 
 - `snowfall_frac` (have, 2026-10-05): share of November-March
   precipitation that fell as snow, regional mean snowfall / regional mean
@@ -504,8 +519,11 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   no counted fire gives 0, then jumps to about 6 for one 405 ha fire
   (pre-freeze item "Zero-fire years"). `zero_fire`: True for such a season
   (1 of 291: SoCal 2014).
-- `burn_detr`: residuals of `log_burn ~ year` per region, for tests without
-  a trend term. Planned (Phase 4 statistics code), not in the table.
+- `burn_detr`: residuals of `log_burn ~ year` per region (OLS over the
+  region's test seasons), for the permutation and bootstrap tests, which
+  have no trend term. Computed when a test runs by `src.stats.detrend`
+  (built 2026-10-08), not stored in the table; the zero-fire sensitivity
+  re-detrends without the zero seasons.
 - `first_fire`, `last_fire`, `season_days`: first and last ignition date
   among counted fires with a full date, and the days between; empty with
   fewer than 2 such fires (9 region-seasons). Descriptive only.
@@ -514,6 +532,21 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
 - `data/processed/fire_events.csv` (not committed): one row per fire-region
   piece (9,758 rows, including 2026 WFIGS pieces outside the tests), with
   `fire_ha` (whole fire), `clipped_ha`, `season`, dates and flags.
+- **Frozen-rules variant** (built 2026-10-08, D62; `python -m src.fire
+  --frozen-rules`, from `fire_events.csv`):
+  `results/tables/fire_region_year_frozen_rules.csv`, same columns and 291
+  rows. `burn_ha` is the sum of clipped pieces (no union, `double_ha` 0),
+  MTBS "Other" pieces and CNFDB pieces without a month left out, the frozen
+  years. For the robustness run of every burned-area test only. Total
+  burned area against the main table: AB 93.2%, YT 96.4%, AK 98.6%, NorCal
+  99.5%, PNW 99.6%, SoCal 99.7%, BC 100.1% (summing counts CNFDB overlap
+  twice); AB 1997 and YT 2022 (every fire undated; YT 2022 held 233,108 ha) become zero-fire seasons.
+
+**Input pins** (`results/tables/input_pins.csv`, `python -m
+src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
+the 25 files the tests read (committed tables, ENSO downloads, fire
+downloads, `fire_events.csv`); `--verify` raises if any changed. RONI is
+revised monthly and WFIGS is live, so the tests use these copies.
 
 ## 6. Region boundaries, have (Phase 1)
 
@@ -579,6 +612,16 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   allow regions in the same year to be correlated and each region to be
   correlated with itself over nearby years (statsmodels `hac-groupsum`,
   maxlags 2); year clustering allows only the first.
+- **Small-sample correction (D65):** robust covariances are scaled up for
+  the parameters the fit used: n/(n - k) for Newey-West, G/(G - 1) x
+  (N - 1)/(N - K) for Driscoll-Kraay and year clustering
+  (`ROBUST_SMALL_SAMPLE_CORRECTION`); SEs 4-5% wider.
+- **F test:** a joint test that several coefficients are all 0. H4's
+  joint test of the four interactions is F(4, years - 1) from the
+  Driscoll-Kraay covariance. Size (simulated, 2026-10-08): it rejects a
+  true null far more often than 5%; see `docs/methods_register.md`.
+- **Test size:** the share of datasets with no true effect in which a test
+  gives p < 0.05; a correct test gives about 5% (`scripts/stats_size_check.py`).
 - **Expanding-window validation:** fit on seasons 1984 to Y-1 only and
   predict Y, moving Y forward from 2004 (20 training seasons). Unlike
   leave-one-year-out, the model never sees years after the one predicted,

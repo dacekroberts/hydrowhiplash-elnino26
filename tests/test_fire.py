@@ -180,3 +180,38 @@ def test_local_dates_shift_late_evening_utc():
     utc = pd.to_datetime(pd.Series(["2024-11-01 05:00", "2024-11-01 05:00"]), utc=True)
     out = fire.local_dates(utc, pd.Series(["US-WA", "US-AK"]))
     assert out.dt.strftime("%Y-%m-%d").tolist() == ["2024-10-31", "2024-10-31"]
+
+
+def test_frozen_rules_table_sums_drops_other_and_undated():
+    # D62: summed clipped area (no union), MTBS "Other" dropped, CNFDB fires
+    # without a month dropped; every other piece kept as in the main table.
+    from src.fire import frozen_rules_pieces, frozen_rules_table, region_year_table
+
+    def piece(source, region, ha, fire_type="Wildfire", undated=False, season=1990):
+        return {"source": source, "fire_id": f"{source}{ha}", "region": region,
+                "clipped_ha": float(ha), "fire_type": fire_type, "undated": undated,
+                "season": season, "ignition": pd.Timestamp(f"{season}-07-01"),
+                "date_known": not undated, "month_known": not undated}
+
+    pieces = pd.DataFrame([
+        piece("MTBS", "PNW", 500), piece("MTBS", "PNW", 600),       # overlap: summed here
+        piece("MTBS", "PNW", 700, fire_type="Other"),               # dropped
+        piece("CNFDB", "YT", 800, fire_type="N"),
+        piece("CNFDB", "YT", 900, fire_type="N", undated=True),     # dropped
+        piece("WFIGS", "SoCal", 1000, fire_type="WF", season=2024),
+    ])
+    pieces["season"] = pieces["season"].astype("Int64")
+    kept = frozen_rules_pieces(pieces)
+    assert sorted(kept["clipped_ha"]) == [500, 600, 800, 1000]
+    last = {r: 2025 for r in ("PNW", "AK", "NorCal", "SoCal")} | {r: 2024 for r in ("BC", "AB", "YT")}
+    table = frozen_rules_table(pieces, last_year=last).set_index(["region", "year"])
+    assert table.loc[("PNW", 1990), "burn_ha"] == 1100
+    assert table.loc[("PNW", 1990), "n_unknown_type"] == 0
+    assert table.loc[("YT", 1990), "burn_ha"] == 800 and table.loc[("YT", 1990), "n_undated"] == 0
+    assert table.loc[("SoCal", 2024), "burn_ha"] == 1000
+    assert table.loc[("PNW", 1991), "zero_fire"]
+    assert len(table) == 4 * 42 + 3 * 41
+    # the main table on the same pieces keeps Other and the undated fire
+    main = region_year_table(pieces, last_year=last).set_index(["region", "year"])
+    assert main.loc[("PNW", 1990), "burn_ha"] == 1800
+    assert main.loc[("YT", 1990), "burn_ha"] == 1700
