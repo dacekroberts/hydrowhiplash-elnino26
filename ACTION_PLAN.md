@@ -153,13 +153,31 @@ the frozen-rules fire table (`python -m src.fire --frozen-rules`) and input
 pins (`src/pin_inputs.py`); small-sample correction on everywhere (D65).
 Audit round 1 settled 2026-10-08 (D66); round 2 settled 2026-10-08 (D67,
 D68); round 3 settled 2026-10-08 (D69, D70; Parks Canada check done);
-round 4 settled 2026-10-08 (D71); round 5 next. The gate closes on a cold
-round with no high and no medium findings (owner, 2026-10-08).
+round 4 settled 2026-10-08 (D71); round 5 settled 2026-10-08 (D72; no
+high, no medium, 6 low). **Gate closed on round 5** (owner's standard: a
+cold round with no high and no medium findings), tag
+`pre-results-gate-closed`.
 
 - [ ] **Decide before the first hypothesis test (owner, 2026-10-08):** the
       exploratory NBAC re-run of the Canadian tests and the NOAA NCEI
       Interior Alaska check, each yes or no, logged in `DECISIONS.md`. No
       hypothesis test runs while either is open.
+- [ ] **Registered runs committed by Friday 2026-11-06** [mid-project: D73]:
+      the day before October's ERA5-Land data is expected
+      (`TRACKER_DATA_DAY` 7), so the first tracker update cannot change a
+      pinned input under the tests. If the date is missed, see the
+      hard-line item in Phase 5.
+- [ ] **Runner safeguards before the first run** [mid-project: D73]
+      (audit round 5): first, a written protocol for changes after results
+      exist (the first results are never edited, reruns go beside them,
+      any change gets a log row and an old-vs-new table; S6); then
+      builders that refuse to overwrite a pinned file without `--rebuild`
+      and a re-pin log (S2), `pin_inputs.load_input` as the runner's only
+      way to open a table (S3), `scripts/check_plan_frozen.py` and a
+      preflight the runner calls first (S4), a provenance record beside
+      every result (S5), the size labels read from `test_size.csv`; tests,
+      then a short cold check of that code. An offline copy of the 30
+      pinned inputs (S1).
 - [ ] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB
@@ -206,6 +224,11 @@ technique was chosen.
       2026-10-07, before any fire data, and logged in the frozen plan's
       deviations table that day; no registered test changes. Recheck the
       arrival day (`TRACKER_DATA_DAY`, 7) against when October appears.
+      [mid-project: D73] Every download writes to a release- or
+      retrieval-stamped path, never over a pinned input. If the registered
+      runs are not committed by then, only the climate tables are
+      re-pinned, logged, and only if every value a registered test reads
+      is identical; the ENSO and fire pins are not touched.
 - [ ] Spring 2027: update with the final winter data and publish
 - [ ] Fall 2027: verify against the actual season, which could become a preprint
 
@@ -218,6 +241,12 @@ already makes, so add it when its phase is done; don't design ahead of results.
 - [ ] **Mechanism diagram** — the pathways (PNW/BC/AB dry → low snowpack →
       long or early season; SoCal wet → grass → big grass fires). No data
       needed, so it can go up first. *Any time.*
+- [ ] **Methods flowchart** [mid-project: D74]: sources, the variables made
+      from them, the region x year table, the pre-registered tests and the
+      site's charts, in plain language for `site/methods.qmd`; drawn in
+      code like the mechanism diagram (`src/diagrams.py` to
+      `results/figures/`). Structure only, no numbers. No data needed, so a
+      worktree session can take it. *Any time.*
 - [ ] **Winter rainfall map** — the El Niño precipitation dipole, from
       Phase 1. Static cartopy is fine. *After Phase 1.*
 - [ ] **Historical charts** — per region: every fire season since 1984, El Niño

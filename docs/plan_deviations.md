@@ -27,6 +27,69 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-08
 
+### D74 · Site methods flowchart (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists the site pieces
+  (mechanism diagram, winter rainfall map, historical charts, tracker);
+  no methods diagram.
+- **Actual:** owner, 2026-10-08: a plain-language methods flowchart for
+  `site/methods.qmd` (sources, variables, region x year table, tests,
+  charts), built in code like the mechanism diagram.
+- **Why:** the private notebooks doc's pipeline diagram showed how much a
+  flow picture helps; the audience version shows the analysis, not the
+  repository.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Site methods flowchart".
+- **Substantial:** yes (a new site piece).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", new item marked
+  `[mid-project: D74]`. No test or rule touched.
+
+### D73 · Run sequencing and runner safeguards (audit round 5 S1-S6)
+- **Plan:** `ACTION_PLAN.md` Phase 4 sets no date for the registered
+  runs; Phase 5's hard-line item (D55, early November 2026) downloads every
+  published 2026 month and rebuilds the climate tables; the download
+  scripts write onto the pinned paths (`download_oni`, `download_wfigs`,
+  `download_cnfdb`, `download_mtbs`; only NBAC's file name carries its
+  release); nothing protects the pinned inputs from a rebuild or says how
+  a change after results is handled.
+- **Actual:** owner, 2026-10-08, before any fire data were tested: the
+  registered runs are computed and committed by Friday 2026-11-06, the day
+  before October's ERA5-Land data is expected (`TRACKER_DATA_DAY` 7, D55).
+  Every later download writes to a release- or retrieval-stamped path,
+  never over a pinned input. If the runs miss the date, only the climate
+  tables are re-pinned, logged, and only if every value a registered test
+  reads is identical; the ENSO and fire pins are not touched. An offline
+  copy of the 30 pinned inputs is kept. Before the first run: a protocol
+  for changes after results (S6, written first), builders that refuse to
+  overwrite a pinned file without `--rebuild` and a re-pin log (S2), one
+  pinned loader (S3), a frozen-text check and preflight (S4), a
+  provenance record beside every result (S5); a short cold check of that
+  code.
+- **Why:** audit round 5 S1: RONI is revised monthly and WFIGS is live,
+  so a download onto a pinned path either breaks `--verify` or puts a
+  revised input under the tests (trap 7).
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 5 settled;
+  pre-results gate closed".
+- **Substantial:** yes (a deadline and a procedure for the inputs).
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, fifteenth row;
+  `ACTION_PLAN.md` Phase 4 (two items) and Phase 5 (hard-line item)
+  marked `[mid-project: D73]`; frozen text above the log unchanged.
+
+### D72 · Corrections to D71 (audit round 5 L2, L3)
+- **Plan:** D71: NBAC gives every defence-land part cause "Undetermined",
+  satellite-only, "58 of 63 undated"; the `ANALYSIS_PLAN.md` deviations
+  log, thirteenth row: "1% of AB's area".
+- **Actual:** 60 parts for 1984-2024, the range measured (63 with 2025),
+  every one "Undetermined" and MAFiMS, 58 undated; the 109,773 ha are
+  0.98% of AB's counted burned area 1984-2024 (of 11,149,758 ha), not of
+  AB's land area. No value or decision changes.
+- **Why:** the part count was read on a 1984-2025 base; "area" dropped
+  "counted burned".
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 5 settled;
+  pre-results gate closed"; `docs/methods_register.md` "Defence lands
+  (DND)".
+- **Substantial:** no.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, fourteenth row (added,
+  correcting row 13); frozen text above the log unchanged.
+
 ### D71 · Corrections to D69 and D70; defence lands a stated limitation
 - **Plan:** D69 (and the `ANALYSIS_PLAN.md` deviations log, eleventh
   row): "CNFDB holds no Parks Canada polygon for 2016-2021"; NBAC and CNFDB

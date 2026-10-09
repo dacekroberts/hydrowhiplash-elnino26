@@ -17,6 +17,82 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Site methods flowchart
+
+- **Decided (owner, 2026-10-08) to add a methods flowchart to the public
+  site** (`site/methods.qmd`, "Method"): sources (ERA5-Land, snow
+  stations, MTBS and WFIGS, CNFDB, ONI and RONI; NBAC as a sensitivity
+  source), the variables made from them (winter precipitation, whiplash,
+  snowpack, burned area per region and season), the tidy region x year
+  table, the pre-registered tests and the site's charts. Built like the
+  mechanism diagram (2026-10-04 "Mechanism diagram"): drawn in code in
+  `src/diagrams.py`, written to `results/figures/`, byte-identical between
+  runs and tested, wide and phone layouts, the same palette. Structure
+  only: burned area and ENSO appear as boxes, never as numbers side by
+  side. Rejected reusing the private notebooks doc's diagram (it shows
+  where the notebooks sit, which a reader does not need) and a Mermaid
+  block in the page (the figure would live outside `results/`). Needs no
+  data, so a worktree session can build it. Scope addition (D74).
+
+### 2026-10-08 - Audit round 5 settled; pre-results gate closed
+
+- **Settled (owner, yes on every recommendation): the pre-results audit
+  round 5** (`docs/audit_2026-10-08_preresults_round5.md`, Fable 5.1,
+  read-only, at c6ac758; no high, no medium, 6 low, and 7 forward
+  safeguards from a second pass the owner asked for). Independent code
+  reproduced every number the round 4 fix put in the records from the
+  pinned zips (union-to-union agreement, the 25 / 6 / 11 season counts,
+  Wood Buffalo 95.67%, defence lands 109,773 ha, the D71 polygon facts,
+  the parks table to every printed digit), and the whole gate recomputed
+  by hand on synthetic data. The owner's standard (a cold round with no
+  high and no medium findings) is met, so **the gate closed on round 5**:
+  the commit that records this entry carries the tag
+  `pre-results-gate-closed` (round 5 S5). Rejected a round 6: the standard
+  was set before round 5 ran.
+- **L1-L6:** L1, the "most large seasons" sentence now quotes all nine AB
+  seasons with CNFDB Parks Canada area of 50,000 ha or more (five below
+  NBAC 0.68-0.90, three near at 0.99-1.11, one above at 1.92), so F3's
+  "more likely low than high" stands, less strongly (register,
+  `src/parks_gap.py`; the round 4 entry above is left as written). L2,
+  the defence-land parts are 60 for 1984-2024 (63 with 2025), 58 undated;
+  L3, they are 1% of AB's counted burned area, not of AB's area (D72, plan
+  log row 14). L4, the parks table's `burn_ha` differs from the main
+  table's in the last digit in 7 seasons (CSV round trip, at most 4.7e-10
+  ha): stated in the data dictionary; rejected rebuilding a pinned table at
+  closure for it. L5, `assert_pinned` and the two measurement CSVs named
+  in the register and data dictionary. L6, F1's number holds both missing
+  fires and rim disagreement; the rims alone were 0.3-1.2% of a season in
+  the AB years the auditor probed; the floor is stated beside F1's numbers
+  and a per-fire split (uncovered share above 0.5 as missing) is the first
+  step of the session 8 NBAC decision.
+- **F1 measured** (`scripts/nbac_coverage.py`, 2026-10-08, about 90
+  minutes): NBAC fire area (whole fire at or above 405 ha) with no CNFDB
+  polygon of the same calendar YEAR under it, 1984-2024: AB 7.7%, BC 6.2%,
+  YT 6.9%; under the provincial labels AB 393,140 ha (4.8%), BC 501,894
+  (6.1%), YT 430,841 (6.8%); Wood Buffalo 303,904 of 2,078,447 ha (14.6%,
+  about 175,000 of it the 2016-2019 gap); defence lands 109,773 ha (100%).
+  AB's provincial 4.8% is well above the rim floor, so some seasons
+  (likely 2005-2007) may hold whole fires CNFDB lacks. Nothing adopted:
+  input to the session 8 decision.
+- **S1-S7 (forward safeguards; none a defect today):** S1, the later
+  downloads (the November ERA5-Land update, D55; the March 2027 RONI
+  value; CNFDB 2025) would land on pinned paths: the registered runs are
+  computed and committed by Friday 2026-11-06, before October's ERA5-Land
+  data is expected (`TRACKER_DATA_DAY` 7); every later download gets a
+  release- or retrieval-stamped path, built before the tracker code; if
+  the runs miss the date, only the climate tables are re-pinned, logged,
+  and only if every value a registered test reads is identical (D73, plan
+  log row 15); an offline copy of the 30 pinned inputs (3.38 GB). S2
+  (builders refuse to overwrite a pinned file without `--rebuild`; every
+  re-pin logs its reason), S3 (`pin_inputs.load_input(name)`, the runner's
+  only way to open a table), S4 (`scripts/check_plan_frozen.py` and a
+  preflight the runner calls first) and S5 (a provenance record beside
+  every result: commit, pin and size-table hashes, seed, package versions)
+  are built in session 8 with tests, before the first run, then a short
+  cold check of that code. S6, a protocol for changes after results
+  exist, is written at the start of session 8, before any result. S7, the
+  session 7 log block, written tonight.
+
 ### 2026-10-08 - Audit round 4 settled
 
 - **Settled (owner, yes on every finding): the pre-results audit round 4**

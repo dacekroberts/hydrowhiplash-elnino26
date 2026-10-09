@@ -7,9 +7,13 @@ clipped to the regions, the area not covered by any CNFDB polygon of the
 same YEAR (any agency, any size, prescribed included), summed per region,
 year, ADMIN_NAME and ADMIN_DIV. Shows whether anything beyond the national
 parks (D69) and defence lands (round 4 M2) is missing from CNFDB. NBAC has
-no ignition date, so a fire counts for its YEAR. No ENSO column is read.
+no ignition date, so both sides are compared by calendar YEAR, not season
+window; a CNFDB fire filed under another YEAR counts as uncovered. One
+number holds both whole fires CNFDB lacks and outline disagreement at the
+rims of matched fires (0.3-1.2% of a season's NBAC area in the AB years
+audit round 5 L6 probed). No ENSO column is read.
 
-Run from the repo root:  python scripts/nbac_coverage.py   (about 20 minutes)
+Run from the repo root:  python scripts/nbac_coverage.py   (about 90 minutes, measured 2026-10-08)
 Writes data/processed/nbac_coverage.csv (not committed) and prints totals.
 """
 from __future__ import annotations

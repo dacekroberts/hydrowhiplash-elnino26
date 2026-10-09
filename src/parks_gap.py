@@ -22,9 +22,12 @@ Measured 2026-10-08 (`--measure`, unions per season as burn_ha): NBAC park
 area in AB 1984-2017 is 1.3% above CNFDB's Parks Canada area (1,250,741 vs
 1,234,910 ha); in the 25 seasons where both are above 0, single seasons
 agree within 5% in 6 and within 15% in 11, the ratio running 0.45 (1985)
-to 2.08 (2008). NBAC runs below CNFDB in most large seasons (2003 0.68,
-2004 0.74, 2012 0.84), consistent with NBAC removing unburned islands and
-water, so the added area is more likely low than high (round 4 F3).
+to 2.08 (2008). Of the nine seasons with CNFDB park area of 50,000 ha or
+more, NBAC runs below CNFDB in five (1994 0.81, 1999 0.90, 2003 0.68, 2004
+0.74, 2012 0.84), near it in three (2011 0.99, 2015 1.01, 2014 1.11) and
+above it in one (2007 1.92), consistent with NBAC removing unburned islands
+and water, so the added area is more likely low than high (round 4 F3),
+less strongly than the five low seasons alone suggest (round 5 L1).
 Non-Parks Canada CNFDB polygons (whole fire at the floor) overlapping the
 added NBAC park pieces: AB 2016 181 ha (of 6,855), 2017 1 ha, 2018 and
 2019 0 ha, so the sum double counts at most 0.04% of a season.

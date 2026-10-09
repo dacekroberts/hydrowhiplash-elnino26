@@ -503,7 +503,8 @@ so fires inside national parks are missing in those years, and the
 provinces did not map them (AB 2016-2019 flagged `parks_gap`, NBAC
 sensitivity run, D69); fires on Department of National Defence land
 (CFB Wainwright and Suffield, AB) are in no CNFDB polygon in any year:
-109,773 ha over 1984-2024, 1% of AB, a stated limitation (D71); agency minimum
+109,773 ha over 1984-2024, 1% of AB's counted burned area, a stated
+limitation (D71); agency minimum
 sizes differ by decade (all far below 405 ha after 1984); Yukon 2022 has
 97 large fires without month or day (D59). 104 polygons have no year at
 all (`YEAR` = -9999, `CFS_NOTE1` "Fire year unknown, refer to decade";
@@ -591,7 +592,11 @@ main table with `nbac_park_ha` (NBAC national-park burned area, ha; whole
 fire floored at 405 ha by GID, park parts clipped and unioned, counted by
 NBAC YEAR, since NBAC has no ignition date) added to `burn_ha` for the
 `parks_gap` seasons, `log_burn` recomputed, `n_nbac_park` NBAC park fires;
-0 elsewhere. For a reported sensitivity run only.
+0 elsewhere. For a reported sensitivity run only. In 7 seasons outside
+the gap, `burn_ha` differs from the main table's in the last printed digit
+(at most 4.7e-10 ha, `log_burn` at 5e-15) from the CSV round trip in
+`with_park_area`; no value a test uses changes (audit round 5 L4, left as
+is so the pinned table is not rebuilt).
 
 **Input pins** (`results/tables/input_pins.csv`, `python -m
 src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
@@ -600,6 +605,21 @@ every input the tests read: the 7 committed input tables named in
 not refused; audit round 3 M1), ENSO downloads, fire downloads (NBAC
 included), `fire_events.csv`; `--verify` raises if any changed. RONI is
 revised monthly and WFIGS is live, so the tests use these copies.
+`pin_inputs.assert_pinned(path)` refuses any table outside the pins, for
+the hypothesis loaders (audit round 4 L6).
+
+**Measurement outputs, not committed, not pinned:**
+`data/processed/parks_gap_measure.csv` (`MEASURE_TABLE`, `python -m
+src.parks_gap --measure`): NBAC park and defence-land area and CNFDB Parks
+Canada area per region and season, each a union per season as `burn_ha`,
+behind the register's agreement figures (D71).
+`data/processed/nbac_coverage.csv` (`python scripts/nbac_coverage.py`,
+about 90 minutes): NBAC fire area at or above 405 ha with no CNFDB polygon
+of the same calendar `YEAR` under it, per region, year and NBAC admin
+label (audit round 4 F1). One number holds both whole fires CNFDB lacks
+and outline disagreement at the rims of matched fires; the rims alone
+were 0.3-1.2% of a season's NBAC area in the AB years probed (audit round
+5 L6). For the session 8 decision on the NBAC re-run only.
 
 ## 6. Region boundaries, have (Phase 1)
 
