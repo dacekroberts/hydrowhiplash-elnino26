@@ -107,12 +107,12 @@ the first hypothesis test.
 
 1. Orient: read CLAUDE.md, docs/session8_kickoff.md (Part 1), the session
    7 blocks in logs/2026-10-08.md, the top of DECISIONS.md (2026-10-08
-   entries), docs/plan_deviations.md D65-D71, ANALYSIS_PLAN.md (frozen:
+   entries), docs/plan_deviations.md D65-D74, ANALYSIS_PLAN.md (frozen:
    never edit above the deviations log) and ACTION_PLAN.md Phase 4. Read
    the roadmap artifact with the Artifact tool (action "read"):
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from D72.
+   deviations from D75.
 
 2. Explain each concept as it comes up, give a short summary beside every
    hypothesis ID, and quote the actual wording beside every item ID
