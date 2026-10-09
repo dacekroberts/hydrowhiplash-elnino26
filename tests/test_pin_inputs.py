@@ -56,6 +56,16 @@ def test_results_written_beside_the_input_tables_are_not_refused(tree):
     pin_inputs.verify(pins)
 
 
+def test_assert_pinned_accepts_inputs_and_refuses_the_rest(tree):
+    # Round 4 L6: the loaders' check that every table they open is pinned
+    root, pins = tree
+    assert pin_inputs.assert_pinned(root / "tables" / "a.csv") == (root / "tables" / "a.csv").resolve()
+    assert pin_inputs.assert_pinned(root / "raw" / "z.zip")
+    (root / "tables" / "new_input.csv").write_bytes(b"x\n")
+    with pytest.raises(ValueError, match="Not a pinned input"):
+        pin_inputs.assert_pinned(root / "tables" / "new_input.csv")
+
+
 def test_real_pin_list_names_inputs_only():
     from src.config import PINNED_RESULT_TABLES, TEST_SIZE_TABLE
     assert TEST_SIZE_TABLE.name not in PINNED_RESULT_TABLES

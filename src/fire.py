@@ -379,7 +379,10 @@ def union_areas(pieces: gpd.GeoDataFrame) -> pd.DataFrame:
         rows.append({"region": region, "season": int(season), "source": source,
                      "sum_ha": g["clipped_ha"].sum(), "union_ha": union_ha})
     out = pd.DataFrame(rows)
-    out["double_ha"] = out["sum_ha"] - out["union_ha"]
+    # floating-point sum minus union leaves noise of -4e-9 to 4e-10 ha where no
+    # pieces overlap (86 region-seasons negative; audit 2026-10-08 round 4
+    # L8), so double_ha is rounded to a microhectare and clipped at 0
+    out["double_ha"] = (out["sum_ha"] - out["union_ha"]).round(6).clip(lower=0.0)
     return out
 
 

@@ -27,6 +27,37 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-08
 
+### D71 · Corrections to D69 and D70; defence lands a stated limitation
+- **Plan:** D69 (and the `ANALYSIS_PLAN.md` deviations log, eleventh
+  row): "CNFDB holds no Parks Canada polygon for 2016-2021"; NBAC and CNFDB
+  park area "within 1%" over AB 1984-2017 (1,250,741 vs 1,259,913 ha),
+  single seasons within 5% in 5 of 14; Wood Buffalo 1.75 of 1.85 million
+  ha. D70: the plain OLS check measures 4.3-5.4% under the label scenario.
+- **Actual:** audit round 4 (M1, L1, L2, L3), rechecked here: CNFDB holds
+  no Parks Canada polygon at or above 405 ha in BC, AB or YT for
+  2016-2021: none at all for 2018-2020, Nahanni (NWT) only in 2016 (5)
+  and 2017 (8), and 2021 small fires only (28 polygons in the study
+  regions, largest 65 ha). The seasons flagged (AB 2016-2019) and every
+  table value stand. Union to union, NBAC park area in AB 1984-2017 is
+  1.3% above CNFDB's (1,250,741 vs 1,234,910 ha; 1,259,913 was CNFDB's
+  sum of pieces); both above 0 in 25 seasons, within 5% in 6, within 15%
+  in 11, ratio 0.45 to 2.08; Wood Buffalo 2.08 of 2.17 million ha (95.7%;
+  the old figure unioned across years). After round 3 pooled the labels,
+  the plain OLS label rows run 4.1-5.0%. Also found (round 4 M2): fires
+  on Department of National Defence land in AB (CFB Wainwright,
+  Suffield), 109,773 ha over 1984-2024 (0.98% of AB), are in no CNFDB
+  polygon in any year; owner chose (2026-10-08, before any test) a stated
+  limitation, not added to the sensitivity table: NBAC gives every part
+  cause "Undetermined", satellite-only, 58 of 63 undated, so they cannot
+  be told from range burning, and the plan counts wildfires.
+- **Why:** the D69 wording generalised from the counted pieces; the
+  agreement figures compared an NBAC union with a CNFDB sum.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 4 settled";
+  `docs/methods_register.md` "Parks Canada gap", "Defence lands (DND)".
+- **Substantial:** no.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, thirteenth row (added,
+  correcting row 11); frozen text above the log unchanged.
+
 ### D70 · Corrections to the D66 and D68 wording
 - **Plan:** D66 (and the `ANALYSIS_PLAN.md` deviations log, eighth row)
   says the registered robust tests reject a true null in 6-9% of

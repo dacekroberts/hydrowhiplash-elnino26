@@ -227,8 +227,10 @@ WFIGS_DEFAULT_TZ = "America/Denver"
 FIRE_READ_BBOX = (-180.0, 30.0, -100.0, 72.0)
 FIRE_EVENTS_TABLE = DATA_PROCESSED / "fire_events.csv"
 FIRE_REGION_TABLE = DATA_PROCESSED / "fire_region_year.csv"
-# Parks Canada gap (owner, 2026-10-08, D69): CNFDB holds no Parks Canada
-# polygon for 2016-2021. NBAC park area (ADMIN_NAME "PC") puts the missing
+# Parks Canada gap (owner, 2026-10-08, D69; wording D71): CNFDB holds no
+# Parks Canada polygon at or above 405 ha in BC, AB or YT for 2016-2021 (none
+# at all for 2018-2020; Nahanni, NWT, only in 2016-2017; 2021 small fires
+# only). NBAC park area (ADMIN_NAME "PC") puts the missing
 # share of AB at 1.3% (2016), 39.1% (2017), 20.4% (2018), 14.3% (2019) and
 # none in 2020-2021; BC 2017, 2018, 2023 and YT 2022, 2023 at most 0.9%
 # (a stated limitation). These seasons are flagged `parks_gap` in the fire
@@ -236,13 +238,20 @@ FIRE_REGION_TABLE = DATA_PROCESSED / "fire_region_year.csv"
 # main table with NBAC's park area added for them (src.parks_gap).
 PARKS_GAP_SEASONS = {"AB": (2016, 2019)}
 NBAC_PARK_ADMIN = "PC"
+# NBAC also splits fires at Department of National Defence land (CFB
+# Wainwright WW, Suffield SF in AB); no CNFDB polygon covers it in any year.
+# A stated limitation, not added (owner, 2026-10-08, audit round 4 M2): cause
+# undetermined, satellite-only, mostly undated, so not separable from range
+# burning. Measured by `python -m src.parks_gap --measure`.
+NBAC_DND_ADMIN = "DND"
 FIRE_REGION_TABLE_PARKS = DATA_PROCESSED / "fire_region_year_parks_nbac.csv"
 # D62 frozen-rules variant: summed clipped area, MTBS "Other" dropped, CNFDB
 # fires without a month dropped, the frozen years (src.fire.frozen_rules_table).
 FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
 # Checksums of every input the tests read (trap 7, session 7 kickoff): the
-# committed tables, the ENSO files and the fire downloads of 2026-10-07;
-# no re-download until the results are in (src.pin_inputs).
+# input tables in PINNED_RESULT_TABLES, the ENSO files, the fire downloads of
+# 2026-10-07 and NBAC of 2026-10-08; no re-download until the results are in
+# (src.pin_inputs).
 INPUT_PINS_TABLE = RESULTS / "tables" / "input_pins.csv"
 # The committed input tables the tests read, pinned by name (audit 2026-10-08
 # round 3 M1): the hypothesis runs write their own tables to results/tables/,

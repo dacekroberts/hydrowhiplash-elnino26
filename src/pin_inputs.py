@@ -1,12 +1,16 @@
 """Checksums of every input the registered tests read (trap 7, session 7
 kickoff): RONI is revised monthly and WFIGS is a live layer, so the tests
-run on the committed tables and the downloads of 2026-10-07, and nothing
-is re-downloaded until the results are in.
+run on the pinned input tables and downloads (fire 2026-10-07, NBAC
+2026-10-08), and nothing is re-downloaded until the results are in.
 
   pin()     sha256, size and modification time of each pinned file, written
             to INPUT_PINS_TABLE (results/tables/input_pins.csv)
   verify()  recompute and compare; raises listing every file that changed,
             vanished or was added to a pinned folder
+  assert_pinned(path)  raises unless the path is a pinned input; the
+            hypothesis loaders call it on every table they open, so an input
+            table added to results/tables/ without a pin fails loudly (audit
+            2026-10-08 round 4 L6: pinning by name dropped the folder trap)
 
 Pinned: the committed input tables named in PINNED_RESULT_TABLES (by name,
 not the results/tables/ folder, so tables the hypothesis runs write there
@@ -41,6 +45,15 @@ def pinned_files() -> list[Path]:
     for folder in FOLDERS:
         files += [p for p in sorted(folder.iterdir()) if p.is_file()]
     return files
+
+
+def assert_pinned(path: Path) -> Path:
+    """Return `path` if it is one of pinned_files(), else raise."""
+    path = Path(path).resolve()
+    if path not in {p.resolve() for p in pinned_files()}:
+        raise ValueError(f"Not a pinned input: {path}. Add it to PINNED_RESULT_TABLES "
+                         "(or pin_inputs.FIXED), re-pin, and log why.")
+    return path
 
 
 def sha256(path: Path, chunk: int = 1 << 20) -> str:

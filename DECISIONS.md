@@ -17,6 +17,46 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Audit round 4 settled
+
+- **Settled (owner, yes on every finding): the pre-results audit round 4**
+  (`docs/audit_2026-10-08_preresults_round4.md`, Fable 5.1, read-only, at
+  46534b1; no high, 2 medium, 8 low, 3 follow-ups). An independent NBAC
+  rebuild reproduced the Parks Canada sensitivity table to the decimal.
+  M1: "CNFDB holds no Parks Canada polygon for 2016-2021" was false as
+  written; rechecked: none at all 2018-2020, Nahanni only 2016-2017 (5 and
+  8 polygons, none in the study regions), 2021 small fires only (28 in the
+  study regions, largest 65 ha), none at or above 405 ha in BC, AB or YT
+  2016-2021; flag and tables unchanged; live wording corrected, D71
+  supersedes D69's sentence. M2: fires on Department of National Defence
+  land in AB (CFB Wainwright, Suffield; 109,773 ha over 1984-2024, 0.98% of
+  AB, up to 59% of AB 1991) are in no CNFDB polygon in any year; owner
+  chose a stated limitation, not added to the sensitivity table, because
+  NBAC gives every part cause "Undetermined", satellite-only, 58 of 63
+  undated, so they cannot be told from range burning (D71).
+- **L1-L8 as suggested:** agreement figures re-measured union to union
+  (NBAC 1.3% above CNFDB over AB 1984-2017; 6 of 25 seasons within 5%,
+  ratio 0.45-2.08) and Wood Buffalo recomputed (2.08 of 2.17 Mha, 95.7%),
+  both by `python -m src.parks_gap --measure`, now in the repository
+  (process point); D70's label range 4.1-5.0% (D71); size labels "decided,
+  applied in the hypothesis runs"; DATA_SOURCES lists the frozen-rules and
+  parks tables; `pin_inputs.assert_pinned` for the hypothesis loaders;
+  pin comments dated; `double_ha` rounded to a microhectare and clipped at
+  0 (86 seasons held float noise down to -4.2e-9 ha; fire tables rebuilt,
+  no other value changed, events file byte-identical).
+- **F1-F3:** F2 (AB 2020 and 1991 as leverage seasons) and F3 (NBAC park
+  area more likely low than high: ratios 0.68-0.84 in the large seasons
+  2003, 2004, 2012) recorded in the register. F1 (NBAC area with no CNFDB
+  polygon under it, by season and NBAC label) is `scripts/nbac_coverage.py`;
+  its first run reported every hectare uncovered because pyogrio returns
+  no rows, silently, when a `where` filter names a field missing from
+  `columns`; fixed (the field read, an empty year raises), the rest of
+  `src/` checked (unaffected). Its numbers go to the session 8 decision on
+  the NBAC re-run.
+- **Gate standard (owner, 2026-10-08):** the gate closes on a cold round
+  with no high and no medium findings, ideally a few lows. Round 5 next,
+  on Fable 5.1.
+
 ### 2026-10-08 - Audit round 3 settled
 
 - **Settled (owner, yes on every finding): the pre-results audit round 3**

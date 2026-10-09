@@ -496,10 +496,14 @@ PC = Parks Canada, and the other provinces), `FIRE_ID`, `FIRENAME`,
 `PRESCRIBED` ("yes" on the same 309 polygons as H-PB since 1984: Parks
 Canada 297, AB 7, Ontario 5; 306 fires after the dissolve). Not used: `SIZE_HA`
 (agency), `CALC_HA` (CFS, Canada Albers). Traps: Parks Canada sent no
-polygons for 2018-2020 (update log; measured 2026-10-08: none for 2016-2021),
+polygons for 2018-2020 (update log; measured 2026-10-08: none at or above
+405 ha in BC, AB or YT for 2016-2021, only Nahanni in 2016-2017 and small
+fires in 2021; D71),
 so fires inside national parks are missing in those years, and the
 provinces did not map them (AB 2016-2019 flagged `parks_gap`, NBAC
-sensitivity run, D69); agency minimum
+sensitivity run, D69); fires on Department of National Defence land
+(CFB Wainwright and Suffield, AB) are in no CNFDB polygon in any year:
+109,773 ha over 1984-2024, 1% of AB, a stated limitation (D71); agency minimum
 sizes differ by decade (all far below 405 ha after 1984); Yukon 2022 has
 97 large fires without month or day (D59). 104 polygons have no year at
 all (`YEAR` = -9999, `CFS_NOTE1` "Fire year unknown, refer to decade";
@@ -527,7 +531,9 @@ one row per region and season, 1984 to the region's last test year, 291
 rows; every rule and count in `docs/methods_register.md` "Fire").
 - `burn_ha`: burned area of the season's counted fires in the region, ha:
   each source's clipped pieces are unioned (overlap counted once, D61) and
-  the sources summed. `double_ha`: the overlap left out (ha).
+  the sources summed. `double_ha`: the overlap left out (ha; rounded to
+  1e-6 ha and clipped at 0, since audit round 4 L8 found floating-point
+  noise of up to 4e-9 ha).
 - `n_fires`: counted fire pieces in the region (a fire in two regions
   counts in each; 48 such fires, a fire being source, id and year). Pieces, not fires (audit 2026-10-08 L11): 13 slivers under
   1 ha of fires crossing an edge count in the neighbouring region (AB 5,

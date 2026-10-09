@@ -153,7 +153,8 @@ the frozen-rules fire table (`python -m src.fire --frozen-rules`) and input
 pins (`src/pin_inputs.py`); small-sample correction on everywhere (D65).
 Audit round 1 settled 2026-10-08 (D66); round 2 settled 2026-10-08 (D67,
 D68); round 3 settled 2026-10-08 (D69, D70; Parks Canada check done);
-round 4 cold review of the round 3 fixes and the Parks Canada code next.
+round 4 settled 2026-10-08 (D71); round 5 next. The gate closes on a cold
+round with no high and no medium findings (owner, 2026-10-08).
 
 - [ ] **Decide before the first hypothesis test (owner, 2026-10-08):** the
       exploratory NBAC re-run of the Canadian tests and the NOAA NCEI

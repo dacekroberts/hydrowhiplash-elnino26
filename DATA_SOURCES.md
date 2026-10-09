@@ -154,6 +154,13 @@ one of these needs notices 8, 9 (with the WFIGS disclaimer), 10 and 12:
 - `results/tables/fire_region_year.csv` (`python -m src.fire`): region x
   season burned area, fire counts and season length from MTBS, WFIGS and
   CNFDB, with the ENSO columns (notice 1).
+- `results/tables/fire_region_year_frozen_rules.csv` (`python -m src.fire
+  --frozen-rules`, D62): the same sources under the rules as frozen, with
+  the ENSO columns (notice 1).
+- `results/tables/fire_region_year_parks_nbac.csv` (`python -m
+  src.parks_gap`, D69): the main table with NBAC national-park area added
+  for AB 2016-2019, with the ENSO columns; also needs notice 11 (NBAC).
+  (Added 2026-10-08, audit round 4 L5.)
 The fire-region table (`data/processed/fire_events.csv`) is not committed.
 Open before publishing: the CNFDB documentation PDF's stale End-User
 Agreement sentence (CNFDB row); confirm with CWFIS only if the catalogue
