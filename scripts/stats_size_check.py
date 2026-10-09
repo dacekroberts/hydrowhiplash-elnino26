@@ -11,9 +11,14 @@ largest real lag-1 autocorrelation) and the enso x year_c interaction over
 42 fire seasons (C2) and 76 winters (C1); plus the plain OLS check beside
 each (D66; for the H4 contrast measured, not reported, round 2 M1).
 Scenarios: errors independent; AR(1) rho 0.3 over years; AR(1) 0.3 with
-the regions' errors correlated 0.5 within a year (the realistic case, the
-one the printed labels use). `--bootstrap` adds the year-block bootstrap p
-(dropped by D66; slow).
+the regions' errors correlated 0.5 within a year (the realistic case). The
+printed labels use that scenario for the H4 panel shapes; a single region's
+series has no region correlation, so for the per-region shapes the two
+AR(1) 0.3 scenarios are the same model and are pooled into one
+"AR(1) 0.3, pooled" row of 2 x reps datasets, which the labels use (audit
+2026-10-08 round 3 L4: one 1,000-dataset draw carries about +/- 0.014).
+`mc_se` is each row's own Monte Carlo SE at 5%; print it beside the label.
+`--bootstrap` adds the year-block bootstrap p (dropped by D66; slow).
 
 Run from the repo root:  python scripts/stats_size_check.py [reps] [--bootstrap]
 Writes results/tables/test_size.csv (TEST_SIZE_TABLE); measured values in
@@ -36,7 +41,9 @@ from src.config import H4_NORTH, H4_REGIONS, RANDOM_SEED, TEST_SIZE_TABLE  # noq
 YEARS = np.arange(1984, 2025)
 BOOT = 499
 LABEL_SCENARIO = "AR(1) 0.3, regions r 0.5"
+POOLED_SCENARIO = "AR(1) 0.3, pooled"
 SCENARIOS = {"independent": (0.0, 0.0), "AR(1) 0.3": (0.3, 0.0), LABEL_SCENARIO: (0.3, 0.5)}
+PANEL_SHAPES = ("H4 ", )  # shapes whose name starts so are fitted on the region panel
 PREDICTOR_AR = 0.27
 # shape: (registered tests it labels, method, sidedness)
 SHAPES = {
@@ -147,19 +154,29 @@ def main(reps: int = 1000, bootstrap: bool = False) -> pd.DataFrame:
                                             seed=int(rng.integers(1 << 31)))["p"])
         rows += [{"shape": k, "labels": SHAPES[k][0], "method": SHAPES[k][1],
                   "sidedness": SHAPES[k][2], "scenario": label,
-                  "label_scenario": label == LABEL_SCENARIO, "reps": reps,
-                  "rejection_rate": v / reps} for k, v in hits.items()]
+                  "label_scenario": label == LABEL_SCENARIO and k.startswith(PANEL_SHAPES),
+                  "reps": reps, "rejection_rate": v / reps} for k, v in hits.items()]
     table = pd.DataFrame(rows)
-    table["mc_se"] = np.sqrt(0.05 * 0.95 / reps)
+    ar = table[table["scenario"].isin(["AR(1) 0.3", LABEL_SCENARIO])
+               & ~table["shape"].str.startswith(PANEL_SHAPES)]
+    pooled = (ar.groupby(["shape", "labels", "method", "sidedness"], sort=False)
+              .agg(rejection_rate=("rejection_rate", "mean"), reps=("reps", "sum")).reset_index()
+              .assign(scenario=POOLED_SCENARIO, label_scenario=True))
+    table = pd.concat([table, pooled[table.columns]], ignore_index=True)
+    table["mc_se"] = np.sqrt(0.05 * 0.95 / table["reps"])
     table["measured"] = datetime.date.today().isoformat()
     TEST_SIZE_TABLE.parent.mkdir(parents=True, exist_ok=True)
     table.round(4).to_csv(TEST_SIZE_TABLE, index=False, lineterminator="\n")
     wide = table.pivot(index="shape", columns="scenario", values="rejection_rate")
     print(f"share of {reps} null datasets with p < 0.05 (nominal 0.05; "
-          f"Monte Carlo SE {np.sqrt(0.05 * 0.95 / reps):.3f})"
+          f"Monte Carlo SE {np.sqrt(0.05 * 0.95 / reps):.3f}, pooled "
+          f"{np.sqrt(0.05 * 0.95 / (2 * reps)):.3f})"
           + (f"; bootstrap {BOOT} draws" if bootstrap else ""))
-    print(wide[list(SCENARIOS)].reindex([k for k in SHAPES if k in wide.index])
+    print(wide[list(SCENARIOS) + [POOLED_SCENARIO]].reindex([k for k in SHAPES if k in wide.index])
           .round(3).to_string())
+    labels = table[table["label_scenario"]]
+    print("labels:")
+    print(labels[["shape", "scenario", "rejection_rate", "mc_se"]].round(3).to_string(index=False))
     print(f"wrote {TEST_SIZE_TABLE}")
     return table
 

@@ -152,7 +152,17 @@ Gate code built 2026-10-08 (session 7): `src/stats.py`, `src/climate_vars.py`,
 the frozen-rules fire table (`python -m src.fire --frozen-rules`) and input
 pins (`src/pin_inputs.py`); small-sample correction on everywhere (D65).
 Audit round 1 settled 2026-10-08 (D66); round 2 settled 2026-10-08 (D67,
-D68); round 3 cold review of the round 2 fixes next.
+D68); round 3 settled 2026-10-08 (D69, D70; Parks Canada check done);
+round 4 cold review of the round 3 fixes and the Parks Canada code next.
+
+- [ ] **Decide before the first hypothesis test (owner, 2026-10-08):** the
+      exploratory NBAC re-run of the Canadian tests and the NOAA NCEI
+      Interior Alaska check, each yes or no, logged in `DECISIONS.md`. No
+      hypothesis test runs while either is open.
+- [ ] **Parks Canada sensitivity run** [mid-project: D69]: every
+      burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
+      `fire_region_year_parks_nbac.csv` (NBAC park area added for AB
+      2016-2019), beside the main results, uncorrected, exploratory
 
 - [ ] **Frozen-rules robustness run** [mid-project: D62]: every burned-area
       test (H2, H3a, H3b, H4, H5, H6, C2) rerun on a fire table built under

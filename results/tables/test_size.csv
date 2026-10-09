@@ -38,15 +38,27 @@ shape,labels,method,sidedness,scenario,label_scenario,reps,rejection_rate,mc_se,
 "H4 contrast, clustered","H4 contrast, year-clustered model",year-clustered,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.053,0.0069,2026-10-08
 "H4 joint F, clustered","H4 joint F, year-clustered model",year-clustered,F,"AR(1) 0.3, regions r 0.5",True,1000,0.137,0.0069,2026-10-08
 "H4 contrast, plain OLS",not reported (round 2 M1),plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.007,0.0069,2026-10-08
-"H3a, NW one-sided",H3a PNW/BC/AB,Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.063,0.0069,2026-10-08
-"H3a, NW two-sided","H3a NorCal, SoCal, AK, YT",Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.069,0.0069,2026-10-08
-"H3a, plain OLS two-sided",H3a check,plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.044,0.0069,2026-10-08
-"H3b, NW one-sided",H3b PNW/BC/AB,Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.062,0.0069,2026-10-08
-"H3b, NW two-sided","H3b NorCal, SoCal, AK, YT",Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.081,0.0069,2026-10-08
-"H3b, plain OLS two-sided",H3b check,plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.043,0.0069,2026-10-08
-"persistent predictor, NW one-sided","H5, H6 one-sided",Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.076,0.0069,2026-10-08
-"persistent predictor, NW two-sided","H5, H6 two-sided",Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.098,0.0069,2026-10-08
-"C2 interaction, NW two-sided",C2,Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.1,0.0069,2026-10-08
-"C2 interaction, plain OLS two-sided",C2 check,plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.052,0.0069,2026-10-08
-"C1 interaction, NW one-sided",C1,Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.077,0.0069,2026-10-08
-"C1 interaction, plain OLS one-sided",C1 check,plain OLS,one-sided,"AR(1) 0.3, regions r 0.5",True,1000,0.054,0.0069,2026-10-08
+"H3a, NW one-sided",H3a PNW/BC/AB,Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.063,0.0069,2026-10-08
+"H3a, NW two-sided","H3a NorCal, SoCal, AK, YT",Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.069,0.0069,2026-10-08
+"H3a, plain OLS two-sided",H3a check,plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.044,0.0069,2026-10-08
+"H3b, NW one-sided",H3b PNW/BC/AB,Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.062,0.0069,2026-10-08
+"H3b, NW two-sided","H3b NorCal, SoCal, AK, YT",Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.081,0.0069,2026-10-08
+"H3b, plain OLS two-sided",H3b check,plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.043,0.0069,2026-10-08
+"persistent predictor, NW one-sided","H5, H6 one-sided",Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.076,0.0069,2026-10-08
+"persistent predictor, NW two-sided","H5, H6 two-sided",Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.098,0.0069,2026-10-08
+"C2 interaction, NW two-sided",C2,Newey-West,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.1,0.0069,2026-10-08
+"C2 interaction, plain OLS two-sided",C2 check,plain OLS,two-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.052,0.0069,2026-10-08
+"C1 interaction, NW one-sided",C1,Newey-West,one-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.077,0.0069,2026-10-08
+"C1 interaction, plain OLS one-sided",C1 check,plain OLS,one-sided,"AR(1) 0.3, regions r 0.5",False,1000,0.054,0.0069,2026-10-08
+"H3a, NW one-sided",H3a PNW/BC/AB,Newey-West,one-sided,"AR(1) 0.3, pooled",True,2000,0.0675,0.0049,2026-10-08
+"H3a, NW two-sided","H3a NorCal, SoCal, AK, YT",Newey-West,two-sided,"AR(1) 0.3, pooled",True,2000,0.065,0.0049,2026-10-08
+"H3a, plain OLS two-sided",H3a check,plain OLS,two-sided,"AR(1) 0.3, pooled",True,2000,0.041,0.0049,2026-10-08
+"H3b, NW one-sided",H3b PNW/BC/AB,Newey-West,one-sided,"AR(1) 0.3, pooled",True,2000,0.0715,0.0049,2026-10-08
+"H3b, NW two-sided","H3b NorCal, SoCal, AK, YT",Newey-West,two-sided,"AR(1) 0.3, pooled",True,2000,0.0815,0.0049,2026-10-08
+"H3b, plain OLS two-sided",H3b check,plain OLS,two-sided,"AR(1) 0.3, pooled",True,2000,0.0495,0.0049,2026-10-08
+"persistent predictor, NW one-sided","H5, H6 one-sided",Newey-West,one-sided,"AR(1) 0.3, pooled",True,2000,0.079,0.0049,2026-10-08
+"persistent predictor, NW two-sided","H5, H6 two-sided",Newey-West,two-sided,"AR(1) 0.3, pooled",True,2000,0.0965,0.0049,2026-10-08
+"C2 interaction, NW two-sided",C2,Newey-West,two-sided,"AR(1) 0.3, pooled",True,2000,0.102,0.0049,2026-10-08
+"C2 interaction, plain OLS two-sided",C2 check,plain OLS,two-sided,"AR(1) 0.3, pooled",True,2000,0.049,0.0049,2026-10-08
+"C1 interaction, NW one-sided",C1,Newey-West,one-sided,"AR(1) 0.3, pooled",True,2000,0.0705,0.0049,2026-10-08
+"C1 interaction, plain OLS one-sided",C1 check,plain OLS,one-sided,"AR(1) 0.3, pooled",True,2000,0.046,0.0049,2026-10-08

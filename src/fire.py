@@ -44,7 +44,7 @@ from src.config import (CNFDB_MERGE_KM, CNFDB_PRESCRIBED_CAUSE, CNFDB_RAW, CRS_E
                         FIRE_COUNTRY, FIRE_EVENTS_TABLE, FIRE_FIRST_YEAR,
                         FIRE_LAST_YEAR_BY_REGION, FIRE_READ_BBOX, FIRE_REGION_TABLE,
                         FIRE_REGION_TABLE_FROZEN,
-                        FIRE_SEASON_MONTHS, MIN_FIRE_HA, MTBS_KEEP_TYPES, MTBS_RAW,
+                        FIRE_SEASON_MONTHS, MIN_FIRE_HA, MTBS_KEEP_TYPES, MTBS_RAW, PARKS_GAP_SEASONS,
                         MTBS_UNKNOWN_TYPE, MTBS_WFIGS_CUTOVER, REGIONS, RESULTS,
                         SOURCE_AGREEMENT_MAX_LOG_DIFF, SOURCE_CHECK_YEAR, WFIGS_DEFAULT_TZ,
                         WFIGS_KEEP_TYPES, WFIGS_RAW, WFIGS_STATE_TZ)
@@ -299,11 +299,20 @@ def season_days(group: pd.DataFrame) -> float:
     return float((dated.max() - dated.min()).days)
 
 
+def parks_gap(region: pd.Series, year: pd.Series,
+              seasons: dict[str, tuple[int, int]] = PARKS_GAP_SEASONS) -> pd.Series:
+    """True for the seasons where CNFDB holds no Parks Canada polygon and
+    NBAC shows park area missing (PARKS_GAP_SEASONS; D69)."""
+    return pd.Series([r in seasons and seasons[r][0] <= y <= seasons[r][1]
+                      for r, y in zip(region, year)], index=region.index)
+
+
 def region_year_table(pieces: pd.DataFrame,
                       last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION,
                       areas: pd.DataFrame | None = None) -> pd.DataFrame:
     """Every region and season from FIRE_FIRST_YEAR to the region's last
-    test year, zero-fire seasons kept (burn_ha 0, log_burn 0).
+    test year, zero-fire seasons kept (burn_ha 0, log_burn 0). `parks_gap`
+    flags the seasons short of Parks Canada fires (D69).
 
     burn_ha is the union area of the season's counted pieces, per source,
     summed over sources (`areas`, from union_areas; D61), so overlapping
@@ -333,6 +342,7 @@ def region_year_table(pieces: pd.DataFrame,
     table = pd.DataFrame(rows)
     table["log_burn"] = np.log1p(table["burn_ha"])
     table["zero_fire"] = table["n_fires"] == 0
+    table["parks_gap"] = parks_gap(table["region"], table["year"])
     for col in ("first_fire", "last_fire"):
         table[col] = pd.to_datetime(table[col]).dt.strftime("%Y-%m-%d")
     return table

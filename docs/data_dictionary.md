@@ -493,10 +493,13 @@ PC = Parks Canada, and the other provinces), `FIRE_ID`, `FIRENAME`,
 `YEAR`, `MONTH`, `DAY` (agency fire date; 0 or empty when unknown;
 `DATE_TYPE` says whether it is a report, start, ignition or fire date),
 `CAUSE` (N natural, H human, H-PB prescribed burn, U unknown, Re reburn),
-`PRESCRIBED` ("yes" on the same 304 polygons as H-PB). Not used: `SIZE_HA`
+`PRESCRIBED` ("yes" on the same 309 polygons as H-PB since 1984: Parks
+Canada 297, AB 7, Ontario 5; 306 fires after the dissolve). Not used: `SIZE_HA`
 (agency), `CALC_HA` (CFS, Canada Albers). Traps: Parks Canada sent no
-polygons for 2018-2020 (update log), so fires inside national parks are
-missing in those years unless the province mapped them; agency minimum
+polygons for 2018-2020 (update log; measured 2026-10-08: none for 2016-2021),
+so fires inside national parks are missing in those years, and the
+provinces did not map them (AB 2016-2019 flagged `parks_gap`, NBAC
+sensitivity run, D69); agency minimum
 sizes differ by decade (all far below 405 ha after 1984); Yukon 2022 has
 97 large fires without month or day (D59). 104 polygons have no year at
 all (`YEAR` = -9999, `CFS_NOTE1` "Fire year unknown, refer to decade";
@@ -543,7 +546,9 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   orders of magnitude, and logging tames that. A coefficient b on `log_burn`
   is reported as a percent change, `100 × (exp(b) - 1)`. A region-year with
   no counted fire gives 0, then jumps to about 6 for one 405 ha fire
-  (pre-freeze item "Zero-fire years"). `zero_fire`: True for such a season
+  (pre-freeze item "Zero-fire years"). `parks_gap`: True for AB 2016-2019, where CNFDB holds no Parks Canada
+  polygon and NBAC shows park area missing (`PARKS_GAP_SEASONS`, D69).
+  `zero_fire`: True for such a season
   (1 of 291: SoCal 2014).
 - `burn_detr`: residuals of `log_burn ~ year` per region (OLS over the
   region's test seasons), for the permutation and bootstrap tests, which
@@ -561,7 +566,9 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   outside the tests), with `fire_ha` (whole fire), `clipped_ha`, `season`,
   dates and flags; `cnfdb_year` (the agency YEAR, CNFDB only) and `n_parts`
   (CNFDB polygons merged into the fire: 1, or 2 for 10 counted fires; empty
-  for MTBS and WFIGS).
+  for MTBS and WFIGS). A CNFDB `fire_id` can name more than one fire in a
+  year, since agencies reuse ids and parts over 1 km apart stay separate
+  (e.g. BC 1994-K50087, two fires of 4,919 and 2,702 ha; audit round 3 L6).
 - **Frozen-rules variant** (built 2026-10-08, D62; `python -m src.fire
   --frozen-rules`, from `fire_events.csv`):
   `results/tables/fire_region_year_frozen_rules.csv`, same columns and 291
@@ -572,10 +579,20 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   99.5%, PNW 99.6%, SoCal 99.7%, BC 100.1% (summing counts CNFDB overlap
   twice); AB 1997 and YT 2022 (every fire undated; YT 2022 held 233,108 ha) become zero-fire seasons.
 
+**Parks Canada sensitivity table** (D69; `python -m src.parks_gap`,
+after `src.fire`): `results/tables/fire_region_year_parks_nbac.csv`, the
+main table with `nbac_park_ha` (NBAC national-park burned area, ha; whole
+fire floored at 405 ha by GID, park parts clipped and unioned, counted by
+NBAC YEAR, since NBAC has no ignition date) added to `burn_ha` for the
+`parks_gap` seasons, `log_burn` recomputed, `n_nbac_park` NBAC park fires;
+0 elsewhere. For a reported sensitivity run only.
+
 **Input pins** (`results/tables/input_pins.csv`, `python -m
 src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
-the 26 files the tests read (25 until `test_size.csv`, 2026-10-08) (committed tables, ENSO downloads, fire
-downloads, `fire_events.csv`); `--verify` raises if any changed. RONI is
+every input the tests read: the 7 committed input tables named in
+`PINNED_RESULT_TABLES` (by name, so result tables written beside them are
+not refused; audit round 3 M1), ENSO downloads, fire downloads (NBAC
+included), `fire_events.csv`; `--verify` raises if any changed. RONI is
 revised monthly and WFIGS is live, so the tests use these copies.
 
 ## 6. Region boundaries, have (Phase 1)
@@ -654,8 +671,9 @@ revised monthly and WFIGS is live, so the tests use these copies.
   gives p < 0.05; a correct test gives about 5% (`scripts/stats_size_check.py`).
   `results/tables/test_size.csv` (audit round 2 L1): `shape`, `labels` (the
   registered tests whose p it labels), `method`, `sidedness`, `scenario`,
-  `label_scenario` (True for the scenario the printed labels use: AR(1) 0.3
-  errors, regions correlated 0.5), `reps`, `rejection_rate`, `mc_se`,
+  `label_scenario` (True for the row the printed labels use: AR(1) 0.3
+  errors with regions correlated 0.5 for the H4 panel shapes, "AR(1) 0.3,
+  pooled" over 2,000 datasets for the per-region shapes; audit round 3 L4), `reps`, `rejection_rate`, `mc_se`,
   `measured`.
 - **Lag-1 autocorrelation:** the sample autocorrelation at lag 1, one mean
   and the whole series' sum of squares (`stats.lag1_autocorrelation`, as

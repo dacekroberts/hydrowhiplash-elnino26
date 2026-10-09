@@ -27,6 +27,60 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-08
 
+### D70 · Corrections to the D66 and D68 wording
+- **Plan:** D66 (and the `ANALYSIS_PLAN.md` deviations log, eighth row)
+  says the registered robust tests reject a true null in 6-9% of
+  synthetic datasets (joint F about 20%); D68 says the plain OLS check
+  kept for H3a, H3b, C1, C2 measures 3.8-5.6%.
+- **Actual:** audit round 3 (L3, L5): the C2 interaction shape, added to
+  the size table in round 2, measures 10.0-10.4% under Newey-West
+  (`results/tables/test_size.csv`; round 3's own generator 11.5%, with the
+  real RONI regressor 9.9%), so the robust per-region tests run 6-10%; the
+  plain OLS rows for H3a, H3b, C1, C2 run 3.8-6.1% over the three
+  scenarios (4.3-5.4% under the label scenario). No rule or number used by
+  a test changes; the labels come from `test_size.csv`.
+- **Why:** the two entries quote ranges measured before the C2 shape and
+  the second run existed.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 3 settled".
+- **Substantial:** no.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, twelfth row (added,
+  correcting rows 8 and 10); frozen text above the log unchanged.
+
+### D69 · Parks Canada gap: AB 2016-2019 flagged, NBAC sensitivity run added
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Outcomes" and "Fire record
+  rules": BC, AB and YT burned area from the CNFDB agency polygons; the
+  Parks Canada gap was known only as "no Parks Canada polygons for
+  2018-2020" (CNFDB update log; methods register, "not handled").
+- **Actual:** measured 2026-10-08 (session 7, read-only, fire only, no
+  ENSO): CNFDB holds no Parks Canada polygon for 2016-2021, and the
+  provinces do not map inside the parks (non-Parks Canada polygons inside
+  the park footprint: AB 0 ha in 2018-2020). NBAC (release v20260513,
+  downloaded with the owner's yes) splits fires at park boundaries; its
+  park area in AB is 6,855 ha (2016), 38,980 (2017), 10,909 (2018),
+  118,328 (2019), 0 (2020, 2021): 1.3%, 39.1%, 20.4% and 14.3% of each
+  season missing (log_burn +0.013, +0.50, +0.23, +0.16); BC 2017, 2018,
+  2023 and YT 2022, 2023 at most 0.9%. Where both sources have park
+  polygons, NBAC and CNFDB Parks Canada area agree within 1% summed over
+  AB 1984-2017, single seasons within 5% in 5 of 14 and up to about 2x.
+  Owner chose (2026-10-08, before any test) B + C: (B) the AB 2016-2019
+  seasons flagged `parks_gap` in both fire tables (`PARKS_GAP_SEASONS`),
+  values unchanged; (C) every burned-area test that uses AB (H2, H3a,
+  H3b, H4, H5, H6, C2) rerun on `fire_region_year_parks_nbac.csv`, the
+  main table with NBAC's park area added for those four seasons
+  (`src/parks_gap.py`), reported beside the main results, exploratory,
+  uncorrected. BC and YT: a stated limitation. Rejected: a limitation only
+  (AB 2017 39% short); filling the main table with NBAC (mixes sources in
+  the registered series, single seasons disagree by up to 2x).
+- **Why:** AB is a primary region in H2-H6; the gap is large in three
+  seasons, and its effect on the results is unknown until tested.
+- **Recorded:** `DECISIONS.md` 2026-10-08 "Audit round 3 settled";
+  `docs/methods_register.md` "Parks Canada gap".
+- **Substantial:** yes (owner, 2026-10-08): scope addition, a reported
+  analysis and a new dataset in a committed table.
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, eleventh row (added,
+  reported, not registered); `ACTION_PLAN.md` Phase 4 item marked
+  `[mid-project: D69]`; frozen text above the log unchanged.
+
 ### D68 · Plain OLS check dropped for the H4 contrast (narrows D66)
 - **Plan:** D66 and `ANALYSIS_PLAN.md` deviations log, eighth row: a
   plain OLS p reported beside the registered p of the ENSO tests (H3a,

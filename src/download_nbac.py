@@ -13,9 +13,9 @@ Dataset: Natural Resources Canada, Canadian Forest Service, Open Government
 Licence - Canada 2.0 with the provider's citation; ledger row and notice 11
 in DATA_SOURCES.md; documentation probe in docs/nbac_probe.md.
 
-USE: exploratory only (owner, 2026-10-08): the Parks Canada 2018-2020 gap
-  in CNFDB and the NBAC vs CNFDB comparison. Not an input to any
-  registered test; never set beside ENSO.
+USE: the Parks Canada sensitivity run (D69, src.parks_gap) and the
+  exploratory NBAC vs CNFDB comparison (owner, 2026-10-08). Not an input
+  to any registered test.
 UNIT: polygons split at provincial, territorial and national park
   boundaries; NFIREID and GID link the parts of one fire event.
 DATES: no ignition date; AG_SDATE (agency start) and HS_SDATE (first

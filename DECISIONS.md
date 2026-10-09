@@ -17,6 +17,42 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-08 - Audit round 3 settled
+
+- **Settled (owner, yes on every finding): the pre-results audit round 3**
+  (`docs/audit_2026-10-08_preresults_round3.md`, Fable 5.1, read-only, at
+  309de6a; no high, 1 medium, 7 low). An independent rebuild of BC, AB and
+  YT from the raw CNFDB download reproduced the committed tables at
+  6e79757, 32e8d42 and 309de6a in every row. M1: `pin_inputs` pinned the
+  whole `results/tables/` folder, so `--verify` would refuse once a
+  hypothesis run writes a table there; now the input tables are pinned by
+  name (`PINNED_RESULT_TABLES`, 7 tables; `test_size.csv`, a script
+  output, unpinned), the download folders by folder, NBAC's included.
+  L1: the fire build re-run with its output saved to
+  `data/processed/fire_run.log` and `fire_frozen_rules_run.log`. L2, L6, L7:
+  dictionary and register wording (309 prescribed polygons; a fire_id can
+  name more than one fire, e.g. BC 1994-K50087; merged-fire attribute
+  counts). L3, L5: D70. L4: the per-region size labels use the two AR(1)
+  0.3 scenarios pooled (2,000 datasets), with each row's Monte Carlo SE.
+- **Parks Canada gap: B + C (owner, 2026-10-08; D69).** AB 2016-2019
+  flagged `parks_gap`; a reported sensitivity run on the main table with
+  NBAC's park area added for those seasons (`src/parks_gap.py`). Rejected:
+  a limitation only (AB 2017 is 39% short), filling the main table with
+  NBAC (mixes sources; single seasons disagree with CNFDB by up to 2x).
+  Found while measuring: the gap is 2016-2021 in CNFDB, not 2018-2020 as
+  its update log says; NBAC has no park fire in 2020 or 2021.
+- **Deferred to session 8, to be decided before the first hypothesis test
+  (owner, 2026-10-08):** the exploratory NBAC re-run of the Canadian tests
+  and the NOAA NCEI Interior Alaska check. Adopting either after results
+  are visible would look chosen to fit them. NBAC vs CNFDB, 1986-2024
+  (NBAC by calendar year, CNFDB by season window): log-series correlation
+  BC 0.990, AB 0.994, YT 0.997; NBAC totals 84%, 94%, 91% of CNFDB;
+  seasons differing by more than 0.25 in log_burn BC 11, AB 9, YT 4 of
+  39. A re-run would need its own date rule (NBAC has no ignition date).
+- **Gate:** round 4, a cold review of the round 3 fixes and the Parks
+  Canada code, follows (D64); the gate closes when a round finds nothing
+  high and the owner agrees.
+
 ### 2026-10-08 - Audit round 2 settled
 
 - **Settled (owner, 2026-10-08): the pre-results audit round 2**

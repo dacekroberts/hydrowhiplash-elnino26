@@ -3,13 +3,13 @@ data/raw/roni.ascii.txt,15657,ce86c0bbee05ad4b99b3973adda0bd1d6dc816d3815fe5009d
 data/raw/oni.ascii.txt,23946,9c36517af92844372544f36cc5a436dfa2509df977d9964b5eae4b3cb86df351,2026-10-04T23:53:16Z
 data/processed/el_nino_winters.csv,3028,8b00aca585eb7c065e0aea38700c685e7029e54b187ab7d90d41f80978c45850,2026-10-06T22:45:51Z
 data/processed/enso_index.csv,13267,f2ce565acbc6f5cf996acafc85805bbc776e3de1c8e71a9808eded4e92ae1f2c,2026-10-06T22:45:51Z
-data/processed/fire_events.csv,1141574,00f8f4b4c4cf69d677fae032e72c4ca6819c9d262c0a17cb914d8a4246d6940d,2026-10-08T21:08:20Z
+data/processed/fire_events.csv,1141574,00f8f4b4c4cf69d677fae032e72c4ca6819c9d262c0a17cb914d8a4246d6940d,2026-10-09T00:48:34Z
 results/tables/climate_controls_region_year.csv,83261,48341386b409eb00297a20523e459096c782e3e9f3696a2bdd084f35e92d98d1,2026-10-08T18:44:36Z
-results/tables/fire_region_year.csv,42594,0d9c084d28b94a454ec672374b4bad59512f36da9bdc485f2bafcb5d180521d1,2026-10-08T21:08:21Z
-results/tables/fire_region_year_frozen_rules.csv,37898,2606cc32e07a594b07c0739ebea760d1959a87d94bea848973e9f77f6beff3ab,2026-10-08T21:08:26Z
+results/tables/fire_region_year.csv,44346,d15c40c165ca41dac76c94cae9698901a1b2902e27e7f3bdd589ca67562cdaf3,2026-10-09T00:48:35Z
+results/tables/fire_region_year_frozen_rules.csv,39650,cd6bf50a35555047934d1660d13e0a6c9ac0ba6514b0c19ecd36879b1a3d52b6,2026-10-09T00:48:41Z
+results/tables/fire_region_year_parks_nbac.csv,46097,a5933b7be8a19c22128178beddd9d66474c4c7dd4f32a457fd2e275d75c7aa04,2026-10-09T00:50:50Z
 results/tables/snow_soil_region_year.csv,63320,bb3e4022b09718f18c055022cca4fa2b8b484a36976c982f19f37777a99eb775,2026-10-07T00:03:00Z
 results/tables/station_swe_region_year.csv,66702,e58fc1e89ed88cdd2efcc353d5461a2bcf5eba765d7ddefb9dd0f3ee87e793cb,2026-10-07T19:09:46Z
-results/tables/test_size.csv,5963,aec79e34851573cdb9dd5e7b4086a7cec50046ae3cbb43403dfb1be2eb9dffaf,2026-10-08T20:47:46Z
 results/tables/whiplash_swe_region_year.csv,93535,a2f5b30b9ead46b3361ec728dcbfb8674f943fddee8c8e5046d852db79109b84,2026-10-07T18:33:06Z
 data/raw/fire/mtbs/manifest.json,617,d92a4bfb086612016b53860af8423c63045dff81168fd4984c1f3edceb4019f6,2026-10-07T22:51:13Z
 data/raw/fire/mtbs/mtbs_perimeter_data.zip,389974748,a49b3d4ed542d190b16b1ee5831bc6a2e982a9919aeaf469d535e6a07e3fc852,2026-10-07T22:51:11Z
@@ -25,3 +25,7 @@ data/raw/fire/cnfdb/NFDB_poly.zip,778498701,a0373a6dd8e341c3440ed9907f81e8ba6227
 data/raw/fire/cnfdb/NFDB_Poly_metadata_NAP_ISO_19115_2003.xml,58717,b1a79b22f2900ccf893261f83ff7b7530ada1acce6bed5fd529f893727ec190a,2026-10-07T22:51:36Z
 data/raw/fire/cnfdb/NFDB_poly_shapefile_metadata.pdf,907437,7464a2eda731a81cd0af8e98409e81481541e064c462d2e426b3c4a3c886e047,2026-10-07T22:51:36Z
 data/raw/fire/cnfdb/NFDB_poly_update_log.txt,19572,310df77e3d48c55eb7ae23099f9dd96ebd24e53efec93cf2f569e9252552ed44,2026-10-07T22:51:35Z
+data/raw/fire/nbac/listing.html,7757,1d8ca665b6d5aed63bd80a1cbb807c35fd282082a5c9e6500eacef47a9824214,2026-10-08T20:42:55Z
+data/raw/fire/nbac/manifest.json,541,dbc2553197655e5c645279c079e9055766e26995d47f52a66ad519f75dc8c388,2026-10-08T20:44:05Z
+data/raw/fire/nbac/NBAC_1972to2025_20260513_shp.zip,1257052370,c42740eb9d2fe3991a27344d0c33927705ec3e78c277efc5311b502439cb2165,2026-10-08T20:43:57Z
+data/raw/fire/nbac/NBAC_1972to2025_20260513_shp_metadata.pdf,3483845,cc04f0392921cf43723351ad1b1ed5e4794432724d95421db63dd92c33a4fca9,2026-10-08T20:44:05Z

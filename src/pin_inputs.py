@@ -8,9 +8,12 @@ is re-downloaded until the results are in.
   verify()  recompute and compare; raises listing every file that changed,
             vanished or was added to a pinned folder
 
-Pinned: every committed table in results/tables/ (except the pin table
-itself), the ENSO index downloads and their processed copies, the fire
-downloads and FIRE_EVENTS_TABLE. Re-pin only when a pinned file changes on
+Pinned: the committed input tables named in PINNED_RESULT_TABLES (by name,
+not the results/tables/ folder, so tables the hypothesis runs write there
+are neither refused nor pinned as inputs; audit 2026-10-08 round 3 M1), the
+ENSO index downloads and their processed copies, every file in the fire
+download folders (MTBS, WFIGS, CNFDB, and NBAC for the Parks Canada
+sensitivity run, D69) and FIRE_EVENTS_TABLE. Re-pin only when a pinned file changes on
 purpose (a rebuild after an audit fix), and say so in the log.
 
 Run:  python -m src.pin_inputs            (write the pins)
@@ -25,18 +28,18 @@ from pathlib import Path
 import pandas as pd
 
 from src.config import (DATA_PROCESSED, DATA_RAW, FIRE_EVENTS_TABLE, FIRE_RAW,
-                        INPUT_PINS_TABLE, RESULTS, ROOT)
+                        INPUT_PINS_TABLE, NBAC_RAW, PINNED_RESULT_TABLES, RESULTS, ROOT)
 
 FIXED = [DATA_RAW / "roni.ascii.txt", DATA_RAW / "oni.ascii.txt",
          DATA_PROCESSED / "el_nino_winters.csv", DATA_PROCESSED / "enso_index.csv",
-         FIRE_EVENTS_TABLE]
-FOLDERS = [RESULTS / "tables", FIRE_RAW / "mtbs", FIRE_RAW / "wfigs", FIRE_RAW / "cnfdb"]
+         FIRE_EVENTS_TABLE] + [RESULTS / "tables" / name for name in PINNED_RESULT_TABLES]
+FOLDERS = [FIRE_RAW / "mtbs", FIRE_RAW / "wfigs", FIRE_RAW / "cnfdb", NBAC_RAW]
 
 
 def pinned_files() -> list[Path]:
     files = list(FIXED)
     for folder in FOLDERS:
-        files += [p for p in sorted(folder.iterdir()) if p.is_file() and p != INPUT_PINS_TABLE]
+        files += [p for p in sorted(folder.iterdir()) if p.is_file()]
     return files
 
 
