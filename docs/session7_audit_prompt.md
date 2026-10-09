@@ -224,3 +224,80 @@ suggested fix; then what you checked that passed and what you could not
 check. End with `python -m src.pin_inputs --verify` and `git status`
 output, both before and after.
 ```
+
+## Round 4 · prompt
+
+Written after round 3 was settled (`docs/audit_2026-10-08_preresults_round3.md`;
+fixes and the Parks Canada work in 46534b1; DECISIONS 2026-10-08 "Audit
+round 3 settled"; D69, D70).
+
+```text
+Cold, read-only review, round 4 of the pre-results audit of
+hydrowhiplash-elnino26, main checkout at commit 46534b1. You did not
+write any of this code and did not take part in rounds 1-3. Find what is
+wrong, not what is right.
+
+Rules for this session:
+- Read-only. Do not edit, create or delete anything inside the repository,
+  do not change git state, and do not run any `src` module's main (several
+  write tables or download). Scratch scripts, outputs and your report go
+  in your own scratchpad only; the main session copies the report into
+  docs/.
+- No hypothesis test on fire data: do not compute any registered test, or
+  any statistic relating burned area to ENSO, on the real fire tables
+  (including fire_region_year_parks_nbac.csv). Never print, plot or
+  summarise burned area beside any ENSO column (`enso_djf`, `phase`,
+  `strong`); when reading the fire tables, select columns without them.
+  Synthetic data is unrestricted.
+- Do not re-download anything. Run `python -m src.pin_inputs --verify` at
+  the start and the end. NBAC (data/raw/fire/nbac/) is in scope this
+  round: read it from the pinned zip only.
+- Run commands with
+  C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash --no-capture-output python ...
+  from the repo root (multi-line Python goes in a script file).
+
+Read first: CLAUDE.md; ANALYSIS_PLAN.md in full (frozen at tag
+analysis-plan-frozen; its deviations log lists every later change);
+ACTION_PLAN.md Phase 4; docs/audit_2026-10-08_preresults_round1.md to
+round3.md; DECISIONS.md entries dated 2026-10-08; docs/plan_deviations.md
+D62 and D65-D70; docs/methods_register.md "Statistics" and "Fire";
+docs/data_dictionary.md section 5 and 8; DATA_SOURCES.md NBAC row and
+notice 11; docs/nbac_probe.md.
+
+Scope:
+1. The fixes and additions: `git diff 309de6a..46534b1`. Does each settled
+   round 3 finding (M1, L1-L7) do what DECISIONS "Audit round 3 settled"
+   and D70 say, correctly, with nothing broken around it? In particular:
+   src/pin_inputs.py (does the named list cover every input the tests
+   read and nothing they write; would --verify pass after a hypothesis run
+   writes a table to results/tables/?); the pooled size labels in
+   scripts/stats_size_check.py and results/tables/test_size.csv.
+2. The Parks Canada work (D69): the `parks_gap` flag in src/fire.py and
+   both fire tables; src/parks_gap.py and
+   results/tables/fire_region_year_parks_nbac.csv. Rebuild the NBAC park
+   area for AB 2016-2019 independently from the pinned NBAC zip (GID
+   dissolve, prescribed parts, whole-fire floor, clip, union, the YEAR
+   rule) and check the table; check the gap claim (CNFDB holds no Parks
+   Canada polygon 2016-2021) and the shares, agreement figures and overlap
+   numbers in the register's "Parks Canada gap" row, D69 and the module
+   docstring. Is adding NBAC park area to the CNFDB-based burn_ha sound
+   (double counting, season assignment without an ignition date, units,
+   CRS)? Is NBAC's licence condition (notice 11) met for the committed
+   table?
+3. Anything the round 3 changes could have broken elsewhere (statistics
+   code, fire build, pins) and anything rounds 1-3 missed that you find on
+   the way.
+4. Records: do code, config, register, data dictionary, plan deviations,
+   the plan's deviations log, ACTION_PLAN and DECISIONS agree? Anything
+   stale, missing or contradictory?
+
+Report (plain markdown, saved in your scratchpad and sent to the owner):
+start with the commit reviewed, the date and the model you ran on; then
+for each finding an ID, severity (high = a registered result, a fire
+table or the sensitivity table would be wrong or not computable as
+recorded; medium = a likely error, an untested path or a misleading
+record; low = clarity or hygiene), the evidence (file:line, commands and
+numbers you ran) and a suggested fix; then what you checked that passed
+and what you could not check. End with `python -m src.pin_inputs
+--verify` and `git status` output, both before and after.
+```
