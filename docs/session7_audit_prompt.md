@@ -301,3 +301,81 @@ numbers you ran) and a suggested fix; then what you checked that passed
 and what you could not check. End with `python -m src.pin_inputs
 --verify` and `git status` output, both before and after.
 ```
+
+## Round 5 · prompt
+
+Written after round 4 was settled (`docs/audit_2026-10-08_preresults_round4.md`;
+fixes in c6ac758; DECISIONS 2026-10-08 "Audit round 4 settled"; D71). The
+owner closes the gate only on a round with no high and no medium findings.
+
+```text
+Cold, read-only review, round 5 of the pre-results audit of
+hydrowhiplash-elnino26, main checkout at commit c6ac758. You did not
+write any of this code and did not take part in rounds 1-4. Find what is
+wrong, not what is right. The owner closes the gate only if this round
+finds no high and no medium finding, so look as hard as round 1 did.
+
+Rules for this session:
+- Read-only. Do not edit, create or delete anything inside the repository,
+  do not change git state, and do not run any `src` module's main or any
+  script that writes (several write tables; `python -m src.parks_gap
+  --measure` writes data/processed/parks_gap_measure.csv, so call its
+  functions from a scratch script instead). Scratch scripts, outputs and
+  your report go in your own scratchpad only; the main session copies the
+  report into docs/.
+- No hypothesis test on fire data: do not compute any registered test, or
+  any statistic relating burned area to ENSO, on the real fire tables
+  (including fire_region_year_parks_nbac.csv). Never print, plot or
+  summarise burned area beside any ENSO column (`enso_djf`, `phase`,
+  `strong`); when reading the fire tables, select columns without them.
+  Synthetic data is unrestricted.
+- Do not re-download anything. Run `python -m src.pin_inputs --verify` at
+  the start and the end. NBAC is read only from the pinned zip.
+  scripts/nbac_coverage.py may be running in the main session and may
+  write data/processed/nbac_coverage.csv; ignore that file.
+- Run commands with
+  C:\Users\dacek\miniforge3\Scripts\conda.exe run -n whiplash --no-capture-output python ...
+  from the repo root (multi-line Python goes in a script file). A pyogrio
+  `where` filter returns no rows, silently, when the filtered field is not
+  in `columns`: include it.
+
+Read first: CLAUDE.md; ANALYSIS_PLAN.md in full (frozen at tag
+analysis-plan-frozen; its deviations log lists every later change);
+ACTION_PLAN.md Phase 4; docs/audit_2026-10-08_preresults_round1.md to
+round4.md; DECISIONS.md entries dated 2026-10-08; docs/plan_deviations.md
+D51 and D55-D71; docs/methods_register.md "Statistics" and "Fire";
+docs/data_dictionary.md sections 5 and 8; DATA_SOURCES.md CNFDB and NBAC
+rows and notices 10-12; docs/session7_kickoff.md Part 1 (eleven traps).
+
+Scope:
+1. The fixes: `git diff 46534b1..c6ac758`. Does each settled round 4
+   finding (M1, M2, L1-L8, F1-F3 and the --measure mode) do what DECISIONS
+   "Audit round 4 settled" and D71 say, correctly, with nothing broken
+   around it? In particular: src/parks_gap.py (`--measure`, the union-to-
+   union agreement figures, the defence-land figures, the Wood Buffalo
+   share; recompute some independently); `assert_pinned`;
+   `union_areas`'s rounding and clipping and the rebuilt tables against
+   46534b1 (only `double_ha` should differ); scripts/nbac_coverage.py
+   (read it; is its method right for the question it answers?).
+2. The whole gate, once more as round 1 scoped it: for every registered
+   test and reported run in ANALYSIS_PLAN.md and its deviations log (H1-H6,
+   C1-C2, H4 contrast and joint test, zero-fire sensitivity, expanding
+   window and skill score, strong-only and the near-threshold flip, ONI
+   runs, frozen-rules run, Parks Canada sensitivity run, size labels,
+   Holm/BH families), can it be computed exactly as stated with these
+   functions and tables, and would the result be right? Check against
+   independent calculations of your own.
+3. Records: do code, config, register, data dictionary, plan deviations,
+   the plan's deviations log, ACTION_PLAN, DATA_SOURCES and DECISIONS
+   agree? Anything stale, missing or contradictory?
+
+Report (plain markdown, saved in your scratchpad and sent to the owner):
+start with the commit reviewed, the date and the model you ran on; then
+for each finding an ID, severity (high = a registered result, a fire
+table or the sensitivity table would be wrong or not computable as
+recorded; medium = a likely error, an untested path or a misleading
+record; low = clarity or hygiene), the evidence (file:line, commands and
+numbers you ran) and a suggested fix; then what you checked that passed
+and what you could not check. End with `python -m src.pin_inputs
+--verify` and `git status` output, both before and after.
+```
