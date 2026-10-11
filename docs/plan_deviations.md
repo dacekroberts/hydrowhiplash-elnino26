@@ -25,6 +25,40 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-11
+
+### D76 · Rolling publication of the site
+- **Plan:** `ACTION_PLAN.md` "Second goal": "Done when: the site is public
+  with the first four pieces"; Phase 5: "Spring 2027: update with the
+  final winter data and publish".
+- **Actual:** owner, 2026-10-11: pieces go public on a rolling basis as
+  each becomes ready (licences of its sources read; for anything setting
+  burned area beside ENSO, the registered runs committed first); the 2027
+  forecast in dated stages as the winter data arrive, the final one after
+  the April 1 snowpack.
+- **Why:** the pieces finish months apart, and dated stages keep the
+  record that each statement was made before the season.
+- **Recorded:** `DECISIONS.md` 2026-10-11 "Portfolio review follow-up".
+- **Substantial:** yes (when the site goes public).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", paragraph marked
+  `[mid-project: D76]`; the Phase 5 line left as written. No test or rule
+  touched.
+
+### D75 · The 2026-11-06 commit also holds the reported runs
+- **Plan:** `ACTION_PLAN.md` Phase 4 and D73: "Registered runs committed
+  by Friday 2026-11-06"; the runs reported beside them carry no date.
+- **Actual:** owner, 2026-10-11, before any test: the same commit holds
+  the ONI robustness check, the frozen-rules run (D62), the Parks Canada
+  sensitivity run (D69) and the strong-only results.
+- **Why:** they read the same pinned inputs, so running them after the
+  first tracker update would set them on different inputs from the tests
+  they sit beside.
+- **Recorded:** `DECISIONS.md` 2026-10-11 "Portfolio review follow-up";
+  frozen plan's deviations log, row 16.
+- **Substantial:** yes (more work before the deadline).
+- **Plan doc:** `ACTION_PLAN.md` Phase 4, sentence marked
+  `[mid-project: D75]`. No test or rule touched.
+
 ## 2026-10-08
 
 ### D74 · Site methods flowchart (scope addition)

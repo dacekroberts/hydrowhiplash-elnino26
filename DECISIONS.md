@@ -17,6 +17,37 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-11 - Portfolio review follow-up
+
+- **Decided (owner, 2026-10-11, before any test): the commit due by
+  2026-11-06 also holds the runs reported beside the registered tests**
+  (the ONI robustness check, the frozen-rules run, the Parks Canada
+  sensitivity run, the strong-only results), since they read the same
+  pinned inputs. Rejected running them after the first tracker update
+  (D75; frozen plan's deviations log, row 16).
+- **Decided (owner, 2026-10-11): the site is published on a rolling
+  basis**, each piece when it is ready, and the 2027 forecast in dated
+  stages as the winter data arrive. A piece is ready when the licences of
+  its sources are read and, for anything setting burned area beside ENSO,
+  the registered runs are committed. Supersedes the single "publish" step
+  in spring 2027 as the only publication point (D76).
+- **Kept (owner asked for a recommendation): the three methods-page items
+  enter ACTION_PLAN after the runs are committed**, as in the entry
+  below. None depends on a result, but each is the owner's prose to word
+  and the site plan says not to design ahead of results; a worktree
+  session can draft them at any time after the date with no data.
+- **Checked the licence ledger for commercial-use terms** (owner: before
+  the runs; for a possible tip link). `DATA_SOURCES.md` holds 14 verdicts:
+  13 PERMITTED or PERMITTED WITH CONDITIONS, none of those barring
+  commercial use; 1 AMBIGUOUS, the Alberta snow portal (non-commercial,
+  unmodified copies only), which was never downloaded (CanSWE is used
+  for Alberta). CanSWE's ReadMe carves out Hydro-Quebec data under CC
+  BY-NC-SA; the project reads Alberta stations only. A ledger check, not
+  a fresh licence read. Where a tip link goes stays the owner's call (own
+  domain or GitHub profile as the fallback).
+- **Noted:** the owner runs expanded-heatmap's batch first, so the NBAC
+  per-fire split waits for it or for the owner's word.
+
 ### 2026-10-11 - Portfolio review handoff: what is taken up, and when
 
 - **Decided (owner, 2026-10-11): nothing from the portfolio review handoff

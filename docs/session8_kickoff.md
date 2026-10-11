@@ -109,12 +109,16 @@ registered runs are committed. Noted for later:
   that reads polygons (NBAC, WFIGS).
 - No task goes to the DeepSeek worker until the owner says its
   integration is finished.
-- Still open, ask the owner: whether the 2026-11-06 commit also covers
-  the runs reported beside the registered tests (ONI robustness,
-  frozen-rules, Parks Canada sensitivity, strong-only); whether
-  historical results go public in November and the forecast in spring
-  2027; when to check the licence verdicts for commercial-use terms
-  before any tip link.
+- Settled 2026-10-11 (DECISIONS "Portfolio review follow-up"): the
+  2026-11-06 commit also holds the runs reported beside the registered
+  tests (ONI robustness, frozen-rules, Parks Canada sensitivity,
+  strong-only; D75, frozen plan's log row 16); the site is published on
+  a rolling basis and the forecast in dated stages (D76); the licence
+  ledger shows no source in use barring commercial use (Alberta snow
+  portal AMBIGUOUS but never downloaded; CanSWE's Hydro-Quebec carve-out
+  does not touch the Alberta stations read).
+- The owner runs expanded-heatmap's batch first: ask before the NBAC
+  per-fire split or any run that reads polygons.
 
 **Known limits, recorded (register):** CNFDB `YEAR` = -9999 polygons (M2 of
 round 1); defence lands in AB (D71); Parks Canada gap in BC and YT (under
@@ -129,12 +133,12 @@ the first hypothesis test.
 
 1. Orient: read CLAUDE.md, docs/session8_kickoff.md (Part 1), the session
    7 blocks in logs/2026-10-08.md, the top of DECISIONS.md (2026-10-08
-   entries), docs/plan_deviations.md D65-D74, ANALYSIS_PLAN.md (frozen:
+   entries), docs/plan_deviations.md D65-D76, ANALYSIS_PLAN.md (frozen:
    never edit above the deviations log) and ACTION_PLAN.md Phase 4. Read
    the roadmap artifact with the Artifact tool (action "read"):
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from D75.
+   deviations from D77.
 
 2. Explain each concept as it comes up, give a short summary beside every
    hypothesis ID, and quote the actual wording beside every item ID

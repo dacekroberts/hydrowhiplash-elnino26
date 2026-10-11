@@ -166,7 +166,10 @@ cold round with no high and no medium findings), tag
       the day before October's ERA5-Land data is expected
       (`TRACKER_DATA_DAY` 7), so the first tracker update cannot change a
       pinned input under the tests. If the date is missed, see the
-      hard-line item in Phase 5.
+      hard-line item in Phase 5. [mid-project: D75] The same commit
+      holds the runs reported beside the registered tests: the ONI
+      robustness check, the frozen-rules run, the Parks Canada
+      sensitivity run and the strong-only results.
 - [ ] **Runner safeguards before the first run** [mid-project: D73]
       (audit round 5): first, a written protocol for changes after results
       exist (the first results are never edited, reruns go beside them,
@@ -276,6 +279,13 @@ already makes, so add it when its phase is done; don't design ahead of results.
 
 **Done when:** the site is public with the first four pieces, and the
 verification panel is added after the 2027 season.
+
+**Rolling publication** [mid-project: D76]: each piece goes public as it
+becomes ready, not all at once. A piece is ready when the licence of
+every source behind it has been read and, for anything that sets burned
+area beside ENSO, the registered runs are committed. The 2027 forecast
+is published in dated stages as the winter data arrive, the final one
+after the April 1 snowpack.
 
 ## Later tooling (add when the need appears)
 
