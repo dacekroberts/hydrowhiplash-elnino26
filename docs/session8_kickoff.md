@@ -117,6 +117,13 @@ registered runs are committed. Noted for later:
   ledger shows no source in use barring commercial use (Alberta snow
   portal AMBIGUOUS but never downloaded; CanSWE's Hydro-Quebec carve-out
   does not touch the Alberta stations read).
+- Going public (owner, 2026-10-11, a leaning, not yet decided): the
+  site and repo probably go public once the initial build is complete
+  and the project is only waiting for data, with the tracker page
+  (season timeline and countdown, ACTION_PLAN "Live 2026-27 tracker",
+  D44, D46) as the public face while it waits. Bring it up for a
+  decision when the build nears done; the notices from DATA_SOURCES.md
+  and the pre-push check (ACTION_PLAN "Later tooling") come first.
 - The owner runs expanded-heatmap's batch first: ask before the NBAC
   per-fire split or any run that reads polygons.
 
