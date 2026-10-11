@@ -132,8 +132,9 @@ Session 8 for hydrowhiplash-elnino26: Phase 4, from the closed gate to
 the first hypothesis test.
 
 1. Orient: read CLAUDE.md, docs/session8_kickoff.md (Part 1), the session
-   7 blocks in logs/2026-10-08.md, the top of DECISIONS.md (2026-10-08
-   entries), docs/plan_deviations.md D65-D76, ANALYSIS_PLAN.md (frozen:
+   7 blocks in logs/2026-10-08.md and logs/2026-10-11.md, the top of
+   DECISIONS.md (2026-10-08 and 2026-10-11 entries),
+   docs/plan_deviations.md D65-D76, ANALYSIS_PLAN.md (frozen:
    never edit above the deviations log) and ACTION_PLAN.md Phase 4. Read
    the roadmap artifact with the Artifact tool (action "read"):
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
@@ -146,7 +147,8 @@ the first hypothesis test.
 
 3. If it is early November or later, do the hard-line item first.
 
-4. Bring me the two decide-before-any-test items with their numbers (NBAC
+4. Ask me before any run that reads polygons (shared machine memory).
+   Bring me the two decide-before-any-test items with their numbers (NBAC
    re-run, with F1's coverage figures and a per-fire split against the
    rim floor; Interior Alaska check, measured for its worth within the
    session 7 limits). Nothing is adopted without my yes, and no hypothesis
@@ -165,7 +167,8 @@ the first hypothesis test.
    check of that code. Then plan the first hypothesis runs with me
    (tables only through pin_inputs.load_input; size labels from
    results/tables/test_size.csv; effect sizes and CIs before p-values).
-   Deadline: registered runs committed by Friday 2026-11-06 (D73).
+   Deadline: registered runs, and the runs reported beside them,
+   committed by Friday 2026-11-06 (D73, D75).
 
 9. End of session: daily-log skill, python scripts/log.py list,
    python scripts/check_no_em_dashes.py, commit and push; refresh the data
