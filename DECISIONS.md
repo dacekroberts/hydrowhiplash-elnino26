@@ -17,6 +17,45 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-11 - Portfolio review handoff: what is taken up, and when
+
+- **Decided (owner, 2026-10-11): nothing from the portfolio review handoff
+  is started before the registered runs are committed (Friday 2026-11-06,
+  D73).** The handoff (`hydrowhiplash-elnino26_PORTFOLIO_REVIEW_NOTES.md`,
+  from the owner's portfolio review session, read 2026-10-11, read-only
+  first pass) agrees with ACTION_PLAN Phase 4 on the order of work. Taken
+  up after the runs, as one scope addition with its own deviation number
+  and `[mid-project]` markers in ACTION_PLAN's "Second goal": three
+  methods-page items, each a draft for the owner to word (why regression
+  and not a trained ML model; a responsibility statement saying who the
+  forecast is for; a statement of where coverage is thin). Later, when the
+  owner brings them: the tone guide from link-station (suggestions on
+  drafted prose only), a "system map" section in `CLAUDE.md`, the glossary
+  export for the interview catalogue, and the results-page boxes, talk
+  track, motion opener and hub card. Rejected adding the methods-page
+  items to ACTION_PLAN now (new scope ahead of the deadline) and drafting
+  the plain-words result sentence before results exist (it would set a
+  direction and a framing ahead of the numbers). Shared machine memory
+  (32 GB, expanded-heatmap's batch in the week of 2026-10-12): the owner
+  handles it as needed. The DeepSeek worker takes no task until the owner
+  says its integration is finished.
+- **Found the handoff stale against the repo in these places** (for any
+  prose that reuses it): "210 passing tests" (the 2026-10-08 log records
+  278 to 289 passed); "about 5 strong events" (3 strong winters in the
+  1984-2025 fire record under RONI, 7 in 1951-2026; the ACTION_PLAN
+  Pitfalls wording was already flagged in D9); a headline sentence shaped
+  as strong winters against the rest (strong-only results are exploratory;
+  the registered burned-area regressions use the continuous index on
+  `log_burn`); the method list omits Driscoll-Kraay errors, the
+  expanding-window validation and the measured test sizes; the safeguard
+  list omits S1, the S6-first order and the cold check; the
+  before-any-test list omits the Claude Code Project go/no-go (D63);
+  "five audit rounds" are the pre-results rounds, with four more audits
+  before the freeze; the frozen plan's deviations log holds 15 rows,
+  several decided after fire data was opened; and ACTION_PLAN publishes
+  the forecast in spring 2027, with the final winter data, not right
+  after the runs.
+
 ### 2026-10-08 - Site methods flowchart
 
 - **Decided (owner, 2026-10-08) to add a methods flowchart to the public

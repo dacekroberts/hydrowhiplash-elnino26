@@ -94,6 +94,28 @@ can take it.
 **Hard-line item (early November 2026, ACTION_PLAN Phase 5, D55):** as in
 the session 7 kickoff; do it first if the date has come.
 
+**Portfolio review handoff (added 2026-10-11; DECISIONS 2026-10-11
+"Portfolio review handoff"):** nothing from it starts before the
+registered runs are committed. Noted for later:
+
+- After the runs: add three methods-page items to ACTION_PLAN's "Second
+  goal" as one scope addition (next free deviation number, markers): why
+  regression and not a trained ML model, a responsibility statement, where
+  coverage is thin. Drafts for the owner to word.
+- When the owner brings them: the tone guide (about 2026-11-07 onward),
+  a "system map" section in `CLAUDE.md`, the glossary export.
+- Shared machine memory is 32 GB and another project's batch runs in the
+  week of 2026-10-12; the owner handles it as needed. Say so before a run
+  that reads polygons (NBAC, WFIGS).
+- No task goes to the DeepSeek worker until the owner says its
+  integration is finished.
+- Still open, ask the owner: whether the 2026-11-06 commit also covers
+  the runs reported beside the registered tests (ONI robustness,
+  frozen-rules, Parks Canada sensitivity, strong-only); whether
+  historical results go public in November and the forecast in spring
+  2027; when to check the licence verdicts for commercial-use terms
+  before any tip link.
+
 **Known limits, recorded (register):** CNFDB `YEAR` = -9999 polygons (M2 of
 round 1); defence lands in AB (D71); Parks Canada gap in BC and YT (under
 1%); NBAC park area more likely low than high (round 4 F3); AB 2020 and
