@@ -128,7 +128,10 @@ copy in `results/tables/`.
 before Phase 3. Any change since then goes in its deviations log. Then set up
 the Claude Code Project (on standby since 2026-10-04) using
 `docs/claude_code_project_setup.md`, so H1-H5 and the site pages can run as
-parallel threads.
+parallel threads. [mid-project: D78] Decided 2026-10-11: the registered
+runs and the runs reported beside them are made by one runner in the main
+checkout, not in Project threads; the Project is taken up again for site
+pages after the runs.
 
 **Pre-results audit gate** [mid-project: D51]: every piece of statistics
 code the plan needs but `src/stats.py` lacks at the freeze (one-sided
@@ -181,6 +184,15 @@ cold round with no high and no medium findings), tag
       every result (S5), the size labels read from `test_size.csv`; tests,
       then a short cold check of that code. An offline copy of the 30
       pinned inputs (S1).
+- [ ] **DeepSeek review of the safeguard code** [mid-project: D77]: a
+      read-only review of `src/run_guard.py`, `src/pin_inputs.py`,
+      `scripts/preflight.py` and `scripts/check_plan_frozen.py` with the
+      `deepseek-delegate` skill, an extra read outside the closed gate;
+      each finding checked before it counts, bug fixes only; the same for
+      the runner once written. No delegated build before the registered
+      runs are committed. *After the runs:* a delegated-build pilot (the
+      pin report after `--rebuild`), and the methods-page line on where
+      DeepSeek was used.
 - [ ] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB

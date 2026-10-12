@@ -620,6 +620,22 @@ label (audit round 4 F1). One number holds both whole fires CNFDB lacks
 and outline disagreement at the rims of matched fires; the rims alone
 were 0.3-1.2% of a season's NBAC area in the AB years probed (audit round
 5 L6). For the session 8 decision on the NBAC re-run only.
+`data/processed/nbac_coverage_fires.csv` (same run, from 2026-10-11): the
+same areas per NBAC fire (`GID`), region, admin label and year (ha). The
+script classes a fire within a region as "missing" where more than
+`NBAC_MISSING_SHARE` (0.5) of its NBAC area there is uncovered, else
+"rim".
+`data/processed/interior_alaska_check.csv` (`python
+scripts/interior_alaska_check.py`): `temp_jja`, `temp_mam` (deg C),
+`precip_djf_mm`, `precip_octmar_mm` (mm) per year 1951-2026 for `AK` (the
+study polygon, 27,711 ERA5-Land cells) and `AK_interior` (NOAA NCEI
+climate divisions 3, 4 and 5, Central, Northeast and Southeast Interior,
+clipped to the AK polygon: 11,772 cells, 41.8% of its area), built by
+`src.climate_vars.climate_regional`, with the ENSO columns. Climate only;
+no fire column; no registered test reads it. The boundary file
+(`data/raw/ak_climate_divisions/`, `python -m src.download_ak_divisions`)
+is 13 polygons in NAD83 longitude and latitude; its `FEATURE` field is the
+division number and its area fields are not used.
 
 ## 6. Region boundaries, have (Phase 1)
 

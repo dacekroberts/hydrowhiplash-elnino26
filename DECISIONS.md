@@ -54,6 +54,55 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   Files: `src/diagrams.py`, `tests/test_diagrams.py`,
   `site/methods.qmd`, `results/figures/methods_flow*`.
 
+### 2026-10-11 - DeepSeek: the repo's source may be sent
+
+- **Decided (owner, on a recommendation): the repo's source may go to
+  DeepSeek, and every review runs on staged copies.** The files under
+  review are copied to a temporary folder outside the repo and reviewed
+  there, so `data/`, the logs and `DECISIONS.md` are not beside them.
+  Downsides weighed: the code leaves the machine for an outside service
+  whose retention and training terms were not read; the code is MIT and
+  the repo is likely to go public, so the exposure is early rather than
+  extra; no result exists yet to leak. Rejected reviewing in the main
+  checkout: the prompt's "read only these files" is an instruction, not
+  a lock. Closes the open point in the entry below. Each call still
+  needs its own yes.
+
+### 2026-10-11 - DeepSeek delegation: what is taken up, and when
+
+- **Decided (owner, 2026-10-11, before any test): a DeepSeek read-only
+  review of the safeguard code is added as an extra read outside the
+  pre-results gate, not as a sixth audit round** (D77). The gate closed
+  on round 5 by the owner's standard (tag `pre-results-gate-closed`) and
+  stays closed; the review covers `src/run_guard.py`,
+  `src/pin_inputs.py`, `scripts/preflight.py` and
+  `scripts/check_plan_frozen.py` (484 lines, read so far by one short
+  cold check), and the runner once it is written. Each finding is
+  checked before it counts, and only a bug fix may follow. Rejected
+  calling it round 6: that would reopen a gate whose closing rule was
+  met.
+- **Decided (owner, on a recommendation): no delegated build before the
+  registered runs are committed (2026-11-06).** The handoff
+  (`docs/deepseek_handoff_2026-10-11.md`) proposed building the runner
+  safeguards S2 to S6 with DeepSeek, one per run, as a harder pilot
+  before 2026-10-25; commit cdbf687 already held them when the handoff
+  was read. The replacement pilot (the pin report after `--rebuild` in
+  the modules that guard a pinned write without calling
+  `pin_inputs.report_rebuild`) waits until after the runs, in line with
+  "no new scope before the runs" (entry "Portfolio review handoff: what
+  is taken up, and when"). Rejected an exception for one small build:
+  the 2026-11-06 date does not need it.
+- **Decided (owner): the methods page says where DeepSeek was used, in
+  the owner's words: "DeepSeek helper agents contributed here".** Placed
+  with the other methods-page items, after the runs.
+- **Decided (owner): the DeepSeek worker may read the committed tables
+  in `results/tables/`.** They are derived region x year tables already
+  committed, from sources whose ledger verdicts permit derived outputs.
+  `data/` stays out of reach of every plan and prompt.
+- **Open:** whether the repo's source may go to DeepSeek at all (the
+  `deepseek-delegate` skill asks once per project); the owner asked for
+  the downsides first. No DeepSeek call is made until it is answered.
+
 ### 2026-10-11 - Runner safeguards built (session 8)
 
 - **Built the runner safeguards S2-S5 and the size-label lookup, after the

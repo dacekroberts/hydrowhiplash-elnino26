@@ -27,6 +27,64 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-11
 
+### D79 · Interior Alaska check measured (scope addition, descriptive)
+- **Plan:** `ANALYSIS_PLAN.md` (frozen) "Alaska and Yukon": Alaska stays
+  one region; the limitation "climate means include wet coasts that
+  rarely burn" is stated, not measured. `ACTION_PLAN.md` Phase 4: the
+  check is "each yes or no" before the first hypothesis test.
+- **Actual:** owner, 2026-10-11, before any test: yes to the boundary
+  download. NOAA NCEI Alaska climate divisions downloaded (terms read the
+  same day), Interior = divisions 3, 4, 5 clipped to the AK polygon
+  (41.8% of its area). Climate controls 1951-2026, Interior against whole
+  AK: correlation 0.98 for `temp_jja` and `temp_mam`, 0.79 for
+  `precip_djf_mm`, 0.82 for `precip_octmar_mm`; El Nino minus other
+  winters, in SD of each series, DJF precipitation -0.37 against -0.18,
+  Oct-Mar -0.25 against -0.04, `temp_mam` +0.45 against +0.37. No fire
+  table read; AK stays one region in every test.
+- **Why:** the check had to be settled before results, so that reporting
+  it could not look chosen to fit them.
+- **Recorded:** `DECISIONS.md` 2026-10-11 "Session 8";
+  `docs/methods_register.md` "Interior Alaska (descriptive check)";
+  `DATA_SOURCES.md` row "Alaska climate divisions".
+- **Substantial:** yes (a new dataset and a descriptive measurement).
+- **Plan doc:** frozen text unchanged; no row in the frozen plan's log
+  (no registered or reported test changes). Whether the numbers are
+  reported beside the AK results is the owner's call, still open.
+
+### D78 · Claude Code Project not used for the registered runs
+- **Plan:** `ACTION_PLAN.md` Phase 4 "Before starting": "Then set up the
+  Claude Code Project ... so H1-H5 and the site pages can run as parallel
+  threads"; D63: decided after the audits.
+- **Actual:** owner, 2026-10-11: no-go for the registered runs and the
+  runs reported beside them, which one runner in the main checkout makes
+  in one commit; the Project is taken up again for site pages after the
+  runs.
+- **Why:** each run is seconds of compute; the preflight verifies 30
+  pinned inputs, 23 of them under `data/`, which cloud threads never see;
+  the protocol wants one run folder written once.
+- **Recorded:** `DECISIONS.md` 2026-10-11 "Session 8".
+- **Substantial:** yes (how Phase 4 is run).
+- **Plan doc:** `ACTION_PLAN.md` Phase 4, sentence marked
+  `[mid-project: D78]`. No test or rule touched.
+
+### D77 · DeepSeek review and delegation (scope addition)
+- **Plan:** `ACTION_PLAN.md` Phase 4: the pre-results audit runs in cold
+  read-only rounds until the gate closes; `CLAUDE.md` names no outside
+  model. No DeepSeek step anywhere.
+- **Actual:** owner, 2026-10-11: a DeepSeek read-only review of the
+  safeguard code (and of the runner once written) as an extra read
+  outside the closed gate; no delegated build before the registered
+  runs are committed; a delegated-build pilot and a methods-page line
+  ("DeepSeek helper agents contributed here") after them.
+- **Why:** a second model's read of code that one short cold check has
+  covered is cheap; a build before 2026-11-06 is new scope the date does
+  not need.
+- **Recorded:** `DECISIONS.md` 2026-10-11 "DeepSeek delegation: what is
+  taken up, and when".
+- **Substantial:** yes (a new review step and an outside service).
+- **Plan doc:** `ACTION_PLAN.md` Phase 4, new item marked
+  `[mid-project: D77]`. No test or rule touched.
+
 ### D76 · Rolling publication of the site
 - **Plan:** `ACTION_PLAN.md` "Second goal": "Done when: the site is public
   with the first four pieces"; Phase 5: "Spring 2027: update with the

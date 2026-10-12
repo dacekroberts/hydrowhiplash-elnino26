@@ -128,6 +128,9 @@ Units, measurement methods and traps for every dataset and derived variable:
 - `python -m pytest` after any change to `src/stats.py`, `src/geo.py` or
   `src/config.py`.
 - `python scripts/check_no_em_dashes.py` before committing.
+- `python scripts/check_plan_frozen.py` before committing: fails if
+  `ANALYSIS_PLAN.md` differs from the tag `analysis-plan-frozen` above its
+  deviations log, or if a log row was edited or removed.
 
 ## Code style
 

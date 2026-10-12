@@ -13,8 +13,16 @@ number holds both whole fires CNFDB lacks and outline disagreement at the
 rims of matched fires (0.3-1.2% of a season's NBAC area in the AB years
 audit round 5 L6 probed). No ENSO column is read.
 
+Per-fire split (audit round 5 L6; session 8, 2026-10-11): the same run
+also writes one row per NBAC fire (GID), region and admin label, and
+classes each fire within a region as "missing" (more than
+NBAC_MISSING_SHARE of its area there uncovered) or "rim" (the rest), so
+whole fires CNFDB lacks, or files under another YEAR, are told apart from
+outline disagreement.
+
 Run from the repo root:  python scripts/nbac_coverage.py   (about 90 minutes, measured 2026-10-08)
-Writes data/processed/nbac_coverage.csv (not committed) and prints totals.
+Writes data/processed/nbac_coverage.csv and nbac_coverage_fires.csv (not
+committed) and prints totals.
 """
 from __future__ import annotations
 
@@ -28,13 +36,15 @@ import pyogrio
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.config import (CNFDB_LAST_YEAR, CNFDB_RAW, CRS_EQUAL_AREA, DATA_PROCESSED,  # noqa: E402
-                        FIRE_FIRST_YEAR, MIN_FIRE_HA)
+                        FIRE_FIRST_YEAR, MIN_FIRE_HA, NBAC_MISSING_SHARE)
 from src.fire import CNFDB_SHPS  # noqa: E402
 from src.geo import area_ha  # noqa: E402
 from src.parks_gap import CANADA, read_nbac_year  # noqa: E402
 from src.regions import load_regions  # noqa: E402
 
 OUT = DATA_PROCESSED / "nbac_coverage.csv"
+OUT_FIRES = DATA_PROCESSED / "nbac_coverage_fires.csv"
+KEYS = ["region", "ADMIN_NAME", "admin_div"]
 CNFDB_ZIP = "/vsizip/" + (CNFDB_RAW / "NFDB_poly.zip").as_posix() + "/"
 
 
@@ -52,8 +62,8 @@ def cnfdb_year(year: int) -> gpd.GeoDataFrame:
 
 
 def coverage_year(year: int, regions: gpd.GeoDataFrame) -> pd.DataFrame:
-    """Per region and NBAC admin label: NBAC area and the part of it no
-    CNFDB polygon of the same year covers (ha)."""
+    """Per NBAC fire (GID), region and NBAC admin label: NBAC area and the
+    part of it no CNFDB polygon of the same year covers (ha)."""
     parts = read_nbac_year(year)
     parts = parts[parts["fire_ha"] >= MIN_FIRE_HA]
     pieces = gpd.overlay(parts, regions[["region", "geometry"]], how="intersection",
@@ -66,17 +76,29 @@ def coverage_year(year: int, regions: gpd.GeoDataFrame) -> pd.DataFrame:
     pieces["nbac_ha"] = area_ha(pieces)
     left = pieces.geometry if cover is None else pieces.geometry.difference(cover)
     pieces["uncovered_ha"] = area_ha(gpd.GeoDataFrame(geometry=left, crs=CRS_EQUAL_AREA))
-    out = (pieces.groupby(["region", "ADMIN_NAME", "admin_div"])[["nbac_ha", "uncovered_ha"]]
-           .sum().reset_index())
+    out = pieces.groupby(KEYS + ["GID"])[["nbac_ha", "uncovered_ha"]].sum().reset_index()
     return out.assign(year=year)
+
+
+def classify(fires: pd.DataFrame, share: float = NBAC_MISSING_SHARE) -> pd.DataFrame:
+    """One row per fire (GID), region and year, admin labels summed, with
+    `kind`: "missing" where more than `share` of the fire's NBAC area in the
+    region is uncovered, else "rim"."""
+    per = fires.groupby(["region", "year", "GID"])[["nbac_ha", "uncovered_ha"]].sum().reset_index()
+    per["uncovered_share"] = per["uncovered_ha"] / per["nbac_ha"]
+    per["kind"] = (per["uncovered_share"] > share).map({True: "missing", False: "rim"})
+    return per
 
 
 def main() -> None:
     regions = load_regions()
     regions = regions[regions["region"].isin(CANADA)].to_crs(CRS_EQUAL_AREA)
-    table = pd.concat([coverage_year(y, regions)
+    fires = pd.concat([coverage_year(y, regions)
                        for y in range(FIRE_FIRST_YEAR, CNFDB_LAST_YEAR + 1)], ignore_index=True)
     OUT.parent.mkdir(parents=True, exist_ok=True)
+    fires.round(1).to_csv(OUT_FIRES, index=False, lineterminator="\n")
+    print(f"wrote {OUT_FIRES}: {len(fires)} rows")
+    table = fires.groupby(KEYS + ["year"], sort=False)[["nbac_ha", "uncovered_ha"]].sum().reset_index()
     table.round(1).to_csv(OUT, index=False, lineterminator="\n")
     print(f"wrote {OUT}: {len(table)} rows")
     by = table.groupby(["region", "ADMIN_NAME", "admin_div"])[["nbac_ha", "uncovered_ha"]].sum()
@@ -89,6 +111,13 @@ def main() -> None:
     season["share"] = season["uncovered_ha"] / season["nbac_ha"]
     print("\nseasons where more than 20% of NBAC area has no CNFDB polygon under it:")
     print(season[season["share"] > 0.2].round(3).to_string())
+    per = classify(fires)
+    split = per.pivot_table(index="region", columns="kind", values="uncovered_ha", aggfunc="sum",
+                            fill_value=0)
+    split["n_missing"] = per[per["kind"] == "missing"].groupby("region").size()
+    split["nbac_ha"] = per.groupby("region")["nbac_ha"].sum()
+    print(f"\nuncovered ha by kind (missing = uncovered share above {NBAC_MISSING_SHARE}):")
+    print(split.round(0).to_string())
 
 
 if __name__ == "__main__":

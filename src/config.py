@@ -244,6 +244,12 @@ NBAC_PARK_ADMIN = "PC"
 # undetermined, satellite-only, mostly undated, so not separable from range
 # burning. Measured by `python -m src.parks_gap --measure`.
 NBAC_DND_ADMIN = "DND"
+# Per-fire split of the NBAC coverage measurement (audit 2026-10-08 round 5
+# L6; scripts/nbac_coverage.py): an NBAC fire with more than this share of
+# its area in a region under no same-YEAR CNFDB polygon counts as missing
+# from CNFDB, the rest as rim disagreement. A measurement setting; no test
+# reads it.
+NBAC_MISSING_SHARE = 0.5
 FIRE_REGION_TABLE_PARKS = DATA_PROCESSED / "fire_region_year_parks_nbac.csv"
 # D62 frozen-rules variant: summed clipped area, MTBS "Other" dropped, CNFDB
 # fires without a month dropped, the frozen years (src.fire.frozen_rules_table).
@@ -271,6 +277,17 @@ PINNED_RESULT_TABLES = ("climate_controls_region_year.csv", "fire_region_year.cs
 # Simulated size of each test shape (scripts/stats_size_check.py; D66, audit
 # 2026-10-08 round 2 L1): the size labels printed beside robust p-values.
 TEST_SIZE_TABLE = RESULTS / "tables" / "test_size.csv"
+
+# NOAA NCEI Alaska climate divisions (Bieniek et al. 2012; DATA_SOURCES.md
+# row "Alaska climate divisions"): boundary for the descriptive Interior
+# Alaska check (owner, 2026-10-11; climate only, no registered test reads
+# it; scripts/interior_alaska_check.py).
+AK_DIVISIONS_URL = "https://www.ncei.noaa.gov/monitoring-content/data/us/climdiv/monthly/current/"
+AK_DIVISIONS_FILES = ("AK_climate_divisions.zip",)
+AK_DIVISIONS_RAW = DATA_RAW / "ak_climate_divisions"
+# Interior = Central Interior (3), Northeast Interior (4) and Southeast
+# Interior (5), the shapefile's FEATURE field (names checked at download).
+AK_INTERIOR_DIVISIONS = (3, 4, 5)
 
 # Fire perimeter downloads (Phase 3; DATA_SOURCES.md rows MTBS, WFIGS,
 # CNFDB). Raw files as published; filtering happens in src/fire.py.
