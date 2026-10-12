@@ -27,6 +27,26 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D89 · A fire-by-fire comparison of MTBS and WFIGS, with its own years setting
+- **Plan:** `ANALYSIS_PLAN.md` and `src/config.py` hold one source check,
+  D60 as re-run on 2023 (`SOURCE_CHECK_YEAR`, union area per region). The
+  fire-by-fire match of 2021-2024 behind the methods page's "WFIGS area
+  is a median 0.96 to 0.98 of MTBS's" was a one-off probe (`DECISIONS.md`
+  2026-10-07), with no script and no setting.
+- **Actual:** owner, 2026-10-12 ("run matching"): the match is a script,
+  `scripts/source_pairs.py`, with its rule written down (same calendar
+  ignition year, whole fires of at least `MIN_FIRE_HA` in both products,
+  WFIGS fires touching a US study region, one-to-one overlaps only) and
+  its years in a new setting, `SOURCE_PAIR_YEARS` (2021, 2024). Its
+  summary goes into `results/tables/methods_numbers.csv`.
+- **Why:** the page's number needs a committed table, and the probe's
+  rule was not recorded, so it could not be rerun as it was.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Methods numbers and notices".
+- **Substantial:** no (descriptive; no test or registered number reads
+  it; decided after results were seen, and it sets no burned area beside
+  ENSO).
+- **Plan doc:** left as written.
+
 ### D88 · Rebuilt tables go beside the pinned ones, not over them
 - **Plan:** `ACTION_PLAN.md` Phase 5, hard-line item: "download every
   published 2026 month, refit SPEI and rebuild the tables, and report

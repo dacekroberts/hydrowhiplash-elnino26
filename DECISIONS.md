@@ -17,6 +17,45 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Methods numbers and notices
+
+- **Confirmed the methods page's notices against each publisher's
+  current page (owner: "delegate to subagent"; read-licence method,
+  2026-10-12).** Notices 4 to 13 (BC and Yukon snow surveys, NRCS,
+  CanSWE, MTBS, WFIGS, CNFDB, NBAC, CNFDB's BC polygons, Alaska climate
+  divisions) and the ERA5-Land hourly entry all match word for word; no
+  recorded wording was wrong. Added to `site/methods.qmd` in the
+  publishers' wording: the ERA5-Land hourly citations (access date
+  04-OCT-2026, the day the two files were downloaded), the CanSWE paper
+  and v8 dataset citations, the Alaska climate divisions citation.
+  `DATA_SOURCES.md`: the CanSWE row gained the v8 dataset citation. Two
+  lines on the page are drafts for the owner (the hourly "changes made"
+  sentence, the MTBS access line). Left as found, for the owner: the
+  sources table calls WFIGS "Public domain" while the ledger's verdict
+  is "No licence named"; the NRCS line carries no access date or
+  address; the MTBS ledger row says its in-zip metadata was read in one
+  cell and "unread" in another. Not re-read: the CanSWE ReadMe and the
+  CNFDB update log (both under `data/`).
+- **Decided (owner: "1 yes") to replace the eight typed numbers on the
+  methods page with values read from a committed table,
+  `results/tables/methods_numbers.csv`, built by
+  `scripts/methods_numbers.py` from the tables behind each number.** Two
+  of the typed numbers did not match their source and will change when
+  the page reads the table: the overlap counted twice is 100,813 ha in
+  the committed `double_ha` column (the page said 127,000; the log's own
+  figures of 2026-10-07 add to 86,218), and the station correlation is
+  0.77 to 0.95 on the standardised series (the page's "0.78 to 0.95"
+  took the low end of the percent-of-normal series, 0.78 to 0.94).
+  "17 of 76 winters" counts a change of phase or of strong status (15
+  change phase alone).
+- **Decided (owner: "run matching") to rerun the MTBS to WFIGS
+  comparison as a script (D89)**, `scripts/source_pairs.py`, reading
+  both pinned US fire files. Its rule is new wording for an unrecorded
+  probe, so its pair counts may differ from the 108, 192, 85 and 127
+  pairs of 2026-10-07; the difference is reported when the run ends.
+  Started 2026-10-12 11:02; not finished at this commit, so the table
+  and the page edits follow in a later commit.
+
 ### 2026-10-12 - Stamped paths: one parallel tree
 
 - **Decided (owner, "option a"): everything fetched or rebuilt after

@@ -242,6 +242,10 @@ MTBS_WFIGS_CUTOVER = "2024-01-01"
 # SOURCE_CHECK_YEAR; otherwise the frozen years stand. On 2024 (D60 as
 # first computed) d was 0.23-0.90, from MTBS's unmapped 2024 fires.
 SOURCE_CHECK_YEAR = 2023
+# Calendar years over which MTBS and WFIGS are compared fire by fire for the
+# methods page (scripts/source_pairs.py): the years both products hold before
+# and at the cutover. Descriptive; no test reads it (D89).
+SOURCE_PAIR_YEARS = (2021, 2024)
 SOURCE_AGREEMENT_MAX_LOG_DIFF = 0.10
 # Each region takes fires only from its own country's records, so a
 # cross-border fire is never counted twice.

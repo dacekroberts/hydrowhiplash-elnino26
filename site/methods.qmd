@@ -491,11 +491,13 @@ warm, wet Southern California winter.
 ## Data sources and attribution
 
 <!-- One line per source from DATA_SOURCES.md, plus every required notice,
-     verbatim. DRAFT: notices 4 to 12 below were copied from DATA_SOURCES.md
-     on 2026-10-12 because this page now shows fire values and station
-     checks. Before publication: confirm each against the publisher with
-     the read-licence skill, fill the MTBS access line if the file came from
-     Direct Download, and add the access dates. -->
+     verbatim. Notices 4 to 13 and the ERA5-Land hourly entry were compared
+     with each publisher's current page on 2026-10-12 (read-licence method,
+     by a subagent; DECISIONS.md 2026-10-12 "Methods numbers and notices"):
+     all match. Citations below are the publishers' own wording. Two lines
+     are drafts for the owner: the hourly "changes made" sentence and the
+     MTBS access line. Not re-read: the CanSWE ReadMe and the CNFDB update
+     log (both under data/). -->
 
 | Source | Used for | Terms |
 |---|---|---|
@@ -534,8 +536,19 @@ equivalent) were subset to the study domains, converted to millimetres and
 degrees Celsius, averaged over each study region with cos(latitude) area
 weights, and aggregated into seasonal totals, means and anomalies.
 
-<!-- ERA5-Land hourly (1 April snowpack): its catalogue entry and attribution
-     (DATA_SOURCES.md notice 2, second half) still to be added here. -->
+- Copernicus Climate Change Service (C3S)(2019): ERA5-Land hourly data from
+  1950 to present. Copernicus Climate Change Service (C3S) Climate Data
+  Store (CDS). DOI: [10.24381/cds.e2161bac](https://doi.org/10.24381/cds.e2161bac)
+  (Accessed on 04-OCT-2026)
+- Muñoz Sabater, J. (2019): ERA5-Land hourly data from 1950 to present.
+  Copernicus Climate Change Service (C3S) Climate Data Store (CDS). DOI:
+  [10.24381/cds.e2161bac](https://doi.org/10.24381/cds.e2161bac)
+  (Accessed on 04-OCT-2026)
+
+<!-- DRAFT sentence for the owner (wording from the DATA_SOURCES.md row). -->
+From the hourly product only the 1 April 00:00 UTC snow water equivalent
+field was used, with glacier and perennial-snow cells excluded, averaged
+over each study region.
 
 <!-- ONI/RONI (NOAA CPC): no credit line required. Add the 17 U.S.C. 403
      statement (DATA_SOURCES.md, notice 1) once a published table or figure
@@ -549,6 +562,14 @@ Survey data release, <https://doi.org/10.5066/P9IED7RZ>. Credit: Monitoring
 Trends in Burn Severity Project (U.S. Geological Survey and USDA Forest
 Service). Represented features may not be in an accurate geographic
 location.
+
+<!-- DRAFT access line for the owner, in the format the MTBS FAQ gives;
+     the revision date is the in-zip metadata date recorded in
+     DATA_SOURCES.md. -->
+MTBS Direct Download: Monitoring Trends in Burn Severity Burned Areas
+Boundaries for 1984-2026. (2026, October 7 - last revised). MTBS Project
+(USDA Forest Service/U.S. Geological Survey). Available online:
+<https://burnseverity.cr.usgs.gov/direct-download?product=MTBS> [2026, October 7].
 
 **WFIGS Interagency Fire Perimeters**
 
@@ -589,9 +610,21 @@ the
 and the
 [Open Government Licence – Canada](https://open.canada.ca/en/open-government-licence-canada).
 
-<!-- CanSWE paper citation (ledger row) and the Alaska climate divisions
-     citation (notice 13, needed because the Interior Alaska numbers appear
-     above) still to be added. -->
+Vionnet, V., Mortimer, C., Brady, M., Arnal, L., and Brown, R.: Canadian
+historical Snow Water Equivalent dataset (CanSWE, 1928–2020), Earth Syst.
+Sci. Data, 13, 4603–4619, <https://doi.org/10.5194/essd-13-4603-2021>, 2021.
+
+Vionnet, V., Mortimer, C., Brady, M., Arnal, L., & Brown, R. (2026).
+Canadian historical Snow Water Equivalent dataset (CanSWE, 1928-2025)
+(Version v8) [Dataset]. Zenodo. <https://doi.org/10.5281/zenodo.19075529>
+
+**Alaska climate divisions**
+
+Vose, Russell S.; Applequist, Scott; Squires, Mike; Durre, Imke; Menne,
+Matthew J.; Williams, Claude N., Jr.; Fenimore, Chris; Gleason, Karin;
+Arndt, Derek (2014): NOAA Monthly U.S. Climate Divisional Database
+(NClimDiv). Alaska climate division boundaries. NOAA National Climatic Data
+Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
 
 ## What a fuller version would add
 
