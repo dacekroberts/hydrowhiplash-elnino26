@@ -794,6 +794,24 @@ package versions); `conda_list_explicit.txt` is the full environment.
   the fire floor, test settings, the freeze date and commit), since the
   site reads only `results/`. `tests/test_site_settings.py` fails if it
   no longer matches the config.
+- **`results/tables/rollout_calendar.json`** (`python -m src.rollout`;
+  D87): the rollout calendar, one item per arrival the site waits on.
+  Not data and not a result: dates and wording only. Per item: `id`;
+  `kind` (record, data, index, release, season, verification); `start`
+  and `end` (ISO dates; equal unless `precision` is "window");
+  `precision` ("on" a day, "by" a day, "about" a day, "after" a day, or
+  a "window"); `when` (the date as shown to readers); `title`;
+  `site_change` (what changes on the site); `prepare` (the work behind
+  it); `basis` (the setting or record the date comes from); `reader`
+  (shown on the tracker page or not); `remind_on` (`start` minus
+  `ROLLOUT_REMINDER_LEAD_DAYS`, or null where the item is checked at
+  another item's reminder, listed in `checked_at`); `evidence` (a path
+  under `results/`) and `done` (true only if that file exists);
+  `forecast_stage` (first, final or null). `reminders` lists each
+  reminder date with the items folded into it. Trap: a window is an
+  expectation from a publisher's release record, not a measurement.
+  `tests/test_rollout.py` fails if the file no longer matches the
+  config.
 - **`theme/tokens.json`** (the design tokens; D86): every colour (one
   value per theme, light and dark; the map ramps one value for both),
   typeface, spacing step, radius and stroke width, each with a usage

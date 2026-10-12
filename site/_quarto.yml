@@ -9,6 +9,8 @@ website:
     left:
       - href: index.qmd
         text: Overview
+      - href: tracker.qmd
+        text: Tracker
       - href: methods.qmd
         text: Methods and limitations
 

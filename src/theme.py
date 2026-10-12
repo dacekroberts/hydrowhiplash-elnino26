@@ -74,6 +74,25 @@ main .cell-output-display svg, main .cell-output-display img { display: block; m
 .sidebar nav[role="doc-toc"] ul > li > a.active { border-left-color: var(--evergreen);
   color: var(--evergreen) !important; }
 .nav-footer { font-size: 0.84rem; color: var(--ink-muted); border-top: 1px solid var(--rule); }
+ol.timetable { list-style: none; margin: var(--space-4) 0 0; padding: 0; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: var(--radius-md); }
+ol.timetable > li { display: grid; grid-template-columns: 18px 9.5rem minmax(0, 1fr);
+  gap: 2px var(--space-3); padding: 10px var(--space-4); border-bottom: 1px solid var(--rule);
+  align-items: baseline; max-width: none; }
+ol.timetable > li:last-child { border-bottom: 0; }
+ol.timetable .st { width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box;
+  border: var(--stroke-mark) solid var(--rule-strong); align-self: center; }
+ol.timetable .done .st { background: var(--moss); border-color: var(--moss); }
+ol.timetable .next .st { border-color: var(--evergreen); box-shadow: 0 0 0 3px var(--lichen); }
+ol.timetable .num { font-family: var(--font-mono); font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums; }
+ol.timetable .what { font-weight: 600; }
+ol.timetable .then { grid-column: 3; color: var(--ink-muted); font-size: 0.84rem; }
+ol.timetable .chip { font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--evergreen); margin-left: 8px; }
+ol.timetable li:not(.next) .chip { display: none; }
+@media (max-width: 575px) { ol.timetable > li { grid-template-columns: 18px minmax(0, 1fr); }
+  ol.timetable .what, ol.timetable .then { grid-column: 2; } }
 """
 
 

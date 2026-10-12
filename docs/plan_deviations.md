@@ -27,6 +27,35 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D87 · Rollout calendar: one dated list, new settings in `config.py`
+- **Plan:** `ACTION_PLAN.md` "Second goal", tracker item: "its dates live
+  in `src/config.py`" (`TRACKER_WINDOW`, `TRACKER_FREEZE_DATE`,
+  `TRACKER_DATA_DAY`); no plan lists the arrivals after April 2027, the
+  undated releases (CNFDB 2025, CanSWE v9) or what each one changes on
+  the site. D76: the forecast is published "in dated stages as the winter
+  data arrive, the final one after the April 1 snowpack", with no number
+  of stages and no dates.
+- **Actual:** owner, 2026-10-12: "session 10 might need to scaffold
+  exactly what the site is waiting for and when". `src/rollout.py` builds
+  one list (18 items) from the settings already in `config.py` and writes
+  `results/tables/rollout_calendar.json`; the tracker page's timetable
+  and the scheduled reminders read that file. New settings, added after
+  the freeze: `ROLLOUT_WINDOWS` (expected windows for five arrivals with
+  no fixed date; expectations from release records, not measurements),
+  `ROLLOUT_REMINDER_LEAD_DAYS` (3), `RONI_REVISION_MONTHS` (2). The six
+  tracker months are October to March: the months whose data arrives
+  inside `TRACKER_WINDOW`. The list marks two forecast stages, the first
+  at CPC's first RONI release after February 2027 (the frozen plan's
+  input for the H3a forecast), the final at the 1 April snowpack; a
+  proposal until the owner confirms the stages.
+- **Why:** the timetable, the reminders and the pipeline would otherwise
+  each hold their own dates.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: rollout calendar".
+- **Substantial:** no (no test, input or registered number changes; the
+  new settings are read only by `src/rollout.py`).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", tracker item, sentence
+  marked `[mid-project: D87]`.
+
 ### D86 · A shared design system (scope addition)
 - **Plan:** `ACTION_PLAN.md` "Second goal" names a Quarto site and its
   pieces; no plan names a theme, a tokens file or a design system

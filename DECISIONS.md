@@ -17,6 +17,52 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Session 10: rollout calendar
+
+- **Decided to keep the rollout calendar as a list built in code from
+  the settings in `src/config.py`, written to
+  `results/tables/rollout_calendar.json` (D87).** `src/rollout.py`
+  derives every date a setting already fixes: the six monthly ERA5-Land
+  arrivals (October to March, by the 7th of the next month), the 1 April
+  snowpack (1 April plus `ERA5_HOURLY_LAG_DAYS`, 8 April 2027) and the
+  two verification dates (after 31 October 2027 for PNW, BC, AB, AK and
+  YT; after 31 January 2028 for NorCal and SoCal). Five arrivals with no
+  fixed date get an expected window in `ROLLOUT_WINDOWS`. Rejected a
+  hand-written YAML or JSON list: it would repeat dates the config
+  already holds, and the site reads only `results/`. Rejected typing the
+  list into `config.py` itself: 18 items with prose would bury the
+  settings. Files: `src/rollout.py`, `src/config.py`,
+  `tests/test_rollout.py`, `site/tracker.qmd`, `src/theme.py`.
+- **Decided that an item is marked done only when a committed file under
+  `results/` shows it**, in keeping with "the page picks its state from
+  what the pipeline has written to `results/`, so nobody flips it by
+  hand" (2026-10-05). Two items are done (the freeze, run1). The other
+  16 carry no evidence file yet, because the tracker tables that would
+  show a month's arrival are not built; each gets its evidence when its
+  code is written. The "next" mark is set in the visitor's browser from
+  the date.
+- **Found while listing the arrivals, none of it changed:** (1) the
+  frozen plan fixes the forecast's input as "the DJF 2027 value in CPC's
+  first release after February 2027, with its retrieval date recorded",
+  so that release has to be fetched to a stamped path the day it
+  appears; CPC's posting day has not been measured, and the window
+  1 to 14 March 2027 is an expectation. (2) RONI values may be revised
+  for two months, so the December to February value can move until
+  about 14 May 2027; revisions are reported, not substituted. (3) On its
+  release record (2024 data in files dated 28 January 2026) CNFDB 2027
+  would arrive about January 2029, so BC, AB and YT have no registered
+  burned-area source for the fall 2027 verification; open, the owner's
+  to decide before October 2027. (4) No plan says whether the 2026
+  season is redrawn once California's closes at the end of January
+  2027; listed as an item with no task. (5) D76 sets no number of
+  forecast stages; the list marks two, as a proposal.
+- **Built the tracker page as a timetable only** (`site/tracker.qmd`,
+  marked draft; its sentences and the wording of each row are drafts
+  for the owner). The region x month tiles and the countdowns wait for
+  the hard-line item. Twelve of the 18 items are shown to readers; the
+  six left off are the undated releases, the 2026 season's close and
+  the end of the index revisions.
+
 ### 2026-10-12 - Session 10: design system, hosting and the map page
 
 - **Decided (owner, session 10): a new design system for this project,

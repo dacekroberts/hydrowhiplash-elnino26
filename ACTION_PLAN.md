@@ -309,7 +309,11 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
         issued before the season; the verification panel builds on it.
       Countdowns target expected data arrival, not calendar dates, and run
       in the visitor's browser; the page picks its state from what is in
-      `results/`; its dates live in `src/config.py`.
+      `results/`; its dates live in `src/config.py`. [mid-project: D87]
+      Every arrival the site waits on, to January 2028, is one list
+      built by `src/rollout.py` from those settings and written to
+      `results/tables/rollout_calendar.json`; the page's timetable and
+      the scheduled reminders read that file.
 - [ ] **Map page** [mid-project: D85]: all seven regions with a toggle
       per dataset (fire, snowpack, rainfall, temperature), each year's
       values read from the committed region x year tables and the region
