@@ -167,3 +167,46 @@ Changes 4 and 5 apply to every variant. Version 1's two runs are scored
 the same way beside them, in `variants.csv`. Summer weather stays out of
 every forecasting variant (owner, 2026-10-12: predicting weather events
 is out of scope).
+
+## 9. Version 1c (agreed 2026-10-12, after version 1b was seen)
+
+Version 1b's best forecasting variant gained about 0.01 over the trend
+(`spring_inputs`, 0.012, 95% interval -0.001 to 0.032). The owner agreed
+two further runs ("yes 1c sounds good. ceiling = bigger ideas for
+separate project makes sense"). Both use committed tables only, and both
+keep `spring_inputs`' design (regional coefficients, each region on its
+own scale, 1b's yes or no bar and intervals). Written before either was
+run; both are reported.
+
+**Variants, fixed before running** (`results/tables/prediction_v1c/`)
+
+| Variant | Inputs | Can forecast |
+|---|---|---|
+| `last_burn` | `spring_inputs` plus last season's burned area (`burn_lag1`) | yes |
+| `ceiling` | 1b's `hindsight` plus summer SPEI-3 (`spei3_jja`) and summer soil moisture (`soil_moisture`) | no |
+
+- *`burn_lag1`:* the region's `log_burn` of the season before. A large
+  burn removes fuel, and a dry spell can last more than a year, so the
+  sign is left open. The first season (1984) has no earlier one in the
+  table: it takes the mean of the region's values for 1985 to 2003,
+  seasons that are training data at every step. For a forecast made in
+  spring of year Y, season Y-1 must already be counted (WFIGS in the US;
+  CNFDB polygons arrive later, a limit for BC, AB and YT).
+- *`ceiling`:* how much of the trend-only error goes if the summer's
+  mean temperature, water balance and soil moisture were known. It
+  cannot forecast. It is a linear model on three seasonal means over a
+  whole state or province, so it is a low estimate of what the summer
+  holds: heat waves, wind, lightning and where they fall are not in it.
+
+**How the ceiling is read** (a guide written before the run, not a
+test). `ceiling` is compared with 1b's `hindsight` (0.090, summer
+temperature only). At 0.20 or more for all seven regions, knowing the
+summer's means removes a fifth of the error or more, and inputs that
+carry summer information (a seasonal forecast, later issue dates) are
+worth a project of their own. Under 0.15, summer means add little beyond
+temperature, and that project would need a different target or unit, not
+only new inputs. In between: a conversation.
+
+`last_burn` is the sixth forecasting variant scored on the same 22
+unseen years, so its interval flatters it; it is read beside the other
+five. The 2026 and 2027 seasons are the only clean tests.
