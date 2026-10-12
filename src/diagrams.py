@@ -76,6 +76,43 @@ MECHANISM_LAYOUTS = {
         wrap_top=40, wrap_box=18, wrap_foot=50),
 }
 
+# Methods flowchart (DECISIONS.md, 2026-10-08 "Site methods flowchart").
+# Structure only: every label names a source, a variable or a step, and none
+# carries a result, an estimate or a data value. Each column pairs a group of
+# sources with the variables made from that group; arrows are drawn per
+# group, not per source. Labels are short and literal; the wording is the
+# owner's to change here.
+FLOW_STAGES = ("Sources", "Variables")
+FLOW_COLUMNS = (
+    (("ONI and RONI",), ("ENSO index per winter",)),
+    (("ERA5-Land", "Snow stations"), ("Winter precipitation", "Whiplash", "Snowpack")),
+    (("MTBS and WFIGS", "CNFDB"), ("Burned area per region and season",)),
+)
+FLOW_SPINE = ("Region × year table", "Pre-registered tests", "Site charts")
+# Drawn dashed, beside the tests it re-runs, not among the main sources.
+FLOW_SENSITIVITY = "NBAC (sensitivity check)"
+# Printed under the chart so the reading of the arrows travels with the
+# image. Wording approved by the owner, 2026-10-11.
+FLOW_NOTES = ("Arrows show groups, not single sources.",
+              "Snow stations are used only to check the ERA5-Land snowpack.")
+
+# Two layouts of the flowchart, in the same units as MECHANISM_LAYOUTS (0-100
+# across, 100 units per `unit_h` inches down). Heights are built from the
+# box sizes, so the figure grows with the tallest column. All boxes are
+# neutral: orange and blue mean north and south in the mechanism diagram.
+FLOW_LAYOUTS = {
+    "methods_flow": dict(
+        width=9, unit_h=7, font=12, head_font=12, margin=2, pad=3, head_h=5,
+        gap=2.5, stage_gap=7, cols=(17.5, 50, 82.5), box_w=29, src_h=7, var_h=8.5,
+        spine_x=50, spine_w=36, spine_h=7.5, side_x=85.5, side_w=25, side_h=12,
+        wrap_box=24, wrap_side=16, foot_font=10.5, wrap_foot=90, note_gap=4),
+    "methods_flow_narrow": dict(
+        width=4.6, unit_h=7, font=10, head_font=10.5, margin=2, pad=3, head_h=5,
+        gap=2.5, stage_gap=7, cols=(17.5, 50, 82.5), box_w=29, src_h=8.5, var_h=11,
+        spine_x=32, spine_w=58, spine_h=7.5, side_x=83.5, side_w=29, side_h=11,
+        wrap_box=13, wrap_side=12, foot_font=9.5, wrap_foot=50, note_gap=4),
+}
+
 _SVG_HASHSALT = "hydrowhiplash-elnino26"
 
 
@@ -90,7 +127,8 @@ def _tint(hex_colour: str, amount: float) -> str:
 
 
 def _box(ax, x: float, y: float, w: float, h: float, text: str, fontsize: float,
-         edge: str, fill: str, weight: str = "normal") -> None:
+         edge: str, fill: str, weight: str = "normal",
+         linestyle: str = "solid") -> None:
     """Rounded box centred on (x, y) in diagram units, with centred text.
 
     Lines are placed one by one at a fixed spacing: matplotlib's multi-line
@@ -99,7 +137,8 @@ def _box(ax, x: float, y: float, w: float, h: float, text: str, fontsize: float,
     """
     ax.add_patch(FancyBboxPatch((x - w / 2, y - h / 2), w, h,
                                 boxstyle="round,pad=0,rounding_size=1.2",
-                                linewidth=1.5, edgecolor=edge, facecolor=fill))
+                                linewidth=1.5, edgecolor=edge, facecolor=fill,
+                                linestyle=linestyle))
     lines = text.split("\n")
     lo, hi = ax.get_ylim()
     units_per_inch = (hi - lo) / (ax.get_position().height * ax.figure.get_figheight())
@@ -110,10 +149,12 @@ def _box(ax, x: float, y: float, w: float, h: float, text: str, fontsize: float,
                 fontfamily=FONT)
 
 
-def _arrow(ax, start: tuple[float, float], end: tuple[float, float], colour: str) -> None:
+def _arrow(ax, start: tuple[float, float], end: tuple[float, float], colour: str,
+           linestyle: str = "solid") -> None:
     ax.annotate("", xy=end, xytext=start,
                 arrowprops=dict(arrowstyle="-|>", color=colour, linewidth=1.5,
-                                mutation_scale=14, shrinkA=0, shrinkB=0))
+                                linestyle=linestyle, mutation_scale=14,
+                                shrinkA=0, shrinkB=0))
 
 
 def _save(fig: Figure, out_dir: Path, stem: str) -> list[Path]:
@@ -220,6 +261,109 @@ def mechanism_diagram(out_dir: Path = FIGURES) -> list[Path]:
     return paths
 
 
+def flow_labels() -> list[str]:
+    """Every text label on the methods flowchart, in reading order."""
+    labels = [FLOW_STAGES[0]] + [s for sources, _ in FLOW_COLUMNS for s in sources]
+    labels += [FLOW_STAGES[1]] + [v for _, variables in FLOW_COLUMNS for v in variables]
+    return labels + list(FLOW_SPINE) + [FLOW_SENSITIVITY] + list(FLOW_NOTES)
+
+
+def _draw_flow(lay: dict) -> Figure:
+    # Depths are measured down from the top edge, then flipped into axis
+    # units once the total height is known.
+    def stack_h(n: int, box_h: float) -> float:
+        return n * box_h + (n - 1) * lay["gap"]
+
+    panels = []  # (top, bottom, title, box height, labels per column)
+    depth = lay["margin"]
+    for idx, (title, box_h) in enumerate(zip(FLOW_STAGES, (lay["src_h"], lay["var_h"]))):
+        stacks = [column[idx] for column in FLOW_COLUMNS]
+        inner = stack_h(max(len(stack) for stack in stacks), box_h)
+        bottom = depth + lay["pad"] + lay["head_h"] + inner + lay["pad"]
+        panels.append((depth, bottom, title, box_h, stacks))
+        depth = bottom + lay["stage_gap"]
+    spine = []  # (top, bottom) of each box below the panels
+    for _ in FLOW_SPINE:
+        spine.append((depth, depth + lay["spine_h"]))
+        depth += lay["spine_h"] + lay["stage_gap"]
+    # The note sits under the chart; its height follows its line count.
+    note = "\n".join(_wrap(line, lay["wrap_foot"]) for line in FLOW_NOTES)
+    note_h = ((note.count("\n") + 1) * 1.4 * lay["foot_font"] / 72
+              * 100 / lay["unit_h"])
+    total = (depth - lay["stage_gap"] + lay["note_gap"] + note_h
+             + lay["margin"])
+
+    fig = Figure(figsize=(lay["width"], total * lay["unit_h"] / 100), facecolor="white")
+    ax = fig.add_axes((0, 0, 1, 1))
+    ax.set_xlim(0, 100)
+    ax.set_ylim(0, total)
+    ax.axis("off")
+
+    for top, bottom, title, box_h, stacks in panels:
+        ax.add_patch(FancyBboxPatch((1, total - bottom), 98, bottom - top,
+                                    boxstyle="round,pad=0,rounding_size=1.2",
+                                    linewidth=1, edgecolor=_tint(NEUTRAL_EDGE, 0.5),
+                                    facecolor="white"))
+        ax.text(3, total - (top + lay["pad"] + lay["head_h"] / 2 - 0.5), title, ha="left",
+                va="center", fontsize=lay["head_font"], fontweight="bold",
+                color=INK_MUTED, fontfamily=FONT)
+        inner_top = top + lay["pad"] + lay["head_h"]
+        inner = bottom - lay["pad"] - inner_top
+        for x, stack in zip(lay["cols"], stacks):
+            first = inner_top + (inner - stack_h(len(stack), box_h)) / 2 + box_h / 2
+            for i, label in enumerate(stack):
+                _box(ax, x, total - (first + i * (box_h + lay["gap"])), lay["box_w"], box_h,
+                     _wrap(label, lay["wrap_box"]), lay["font"], NEUTRAL_EDGE, NEUTRAL_FILL)
+
+    # Sources to variables, then variables into the table: one arrow per column.
+    for upper, lower_top in ((panels[0][1], panels[1][0]), (panels[1][1], spine[0][0])):
+        for x in lay["cols"]:
+            _arrow(ax, (x, total - upper), (x, total - lower_top), NEUTRAL_EDGE)
+
+    x = lay["spine_x"]
+    for i, ((top, bottom), label) in enumerate(zip(spine, FLOW_SPINE)):
+        # The table spans the page so that each column's arrow lands on it.
+        width = 98 if i == 0 else lay["spine_w"]
+        _box(ax, 50 if i == 0 else x, total - (top + bottom) / 2, width, lay["spine_h"],
+             label, lay["font"], NEUTRAL_EDGE, NEUTRAL_FILL,
+             weight="bold" if i == 0 else "normal")
+        if i < len(spine) - 1:
+            _arrow(ax, (x, total - bottom), (x, total - spine[i + 1][0]), NEUTRAL_EDGE)
+
+    tests_y = total - sum(spine[1]) / 2
+    _box(ax, lay["side_x"], tests_y, lay["side_w"], lay["side_h"],
+         _wrap(FLOW_SENSITIVITY, lay["wrap_side"]), lay["font"], NEUTRAL_EDGE, "white",
+         linestyle="dashed")
+    _arrow(ax, (lay["side_x"] - lay["side_w"] / 2, tests_y),
+           (x + lay["spine_w"] / 2, tests_y), NEUTRAL_EDGE, linestyle="dashed")
+    ax.text(50, lay["margin"] + note_h / 2, note, ha="center", va="center",
+            fontsize=lay["foot_font"], color=INK_MUTED, linespacing=1.4,
+            fontfamily=FONT)
+    return fig
+
+
+def methods_flowchart(out_dir: Path = FIGURES) -> list[Path]:
+    """Draw the methods flowchart in both layouts and save SVG and PNG.
+
+    Sources at the top, the variables made from them, the region x year
+    table, the pre-registered tests, then the site's charts; NBAC sits
+    beside the tests as a sensitivity source, and a two-line note under
+    the chart says how to read the arrows. Structure only: no result,
+    estimate or data value is drawn, and no data is read. Writes
+    methods_flow.* (page width) and methods_flow_narrow.* (phone width).
+    Returns the paths written.
+    """
+    paths = []
+    for stem, layout in FLOW_LAYOUTS.items():
+        paths += _save(_draw_flow(layout), out_dir, stem)
+    return paths
+
+
+# Every diagram this module writes; tests/test_diagrams.py checks each one.
+DIAGRAMS = (mechanism_diagram, methods_flowchart)
+
+
 if __name__ == "__main__":
-    for path in mechanism_diagram():
-        print(path)
+    for diagram in DIAGRAMS:
+        for path in diagram():
+            print(path)

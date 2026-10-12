@@ -17,6 +17,43 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-11 - Site methods flowchart built (side session)
+
+- **Built the methods flowchart decided on 2026-10-08 ("Site methods
+  flowchart", D74) as `src.diagrams.methods_flowchart`**, writing
+  `results/figures/methods_flow.*` (9 in wide) and `methods_flow_narrow.*`
+  (4.6 in wide), included under "Method" in `site/methods.qmd` with a
+  draft caption and draft alt text. No data was read and no fire table was
+  opened. The two mechanism SVGs are byte-identical after the shared
+  helpers gained an optional line style.
+- **Decided to draw every box in the neutral colours and leave the orange
+  and blue unused.** On the home page orange means the north pathway and
+  blue the south; a second meaning on the methods page (climate against
+  fire, say) would be read as the first. Rejected tinting the three
+  columns by kind of source.
+- **Decided to draw arrows per group, not per source.** Three columns
+  (ENSO index; climate; fire), each a group of sources above the variables
+  made from that group, with one arrow per column. Rejected
+  one arrow per source and
+  variable pair (eight crossing arrows at phone width).
+- **Decided (owner, 2026-10-11) to print a two-line note under the
+  chart:** "Arrows show groups, not single sources. Snow stations are
+  used only to check the ERA5-Land snowpack." The second sentence follows
+  `ANALYSIS_PLAN.md` H6 ("ERA5-Land April 1 SWE z (station z as the
+  check)"). Printed in the figure, as the mechanism diagram's framing
+  line is, so it travels with the image. Rejected the page caption alone.
+- **Decided to put NBAC beside the pre-registered tests, dashed, not among
+  the sources.** Among the sources it would read as part of the main
+  burned-area series. Rejected a footnote (the 2026-10-08 entry names it
+  as a source to show).
+- **Added one box the 2026-10-08 entry does not list: "ENSO index per
+  winter"**, so that ONI and RONI lead to a variable like every other
+  source. No scope change; the label is the owner's to reword or drop.
+- **Left `ACTION_PLAN.md` "Methods flowchart" unticked**, as the mechanism
+  diagram item is: the labels, caption and alt text await the owner.
+  Files: `src/diagrams.py`, `tests/test_diagrams.py`,
+  `site/methods.qmd`, `results/figures/methods_flow*`.
+
 ### 2026-10-11 - DeepSeek: the repo's source may be sent
 
 - **Decided (owner, on a recommendation): the repo's source may go to
