@@ -795,6 +795,53 @@ package versions); `conda_list_explicit.txt` is the full environment.
   site reads only `results/`. `tests/test_site_settings.py` fails if it
   no longer matches the config.
 
+### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
+
+Written by `python -m src.prediction` on 2026-10-12, after `run1` was
+seen. Exploratory and uncorrected: reported apart from the registered
+tests, never in place of one (`docs/prediction_model_spec.md`). One
+sub-folder per run, same three tables in each, a `.provenance.json`
+beside every table: `forecast/` (predictors known in spring),
+`hindsight/` (June to August temperature added; cannot forecast),
+`no_zero_fire/` (the forecast run without SoCal 2014). Column `run`
+repeats the label.
+
+- **`predictions.csv`**: one row per region and unseen season (2004 to
+  the region's last test year). `n_train`: the region's seasons before
+  that year. `penalty`: the ridge penalty chosen inside the training
+  seasons, per training row (dimensionless; larger means the predictors
+  count for less). `actual`, `predicted`, `pi_low`, `pi_high`: `log_burn`
+  in log points, and the 80% interval (prediction plus or minus 1.28
+  times the region's training residual spread). `covered`: whether the
+  interval held the actual value. `cut`: the two-thirds quantile of the
+  region's training `log_burn`; `actual_yes`: `actual` above `cut`;
+  `p_yes`: the model's probability of that, 0 to 1. Columns ending
+  `_trend` are the same for the trend-only baseline (`log_burn ~ year`
+  per region).
+- **`skill.csv`**: one row per `scope` (all seven, AK and YT, other five,
+  then each region). `rmse`, `mae` in log points, with `_trend` for the
+  baseline; `skill` = 1 - rmse / rmse_trend (above 0: the predictors
+  beat the trend). `coverage`: share of seasons inside the 80% interval
+  (0.80 is the target). `brier`, `brier_trend`, `brier_base`: mean
+  squared gap between the probability and the 0 or 1 outcome, for the
+  model, the trend-only model and a constant one in three (lower is
+  better). `bss_base`, `bss_trend` = 1 - brier / the reference's.
+  `n_yes`: seasons above the cut; `n_called`: seasons with `p_yes` of 0.5
+  or more; `hits`, `false_alarms`: called seasons that were, or were not,
+  above the cut. `*_low`, `*_high`: 95% interval from resampling the
+  unseen years (whole years, 10,000 draws, seed 2026); descriptive, not
+  a test.
+- **`coefficients.csv`**: one row per predicted year: `n_train_rows`,
+  `penalty`, and each predictor's coefficient in log points of burned
+  area per 1 standard deviation of the predictor (standardised within
+  region on the training seasons).
+- **Traps:** the yes or no cut comes from earlier seasons, and burned
+  area trends up, so more than a third of unseen seasons are "yes" (83
+  of 151 in the forecast run): `bss_base` credits the trend, `bss_trend`
+  does not. `swe_z` is 0 for SoCal ("no information"). Only the fit is
+  forward-looking: `swe_z` and `spei3_djf` are built on fixed reference
+  periods that contain later years (as in `stats.expanding_window`).
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired

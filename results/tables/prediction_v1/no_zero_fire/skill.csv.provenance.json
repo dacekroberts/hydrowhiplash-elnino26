@@ -1,0 +1,24 @@
+{
+  "commit": "21ab883e24567afe449f30db475f7ba2beaac968",
+  "dirty": false,
+  "input_pins_sha256": "2b6e4e6862e67ba67b62a7899ced5d822c8d0fc00bf5b587f6519fbb62e16b81",
+  "test_size_sha256": "dbe7d0519c41c7211fd3b6d85782331d4ec5a9d3710738a094b5288b5cb2fd43",
+  "run_utc": "2026-10-12T11:21:57Z",
+  "seed": 2026,
+  "python": "3.12.14",
+  "packages": {
+    "statsmodels": "0.15.0",
+    "scipy": "1.18.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3"
+  },
+  "inputs": [
+    "climate_controls_region_year.csv",
+    "fire_region_year.csv",
+    "station_swe_region_year.csv",
+    "whiplash_swe_region_year.csv"
+  ],
+  "result": "no_zero_fire/skill.csv",
+  "result_sha256": "3f7ce793a1918276c32b5de87f4e030db0a95ae6497879c50e33003848ee23a0"
+}

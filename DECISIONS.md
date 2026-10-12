@@ -17,6 +17,36 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model version 1: no gain over the trend
+
+- **Found (exploratory, after `run1`; D83): the pooled model with the
+  four spring predictors does not beat the trend-only baseline on unseen
+  seasons.** `results/tables/prediction_v1/forecast/`, 151
+  region-seasons, 2004 to 2025: skill 0.002 (95% interval -0.007 to
+  0.015); Alaska and Yukon -0.006 (-0.031 to 0.013), the other five
+  0.005 (-0.004 to 0.022). Alberta is the one region with an interval
+  above zero, 0.022 (0.008 to 0.046). The 80% interval held 75% of
+  seasons (BC 52%). Yes or no outcome: Brier skill 0.005 (-0.013 to
+  0.024) against the trend-only model, 0.056 (-0.081 to 0.190) against
+  one in three; 83 of 151 unseen seasons cleared the training cut. The
+  chosen penalties (mostly 3.2 or 8.3) shrank every coefficient to at
+  most 0.12 log points per standard deviation. Without SoCal's zero-fire
+  season: 0.008 (-0.008 to 0.023).
+- **Found: with June to August temperature added (hindsight run, not a
+  forecast), skill is 0.096 (0.041 to 0.183)**: Alaska and Yukon 0.215
+  (0.094 to 0.328), the other five 0.066 (0.013 to 0.157); NorCal 0.285,
+  AK 0.250, BC 0.209, YT 0.186; AB, PNW and SoCal near zero.
+- **Version 2 not tried: the agreed rule was not met** (the pooled
+  interval, -0.007 to 0.015, is not wholly above zero). Per the owner's
+  answer ("if lands below have follow-up dialogue"), what comes next is
+  put to the owner; nothing further was fitted.
+- **Checked:** the model's trend-only errors equal `run1`
+  `validation.csv` `rmse_trend` in all seven regions (largest gap 7e-14).
+  A first write put the three runs in three folders, which marked two
+  provenance records as written from a dirty tree; those uncommitted
+  folders were deleted and the run repeated into one folder with three
+  sub-folders, with identical numbers (commit 21ab883).
+
 ### 2026-10-12 - Prediction model: settings agreed before the fit
 
 - **Decided (owner, after `run1` was seen, before any model was fitted;
