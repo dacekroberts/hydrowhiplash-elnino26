@@ -12,6 +12,31 @@ title: "Methods and limitations"
 <!-- Plain-language summary of the analysis plan: data, years, regions, the
      four headline methods. Link to ANALYSIS_PLAN.md and its commit date. -->
 
+<!-- Methods flowchart (D74): two layouts of one diagram, as on the home page
+     (wide from 576 px up, narrow below). Drawn by src/diagrams.py, read from
+     results/ at render time. Caption and alt text are drafts for the owner
+     to word. -->
+
+::: {.d-none .d-sm-block}
+```{python}
+#| echo: false
+#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check."
+from IPython.display import SVG
+SVG(filename="../results/figures/methods_flow.svg")
+```
+:::
+
+::: {.d-sm-none}
+```{python}
+#| echo: false
+#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check."
+from IPython.display import SVG
+SVG(filename="../results/figures/methods_flow_narrow.svg")
+```
+:::
+
+*[Draft caption] From sources to the site's charts: what is measured, where it is joined and where it is tested.*
+
 ## Data sources and attribution
 
 <!-- One line per source from DATA_SOURCES.md, plus every required notice,
