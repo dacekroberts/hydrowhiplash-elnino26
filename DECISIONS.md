@@ -17,6 +17,28 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - ERA5-Land copied to the sibling repository instead of downloaded again
+
+- **Decided (owner: "yes copy them over"): the sibling gets a copy of
+  this project's ERA5-Land downloads, handed over from here.** Supersedes
+  the download in "Sibling repository: its own downloads, and a split
+  point" for these files; the download stays the sibling's fallback for
+  months after July 2026. Copied to
+  `..\climate-whiplash-prediction\dataaw\`: `era5_land`,
+  `era5_land_north`, `era5_land_snow_soil`, `era5_land_north_snow_soil`
+  (77 files each, monthly means January 1950 to July 2026),
+  `era5_land_april1` and `era5_land_north_april1` (one file each): 310
+  files, 1,171,135,923 bytes, with a manifest written for the purpose
+  (path, bytes, sha256; its own sha256 e834c041...f653ab). Verified
+  there after the copy: 0 mismatches, 0 extra files. Rejected a fresh
+  download (hours of queue time for the same files) and letting the
+  sibling read `data/` itself (it would undo the split). The files are
+  one download in two folders, not two retrievals; the sibling's ledger
+  is to say so. Terms: CC-BY 4.0, read 2026-10-04; both projects are the
+  owner's. Nothing in this project changed; ERA5-Land is not a pinned
+  input. Not copied: the ENSO files, `regions.geojson`, the glacier
+  masks and the SPEI cell fits.
+
 ### 2026-10-12 - The sibling repository is split from this project
 
 - **Recorded the split: from its commit 371ed60 (pushed, 2026-10-12)
