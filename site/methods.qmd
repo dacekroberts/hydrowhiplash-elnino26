@@ -9,11 +9,11 @@ title: "Methods and limitations"
 
      DRAFT 2026-10-12 (session 9). The prose below was drafted by Claude for
      the owner to edit and approve; none of it is approved yet. Every number
-     is read from results/tables/ (run1 and site_settings.json) except the
-     ones marked with a dagger, which are typed from DECISIONS.md and the
-     methods register and need a committed table before this page goes
-     public. Also typed: descriptive constants (the 9 km grid, 1,000
-     acres, the season months, the number of regions). -->
+     is read from results/tables/ (run1, site_settings.json and, since
+     session 10, methods_numbers.csv for the eight measured numbers that
+     were typed until then; python scripts/methods_numbers.py). Still
+     typed: descriptive constants (the 9 km grid, 1,000 acres, the season
+     months, the number of regions). -->
 
 ```{python}
 #| echo: false
@@ -63,6 +63,29 @@ def pv(test, region, col="p", kind=None):
 def size(test, region):
     return f"{100 * pick(test, region)['size']:.1f}%"
 
+
+MN = pd.read_csv(T / "methods_numbers.csv", dtype={"group": str})
+
+
+def mn(measure, group="all", col="value"):
+    """One measured number from methods_numbers.csv."""
+    r = MN[(MN["measure"] == measure) & (MN["group"] == group)]
+    assert len(r) == 1, (measure, group, len(r))
+    return r.iloc[0][col]
+
+
+def mn_range(measure, d=2, pct=False):
+    """Lowest to highest value of a measure across its groups."""
+    v = MN.loc[MN["measure"] == measure, "value"]
+    assert len(v), measure
+    tail = "%" if pct else ""
+    return f"{v.min():.{d}f}{tail} to {v.max():.{d}f}{tail}"
+
+
+_park = MN[MN["measure"] == "cnfdb_park_area"].assign(year=lambda t: t["group"].astype(int))
+_empty = _park.loc[_park["value"] == 0, "year"]
+park_gap_years = f"{_empty.min()} to {_empty.max()}"
+assert len(_empty) == _empty.max() - _empty.min() + 1, "the park gap is not one run of years"
 
 n_tests = len(reg)
 n_families = reg["family"].nunique()
@@ -342,7 +365,7 @@ p-value is in the registered direction.
   Columbia and Alberta, April to September in Alaska and Yukon, and June to
   the following January in California.
 - **Overlapping perimeters.** Counted once. Summing them had counted
-  127,000 ha† twice.
+  `{python} f"{round(mn('overlap_double_counted'), -3):,.0f}"` ha twice.
 - **Glacier and permanent-snow cells.** Left out of the snowpack and SPEI
   means, where they would swamp the seasonal signal.
 - **Snow stations.** Back-estimated and suspect values dropped; a site filed
@@ -366,8 +389,8 @@ rest on `{python} n_strong_seasons` seasons and are exploratory.
 **The answer depends on the index in one region.** In the Pacific Northwest
 the H2 difference is `{python} est("H2", "PNW")` under
 `{python} S["enso_index"]` and `{python} est("H2", "PNW", kind="oni_robustness")`
-under `{python} S["enso_robustness_index"]`. The two indices class 17 of 76
-winters† differently. Neither result is significant, but the sign is not
+under `{python} S["enso_robustness_index"]`. The two indices class `{python} int(mn("enso_class_differs"))` of `{python} int(mn("enso_class_differs", col="n"))`
+winters differently. Neither result is significant, but the sign is not
 settled.
 
 **Winter precipitation was seen before the freeze.** H1 is a check that the
@@ -402,18 +425,18 @@ nulls.
 
 **The two sides are measured differently.** US burned area comes from
 satellite mapping and incident perimeters, Canadian burned area from agency
-polygons. Where MTBS and WFIGS both hold a fire, WFIGS area is a median 0.96
-to 0.98† of MTBS's. For Canada I compared CNFDB with a second national
-product (NBAC): 2.0% to 3.1%† of NBAC's burned area sits in fires CNFDB does
+polygons. Where MTBS and WFIGS both hold a fire, WFIGS area is a median
+`{python} mn_range("wfigs_over_mtbs_median")` of MTBS's. For Canada I compared CNFDB with a second national
+product (NBAC): `{python} mn_range("nbac_missing_share", 1, pct=True)` of NBAC's burned area sits in fires CNFDB does
 not hold at all. I did not rerun the tests on NBAC; I report the gap.
 
 **Known holes in the Canadian record.** CNFDB holds no national-park fire
-of counted size in these regions for 2016 to 2021†, which matters for
+of counted size in these regions for `{python} park_gap_years`, which matters for
 Alberta in 2016 to 2019 (Wood Buffalo).
 The tests were repeated with the park area added from NBAC: Alberta's H3a
 slope is `{python} est("H3a", "AB", kind="parks_nbac")` against
 `{python} est("H3a", "AB")`. Fires on two military bases in Alberta are in
-no year of the record: about 1%† of the province's counted burned area.
+no year of the record: about `{python} f"{mn('defence_land_share', 'AB'):.0f}"`% of the province's counted burned area.
 
 **Different end years.** The pooled model stops at
 `{python} S["pooled_last_year"]` for all five regions so that the Canadian
@@ -439,7 +462,7 @@ bar is high. Northern California's same-year slope
 testing every region; I am not revisiting it.
 
 **The snowpack is a model's.** ERA5-Land snow is not measured snow. Against
-snow stations the regional series correlate at 0.78 to 0.95†. Repeating H6
+snow stations the regional series correlate at `{python} mn_range("station_correlation_z")`. Repeating H6
 on the station index gives
 `{python} est("H6_swe", "PNW", kind="station_z")` in the Pacific Northwest
 against `{python} est("H6_swe", "PNW")` from ERA5-Land. Stations sit high,
@@ -453,7 +476,7 @@ size does not.
 **Region averages include places that rarely burn.** Alaska's winter
 precipitation averages in a wet coast far from the interior fires. In the
 interior alone, winter precipitation tracks the statewide series at a
-correlation of 0.79†, and temperature at 0.98†.
+correlation of `{python} f"{mn('interior_alaska_correlation', 'precip_djf_mm'):.2f}"`, and temperature at `{python} f"{mn('interior_alaska_correlation', 'temp_jja'):.2f}"`.
 
 ### "The 2027 forecast"
 
@@ -650,6 +673,3 @@ Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
      sessions before any result; one read-only review of the run code used
      DeepSeek on copies holding no data (2026-10-12). What the owner
      verified by hand is the owner's to state. -->
-
-† Typed from the project's decision log and methods register, not yet read
-from a committed table. To be replaced before this page is published.

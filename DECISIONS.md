@@ -295,6 +295,22 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   pairs of 2026-10-07; the difference is reported when the run ends.
   Started 2026-10-12 11:02; not finished at this commit, so the table
   and the page edits follow in a later commit.
+- **Ran the matching and built the table (same day).** One-to-one pairs
+  2021 to 2024: 112, 194, 87, 130 (the probe of 2026-10-07 had 108, 192,
+  85, 127; its rule was not recorded). Median WFIGS over MTBS area
+  0.959, 0.982, 0.981, 0.983 (probe 0.959, 0.982, 0.980, 0.983); total
+  0.967, 0.971, 0.974, 0.986 (probe 0.967, 0.972, 0.974, 0.986). The
+  other numbers reproduce their records: NBAC missing share BC 2.0%,
+  AB 2.7%, YT 3.1%; no CNFDB national-park area in 2016 to 2021;
+  defence land 109,773 ha, 0.98% of AB's counted area; Interior Alaska
+  0.79 (December to February precipitation) and 0.98 (June to August
+  temperature). `site/methods.qmd` now reads all eight from
+  `results/tables/methods_numbers.csv` (50 rows) and carries no dagger.
+  Two displayed values changed, as flagged: the overlap reads 101,000 ha
+  (was 127,000) and the station range 0.77 to 0.95 (was 0.78 to 0.95).
+  The sentences around them are the owner's draft to settle. Files:
+  `scripts/methods_numbers.py`, `scripts/source_pairs.py`,
+  `tests/test_methods_numbers.py`, `site/methods.qmd`.
 
 ### 2026-10-12 - Stamped paths: one parallel tree
 

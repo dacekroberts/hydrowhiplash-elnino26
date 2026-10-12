@@ -1,0 +1,54 @@
+measure,group,value,unit,n,basis
+overlap_double_counted,all,100812.5914,ha,291,results/tables/fire_region_year.csv
+overlap_double_counted,CNFDB,46247.6941,ha,28,results/tables/fire_region_year.csv
+overlap_double_counted,MTBS,1731.0195,ha,67,results/tables/fire_region_year.csv
+overlap_double_counted,WFIGS,52833.8778,ha,8,results/tables/fire_region_year.csv
+enso_class_differs,all,17.0,count,76,"pinned RONI and ONI files (data/raw), classified by src.download_oni"
+enso_phase_differs,all,15.0,count,76,"pinned RONI and ONI files (data/raw), classified by src.download_oni"
+enso_index_correlation,all,0.9613,correlation,76,"pinned RONI and ONI files (data/raw), classified by src.download_oni"
+nbac_missing_share,BC,2.0327,percent,83,data/processed/nbac_coverage_fires.csv
+nbac_missing_share,AB,2.6605,percent,43,data/processed/nbac_coverage_fires.csv
+nbac_missing_share,YT,3.0673,percent,88,data/processed/nbac_coverage_fires.csv
+cnfdb_park_area,2010,3032.8,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2011,66171.9,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2012,205543.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2013,20048.9,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2014,60415.1,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2015,332647.3,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2016,0.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2017,0.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2018,0.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2019,0.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2020,0.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2021,0.0,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2022,9442.6,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2023,886779.1,ha,3,data/processed/parks_gap_measure.csv
+cnfdb_park_area,2024,67197.1,ha,3,data/processed/parks_gap_measure.csv
+defence_land_area,AB,109773.2,ha,24,data/processed/parks_gap_measure.csv
+defence_land_share,AB,0.9845,percent,24,data/processed/parks_gap_measure.csv
+defence_land_area,BC,0.0,ha,0,data/processed/parks_gap_measure.csv
+defence_land_share,BC,0.0,percent,0,data/processed/parks_gap_measure.csv
+defence_land_area,YT,0.0,ha,0,data/processed/parks_gap_measure.csv
+defence_land_share,YT,0.0,percent,0,data/processed/parks_gap_measure.csv
+station_correlation_z,PNW,0.9544,correlation,76,results/tables/station_swe_region_year.csv
+station_correlation_z,BC,0.8359,correlation,76,results/tables/station_swe_region_year.csv
+station_correlation_z,AB,0.7697,correlation,63,results/tables/station_swe_region_year.csv
+station_correlation_z,AK,0.7998,correlation,67,results/tables/station_swe_region_year.csv
+station_correlation_z,YT,0.8424,correlation,52,results/tables/station_swe_region_year.csv
+station_correlation_pct,PNW,0.9368,correlation,76,results/tables/station_swe_region_year.csv
+station_correlation_pct,BC,0.7947,correlation,76,results/tables/station_swe_region_year.csv
+station_correlation_pct,AB,0.8355,correlation,63,results/tables/station_swe_region_year.csv
+station_correlation_pct,AK,0.7754,correlation,67,results/tables/station_swe_region_year.csv
+station_correlation_pct,YT,0.8378,correlation,52,results/tables/station_swe_region_year.csv
+interior_alaska_correlation,temp_jja,0.9816,correlation,75,data/processed/interior_alaska_check.csv
+interior_alaska_correlation,temp_mam,0.9759,correlation,76,data/processed/interior_alaska_check.csv
+interior_alaska_correlation,precip_djf_mm,0.7929,correlation,76,data/processed/interior_alaska_check.csv
+interior_alaska_correlation,precip_octmar_mm,0.823,correlation,76,data/processed/interior_alaska_check.csv
+wfigs_over_mtbs_median,2021,0.9587,ratio,112,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_total,2021,0.9674,ratio,112,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_median,2022,0.9818,ratio,194,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_total,2022,0.9712,ratio,194,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_median,2023,0.9806,ratio,87,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_total,2023,0.9739,ratio,87,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_median,2024,0.9832,ratio,130,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)
+wfigs_over_mtbs_total,2024,0.9862,ratio,130,data/processed/mtbs_wfigs_pairs.csv (scripts/source_pairs.py)

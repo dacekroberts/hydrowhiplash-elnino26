@@ -819,6 +819,22 @@ package versions); `conda_list_explicit.txt` is the full environment.
   the fire floor, test settings, the freeze date and commit), since the
   site reads only `results/`. `tests/test_site_settings.py` fails if it
   no longer matches the config.
+- **`results/tables/methods_numbers.csv`** (`python
+  scripts/methods_numbers.py`; main checkout only, it reads four
+  uncommitted measurement files): the measured numbers the methods page
+  quotes. One row per number: `measure`, `group` (region, year, source
+  or variable; "all" if none), `value`, `unit` (ha, percent, ratio,
+  correlation, count), `n` (the fires, years, winters or pairs behind
+  it), `basis` (the file it came from). Measures: the overlap that
+  summing perimeters would count twice; winters the two indices class
+  differently; NBAC area in fires missing from CNFDB, on provincial and
+  territorial land; CNFDB national-park area by year; defence-land
+  area and share; ERA5-Land against station snowpack (standardised and
+  percent of normal); Interior Alaska against the statewide series;
+  WFIGS over MTBS area on one-to-one fire pairs (`SOURCE_PAIR_YEARS`,
+  `scripts/source_pairs.py`, D89). Descriptive; no test reads it.
+  Traps: a ratio near 1 on matched pairs says nothing about fires only
+  one product holds; the station correlation differs by measure.
 - **`results/tables/rollout_calendar.json`** (`python -m src.rollout`;
   D87): the rollout calendar, one item per arrival the site waits on.
   Not data and not a result: dates and wording only. Per item: `id`;
