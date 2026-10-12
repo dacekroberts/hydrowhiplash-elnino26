@@ -27,7 +27,32 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
-### D\?b · Prediction model version 1b: changes made after version 1 was seen
+### D?c · Prediction model version 1c: two more variants after version 1b was seen
+- **Plan:** `docs/prediction_model_spec.md` section 8: six variants,
+  "fixed before running", and "Summer weather stays out of every
+  forecasting variant".
+- **Actual:** version 1b's best forecasting variant gained about 0.01
+  over the trend. Owner, 2026-10-12: "yes 1c sounds good. ceiling =
+  bigger ideas for separate project makes sense". Two more variants,
+  fixed in spec section 9 before either was run: `last_burn` (last
+  season's burned area added to `spring_inputs`) and `ceiling` (summer
+  SPEI-3 and summer soil moisture added to 1b's hindsight run; it cannot
+  forecast). Outputs go to `results/tables/prediction_v1c/`; versions 1
+  and 1b are kept as written.
+- **Why:** the committed tables hold no other input known in spring, and
+  the size of the gain available from knowing the summer had only been
+  measured with temperature.
+- **Constraint:** chosen after versions 1 and 1b and all of `run1` were
+  seen. `last_burn` is the sixth forecasting variant scored on the same
+  22 unseen years. Exploratory, uncorrected, reported apart from the
+  registered tests; the registered 2027 forecast stays the H3a model.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model version 1c:
+  last season's burned area and a ceiling run".
+- **Substantial:** no (no registered test, input or result changes).
+- **Plan doc:** `docs/prediction_model_spec.md` section 9 added; sections
+  1 to 8 left as written.
+
+### D?b · Prediction model version 1b: changes made after version 1 was seen
 - **Plan:** `docs/prediction_model_spec.md` sections 2 to 7 (agreed
   before any fit): one shared coefficient per predictor, four spring
   predictors, the yes or no bar from the training seasons' own values,
@@ -52,7 +77,7 @@ additions stay distinguishable from the original plan.
 - **Plan doc:** `docs/prediction_model_spec.md` section 8 added; sections
   1 to 7 left as written.
 
-### D\?a · Prediction model: four settings the agreed scope did not cover
+### D?a · Prediction model: four settings the agreed scope did not cover
 - **Plan:** `docs/session10_kickoff.md` Part 3 (the agreed scope): "1
   April snowpack" as a predictor for "the seven regions"; "region terms"
   and "a year trend"; "how often its 80% interval held the real value";

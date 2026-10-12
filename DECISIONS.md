@@ -17,9 +17,36 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model version 1c: last season's burned area and a ceiling run
+
+- **Decided (owner, after version 1b was seen; D?c): two more variants
+  are run before any larger change, both from committed tables.** Owner:
+  "yes 1c sounds good. ceiling = bigger ideas for separate project makes
+  sense". `last_burn` adds the region's `log_burn` of the season before
+  to `spring_inputs`; `ceiling` adds summer SPEI-3 and summer soil
+  moisture to 1b's hindsight run and cannot forecast. Both were written
+  into `docs/prediction_model_spec.md` section 9 before either was run
+  (commit fba914a), with a guide for reading the ceiling: 0.20 or more
+  for all seven regions, inputs carrying summer information are worth a
+  project of their own; under 0.15, that project would need a different
+  target or unit; in between, a conversation. The guide was proposed by
+  the session and not confirmed line by line by the owner.
+- **Decided: the first season's `burn_lag1` is the mean of the region's
+  lagged values for 1985 to 2003.** 1984 has no earlier season in the
+  table. Rejected: dropping 1984 (the first predicted year would move
+  from 2004 to 2005 and the 151 unseen seasons would no longer match
+  versions 1 and 1b); the region's mean over all years (it would read
+  seasons later than the ones being predicted).
+- **Rejected for this branch:** later issue dates, seasonal forecasts of
+  the summer, spring fuel dryness, smaller units, a longer fire record
+  and a grid-cell model. Each needs `data/` or a new source; the owner
+  would treat them as a sibling project if the ceiling supports one.
+  Affected: `src/prediction_1c.py`, `tests/test_prediction_1c.py`,
+  `src/config.py` (`PRED_1C_*`).
+
 ### 2026-10-12 - Prediction model version 1b: the fixes worked, the gain is about 0.01
 
-- **Found (exploratory, after version 1 and `run1`; D\?b): with the five
+- **Found (exploratory, after version 1 and `run1`; D?b): with the five
   changes, the best forecasting variant beats the trend by 0.012 on
   unseen seasons, and its interval reaches zero.**
   `results/tables/prediction_v1b/variants.csv`, 151 region-seasons, 2004
@@ -60,7 +87,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ### 2026-10-12 - Prediction model version 1b: five changes before machine learning
 
-- **Decided (owner, after version 1 was seen; D\?b): five changes are
+- **Decided (owner, after version 1 was seen; D?b): five changes are
   tried before any machine learning, on the same branch, merged with
   version 1 as one PR.** Owner: "i agree with 1-5 before machine
   learning. we can start version 1b now and merge all at once unless
@@ -129,7 +156,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 ### 2026-10-12 - Prediction model: settings agreed before the fit
 
 - **Decided (owner, after `run1` was seen, before any model was fitted;
-  D83, D\?a): the seven settings the agreed scope left open or did not
+  D83, D?a): the seven settings the agreed scope left open or did not
   cover**, written into `docs/prediction_model_spec.md` section 7 and
   `src/config.py` (`PRED_*`). (A) Shrinkage: only the four climate
   predictors are shrunk; each region's level and year trend are unshrunk,

@@ -593,7 +593,7 @@ PRED_GROUPS = {"all seven": tuple(REGIONS),
 PRED_RUN = "prediction_v1"    # results/tables/<PRED_RUN>/<label>/
 
 # Version 1b (agreed 2026-10-12, after version 1 was seen; spec section 8;
-# D\?b). The variants are fixed before any is run and all are reported.
+# D?b). The variants are fixed before any is run and all are reported.
 PRED_1B_SPRING = (*PRED_PREDICTORS, "precip_anom_lag1", "snowfall_frac")
 # temp_mam is known by 1 June: before the season in PNW, NorCal and SoCal,
 # two months into it in BC, AB, AK and YT (FIRE_SEASON_MONTHS)
@@ -610,3 +610,13 @@ PRED_1B_VARIANTS = {
 PRED_1B_GRID = PRED_RIDGE_GRID[::2]  # 7 values, 0.01 to 1000, for each penalty
 PRED_1B_MIN_PAST_ERRORS = 8          # unseen-year errors needed before they set the interval
 PRED_1B_RUN = "prediction_v1b"
+
+# Version 1c (agreed 2026-10-12, after version 1b was seen; spec section 9;
+# D?c). Two variants, fixed before either is run, both in spring_inputs'
+# design. burn_lag1 is the region's log_burn of the season before.
+PRED_1C_VARIANTS = {
+    "last_burn": ((*PRED_1B_SPRING, "burn_lag1"), True, True),
+    # cannot forecast: the summer's mean temperature, SPEI-3 and soil moisture
+    "ceiling": ((*PRED_1B_JUNE, "temp_jja", "spei3_jja", "soil_moisture"), True, True),
+}
+PRED_1C_RUN = "prediction_v1c"
