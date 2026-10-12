@@ -80,13 +80,14 @@ Scored as they arrive: BC, AB and YT 2025 (CNFDB, about January 2027);
 the 2026 season (US regions after January 2027; Canada about January
 2028); the 2027 season (fall 2027 onward).
 
-### Competing models (owner's idea, to settle in stage 1)
+### Competing models (owner's idea; format agreed 2026-10-12)
 
 Owner, 2026-10-12: "let's also consider housing multiple models competing
 against each other in that project, tuned for different 'strengths' and
 'known weaknesses' each attempting to best predict the climate data".
 
-A proposal for how to hold it, not adopted:
+How it is held (owner, 2026-10-12: "yes fixed roster sounds good, held back
+only ranking makes sense"); the details are written in stage 1:
 
 - A fixed roster. Each model has a card written before it is fitted: its
   inputs, what it is expected to be good at, where it is expected to
@@ -101,7 +102,7 @@ A proposal for how to hold it, not adopted:
   also the summer's climate (temperature, moisture) as a target of its
   own. The second would be a new target and a new baseline.
 
-### The other El Niño regions (owner's flag)
+### The other El Niño regions (owner's idea, not a commitment)
 
 Owner, 2026-10-12: "flag the other 20ish regions we found to be affected
 by el nino and postulate as longer-term prediction targets once model is
@@ -111,7 +112,11 @@ fleshed out, because we can use the actual numbers from those regions
 The 20 regions are listed in the parent's
 `docs/enso_regions_out_of_scope.md`, with an "Expansion readiness" table.
 Their value as a check rests on staying unseen: no fire or climate data
-for them is downloaded or looked at until the model's form is fixed.
+for them is downloaded or looked at until the model's form is fixed
+(owner, 2026-10-12: "yes no data opened"). The owner calls it "not
+entirely fleshed out just a spitball idea we can have to make that
+project more interesting": it is on the roadmap as a possibility, with
+no stage or date.
 What to weigh before choosing any:
 
 - The table marks several as having no fire link found or a weak one
@@ -131,7 +136,6 @@ What to weigh before choosing any:
   early November.
 - Whether the sibling reads the parent's `data/` in place (proposed) or
   downloads again.
-- The competing-models format above.
 - What the held-back scores are compared with: the trend-only model
   (proposed) and the parent's H3a forecast.
 - Whether the sibling's results are ever shown beside the parent's site.

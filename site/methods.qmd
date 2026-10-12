@@ -330,7 +330,9 @@ measure much the same thing.
      embedded from results/ at render time (a linked image outside site/ is
      not copied into the build). Each draws rows of run1 as written.
      Captions and alt text are DRAFTS for the owner to word; where the charts
-     sit on the page is the owner's call too. -->
+     sit on the page is the owner's call too. Headline 3's layout (the H4
+     contrast under the four H3a slopes, the caption saying it comes from one
+     pooled model) was approved by the owner on 2026-10-12. -->
 
 ```{python}
 #| echo: false

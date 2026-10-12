@@ -42,6 +42,23 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   Caveats put to the owner: the table marks several regions as having no
   or a weak fire link, several respond in year 0 and not after the DJF
   winter, and each needs its own fire record and licence read.
+- **Agreed (owner, later the same day): the competing-models format.**
+  Owner had raised "housing multiple models competing against each
+  other in that project, tuned for different 'strengths' and 'known
+  weaknesses'". Agreed: a fixed roster, a card per model written before
+  it is fitted, one scoreboard, and the held-back seasons as the only
+  ranking that counts ("yes fixed roster sounds good, held back only
+  ranking makes sense"). The other regions stay unopened ("yes no data
+  opened") and are an idea, not a commitment: "not entirely fleshed out
+  just a spitball idea we can have to make that project more
+  interesting". Owner's note on design: the sibling may get its own
+  design system later, once the model is more final.
+- **Accepted (owner): NBAC is not a fall 2027 source (D93 stands as
+  recorded), and the timetable shows it.** The CNFDB 2027 item is now
+  shown to readers as well, so the tracker page carries all three
+  steps: PNW and AK in fall 2027, BC, AB and YT from NBAC about May
+  2028, CNFDB about January 2029 (14 of 20 items shown). Headline 3's
+  layout approved as built.
 - **Tagged a669813 as `prediction-handoff` and pushed the tag.** The
   repository itself is not created: that waits for the owner's yes on
   the drafted kickoff (`docs/sibling_kickoff_climate_whiplash_prediction.md`).

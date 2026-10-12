@@ -261,8 +261,7 @@ def items() -> list[dict]:
               "stamped path, measure BC, AB and YT, and report beside the NBAC figures "
               "already published; neither replaces the other without a note. Reads "
               "polygons: ask the owner first.",
-              "ROLLOUT_WINDOWS; CNFDB release record (D56); D93",
-              reader=False),
+              "ROLLOUT_WINDOWS; CNFDB release record (D56); D93"),
     ]
     lead = timedelta(days=config.ROLLOUT_REMINDER_LEAD_DAYS)
     for item in out:
