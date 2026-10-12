@@ -17,6 +17,35 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Plain OLS check takes the registered test's sidedness
+
+- **Decided (owner, option chosen 2026-10-11, sizes accepted 2026-10-12,
+  before any test): the plain OLS check beside H3a and H3b in PNW, BC and
+  AB is one-sided, like the registered test it sits beside** (D80; frozen
+  plan's deviations log, row 18). D66 kept the check only where its
+  measured size is near 5%, and its size had been measured two-sided only
+  (cold check 2026-10-11, low 10). Measured one-sided
+  (`scripts/stats_size_check.py`, 1,000 datasets per scenario, label row
+  2,000): H3a 4.75%, H3b 5.60% (Monte Carlo SE 0.49%); across the three
+  scenarios 4.2-5.5% and 5.0-6.2%. Kept. NorCal, SoCal, AK and YT are
+  registered two-sided and keep the two-sided rows (4.1%, 4.95%); C1 was
+  already one-sided, C2 two-sided. Rejected a two-sided check beside a
+  one-sided test: with the estimate in the expected direction its p is
+  double by construction, so it would read as a failed check (the D68
+  reasoning); rejected printing both (a third number per row). Registered
+  p-values and Holm verdicts unchanged.
+- **`results/tables/test_size.csv` rebuilt, 63 to 71 rows.** The two new
+  shapes draw nothing from the random stream, and all 63 earlier rows
+  reproduced exactly; the script stamps every row with the run date, so
+  their `measured` column now reads 2026-10-11 for values first measured
+  on 2026-10-08. `run_guard.plain_ols_shape(test, region)` returns the
+  check's row in the test's own sidedness. Tests: 317 passed.
+- **Offline copy of the 30 pinned inputs** (owner, 2026-10-11: a folder
+  of its own inside the repository): `pinned_inputs_copy/` (3.2 GB,
+  git-ignored), written by `python -m src.pin_inputs --copy`, each file
+  checked against its pin (`PINNED_COPY_DIR`; audit round 5 S1c). It
+  guards against an overwrite, not against loss of the disk.
+
 ### 2026-10-11 - Session 8: owner decisions before the first test
 
 - **Decided (owner, 2026-10-11, before any test): the Interior Alaska

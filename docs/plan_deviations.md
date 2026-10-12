@@ -25,6 +25,26 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-12
+
+### D80 · Plain OLS check one-sided beside the one-sided H3a and H3b tests
+- **Plan:** D66 and the `ANALYSIS_PLAN.md` deviations log, eighth row: a
+  plain OLS p beside the registered p of the ENSO tests, kept where its
+  measured size is near 5%; the size table held only a two-sided plain
+  OLS row for H3a and H3b, while PNW, BC and AB are registered one-sided.
+- **Actual:** owner (2026-10-11 and 2026-10-12, before any test): the
+  check takes the sidedness of its registered test. One-sided size
+  measured: H3a 4.75%, H3b 5.60% (2,000 datasets, Monte Carlo SE 0.49%);
+  kept. `test_size.csv` 63 to 71 rows, the earlier rows identical.
+- **Why:** a check should ask the registered test's question; a two-sided
+  p beside a one-sided one is double by construction.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Plain OLS check takes the
+  registered test's sidedness"; `docs/methods_register.md` "Size label
+  lookup".
+- **Substantial:** no (completes D66's reported addition).
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, row 18 (added); frozen
+  text above the log unchanged.
+
 ## 2026-10-11
 
 ### D79 · Interior Alaska check measured (scope addition, descriptive)

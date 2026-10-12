@@ -9,7 +9,8 @@ from size_label(), and writes every result through write_result().
             the statistics tests; raises listing every problem, else returns
             the commit the run is made on (S4)
   size_shape(test, region) / size_label(shape)  the one label row of
-            TEST_SIZE_TABLE for a registered robust test (S6 point 3; D66)
+            TEST_SIZE_TABLE for a registered robust test (S6 point 3; D66);
+            plain_ols_shape(test, region) the row of its plain OLS check
   provenance() / write_result()  a result table plus a provenance file
             beside it; an existing result is never overwritten (S5, S6
             point 1)
@@ -53,11 +54,11 @@ H4_SHAPES = {"contrast": "H4 contrast, DK", "joint_f": "H4 joint F, DK",
              "contrast_clustered": "H4 contrast, clustered",
              "joint_f_clustered": "H4 joint F, clustered"}
 # Plain OLS check beside the registered p (D66), kept where its measured size
-# is near 5%: H3a, H3b, C1, C2; not H4 (D68), not H5 or H6. The H3 check was
-# measured two-sided only.
-PLAIN_OLS_SHAPES = {"H3a": "H3a, plain OLS two-sided", "H3b": "H3b, plain OLS two-sided",
-                    "C1": "C1 interaction, plain OLS one-sided",
-                    "C2": "C2 interaction, plain OLS two-sided"}
+# is near 5%: H3a, H3b, C1, C2; not H4 (D68), not H5 or H6. The check has the
+# sidedness of the registered test it sits beside (owner, 2026-10-11, D80):
+# plain_ols_shape appends it, as size_shape does.
+PLAIN_OLS_SHAPES = {"H3a": "H3a, plain OLS", "H3b": "H3b, plain OLS",
+                    "C1": "C1 interaction, plain OLS", "C2": "C2 interaction, plain OLS"}
 
 
 def _git(*args: str, root: Path = ROOT) -> str:
@@ -165,6 +166,19 @@ def size_shape(test: str, region: str | None = None) -> str | None:
         raise ValueError(f"{test} is not tested in {region}.")
     sided = "two-sided" if alternative == "two-sided" else "one-sided"
     return f"{REGION_SHAPES[test]} {sided}"
+
+
+def plain_ols_shape(test: str, region: str) -> str | None:
+    """`shape` of the size-table row for the plain OLS check beside a
+    registered test, in that test's own sidedness; None where no check is
+    reported (H1, H2, H4, H5, H6)."""
+    if test not in PLAIN_OLS_SHAPES:
+        return None
+    alternative = TEST_DIRECTIONS[test][region]
+    if alternative is None:
+        raise ValueError(f"{test} is not tested in {region}.")
+    sided = "two-sided" if alternative == "two-sided" else "one-sided"
+    return f"{PLAIN_OLS_SHAPES[test]} {sided}"
 
 
 def size_label(shape: str, table: Path = TEST_SIZE_TABLE) -> dict:

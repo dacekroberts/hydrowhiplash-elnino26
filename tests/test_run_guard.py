@@ -137,8 +137,17 @@ def test_every_registered_robust_test_maps_to_exactly_one_label_row():
         assert 0.03 < label["size"] < 0.15 and label["reps"] >= 1000
     for part in run_guard.H4_SHAPES:
         assert run_guard.size_label(run_guard.size_shape("H4", part))["size"] > 0
-    for shape in run_guard.PLAIN_OLS_SHAPES.values():
+    checks = {run_guard.plain_ols_shape(test, region) for test, region in pairs} - {None}
+    assert checks == {"H3a, plain OLS one-sided", "H3a, plain OLS two-sided",
+                      "H3b, plain OLS one-sided", "H3b, plain OLS two-sided",
+                      "C1 interaction, plain OLS one-sided", "C2 interaction, plain OLS two-sided"}
+    for shape in checks:
         assert 0.03 < run_guard.size_label(shape)["size"] < 0.07  # near 5% (D66)
+    # the check asks the registered test's own question (D80)
+    assert run_guard.plain_ols_shape("H3a", "PNW") == "H3a, plain OLS one-sided"
+    assert run_guard.plain_ols_shape("H3a", "SoCal") == "H3a, plain OLS two-sided"
+    assert run_guard.plain_ols_shape("H5_lag0", "PNW") is None
+    assert run_guard.plain_ols_shape("H4", "contrast") is None
 
 
 def test_size_shape_follows_the_registered_sidedness():

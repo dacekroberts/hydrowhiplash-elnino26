@@ -55,9 +55,11 @@ SHAPES = {
     "H3a, NW one-sided": ("H3a PNW/BC/AB", "Newey-West", "one-sided"),
     "H3a, NW two-sided": ("H3a NorCal, SoCal, AK, YT", "Newey-West", "two-sided"),
     "H3a, plain OLS two-sided": ("H3a check", "plain OLS", "two-sided"),
+    "H3a, plain OLS one-sided": ("H3a check, PNW/BC/AB", "plain OLS", "one-sided"),
     "H3b, NW one-sided": ("H3b PNW/BC/AB", "Newey-West", "one-sided"),
     "H3b, NW two-sided": ("H3b NorCal, SoCal, AK, YT", "Newey-West", "two-sided"),
     "H3b, plain OLS two-sided": ("H3b check", "plain OLS", "two-sided"),
+    "H3b, plain OLS one-sided": ("H3b check, PNW/BC/AB", "plain OLS", "one-sided"),
     "persistent predictor, NW one-sided": ("H5, H6 one-sided", "Newey-West", "one-sided"),
     "persistent predictor, NW two-sided": ("H5, H6 two-sided", "Newey-West", "two-sided"),
     "C2 interaction, NW two-sided": ("C2", "Newey-West", "two-sided"),
@@ -134,9 +136,14 @@ def main(reps: int = 1000, bootstrap: bool = False) -> pd.DataFrame:
             coef("H3a, NW one-sided", h3a, s, "enso_djf", "greater")
             coef("H3a, NW two-sided", h3a, s, "enso_djf")
             coef("H3a, plain OLS two-sided", h3a, s, "enso_djf", plain=True)
+            # one-sided check beside the one-sided registered test (owner,
+            # 2026-10-11, D80); draws nothing from rng, so every other row
+            # reproduces the 2026-10-08 values
+            coef("H3a, plain OLS one-sided", h3a, s, "enso_djf", "greater", plain=True)
             coef("H3b, NW one-sided", h3b, s, "enso_djf", "greater")
             coef("H3b, NW two-sided", h3b, s, "enso_djf")
             coef("H3b, plain OLS two-sided", h3b, s, "enso_djf", plain=True)
+            coef("H3b, plain OLS one-sided", h3b, s, "enso_djf", "greater", plain=True)
             coef("persistent predictor, NW one-sided", pers, s, "x", "greater")
             coef("persistent predictor, NW two-sided", pers, s, "x")
             coef("C2 interaction, NW two-sided", inter, s, "enso_djf:year_c")
