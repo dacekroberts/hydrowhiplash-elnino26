@@ -261,11 +261,12 @@ def build_winter_precip_table(regions: gpd.GeoDataFrame, winters: pd.DataFrame,
     return table, pd.concat(cells).loc[order]
 
 
-def main(stamp: str | None = None) -> None:
+def main(stamp: str | None = None,
+         index_stamp: str | None = None) -> None:
     from src import later
     from src.regions import load_regions
 
-    ctx = later.paths(stamp)
+    ctx = later.paths(stamp, index_stamp)
     regions = load_regions()
     datasets = open_domains(sorted(set(assign_domains(regions)), key=list(ERA5_DOMAINS).index),
                             ctx)
@@ -287,4 +288,6 @@ if __name__ == "__main__":
 
     from src import later as _later
 
-    main(_later.take_stamp(sys.argv[1:]))
+    _argv = sys.argv[1:]
+    _index = _later.take_index_stamp(_argv)
+    main(_later.take_stamp(_argv), index_stamp=_index)

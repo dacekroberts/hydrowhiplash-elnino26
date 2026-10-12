@@ -62,7 +62,7 @@ def swe_figure(phase2: pd.DataFrame, out_dir: Path = FIGURES,
                enso_index: str = ENSO_INDEX) -> Path:
     swe = phase2[phase2["region"].isin(swe_regions(phase2))].dropna(subset=["swe_apr1_mm"])
     return winter_series(swe, "swe_apr1_mm", "April 1 SWE (mm)", enso_index,
-                         out_dir / f"swe_april1_series_{enso_index.lower()}.png")
+                         out_dir / f"swe_april1_series_{enso_index.lower()}.png", family="snow")
 
 
 def stations_vs_era5_figure(index: pd.DataFrame, out_dir: Path = FIGURES,
@@ -82,7 +82,7 @@ def snowfall_figure(snow_soil: pd.DataFrame, out_dir: Path = FIGURES,
     return winter_series(
         ss.dropna(subset=["snowfall_pct"]), "snowfall_pct", "Snowfall, % of Nov-Mar precip",
         enso_index, out_dir / f"snowfall_fraction_series_{enso_index.lower()}.png",
-        xlabel="Winter (Nov-Mar); year Y = November Y-1 to March Y")
+        xlabel="Winter (Nov-Mar); year Y = November Y-1 to March Y", family="snow")
 
 
 def soil_figure(snow_soil: pd.DataFrame, out_dir: Path = FIGURES,

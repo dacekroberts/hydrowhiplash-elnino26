@@ -98,6 +98,11 @@ ROLLOUT_WINDOWS = {
     "canswe_v9": ("2027-02-01", "2027-03-31"),
     "cnfdb_2026": ("2028-01-01", "2028-02-29"),
     "canswe_v10": ("2028-02-01", "2028-03-31"),
+    # D93: the provisional and the registered source for the 2027 season in
+    # BC, AB and YT. NBAC v20260513 (files dated 22 May 2026) holds 2025;
+    # CNFDB 2024 arrived in files dated 28 January 2026.
+    "nbac_2027": ("2028-05-01", "2028-06-30"),
+    "cnfdb_2027": ("2029-01-01", "2029-02-28"),
 }
 ROLLOUT_REMINDER_LEAD_DAYS = 3  # a reminder runs this many days before its date
 # CPC may revise a RONI value for this many months after posting it

@@ -814,6 +814,34 @@ package versions); `conda_list_explicit.txt` is the full environment.
   fire, in log points; raw, not detrended. +2.3 is ten times the typical
   season (the right-hand axis), where "typical" is the geometric mean in
   the panel title. The zero-fire season is a marker, not a bar.
+- **`results/figures/headline1_el_nino_vs_rest.png`**,
+  **`headline2_enso_strength.png`**, **`headline3_north_vs_socal.png`**
+  (`python -m src.results_figures`): one row per region and registered
+  test of `run1`, the estimate as a dot on its two-sided 95% interval,
+  a line at no effect. Units as in 8a: mm of December to February
+  precipitation for H1, log points of burned area for H2, log points
+  per 1 degree C of the winter index for H3a, H3b and H4. A filled
+  green dot is significant after Holm, a hollow one is not. Trap:
+  headline 3 sets the H4 contrast under four H3a slopes for context;
+  the contrast comes from one pooled model ending at the pooled last
+  year, so it is not the difference of the rows above it.
+- **`results/figures/headline4_interval_coverage.png`** (same command):
+  per region, the share of seasons whose burned area fell inside the
+  H3a model's 80% prediction interval (`coverage` in
+  `run1/validation.csv`), leave-one-year-out and expanding window; 80%
+  is the target. Trap: 21 or 22 seasons stand behind each expanding
+  window point, so one season moves it by about 5 points.
+- **`results/figures/burned_area_season_history_roni.html`**
+  (`python -m src.fire_figures`): the full-record view as an interactive
+  chart, an HTML fragment the home page includes (plotly.js comes from
+  its CDN, so the chart needs a network connection). Same values as the
+  PNG: each season's `log_burn` minus the region's mean, shown on the
+  axis as a multiple of the typical season; hover gives `burn_ha`. The
+  dotted slot is `FORECAST_YEAR`, empty until it is verified.
+- **Figure colours** (all figures above, D86): a bar is `fire`, `water`
+  or `snow` by what it measures; an `enso-soft` band and a tick mark a
+  season after an El Niño winter. The 1997-98 map runs `precip-dry-2`
+  (25% of normal) to `precip-wet-2` (400%) on a log scale.
 - **`results/tables/site_settings.json`** (`python -m src.site_settings`):
   the `src/config.py` values the site quotes in prose (thresholds, years,
   the fire floor, test settings, the freeze date and commit), since the

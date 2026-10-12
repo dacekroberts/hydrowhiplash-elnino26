@@ -218,13 +218,15 @@ def items() -> list[dict]:
               reader=False, checked_at=[month_key[(2027, 4)]]),
         _item("verify_north", "verification", north_end, north_end, "after",
               f"The 2027 fire season ends in {NORTH}",
-              "The verification panel sets what burned against the forecast for these "
-              "five regions.",
-              "Decide the 2027 burned-area source first: WFIGS is provisional for the "
-              "US regions, and on its release record CNFDB 2027 arrives about January "
-              "2029, so BC, AB and YT have no registered source this fall. Reads "
-              "polygons: ask the owner first.",
-              "FIRE_SEASON_MONTHS, FORECAST_YEAR (D46)"),
+              "The verification panel sets what burned against the forecast for PNW and "
+              "AK, from WFIGS and marked provisional. BC, AB and YT follow when NBAC "
+              "holds 2027.",
+              "Download WFIGS to a stamped path and measure 2027 for PNW and AK "
+              "(provisional). BC, AB and YT wait: their registered source, CNFDB, "
+              "arrives about January 2029 on its release record, and NBAC stands in as "
+              "a provisional source from about May 2028 (D93). Reads polygons: ask the "
+              "owner first.",
+              "FIRE_SEASON_MONTHS, FORECAST_YEAR (D46); D93"),
         _item("verify_california", "verification", california_end, california_end, "after",
               f"The 2027 fire season ends in {CALIFORNIA}",
               "The verification panel is completed for California.",
@@ -241,6 +243,26 @@ def items() -> list[dict]:
               "The station snow check gains April 2027, the forecast's own spring.",
               "As for CanSWE v9.", "ROLLOUT_WINDOWS; docs/alberta_swe_sources.md",
               reader=False, own_reminder=False, checked_at=["verify_california"]),
+        _item("nbac_2027", "release", *windows["nbac_2027"], "window",
+              "NBAC burned-area polygons for 2027 (no fixed date)",
+              "The verification panel gains BC, AB and YT, measured from NBAC and marked "
+              "provisional.",
+              "Check the NBAC download folder for a release holding 2027. If released: "
+              "download to a stamped path, measure the 2027 season of BC, AB and YT "
+              "under the fire rules, and report it as provisional: the registered "
+              "series is CNFDB, and NBAC maps fires CNFDB does not hold (2.0% to 3.1% "
+              "of its area, 1984 to 2024). Reads polygons: ask the owner first.",
+              "ROLLOUT_WINDOWS; NBAC release record (v20260513 held 2025); D93"),
+        _item("cnfdb_2027", "release", *windows["cnfdb_2027"], "window",
+              "CNFDB 2027 fire polygons (no fixed date)",
+              "The registered source's 2027 figures for BC, AB and YT are set beside "
+              "the provisional NBAC ones, and the difference is reported.",
+              "Check the CNFDB release folder for 2027. If released: download to a "
+              "stamped path, measure BC, AB and YT, and report beside the NBAC figures "
+              "already published; neither replaces the other without a note. Reads "
+              "polygons: ask the owner first.",
+              "ROLLOUT_WINDOWS; CNFDB release record (D56); D93",
+              reader=False),
     ]
     lead = timedelta(days=config.ROLLOUT_REMINDER_LEAD_DAYS)
     for item in out:

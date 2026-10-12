@@ -22,6 +22,11 @@ same stamp.
   compare_tables(old, new, keys)  the cells a rebuild changed or added
   paths(stamp)                 Base() or Rebuild(stamp): where a builder
                                reads raw files and writes its outputs
+
+A stamped rebuild reads the latest closed index retrieval not after its
+stamp. --index-stamp YYYY-MM-DD names the index retrieval instead (owner,
+2026-10-12), so a rebuild can stay on CPC's first release holding DJF of
+the forecast year after a later retrieval exists.
 """
 from __future__ import annotations
 
@@ -36,6 +41,7 @@ from src import pin_inputs
 from src.config import DATA_PROCESSED, DATA_RAW, LATER_RAW, RESULTS, TRACKER_TABLES
 
 FLAG = "--stamp"
+INDEX_FLAG = "--index-stamp"
 RECORD_NAME = "retrieval.json"
 
 
@@ -59,6 +65,20 @@ def take_stamp(args: list[str], today: date | None = None) -> str | None:
     value = args[i + 1] if i + 1 < len(args) and args[i + 1][:1].isdigit() else None
     del args[i:i + (2 if value else 1)]
     return check_stamp(value) if value else (today or date.today()).isoformat()
+
+
+def take_index_stamp(args: list[str]) -> str | None:
+    """Remove --index-stamp and its date from `args` in place. Returns the
+    date, or None without the flag. The flag always needs a date: it names
+    one existing retrieval."""
+    if INDEX_FLAG not in args:
+        return None
+    i = args.index(INDEX_FLAG)
+    if i + 1 >= len(args):
+        raise SystemExit(f"{INDEX_FLAG} needs a date as YYYY-MM-DD.")
+    value = args[i + 1]
+    del args[i:i + 2]
+    return check_stamp(value)
 
 
 def mirror(folder: Path, stamp: str, base: Path | None = None) -> Path:
@@ -199,8 +219,13 @@ class Rebuild(Base):
     records what was read and lists every cell that differs from the
     pinned table of the same name."""
 
-    def __init__(self, stamp: str):
+    def __init__(self, stamp: str, index_stamp: str | None = None):
         self.stamp = check_stamp(stamp)
+        self.index_stamp = check_stamp(index_stamp) if index_stamp else None
+        if self.index_stamp and self.index_stamp > self.stamp:
+            raise StampedFolderError(
+                f"The index retrieval {self.index_stamp} is later than the rebuild's "
+                f"stamp {self.stamp}.")
         self.read: dict[str, str] = {}
         self.written: dict[str, Path] = {}
 
@@ -245,15 +270,26 @@ class Rebuild(Base):
         return out
 
     def winters(self) -> pd.DataFrame:
-        """Winters from the latest stamped index retrieval, if there is one;
-        otherwise the pinned table. CPC revises recent values, so a stamped
-        retrieval can differ from the pinned winters; close() lists every
-        cell that does."""
+        """Winters from the named index retrieval (index_stamp) if one was
+        given, else from the latest stamped index retrieval, if there is
+        one; otherwise the pinned table. CPC revises recent values, so a
+        stamped retrieval can differ from the pinned winters; close() lists
+        every cell that does."""
         from src import download_oni
         from src.config import ENSO_INDEX
 
         base = DATA_RAW / "enso"
-        raw = self.raw_file(base, f"{ENSO_INDEX.lower()}.ascii.txt")
+        name = f"{ENSO_INDEX.lower()}.ascii.txt"
+        if self.index_stamp:
+            named = mirror(base, self.index_stamp)
+            if not (named / RECORD_NAME).exists() or not (named / name).exists():
+                raise StampedFolderError(
+                    f"No closed index retrieval holding {name} at {named}.")
+            self.read[named.relative_to(LATER_RAW).as_posix()] = \
+                pin_inputs.sha256(named / RECORD_NAME)
+            return download_oni.classify_winters(download_oni.parse(named / name),
+                                                 ENSO_INDEX)
+        raw = self.raw_file(base, name)
         if raw.parent == base:  # no stamped retrieval
             return super().winters()
         return download_oni.classify_winters(download_oni.parse(raw), ENSO_INDEX)
@@ -270,6 +306,7 @@ class Rebuild(Base):
             "run_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "commit": pin_inputs.head_commit(),
             "retrievals_read": dict(sorted(self.read.items())),
+            "index_retrieval": self.index_stamp or "latest not after the stamp",
             "tables": sorted(self.written),
         }
         record_path.write_bytes((json.dumps(content, indent=2) + "\n").encode("utf-8"))
@@ -288,6 +325,9 @@ class Rebuild(Base):
             pd.concat(parts).to_csv(folder / CHANGES_NAME, index=False, lineterminator="\n")
 
 
-def paths(stamp: str | None) -> Base:
-    """Rebuild(stamp) for a stamped rebuild, Base() for the usual paths."""
-    return Rebuild(stamp) if stamp else Base()
+def paths(stamp: str | None, index_stamp: str | None = None) -> Base:
+    """Rebuild(stamp) for a stamped rebuild, Base() for the usual paths.
+    `index_stamp` names the index retrieval a stamped rebuild reads."""
+    if index_stamp and not stamp:
+        raise SystemExit(f"{INDEX_FLAG} only applies to a stamped rebuild; add {FLAG}.")
+    return Rebuild(stamp, index_stamp) if stamp else Base()

@@ -96,6 +96,26 @@ def test_winters_come_from_a_stamped_index_when_there_is_one(tree):
     assert winters.loc[2027, "winter"] == "2026-2027"
 
 
+def test_a_named_index_retrieval_wins_over_a_later_one(tree):
+    first = b"SEAS YR TOTAL ANOM\nDJF 2027 28.9 1.9\n"
+    revised = b"SEAS YR TOTAL ANOM\nDJF 2027 28.8 1.7\n"
+    _retrieval(tree / "enso", "2027-03-02", {"roni.ascii.txt": first})
+    _retrieval(tree / "enso", "2027-05-14", {"roni.ascii.txt": revised})
+    latest = later.paths("2027-05-20").winters().set_index("year")
+    assert latest.loc[2027, "enso_djf"] == 1.7
+    ctx = later.paths("2027-05-20", "2027-03-02")
+    assert ctx.winters().set_index("year").loc[2027, "enso_djf"] == 1.9
+    assert list(ctx.read) == ["2027-03-02/enso"]
+    with pytest.raises(later.StampedFolderError):
+        later.paths("2027-05-20", "2027-04-01").winters()  # no such retrieval
+    with pytest.raises(later.StampedFolderError):
+        later.paths("2027-03-01", "2027-03-02")  # named retrieval after the stamp
+    with pytest.raises(SystemExit):
+        later.paths(None, "2027-03-02")
+    args = ["--rebuild", "--index-stamp", "2027-03-02", "--stamp"]
+    assert later.take_index_stamp(args) == "2027-03-02" and args == ["--rebuild", "--stamp"]
+
+
 def test_stamped_phase2_writes_beside_and_reports_changed_cells(tree, monkeypatch):
     processed, results = later.DATA_PROCESSED, later.RESULTS / "tables"
     monkeypatch.setattr(phase2, "REGIONS", ["PNW"])

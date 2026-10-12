@@ -238,7 +238,8 @@ def domain_spei(domain: str, ds: xr.Dataset, keep: xr.DataArray, refresh: bool =
     return spei
 
 
-def main(refresh: bool = False, stamp: str | None = None) -> None:
+def main(refresh: bool = False, stamp: str | None = None,
+         index_stamp: str | None = None) -> None:
     import time
 
     from src import later
@@ -249,7 +250,7 @@ def main(refresh: bool = False, stamp: str | None = None) -> None:
     regions = load_regions()
     domains = assign_domains(regions)
     names = sorted(set(domains), key=list(ERA5_DOMAINS).index)
-    ctx = later.paths(stamp)
+    ctx = later.paths(stamp, index_stamp)
     datasets = open_domains(names, ctx)
     winters = ctx.winters()
     out = ctx.processed(OUT)
@@ -285,5 +286,6 @@ if __name__ == "__main__":
     from src import later as _later
 
     _argv = sys.argv[1:]
+    _index = _later.take_index_stamp(_argv)
     _stamp = _later.take_stamp(_argv)
-    main(refresh="--refresh" in _argv, stamp=_stamp)
+    main(refresh="--refresh" in _argv, stamp=_stamp, index_stamp=_index)

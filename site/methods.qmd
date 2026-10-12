@@ -326,6 +326,48 @@ under p `{python} S["alpha"]`. They are not `{python} n_raw` separate
 signals: Alberta accounts for several of them, and snowpack and winter SPEI
 measure much the same thing.
 
+<!-- Charts for Headlines 1 to 4 (session 11, python -m src.results_figures),
+     embedded from results/ at render time (a linked image outside site/ is
+     not copied into the build). Each draws rows of run1 as written.
+     Captions and alt text are DRAFTS for the owner to word; where the charts
+     sit on the page is the owner's call too. -->
+
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars, one row per region. Left, winter precipitation in El Niño winters minus the rest, in millimetres: only Southern California's interval lies wholly above zero and it is the only filled dot. Right, burned area after El Niño winters minus the rest, in log points, seven regions: every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline1_el_nino_vs_rest.png")
+```
+
+*[Draft caption] H1 and H2: El Niño years against all other years. Dots are estimates, bars 95% intervals; a filled green dot is significant after Holm.*
+
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars for seven regions, in log points of burned area per degree of the winter index. Every interval crosses zero in both panels."
+from IPython.display import Image
+Image(filename="../results/figures/headline2_enso_strength.png")
+```
+
+*[Draft caption] H3a and H3b: burned area per 1 °C of the winter index, without and with summer temperature.*
+
+```{python}
+#| echo: false
+#| fig-alt: "Five rows of dots with interval bars: the H3a slopes of the Pacific Northwest, British Columbia, Alberta and Southern California, then the H4 contrast, north minus Southern California. Every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline3_north_vs_socal.png")
+```
+
+*[Draft caption] H4: the north minus Southern California, from one pooled model, under the four regional slopes for context.*
+
+```{python}
+#| echo: false
+#| fig-alt: "One row per region with two markers: the share of seasons inside the 80 percent prediction interval when one year is left out, and when the model is fitted only on earlier seasons. Most markers sit between 77 and 91 percent; British Columbia's earlier-seasons marker is at 57 percent and Southern California's leave-one-out marker at 95."
+from IPython.display import Image
+Image(filename="../results/figures/headline4_interval_coverage.png")
+```
+
+*[Draft caption] How often the H3a model's 80% prediction intervals held the real season.*
+
 ## Every test, including nulls
 
 ```{python}
@@ -517,9 +559,9 @@ warm, wet Southern California winter.
      verbatim. Notices 4 to 13 and the ERA5-Land hourly entry were compared
      with each publisher's current page on 2026-10-12 (read-licence method,
      by a subagent; DECISIONS.md 2026-10-12 "Methods numbers and notices"):
-     all match. Citations below are the publishers' own wording. Two lines
-     are drafts for the owner: the hourly "changes made" sentence and the
-     MTBS access line. Not re-read: the CanSWE ReadMe and the CNFDB update
+     all match. Citations below are the publishers' own wording. The hourly
+     "changes made" sentence and the MTBS access line were approved by the
+     owner on 2026-10-12. Not re-read: the CanSWE ReadMe and the CNFDB update
      log (both under data/). -->
 
 | Source | Used for | Terms |
@@ -527,7 +569,7 @@ warm, wet Southern California winter.
 | NOAA CPC, ONI and RONI | El Niño index per winter | US Government work |
 | ERA5-Land monthly and hourly (Copernicus, ECMWF) | Precipitation, temperature, snowpack, SPEI | CC-BY 4.0 |
 | MTBS (USGS and USDA Forest Service) | US burned area, ignitions to 2023 | Public domain |
-| WFIGS Interagency Fire Perimeters (NIFC) | US burned area from 2024 | Public domain |
+| WFIGS Interagency Fire Perimeters (NIFC) | US burned area from 2024 | No licence named; US Government source |
 | Canadian National Fire Database (NRCan) | Canadian burned area | Open Government Licence – Canada; BC polygons Open Government Licence – British Columbia |
 | National Burned Area Composite (NRCan) | Park area for one sensitivity run; coverage comparison | Open Government Licence – Canada |
 | NRCS SNOTEL and snow courses (USDA) | Snow station check | Public domain |
@@ -568,7 +610,7 @@ weights, and aggregated into seasonal totals, means and anomalies.
   [10.24381/cds.e2161bac](https://doi.org/10.24381/cds.e2161bac)
   (Accessed on 04-OCT-2026)
 
-<!-- DRAFT sentence for the owner (wording from the DATA_SOURCES.md row). -->
+<!-- Approved by the owner 2026-10-12 (wording from the DATA_SOURCES.md row). -->
 From the hourly product only the 1 April 00:00 UTC snow water equivalent
 field was used, with glacier and perennial-snow cells excluded, averaged
 over each study region.
@@ -586,7 +628,7 @@ Trends in Burn Severity Project (U.S. Geological Survey and USDA Forest
 Service). Represented features may not be in an accurate geographic
 location.
 
-<!-- DRAFT access line for the owner, in the format the MTBS FAQ gives;
+<!-- Access line approved by the owner 2026-10-12, in the format the MTBS FAQ gives;
      the revision date is the in-zip metadata date recorded in
      DATA_SOURCES.md. -->
 MTBS Direct Download: Monitoring Trends in Burn Severity Burned Areas
@@ -626,7 +668,9 @@ Contains information licensed under the
 **Snow stations**
 
 Snow station data: U.S. Department of Agriculture, Natural Resources
-Conservation Service. Contains information licensed under the
+Conservation Service, National Water and Climate Center, AWDB REST API,
+<https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/> (accessed
+2026-10-05). Contains information licensed under the
 [Open Government Licence – British Columbia](https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61),
 the
 [Open Government Licence – Yukon](https://yukon.ca/en/your-government/open-government/open-government-licence-yukon)

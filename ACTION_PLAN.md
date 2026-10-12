@@ -326,7 +326,11 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
 - [ ] **Verification panel** — what actually happened in 2027 against the
       prediction. *Fall 2027* for PNW, BC, AB, AK and YT; *after January
       2028* for NorCal and SoCal, whose 2027 season runs to January 2028
-      [mid-project: D46].
+      [mid-project: D46]. [mid-project: D93] Decided 2026-10-12: in fall
+      2027 the panel covers PNW and AK (WFIGS, provisional); BC, AB and
+      YT are verified from NBAC, marked provisional, when it holds 2027
+      (about May 2028), and CNFDB 2027 is set beside it when it arrives
+      (about January 2029).
 
 **Done when:** the site is public with the first four pieces, and the
 verification panel is added after the 2027 season.
@@ -367,7 +371,10 @@ aren't worth building yet:
   means a second highlight colour on the same charts, not new infrastructure.
 - **Prediction model.** Turn the historical results into a model that
   forecasts what comes next. Two possible directions, which can be done in
-  either order:
+  either order: [mid-project: D94] Decided 2026-10-12: versions 1 to 1c
+  are this project's exploratory record (D83, D90 to D92); further work
+  goes to the private sibling repository `climate-whiplash-prediction`,
+  which reads this project's tables at the tag `prediction-handoff`.
   - *Seasonal outlook:* a statistical model that predicts next season's
     whiplash and fire-season anomaly per region from ENSO strength, winter
     precipitation and April 1 snowpack. Train on **all years** (about 40),

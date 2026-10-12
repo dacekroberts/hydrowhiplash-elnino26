@@ -8,7 +8,8 @@ title: "Tracking the 2026–27 winter"
      come with the hard-line item, when the first month of data arrives.
 
      DRAFT 2026-10-12. The sentences on this page and the wording of each
-     timetable row were drafted by Claude for the owner to edit and approve.
+     timetable row were drafted by Claude for the owner to edit and approve;
+     the closing sentence under the timetable is the owner's (2026-10-12).
      The rows, dates and done marks are read from
      ../results/tables/rollout_calendar.json (python -m src.rollout); nothing
      is typed here. -->
@@ -69,6 +70,5 @@ print("```{=html}\n" + "\n".join(lines) + "\n```")
 </script>
 ```
 
-A filled dot is something already in this site's files. A date that has
-passed with an open dot means the data came late or I have not rebuilt the
-page yet.
+A filled dot is something already in this site's files. I will update the
+page as dated milestones pass.

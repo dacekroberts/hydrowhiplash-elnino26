@@ -59,10 +59,11 @@ def write_tables(table: pd.DataFrame, rebuild: bool = False, ctx=None) -> None:
               f"years {table['year'].min()}-{table['year'].max()}")
 
 
-def main(rebuild: bool = False, stamp: str | None = None) -> None:
+def main(rebuild: bool = False, stamp: str | None = None,
+         index_stamp: str | None = None) -> None:
     from src import later, pin_inputs
 
-    ctx = later.paths(stamp)
+    ctx = later.paths(stamp, index_stamp)
     # refused before any read, as in the other builders; write_tables guards
     # again for callers that skip main
     if not stamp:
@@ -78,5 +79,6 @@ if __name__ == "__main__":
     from src import later as _later
 
     _argv = sys.argv[1:]
+    _index = _later.take_index_stamp(_argv)
     _stamp = _later.take_stamp(_argv)
-    main(rebuild="--rebuild" in _argv, stamp=_stamp)
+    main(rebuild="--rebuild" in _argv, stamp=_stamp, index_stamp=_index)

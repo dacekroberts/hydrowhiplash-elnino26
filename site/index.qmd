@@ -35,7 +35,21 @@ SVG(filename="../results/figures/mechanism_narrow.svg")
 ## What happened after past El Niño winters
 
 <!-- Per region: every fire season since 1984, El Niño years highlighted,
-     with an empty 2027 slot. After Phase 4. -->
+     with an empty 2027 slot. Built 2026-10-12 (session 11) by
+     python -m src.fire_figures: an HTML fragment read from results/ at
+     render time (plotly.js from its CDN). The caption is a DRAFT for the
+     owner to word; the section's prose is still to be written. -->
+
+```{python}
+#| echo: false
+#| output: asis
+from pathlib import Path
+print("```{=html}\n" + Path("../results/figures/burned_area_season_history_roni.html").read_text("utf-8") + "\n```")
+```
+
+*[Draft caption] Every fire season since 1984, as a multiple of the region's
+typical season. A shaded year follows an El Niño winter; a taller, darker
+tick marks a strong one. Hover for the hectares. The dotted slot is 2027.*
 
 ## Tracking the 2026–27 winter
 

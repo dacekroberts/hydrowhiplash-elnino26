@@ -14,6 +14,71 @@ def test_winter_series_columns_writes_png(tmp_path):
     assert out.exists() and out.stat().st_size > 0
 
 
+def test_no_colour_is_typed_in_the_figure_code():
+    """Every figure colour comes from theme/tokens.json."""
+    import re
+    from pathlib import Path
+
+    source = Path(figures.__file__).read_text("utf-8")
+    assert re.findall(r"#[0-9a-fA-F]{6}\b", source) == []
+    assert '"white"' not in source
+    assert figures.FAMILIES["fire"] == figures.theme.colour("fire")
+
+
+def test_interval_ledger_and_coverage_write_png(tmp_path):
+    rows = pd.DataFrame({"region": ["A", "B"], "estimate": [0.2, -0.5],
+                         "ci_low": [-0.1, -0.9], "ci_high": [0.5, -0.1],
+                         "significant": [False, True]})
+    out = figures.interval_ledger([{"title": "T", "xlabel": "x", "family": "fire", "rows": rows}],
+                                  tmp_path / "l.png", note="n")
+    assert out.exists() and out.stat().st_size > 0
+    cov = pd.DataFrame({"region": ["A", "B"] * 2, "method": ["one"] * 2 + ["two"] * 2,
+                        "coverage": [0.8, 0.7, 0.9, 0.6], "n": [40, 41, 20, 21]})
+    out = figures.coverage_dots(cov, 0.8, tmp_path / "c.png")
+    assert out.exists() and out.stat().st_size > 0
+
+
+def test_headline_figures_draw_every_registered_row(tmp_path):
+    """Synthetic run tables: each headline figure is written, and the rows
+    handed to the ledger are all the registered rows of the test."""
+    from src import results_figures as rf
+
+    regions = ["PNW", "BC", "AB", "NorCal", "SoCal"]
+    def block(test, names):
+        return pd.DataFrame({"test": test, "region": names, "estimate": 0.1, "ci_low": -0.2,
+                             "ci_high": 0.4, "significant": False})
+    reg = pd.concat([block(t, regions[::-1]) for t in ("H1", "H2", "H3a", "H3b")]
+                    + [block("H4", ["PNW/BC/AB minus SoCal"])], ignore_index=True)
+    assert list(rf._rows(reg, "H3a")["region"]) == regions  # display order, none dropped
+    val = pd.DataFrame({"model": "H3a", "region": regions * 2,
+                        "method": ["leave-one-year-out"] * 5 + ["expanding window"] * 5,
+                        "coverage": 0.8, "n": 40})
+    for path in [rf.headline1(reg, tmp_path, "runX"), rf.headline2(reg, tmp_path, "runX"),
+                 rf.headline3(reg, tmp_path, "runX"), rf.headline4(val, tmp_path)]:
+        assert path.exists() and path.stat().st_size > 0
+
+
+def test_history_html_is_one_fragment_with_every_season(tmp_path):
+    from src import fire_figures
+    from src.config import FIRE_LAST_YEAR_BY_REGION, FORECAST_YEAR
+
+    rows = []
+    for region in ("PNW", "BC"):
+        for year in range(2000, 2006):
+            rows.append({"region": region, "year": year, "phase": "el_nino" if year % 2 else "neutral",
+                         "strong": year == 2001, "log_burn": 0.0 if year == 2002 else 10.0 + year % 3,
+                         "burn_ha": 0.0 if year == 2002 else 5000.0, "enso_djf": 0.6,
+                         "zero_fire": year == 2002})
+    assert max(FIRE_LAST_YEAR_BY_REGION.values()) < FORECAST_YEAR  # the 2027 slot stays empty
+    out = fire_figures.history_html(pd.DataFrame(rows), tmp_path)
+    text = out.read_text("utf-8")
+    assert text.lstrip().startswith("<div") and "<html" not in text
+    assert 'id="season-history"' in text
+    # plotly escapes < and > inside its JSON
+    assert text.count("\\u003e2003\\u003c") == 2 and "no fire of" in text
+    assert b"\r\n" not in out.read_bytes()
+
+
 def _fire_table():
     years = list(range(2000, 2006))
     return pd.DataFrame({"region": "R", "year": years,

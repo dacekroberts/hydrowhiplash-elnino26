@@ -101,7 +101,8 @@ def excluded_cells(masks: xr.DataArray, glacier: xr.DataArray) -> pd.Series:
     return (masks & glacier).sum([LAT, LON]).to_series().rename("glacier_cells")
 
 
-def main(stamp: str | None = None) -> None:
+def main(stamp: str | None = None,
+         index_stamp: str | None = None) -> None:
     from src import later
     from src.config import REGIONS
     from src.era5 import assign_domains, open_domains, region_masks
@@ -110,7 +111,7 @@ def main(stamp: str | None = None) -> None:
     regions = load_regions()
     domains = assign_domains(regions)
     names = sorted(set(domains), key=list(ERA5_DOMAINS).index)
-    ctx = later.paths(stamp)
+    ctx = later.paths(stamp, index_stamp)
     datasets = open_domains(names, ctx)
     winters = ctx.winters()
     out = ctx.processed(OUT)
@@ -142,4 +143,6 @@ if __name__ == "__main__":
 
     from src import later as _later
 
-    main(_later.take_stamp(sys.argv[1:]))
+    _argv = sys.argv[1:]
+    _index = _later.take_index_stamp(_argv)
+    main(_later.take_stamp(_argv), index_stamp=_index)

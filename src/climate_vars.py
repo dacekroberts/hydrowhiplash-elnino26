@@ -94,12 +94,13 @@ def climate_controls_table(regional: xr.Dataset, winters: pd.DataFrame) -> pd.Da
     return join_enso(table, winters)[COLUMNS]
 
 
-def main(rebuild: bool = False, stamp: str | None = None) -> None:
+def main(rebuild: bool = False, stamp: str | None = None,
+         index_stamp: str | None = None) -> None:
     from src import later, pin_inputs
     from src.era5 import assign_domains, open_domains, region_masks
     from src.regions import load_regions
 
-    ctx = later.paths(stamp)
+    ctx = later.paths(stamp, index_stamp)
     # the committed copy is a pinned input: refused without --rebuild. A
     # stamped rebuild writes beside it instead (D88).
     if not stamp:
@@ -136,5 +137,6 @@ if __name__ == "__main__":
     from src import later as _later
 
     _argv = sys.argv[1:]
+    _index = _later.take_index_stamp(_argv)
     _stamp = _later.take_stamp(_argv)
-    main(rebuild="--rebuild" in _argv, stamp=_stamp)
+    main(rebuild="--rebuild" in _argv, stamp=_stamp, index_stamp=_index)

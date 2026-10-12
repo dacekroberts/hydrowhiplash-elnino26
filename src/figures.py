@@ -1,9 +1,13 @@
 """Figures written to results/figures/ by code (never by hand).
 
-Colours: other winters are neutral context; El Nino winters orange, strong
-ones a darker orange step with a year label, so identity never rests on
-colour alone. Palette checked with the dataviz validator (2026-10-04):
-orange pair CVD delta E 16.8, normal-vision 20.4.
+Colours come from theme/tokens.json through src.theme (D86), light theme,
+drawn on the `surface` ground. A bar takes the colour of what it measures
+(`fire` burned area, `water` precipitation and winter moisture, `snow`
+snowpack). Every season is drawn; a season after an El Nino winter gets an
+`enso-soft` band and an `enso` tick, a strong one an `enso-strong` tick and
+its year label, so identity never rests on colour alone. The
+percent-of-normal map runs from dry earth to wet blue (`precip-dry-2` to
+`precip-wet-2`); red is not used for dryness.
 """
 from __future__ import annotations
 
@@ -18,26 +22,73 @@ from matplotlib import patheffects
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
 
+from src import theme
 from src.config import EL_NINO_THRESHOLD, RESULTS, STRONG_THRESHOLD
 
 FIGURES = RESULTS / "figures"
-INK, MUTED, GRID = "#0b0b0b", "#52514e", "#e1e0d9"
-OTHER, NINO, STRONG = "#c3c2b7", "#eb6834", "#9a3412"
-# Diverging: dry red, neutral grey at normal, wet blue.
+INK, MUTED, GRID = theme.colour("ink"), theme.colour("ink-muted"), theme.colour("rule")
+AXIS, GROUND = theme.colour("rule-strong"), theme.colour("surface")
+ENSO, ENSO_STRONG, ENSO_SOFT = (theme.colour("enso"), theme.colour("enso-strong"),
+                                theme.colour("enso-soft"))
+VERDICT = theme.colour("evergreen")
+# What a bar or an interval measures; one colour family per kind of data.
+FAMILIES = {name: theme.colour(name) for name in ("fire", "water", "snow")}
+# Diverging, for precipitation as a share of normal: dry earth, neutral at
+# normal, wet blue. Red is kept for burned area.
 DRY_WET = LinearSegmentedColormap.from_list(
-    "dry_wet", ["#a8302f", "#e34948", "#f0efec", "#2a78d6", "#1c4f91"])
+    "dry_wet", [theme.colour(f"precip-{step}")
+                for step in ("dry-2", "dry-1", "mid", "wet-1", "wet-2")])
 
+
+def _font_stack(role: str) -> list[str]:
+    """The design typeface of `role`, then the system sans fallbacks, keeping
+    only faces whose font files are installed (matplotlib warns on every
+    text draw for a missing one). DejaVu Sans ships with matplotlib."""
+    from matplotlib import font_manager
+
+    design = theme.families()[role].split(",")[0].strip().strip('"')
+    installed = {font.name for font in font_manager.fontManager.ttflist}
+    return [name for name in (design, "Segoe UI", "Helvetica", "Arial")
+            if name in installed] + ["DejaVu Sans"]
+
+
+DISPLAY_FONT = _font_stack("display")
 plt.rcParams.update({
     "font.family": "sans-serif",
-    "font.sans-serif": ["Segoe UI", "Helvetica", "Arial", "DejaVu Sans"],
-    "axes.edgecolor": MUTED, "axes.labelcolor": INK, "xtick.color": MUTED,
+    "font.sans-serif": _font_stack("sans"),
+    "axes.edgecolor": AXIS, "axes.labelcolor": INK, "xtick.color": MUTED,
     "ytick.color": MUTED, "axes.spines.top": False, "axes.spines.right": False,
+    "axes.facecolor": GROUND, "figure.facecolor": GROUND, "text.color": INK,
 })
 
 
-def _bar_colours(g: pd.DataFrame) -> list[str]:
-    return [STRONG if s else NINO if p == "el_nino" else OTHER
-            for p, s in zip(g["phase"], g["strong"])]
+def _family(name: str) -> str:
+    if name not in FAMILIES:
+        raise ValueError(f"No colour family {name!r}; choose from {sorted(FAMILIES)}.")
+    return FAMILIES[name]
+
+
+def _title(ax, text: str) -> None:
+    ax.set_title(text, loc="left", fontsize=10, color=INK, fontweight="bold",
+                 fontfamily=DISPLAY_FONT)
+
+
+def _mark_enso(ax, g: pd.DataFrame) -> None:
+    """Band and tick for each season after an El Nino winter: `enso-soft`
+    behind the bar, a tick on the panel's top edge, darker and longer for a
+    strong winter."""
+    for _, r in g[g["phase"] == "el_nino"].iterrows():
+        strong = bool(r["strong"])
+        ax.axvspan(r["year"] - 0.5, r["year"] + 0.5, color=ENSO_SOFT, lw=0, zorder=0)
+        ax.plot([r["year"]] * 2, [0.9 if strong else 0.94, 1.0],
+                transform=ax.get_xaxis_transform(), color=ENSO_STRONG if strong else ENSO,
+                lw=2.4 if strong else 1.6, solid_capstyle="butt", zorder=3, clip_on=False)
+
+
+def _year_label(ax, text: str, x: float, y: float, below: bool) -> None:
+    ax.annotate(text, (x, y), xytext=(0, -2 if below else 2), textcoords="offset points",
+                ha="center", va="top" if below else "bottom", fontsize=7, color=INK, zorder=4,
+                path_effects=[patheffects.withStroke(linewidth=1.5, foreground=GROUND)])
 
 
 def _winter_label(year: int) -> str:
@@ -45,21 +96,20 @@ def _winter_label(year: int) -> str:
 
 
 def _series_panel(ax, g: pd.DataFrame, value: str, ylabel: str, title: str,
-                  signed: bool = False) -> None:
-    """Bars per winter. `signed` values (e.g. a standardised index) get a
-    zero baseline and symmetric limits; labels sit beyond each bar's end."""
-    ax.bar(g["year"], g[value], width=0.8, color=_bar_colours(g), linewidth=0)
+                  signed: bool = False, family: str = "water") -> None:
+    """Bars per winter in the colour of `family`. `signed` values (e.g. a
+    standardised index) get a zero baseline and symmetric limits; labels sit
+    beyond each bar's end."""
+    _mark_enso(ax, g)
+    ax.bar(g["year"], g[value], width=0.8, color=_family(family), linewidth=0, zorder=2)
     mean = g[value].mean()
-    ax.axhline(mean, color=INK, lw=1, ls=(0, (4, 3)))
+    ax.axhline(mean, color=INK, lw=1, ls=(0, (4, 3)), zorder=3)
     if signed:
-        ax.axhline(0, color=MUTED, lw=0.8)
+        ax.axhline(0, color=AXIS, lw=0.8)
     for _, r in g[g["strong"] & (g["phase"] == "el_nino")].iterrows():
-        below = signed and r[value] < 0
-        ax.annotate(_winter_label(int(r["year"])), (r["year"], r[value]),
-                    xytext=(0, -2 if below else 2), textcoords="offset points", ha="center",
-                    va="top" if below else "bottom", fontsize=7, color=INK, zorder=4,
-                    path_effects=[patheffects.withStroke(linewidth=1.5, foreground="white")])
-    ax.set_title(title, loc="left", fontsize=10, color=INK, fontweight="bold")
+        _year_label(ax, _winter_label(int(r["year"])), r["year"], r[value],
+                    signed and r[value] < 0)
+    _title(ax, title)
     ax.set_ylabel(ylabel, fontsize=8)
     if signed:
         lim = np.nanmax(np.abs(g[value])) * 1.2
@@ -71,32 +121,38 @@ def _series_panel(ax, g: pd.DataFrame, value: str, ylabel: str, title: str,
     ax.tick_params(labelsize=8)
 
 
-def _legend(fig, index: str) -> None:
-    handles = [Patch(color=OTHER, label="Other winters"),
-               Patch(color=NINO, label=f"El Niño (DJF {index} ≥ {EL_NINO_THRESHOLD})"),
-               Patch(color=STRONG, label=f"Strong El Niño (≥ {STRONG_THRESHOLD}), labelled"),
-               plt.Line2D([], [], color=INK, lw=1, ls=(0, (4, 3)), label="Mean of all winters")]
+def _legend(fig, index: str, family: str = "water", every: str = "Every winter",
+            nino: str = "El Niño", strong: str = "Strong El Niño",
+            mean: str = "Mean of all winters") -> None:
+    handles = [Patch(color=_family(family), label=every),
+               Patch(facecolor=ENSO_SOFT, edgecolor=ENSO, lw=1.6,
+                     label=f"{nino} (DJF {index} ≥ {EL_NINO_THRESHOLD}): band and tick"),
+               Patch(facecolor=ENSO_SOFT, edgecolor=ENSO_STRONG, lw=2.4,
+                     label=f"{strong} (≥ {STRONG_THRESHOLD}): darker tick, labelled"),
+               plt.Line2D([], [], color=INK, lw=1, ls=(0, (4, 3)), label=mean)]
     fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8,
                bbox_to_anchor=(0.5, 0.995))
 
 
 def winter_series(table: pd.DataFrame, value: str, ylabel: str, index: str,
-                  out: Path, signed: bool = False, xlabel: str | None = None) -> Path:
+                  out: Path, signed: bool = False, xlabel: str | None = None,
+                  family: str = "water") -> Path:
     """One panel per region, every winter shown, El Nino winters highlighted.
 
     `signed` for values centred on zero; `xlabel` replaces the default axis
-    note (e.g. when the value spans winter and the following summer)."""
+    note (e.g. when the value spans winter and the following summer);
+    `family` is what the bars measure ("water" or "snow")."""
     regions = list(dict.fromkeys(table["region"]))
     fig, axes = plt.subplots(len(regions), 1, figsize=(10, 2.1 * len(regions)), sharex=True)
     for ax, region in zip(axes, regions):
         g = table[table["region"] == region].sort_values("year")
-        _series_panel(ax, g, value, ylabel, region, signed=signed)
+        _series_panel(ax, g, value, ylabel, region, signed=signed, family=family)
     years = table["year"]
     ticks = range(int(np.ceil(years.min() / 10) * 10), int(years.max()) + 1, 10)
     axes[-1].set_xticks(list(ticks), [_winter_label(t) for t in ticks])
     axes[-1].set_xlabel(xlabel or "Winter (Dec-Feb); fire season paired with each winter is the "
                         "later year", fontsize=8)
-    _legend(fig, index)
+    _legend(fig, index, family)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     return _save(fig, out)
 
@@ -143,12 +199,12 @@ def percent_of_normal_map(pcts: list[xr.DataArray], regions: gpd.GeoDataFrame,
     fig = plt.figure(figsize=(9, 8.6))
     ax = fig.add_subplot(1, 1, 1, projection=proj)
     ax.set_extent(list(extent), crs=ccrs.PlateCarree())
-    ax.add_feature(cfeature.OCEAN.with_scale("50m"), facecolor="#f7f7f5", zorder=0)
+    ax.add_feature(cfeature.OCEAN.with_scale("50m"), facecolor=theme.colour("page"), zorder=0)
     for pct in pcts:
         mesh = ax.pcolormesh(pct["longitude"], pct["latitude"], np.log2(pct / 100),
                              cmap=DRY_WET, vmin=-2, vmax=2, shading="nearest",
                              transform=ccrs.PlateCarree(), rasterized=True)
-    ax.add_feature(cfeature.BORDERS.with_scale("50m"), edgecolor=MUTED, lw=0.5)
+    ax.add_feature(cfeature.BORDERS.with_scale("50m"), edgecolor=AXIS, lw=0.5)
     ax.add_feature(cfeature.STATES.with_scale("50m"), edgecolor=GRID, lw=0.4)
     ax.add_geometries(regions.geometry, crs=ccrs.PlateCarree(), facecolor="none",
                       edgecolor=INK, lw=1.0)
@@ -157,18 +213,20 @@ def percent_of_normal_map(pcts: list[xr.DataArray], regions: gpd.GeoDataFrame,
         ax.text(pt.x, pt.y, f"{r['region']}\n{region_pct[r['region']]:.0f}%",
                 transform=ccrs.PlateCarree(), ha="center", va="center", fontsize=9,
                 color=INK, fontweight="bold",
-                bbox={"boxstyle": "round,pad=0.25", "fc": "white", "ec": "none", "alpha": 0.8})
+                bbox={"boxstyle": "round,pad=0.25", "fc": GROUND, "ec": "none", "alpha": 0.85})
     cb = fig.colorbar(mesh, ax=ax, orientation="horizontal", fraction=0.04, pad=0.03,
                       ticks=[-2, -1, 0, 1, 2])
     cb.ax.set_xticklabels(["25%", "50%", "100%", "200%", "400%"], fontsize=8)
     cb.set_label("Winter precipitation as % of the 1950-51 to 2025-26 mean "
                  "(region labels: regional totals)", fontsize=8)
-    ax.set_title(title, loc="left", fontsize=11, color=INK, fontweight="bold")
+    ax.set_title(title, loc="left", fontsize=11, color=INK, fontweight="bold",
+                 fontfamily=DISPLAY_FONT)
     return _save(fig, out)
 
 
 def winter_series_columns(table: pd.DataFrame, columns: dict[str, str], ylabel: str,
-                          index: str, out: Path, xlabel: str | None = None) -> Path:
+                          index: str, out: Path, xlabel: str | None = None,
+                          family: str = "snow") -> Path:
     """Several series side by side per region on a shared y scale, e.g.
     station index | ERA5-Land; `columns` maps a column title to a value
     column. Winters with no value in a column are left blank there."""
@@ -180,7 +238,7 @@ def winter_series_columns(table: pd.DataFrame, columns: dict[str, str], ylabel: 
         g = table[table["region"] == region].sort_values("year")
         for j, name in enumerate(names):
             _series_panel(axes[i, j], g.dropna(subset=[columns[name]]), columns[name],
-                          ylabel if j == 0 else "", f"{region} · {name}")
+                          ylabel if j == 0 else "", f"{region} · {name}", family=family)
         top = np.nanmax(g[list(columns.values())].to_numpy()) * 1.15
         axes[i, 0].set_ylim(0, top)
     years = table["year"]
@@ -188,7 +246,7 @@ def winter_series_columns(table: pd.DataFrame, columns: dict[str, str], ylabel: 
     for ax in axes[-1]:
         ax.set_xticks(list(ticks), [_winter_label(t) for t in ticks])
         ax.set_xlabel(xlabel or "Winter (Dec-Feb); April 1 of the later year", fontsize=8)
-    _legend(fig, index)
+    _legend(fig, index, family)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     return _save(fig, out)
 
@@ -217,23 +275,19 @@ def fire_season_series(table: pd.DataFrame, index: str, out: Path) -> Path:
     fig, axes = plt.subplots(len(regions), 1, figsize=(10, 2.1 * len(regions)), sharex=True)
     for ax, region in zip(axes, regions):
         g = table[table["region"] == region].sort_values("year")
-        ax.bar(g["year"], g["anomaly"], width=0.8, color=_bar_colours(g), linewidth=0)
-        ax.axhline(0, color=INK, lw=1, ls=(0, (4, 3)))
+        _mark_enso(ax, g)
+        ax.bar(g["year"], g["anomaly"], width=0.8, color=_family("fire"), linewidth=0, zorder=2)
+        ax.axhline(0, color=INK, lw=1, ls=(0, (4, 3)), zorder=3)
         lim = np.nanmax(np.abs(g["anomaly"])) * 1.25
         ax.set_ylim(-lim, lim)
         for _, r in g[g["strong"] & (g["phase"] == "el_nino") & g["anomaly"].notna()].iterrows():
-            below = r["anomaly"] < 0
-            ax.annotate(str(int(r["year"])), (r["year"], r["anomaly"]),
-                        xytext=(0, -2 if below else 2), textcoords="offset points", ha="center",
-                        va="top" if below else "bottom", fontsize=7, color=INK, zorder=4,
-                        path_effects=[patheffects.withStroke(linewidth=1.5, foreground="white")])
+            _year_label(ax, str(int(r["year"])), r["year"], r["anomaly"], r["anomaly"] < 0)
         for _, r in g[g["anomaly"].isna()].iterrows():
             ax.plot(r["year"], -lim * 0.9, marker="v", color=MUTED, ms=5, zorder=4)
             ax.annotate("no fire of 405 ha or more", (r["year"], -lim * 0.9), xytext=(6, 0),
                         textcoords="offset points", va="center", fontsize=7, color=MUTED)
         typical = np.expm1(g.loc[g["anomaly"].notna(), "log_burn"].mean())
-        ax.set_title(f"{region} · typical season {typical:,.0f} ha", loc="left", fontsize=10,
-                     color=INK, fontweight="bold")
+        _title(ax, f"{region} · typical season {typical:,.0f} ha")
         ax.set_ylabel("log burned area,\ndeparture from mean", fontsize=8)
         ax.grid(axis="y", color=GRID, lw=0.6)
         ax.set_axisbelow(True)
@@ -246,18 +300,90 @@ def fire_season_series(table: pd.DataFrame, index: str, out: Path) -> Path:
         right.spines["right"].set_visible(False)
     axes[-1].set_xlabel("Fire season (paired with the winter that ends in the same year; "
                         "California seasons run June to January)", fontsize=8)
-    handles = [Patch(color=OTHER, label="Other seasons"),
-               Patch(color=NINO, label=f"After an El Niño winter (DJF {index} ≥ {EL_NINO_THRESHOLD})"),
-               Patch(color=STRONG, label=f"After a strong one (≥ {STRONG_THRESHOLD}), labelled"),
-               plt.Line2D([], [], color=INK, lw=1, ls=(0, (4, 3)), label="Region's mean")]
-    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8,
-               bbox_to_anchor=(0.5, 0.995))
+    _legend(fig, index, "fire", every="Every fire season", nino="After an El Niño winter",
+            strong="After a strong one", mean="Region's mean")
     fig.tight_layout(rect=(0, 0, 1, 0.97))
+    return _save(fig, out)
+
+
+def interval_ledger(panels: list[dict], out: Path, note: str | None = None) -> Path:
+    """A hypothesis as a ledger: one row per region, the estimate and its 95%
+    interval on a scale shared within the panel, a line at no effect.
+
+    Each panel is a dict: `title`, `xlabel`, `family` (what the outcome
+    measures) and `rows`, a table with `region`, `estimate`, `ci_low`,
+    `ci_high` and `significant` (the Holm verdict). The verdict is carried
+    by form as well as colour: a filled dot for significant after Holm, a
+    hollow one for not. Null results are drawn at the same size."""
+    n_rows = max(len(p["rows"]) for p in panels)
+    fig, axes = plt.subplots(1, len(panels), figsize=(4.9 * len(panels), 0.42 * n_rows + 1.7),
+                             squeeze=False)
+    for ax, panel in zip(axes[0], panels):
+        rows = panel["rows"].reset_index(drop=True)
+        colour = _family(panel["family"])
+        ax.axvline(0, color=AXIS, lw=1.2, zorder=1)
+        for i, r in rows.iterrows():
+            ax.plot([r["ci_low"], r["ci_high"]], [i, i], color=colour, lw=4,
+                    solid_capstyle="butt", zorder=2)
+            passed = r["significant"] == True  # noqa: E712  (the column may hold NaN)
+            ax.plot(r["estimate"], i, marker="o", ms=7.5, mew=1.6, zorder=3,
+                    mfc=VERDICT if passed else GROUND, mec=VERDICT if passed else INK)
+        ax.set_yticks(range(len(rows)), rows["region"], fontsize=9, color=INK)
+        ax.set_ylim(len(rows) - 0.4, -0.6)
+        ax.tick_params(axis="y", length=0)
+        ax.tick_params(axis="x", labelsize=8)
+        ax.spines["left"].set_visible(False)
+        ax.grid(axis="x", color=GRID, lw=0.6)
+        ax.set_axisbelow(True)
+        ax.set_xlabel(panel["xlabel"], fontsize=8)
+        _title(ax, panel["title"])
+    handles = [plt.Line2D([], [], color=MUTED, lw=4, label="95% interval"),
+               plt.Line2D([], [], ls="", marker="o", ms=7.5, mew=1.6, mfc=VERDICT, mec=VERDICT,
+                          label="Estimate, significant after Holm"),
+               plt.Line2D([], [], ls="", marker="o", ms=7.5, mew=1.6, mfc=GROUND, mec=INK,
+                          label="Estimate, not significant"),
+               plt.Line2D([], [], color=AXIS, lw=1.2, label="No effect")]
+    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8,
+               bbox_to_anchor=(0.5, 1.0))
+    if note:
+        fig.text(0.01, 0.0, note, fontsize=7.5, color=MUTED, va="bottom", ha="left")
+    fig.tight_layout(rect=(0, 0.04 if note else 0, 1, 0.92))
+    return _save(fig, out)
+
+
+def coverage_dots(table: pd.DataFrame, target: float, out: Path) -> Path:
+    """How often past prediction intervals held the real season. One row per
+    region, one marker per `method` in `table` (columns `region`, `method`,
+    `coverage`, `n`), a line at the `target` share."""
+    regions = list(dict.fromkeys(table["region"]))
+    methods = list(dict.fromkeys(table["method"]))
+    markers = ["o", "D", "s"]
+    fig, ax = plt.subplots(figsize=(7.2, 0.42 * len(regions) + 1.7))
+    ax.axvline(100 * target, color=AXIS, lw=1.2, zorder=1)
+    for j, method in enumerate(methods):
+        g = table[table["method"] == method].set_index("region").reindex(regions)
+        ax.plot(100 * g["coverage"], range(len(regions)), ls="", marker=markers[j], ms=7.5,
+                mew=1.6, mfc=_family("fire") if j == 0 else GROUND, mec=_family("fire"),
+                zorder=3, label=f"{method.capitalize()} ({int(g['n'].min())} to "
+                                f"{int(g['n'].max())} seasons predicted)")
+    ax.plot([], [], color=AXIS, lw=1.2, label=f"Target: {100 * target:.0f}%")
+    ax.set_yticks(range(len(regions)), regions, fontsize=9, color=INK)
+    ax.set_ylim(len(regions) - 0.4, -0.6)
+    ax.set_xlim(40, 100)
+    ax.tick_params(axis="y", length=0)
+    ax.tick_params(axis="x", labelsize=8)
+    ax.spines["left"].set_visible(False)
+    ax.grid(axis="x", color=GRID, lw=0.6)
+    ax.set_axisbelow(True)
+    ax.set_xlabel(f"Seasons whose burned area fell inside the {100 * target:.0f}% prediction "
+                  "interval (%)", fontsize=8)
+    fig.legend(loc="upper center", ncol=1, frameon=False, fontsize=8, bbox_to_anchor=(0.5, 1.0))
+    fig.tight_layout(rect=(0, 0, 1, 0.84))
     return _save(fig, out)
 
 
 def _save(fig, out: Path) -> Path:
     out.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")
+    fig.savefig(out, dpi=200, bbox_inches="tight", facecolor=GROUND)
     plt.close(fig)
     return out

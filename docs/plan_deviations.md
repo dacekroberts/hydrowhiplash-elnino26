@@ -27,6 +27,67 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D94 · Prediction work continues in a sibling repository
+- **Plan:** `ACTION_PLAN.md` "Later extensions": "Prediction model. Turn
+  the historical results into a model that forecasts what comes next",
+  an extension of this project; `CLAUDE.md` scope guard: "save analysis
+  outputs as tidy region x year tables in `data/processed/`, so both can
+  be added later without rework."
+- **Actual:** owner, 2026-10-12 (sessions 10 and 11): versions 1 to 1c
+  stay here as the exploratory record; everything further goes to a
+  private sibling repository, `climate-whiplash-prediction`, with the
+  same licence split, its own decisions log, daily log, settings file and
+  roadmap, each step's variants written before any fit, and the 2025
+  Canadian, 2026 and 2027 seasons held back and their scoring registered
+  in advance. It reads this project's seven pinned tables at the tag
+  `prediction-handoff` (commit a669813). First work: later issue dates
+  (1 April to 1 August) for all seven regions. The other El Niño regions
+  of `docs/enso_regions_out_of_scope.md` are flagged there as longer-term
+  targets and as a cross-check on data the model has never seen.
+- **Why:** the next steps need new data and licence reads, other units
+  and targets, and a clean test; six forecasting variants already share
+  this project's 22 unseen years.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 11: sibling prediction
+  project settled"; `docs/prediction_sibling_kickoff.md` (side session's
+  proposals); `docs/sibling_kickoff_climate_whiplash_prediction.md`.
+- **Substantial:** yes (where a planned extension is built). The
+  registered 2027 forecast stays the H3a model in this project.
+- **Plan doc:** `ACTION_PLAN.md` "Later extensions", prediction item,
+  sentence marked `[mid-project: D94]`.
+
+### D93 · NBAC as the provisional 2027 source for BC, AB and YT
+- **Plan:** `ACTION_PLAN.md` "Second goal", verification panel: "what
+  actually happened in 2027 against the prediction. *Fall 2027* for PNW,
+  BC, AB, AK and YT", with no source named. The registered Canadian
+  series is CNFDB (D57: "CNFDB 2025 reported beside the results when
+  released, never substituted"), and on its release record (2024 data in
+  files dated 28 January 2026) CNFDB 2027 arrives about January 2029.
+- **Actual:** owner, 2026-10-12 (session 11): "NBAC provisional sounds
+  good ... (2029 long time to wait) but we can include an item to check
+  CNFDB 2027 at that point in 2029". The 2027 season of BC, AB and YT is
+  verified first from NBAC, marked provisional, and CNFDB 2027 is set
+  beside it when it arrives. NBAC is not available in fall 2027 either:
+  release v20260513 (files dated 22 May 2026) holds seasons to 2025, so
+  NBAC 2027 is expected about May 2028. In fall 2027 the panel therefore
+  covers PNW and AK only (WFIGS, provisional). New settings in
+  `ROLLOUT_WINDOWS`, after the freeze: `nbac_2027` (May to June 2028) and
+  `cnfdb_2027` (January to February 2029), both expectations from release
+  records; two calendar items with their own reminder dates (2028-04-28,
+  2028-12-29).
+- **Why:** waiting for CNFDB would leave three of seven regions
+  unverified for 15 months after the season.
+- **Constraint:** NBAC is a different product from the registered
+  series: 2.0% to 3.1% of its 1984 to 2024 area sits in fires CNFDB does
+  not hold (D81), so a NBAC figure is not a CNFDB figure. Decided after
+  `run1` was seen; no registered test, input or result changes, and the
+  forecast being verified is not issued yet.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 11: owner's answers on
+  wording, sources and the calendar".
+- **Substantial:** yes (the source and timing of a planned site piece).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", verification panel,
+  sentence marked `[mid-project: D93]`. No row in the frozen plan's
+  deviations log (the plan does not name a verification source).
+
 ### D92 · Prediction model version 1c: two more variants after version 1b was seen
 - **Plan:** `docs/prediction_model_spec.md` section 8: six variants,
   "fixed before running", and "Summer weather stays out of every

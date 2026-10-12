@@ -17,6 +17,129 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Session 11: sibling prediction project settled
+
+- **Decided (owner): the sibling is a private repository named
+  `climate-whiplash-prediction` (D94).** Owner's answers to the seven
+  open points: private, that name; the seven pinned tables and
+  `input_pins.csv` copied and pinned to this project at the tag
+  `prediction-handoff` on a669813 ("yes as recommended"); the same
+  licence split (MIT for code, all rights reserved for writing and
+  figures); a decisions log, a daily log and one settings file, with
+  each step's variants written before any fit in place of a frozen plan;
+  the 2025 Canadian, 2026 and 2027 scores registered in advance; all
+  seven regions, later issue dates first; the roadmap as an artifact in
+  this design system. Rejected the session's proposed name
+  `fire-season-outlook`.
+- **Noted (owner): the other El Niño regions are longer-term targets
+  and a cross-check.** "flag the other 20ish regions we found to be
+  affected by el nino and postulate as longer-term prediction targets
+  once model is fleshed out, because we can use the actual numbers from
+  those regions (not yet exposed to the codebase) as a cross check of
+  model accuracy." The 20 regions are those of
+  `docs/enso_regions_out_of_scope.md`. Read as: no data for them is
+  downloaded or looked at until the model is fixed, so they stay unseen.
+  Caveats put to the owner: the table marks several regions as having no
+  or a weak fire link, several respond in year 0 and not after the DJF
+  winter, and each needs its own fire record and licence read.
+- **Tagged a669813 as `prediction-handoff` and pushed the tag.** The
+  repository itself is not created: that waits for the owner's yes on
+  the drafted kickoff (`docs/sibling_kickoff_climate_whiplash_prediction.md`).
+
+### 2026-10-12 - Session 11: owner's answers on wording, sources and the calendar
+
+- **Decided (owner): NBAC is the provisional 2027 source for BC, AB and
+  YT, and CNFDB 2027 is checked when it arrives (D93).** Owner: "NBAC
+  provisional sounds good ... (2029 long time to wait) but we can include
+  an item to check CNFDB 2027 at that point in 2029". Found while adding
+  the items: NBAC is not a fall 2027 source either. Release v20260513
+  (files dated 22 May 2026) holds seasons to 2025, so NBAC 2027 is
+  expected about May 2028. The fall 2027 panel covers PNW and AK from
+  WFIGS; BC, AB and YT follow about May 2028 from NBAC, marked
+  provisional; CNFDB 2027 is set beside it about January 2029. Rejected
+  waiting for CNFDB alone (15 months after the season) and using agency
+  season totals (no polygons, so no 405 ha floor and no season window).
+  `src/config.py` `ROLLOUT_WINDOWS` gained `nbac_2027` and `cnfdb_2027`;
+  `src/rollout.py` gained two items (20 in all, 13 shown to readers, 12
+  reminder dates) and new wording for the fall check. The two new
+  reminder dates (2028-04-28, 2028-12-29) have no scheduled task yet.
+- **Decided (owner): a stamped rebuild can name the index retrieval it
+  reads.** `--index-stamp YYYY-MM-DD` on the six climate builders
+  (`later.take_index_stamp`, `Rebuild.index_stamp`); without it a
+  rebuild still reads the latest closed index retrieval not after its
+  stamp. The named retrieval must exist, be closed and not be later than
+  the rebuild's stamp; `rebuild.json` records which was read. Settles
+  the point left open in "Stamped paths: one parallel tree". Needed so
+  the forecast's tables can stay on CPC's first release holding DJF 2027
+  after the May retrieval exists. Tested on made-up files.
+- **Approved (owner) on the methods page:** the two changed numbers
+  stand (overlap 101,000 ha, station correlation 0.77 to 0.95); the
+  hourly "changes made" sentence and the MTBS access line; the sources
+  table now gives WFIGS as "No licence named; US Government source", as
+  the ledger does; the NRCS line gained its address and access date
+  (AWDB REST API, 2026-10-05, from the ledger row).
+- **Worded (owner) on the tracker page:** "I will update the page as
+  dated milestones pass." replaces the sentence about an open dot after
+  a passed date.
+- **Fixed the MTBS ledger row (owner: "check and fix").** The pinned zip
+  holds `mtbs_perims_DD_metadata.xml` (31,652 bytes); its publication and
+  metadata dates are both 2026-10-07 and its title matches the row. The
+  note calling the in-zip metadata "unread" was stale and now says it
+  was read. No polygon was opened for the check.
+- **Kept (owner): the mechanism diagram's north pathway stays teal.**
+- **Decided (owner): the three design typefaces are bundled in the
+  repository** for the site and for matplotlib, in place of hot-linked
+  Google Fonts. Not done yet: the download waits for the owner's yes on
+  the source and files.
+- **Not answered:** whether the 2026 season is redrawn once California's
+  closes at the end of January 2027.
+- **Decided (owner) on the charts:** the 1997-98 map redrawn (it reads
+  the region polygons and the ERA5-Land grids); a dry-earth-to-blue
+  diverging ramp added to the tokens (`precip-dry-2` to `precip-wet-2`)
+  and mirrored to the Design System artifact, replacing red for dryness;
+  static charts for the tests and Plotly only for the season history
+  (`fire_figures.history_html`, an HTML fragment in `results/figures/`
+  with plotly.js from its CDN); the five Phase 2 figures and the three
+  Phase 1 figures regenerated, snowpack and snowfall share in the snow
+  colour. The Phase 2 figures read committed tables only.
+
+### 2026-10-12 - Session 11: data figures restyled from the tokens; charts for Headlines 1 to 4
+
+- **Decided to draw the data figures as the adopted design system
+  describes them (D86): a bar takes the colour of what it measures, and a
+  season after an El Niño winter is marked by a band and a tick, not by
+  the bar's colour.** `src/figures.py` now reads every colour from
+  `theme/tokens.json` through `src.theme` (`fire` for burned area,
+  `water` for precipitation and winter moisture, `snow` for snowpack;
+  `enso-soft` band, `enso` tick, `enso-strong` tick with the year label)
+  and draws on the `surface` ground. Until now the bars were coloured by
+  ENSO class (grey, orange, dark orange). Rejected keeping that encoding
+  in new colours: orange bars read as fire under the system, and its
+  rule is "El Niño seasons are highlighted, never shown alone". The
+  series functions gained a `family` argument (default `water`;
+  `winter_series_columns` defaults to `snow`). Regenerated from the
+  pinned fire table: `burned_area_anomaly_series_roni.png`. Not
+  regenerated: the seven climate figures (they need `data/`; the snowpack
+  and snowfall ones also need `family="snow"` passed in notebooks 02 and
+  03) and the 1997-98 map.
+- **Left for the owner: the 1997-98 map's dry-to-wet ramp.** It runs
+  from red (dry) to blue (wet), and the system keeps red for burned
+  area; the tokens hold no diverging precipitation ramp. The map keeps
+  its typed colours until that is settled, and redrawing it reads the
+  region polygons, which needs the owner's yes.
+- **Built static charts for Headlines 1 to 4 from `run1`**
+  (`python -m src.results_figures`; `figures.interval_ledger`,
+  `figures.coverage_dots`): H1 and H2 (El Niño years against the rest);
+  H3a and H3b (burned area on the winter index); H4 (the pooled contrast
+  under the four H3a slopes it pools); how often the H3a model's 80%
+  intervals held the real season. Every registered row of each test is
+  drawn at the same size; the Holm verdict is a filled evergreen dot or
+  a hollow ink one. They read only `results/tables/run1/` and compute
+  nothing. `ACTION_PLAN.md` names Plotly for the historical charts; these
+  are matplotlib PNGs, and whether the site also gets interactive ones is
+  put to the owner. Matplotlib falls back to Segoe UI: the design
+  typefaces are not installed on this machine.
+
 ### 2026-10-12 - Prediction model: the in-project record stops at version 1c; further work goes to its own repository
 
 - **Decided (owner): versions 1, 1b and 1c are this project's

@@ -117,5 +117,5 @@ def test_series_legend_reads_thresholds_from_config(monkeypatch):
     figures._legend(fig, "ONI")
     labels = [t.get_text() for t in fig.legends[0].get_texts()]
     plt.close(fig)
-    assert "El Niño (DJF ONI ≥ 0.7)" in labels
-    assert "Strong El Niño (≥ 1.8), labelled" in labels
+    assert "El Niño (DJF ONI ≥ 0.7): band and tick" in labels
+    assert "Strong El Niño (≥ 1.8): darker tick, labelled" in labels
