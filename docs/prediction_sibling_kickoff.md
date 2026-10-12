@@ -7,6 +7,13 @@ nothing in it is adopted until the owner says yes. The owner's view so
 far: further work can leave this project's pipeline, and a project that
 derives from this one is a sibling of it.
 
+**Settled by the owner since this was drafted (2026-10-12):** the model
+gets its own repository ("we can do own repo"); the main session drafts
+the kickoff itself, with this file as its source material; and a roadmap
+for the new project is essential. The side session's suggestion is that
+the roadmap is made inside the new repository once section 5 is
+answered, with section 4 as its first draft.
+
 ## 1. Why a separate project
 
 Three versions of an exploratory model were built here from committed
