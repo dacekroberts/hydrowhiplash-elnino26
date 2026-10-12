@@ -244,6 +244,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   reading the tables, with no fit run: 291 region-seasons, no other
   missing predictor. Affected: `src/prediction.py`,
   `tests/test_prediction.py`, `src/config.py`.
+
 ### 2026-10-12 - One character corrected in an old entry, for the merge tool
 
 - **Corrected (owner: "option 1") the entry of 2026-10-11 "Session 8:
