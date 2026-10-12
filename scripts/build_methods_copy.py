@@ -11,6 +11,7 @@ Run inside the whiplash env, from the repo root:
 from __future__ import annotations
 
 import argparse
+import base64
 import re
 import shutil
 import subprocess
@@ -26,6 +27,8 @@ import check_site  # noqa: E402
 from src import theme  # noqa: E402
 
 MAIN = re.compile(r"<main\b[^>]*>(.*)</main>", re.DOTALL)
+IMG_SRC = re.compile(r'(?<=<img )src="([^"]+)"')
+MEDIA_TYPES = {".svg": "image/svg+xml", ".png": "image/png"}
 # Figures are drawn on the light surface, so their panel keeps that ground.
 PAGE_CSS = """
 body { background: var(--page); color: var(--ink); font: 16px/1.62 var(--font-sans); }
@@ -65,11 +68,29 @@ tr:last-child td { border-bottom: 0; }
 td strong { color: var(--evergreen); }
 .cell-output-display { overflow-x: auto; margin-top: 16px; background: __FIGURE_GROUND__;
   border: 1px solid var(--rule); border-radius: var(--radius-md); padding: 10px; }
-.cell-output-display svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.cell-output-display svg, .cell-output-display img { max-width: 100%; height: auto;
+  display: block; margin: 0 auto; }
+figure { margin: 0; }
 .d-none { display: none; }
 @media (min-width: 576px) { .d-sm-block { display: block; } .d-sm-none { display: none; } }
 .quarto-title-meta { display: none; }
 """
+
+
+def _inline_images(html: str, folder: Path) -> str:
+    """Replace each local image path with the file itself as a data URI, so
+    the copy is one file. Remote and already-inlined sources are left alone."""
+    def swap(match: re.Match) -> str:
+        src = match.group(1)
+        target = folder / src
+        if "://" in src or src.startswith("data:") or not target.is_file():
+            return match.group(0)
+        kind = MEDIA_TYPES.get(target.suffix.lower())
+        if kind is None:
+            raise ValueError(f"No media type for {target.name}; add it to MEDIA_TYPES.")
+        data = base64.b64encode(target.read_bytes()).decode("ascii")
+        return f'src="data:{kind};base64,{data}"'
+    return IMG_SRC.sub(swap, html)
 
 
 def render_methods() -> str:
@@ -88,7 +109,7 @@ def render_methods() -> str:
         page = work / "site" / "_site" / "methods.html"
         if result.returncode != 0 or not page.exists():
             raise SystemExit(f"quarto render failed:\n{result.stderr[-2000:]}")
-        return page.read_text("utf-8")
+        return _inline_images(page.read_text("utf-8"), page.parent)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
