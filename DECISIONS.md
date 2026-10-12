@@ -17,6 +17,46 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - One large handover to the sibling repository; four items held back
+
+- **Handed over (owner: "so we can do one big copy over now rather than
+  many smaller ones later") what the sibling listed for its whole
+  roadmap, copied from here so that it reads nothing of this project.**
+  Into `..\climate-whiplash-prediction\parent_handover\`, not placed in its tree: 167 files,
+  2,213,366 bytes, each byte-identical to this project's git blob at the
+  commit in its manifest row (manifest sha256 e8e832bc...2f07fb). At the
+  tag `prediction-handoff` (a669813), as the sibling asked, "so it is the
+  code that built the seven pinned tables": all of `src/` and `tests/`,
+  `environment.yml`, `theme/tokens.json` and the `read-licence` and
+  `add-region` skills. At main (36bd902): ten documents (data dictionary,
+  licence ledger, model spec, out-of-scope regions, post-results
+  protocol, log template, the frozen plan, the side session's kickoff,
+  two source notes), the three prediction result folders and
+  `run1/validation.csv` with its provenance record. Into its `data/`: the
+  two ENSO files, `raw/stations/`, `regions.geojson`, both glacier masks,
+  both SPEI cell fits, `enso_index.csv`, `el_nino_winters.csv` and
+  `station_swe_apr1.csv`: 62 files, 258,132,513 bytes, 0 mismatches
+  (manifest sha256 2d538a2e...e74c8d). Sent all of `src/` and `tests/`
+  where the sibling had named files: a superset in a reference folder
+  costs nothing and saves later copies.
+- **Checked first, at the sibling's request: no copied result table holds
+  a burned-area value for 2025 in BC, AB or YT, or for 2026 or 2027.**
+  The `coefficients.csv` files of versions 1b and 1c have rows for
+  predicted year 2025; those are coefficients fitted on earlier seasons.
+- **Held back: `data/processed/fire_events.csv`** (191 rows in held-back
+  seasons; 2026 fires in AK, NorCal, PNW and SoCal), the raw fire
+  downloads (the sibling's own recommendation), **and `DECISIONS.md`,
+  `docs/plan_deviations.md` and `docs/methods_register.md`**, which the
+  sibling asked for and which each state the partial 2026 burned area of
+  the 2026-10-07 WFIGS snapshot as a number. Rejected sending them as
+  they are: the sibling holds the 2026 season back from every model.
+  Left for the owner: leave them out, or send copies with those lines
+  removed and the removal noted.
+- **Advised (owner asked whether writing its own climate code has any
+  benefit): copy this project's climate modules unedited as the
+  reference and add issue-date logic in new files beside them.** The
+  owner decides in the sibling's session.
+
 ### 2026-10-12 - ERA5-Land copied to the sibling repository instead of downloaded again
 
 - **Decided (owner: "yes copy them over"): the sibling gets a copy of
