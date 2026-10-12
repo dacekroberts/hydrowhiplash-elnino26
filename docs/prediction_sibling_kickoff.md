@@ -136,6 +136,8 @@ What that leaves:
 9. **Only then machine learning,** as a grid-cell model: burn
    probability per cell and month from weather and fuel, summed up to
    regions (tens of thousands of rows), not on 291 region-seasons.
+   Confirmed by the owner, 2026-10-12: machine learning is "to be tried
+   later after other items".
 
 Already done in this project, so not on the list: the ceiling check and
 last season's burned area as an input (both version 1c, section 2).
