@@ -27,6 +27,38 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D98 · Map page started ahead of the hard-line item; display settings added
+- **Plan:** `ACTION_PLAN.md` "Second goal", Map page (D85): "all seven
+  regions with a toggle per dataset (fire, snowpack, rainfall,
+  temperature), each year's values read from the committed region x year
+  tables and the region polygons; no trend statistic. *After the stamped
+  download paths and the hard-line item.*" `CLAUDE.md`: a value added to
+  `src/config.py` after the freeze is a deviation.
+- **Actual:** owner, 2026-10-12 (session 11): "yes start a first version
+  of the map now. seven shapes changing color by year and having a
+  selector for which data type would be great. light/dark mode support
+  would be nice too." A first version is built (`src/map_page.py`,
+  `site/map.qmd`, `results/figures/region_map.html`) before the hard-line
+  item, from the tables as pinned (climate to 2026, fire to 2025 and
+  2024). Settings added: `MAP_LAYERS`, `MAP_NORMAL_YEARS`,
+  `MAP_START_LAYER`, `MAP_DISPLAY_CRS`, `MAP_SIMPLIFY_KM`,
+  `MAP_MIN_PART_KM2`, `MAP_WIDTH`. Same day, also outside the plans: the
+  home page's two history charts became interactive with year labels on
+  every panel, axis titles and a legend (owner: "we need some sort of
+  static year labelling", "legend for each section", "y-axis label should
+  exist, as should x-axis label"), an overview panel and two waiting
+  notes were added to the home page, and a paragraph on notebook use to
+  the methods page.
+- **Why:** the stamped paths are built and the map reads only committed
+  tables and the region outlines; the hard-line item adds this winter's
+  months later without changing the page.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Map page, first version;
+  interactive charts with labels and a legend".
+- **Substantial:** yes (order of work changed; `ACTION_PLAN.md` marked
+  `[mid-project: D98]`). No test, pinned input or registered number
+  touched; the settings are display settings no test reads.
+- **Plan doc:** updated with the marker.
+
 ### D97 · Correction to D95: the figure quoted is overlap, not the 2026 season's area
 - **Plan:** D95, "Why": "the pinned snapshot holds 26,609 ha for 2026
   (PNW 24,243, NorCal 2,367), an unfinished season."

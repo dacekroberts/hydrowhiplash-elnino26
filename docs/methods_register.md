@@ -196,7 +196,14 @@ release of 2026-10-07, WFIGS snapshot 22:51 UTC, CNFDB NFDB_poly_20250630;
 | Hypothesis runner: percent change | percent-change columns filled for regression coefficients and the H4 contrast on `log_burn`, left empty for H1, H2 (differences in detrended means), C1, and wherever zero-fire seasons exceed `ZERO_YEAR_PCT_LIMIT` of the rows | `src/run_hypotheses.py` `_percent`, `coef_row` | ANALYSIS_PLAN "Reporting rules" names coefficients; "Zero-fire years" sets the 10% rule | not measured (no run yet) | built 2026-10-12 | same entry |
 | Standardisation inputs | `whiplash.restandardise` sorts by year and needs at least 2 calibration values; `stations.anomalies` needs at least 2 normal-period values; both raise otherwise | `src/whiplash.py`, `src/stations.py` | an unsorted label slice or a 1-value SD returns NaN silently (pre-freeze audit finding 6) | none expected (all series sorted, 30+ normal years) | applied | same entry |
 
-## Prediction model (exploratory, after `run1`; D83; built 2026-10-12)
+## Site display settings (no test reads them)
+
+| Setting | Value | Code | Why | Effect |
+|---|---|---|---|---|
+| Map classes | five per dataset, cut at `MAP_LAYERS` edges: burned area 0.1, 0.5, 2, 10 times the typical season; Oct-Mar precipitation 60, 85, 115, 140% of the 1991-2020 mean; 1 April snowpack 50, 80, 120, 150% of normal; JJA temperature -1.0, -0.3, 0.3, 1.0 °C from the 1991-2020 mean | `config.py` `MAP_LAYERS`, `MAP_NORMAL_YEARS`; `map_page.py` `layer_cells` | each region against its own normal, so regions of different size share a scale; edges by eye (D98) | display only; a value on an edge goes to the class above |
+| Map outlines | Albers centred on the study area; parts under 800 km2 left out; simplified to 6 km | `config.py` `MAP_DISPLAY_CRS`, `MAP_MIN_PART_KM2`, `MAP_SIMPLIFY_KM`; `map_page.py` `shapes` | a small page with no map library | display only; nothing is measured from the outlines |
+
+## Prediction model (exploratory (exploratory, after `run1`; D83; built 2026-10-12)
 
 Not a registered test: uncorrected and reported apart
 (`docs/prediction_model_spec.md`). Measured on

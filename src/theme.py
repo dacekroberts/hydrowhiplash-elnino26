@@ -121,6 +121,77 @@ div.overview i.sw.water { background: var(--water); }
 div.overview i.sw.snow { background: var(--snow); }
 div.overview i.sw.temp { background: var(--temp-warm-2); }
 div.overview i.sw.enso { background: var(--enso); }
+div.rmap { margin-top: var(--space-4); }
+div.rmap fieldset.rmap-layers { border: 0; padding: 0; margin: 0 0 var(--space-3); display: flex;
+  flex-wrap: wrap; gap: var(--space-2); align-items: center; }
+div.rmap fieldset.rmap-layers legend { float: left; width: auto; margin: 0 var(--space-2) 0 0;
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-muted); }
+div.rmap fieldset.rmap-layers label { cursor: pointer; }
+div.rmap fieldset.rmap-layers input { position: absolute; opacity: 0; }
+div.rmap fieldset.rmap-layers span { display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border: 1px solid var(--rule-strong); border-radius: var(--radius-pill);
+  background: var(--surface); font-size: 0.9rem; }
+div.rmap fieldset.rmap-layers span i { width: 9px; height: 9px; border-radius: 50%; }
+div.rmap fieldset.rmap-layers input:checked + span { background: var(--evergreen);
+  border-color: var(--evergreen); color: var(--on-evergreen); font-weight: 600; }
+div.rmap fieldset.rmap-layers input:focus-visible + span { outline: 2px solid var(--evergreen);
+  outline-offset: 2px; }
+div.rmap .rmap-year { background: var(--surface); border: 1px solid var(--rule);
+  border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); }
+div.rmap .rmap-step { display: flex; align-items: center; justify-content: center;
+  gap: var(--space-2); flex-wrap: wrap; }
+div.rmap .rmap-step button { font: inherit; font-size: 0.84rem; color: var(--ink);
+  background: var(--surface-sunk); border: 1px solid var(--rule); border-radius: var(--radius-md);
+  padding: 2px 10px; cursor: pointer; }
+div.rmap .rmap-step button[data-nino] { border-color: var(--enso); }
+div.rmap .rmap-y { font-family: var(--font-display); font-weight: 800; font-size: 1.75rem;
+  font-variant-numeric: tabular-nums; min-width: 4.5ch; text-align: center; }
+div.rmap .rmap-slide { position: relative; margin-top: var(--space-2); padding-bottom: 14px; }
+div.rmap .rmap-slide input { width: 100%; accent-color: var(--evergreen); margin: 0; }
+div.rmap .rmap-marks { position: absolute; left: 8px; right: 8px; bottom: 0; height: 12px; }
+div.rmap .rmap-marks i { position: absolute; bottom: 0; width: 2px; height: 7px; margin-left: -1px;
+  background: var(--enso); }
+div.rmap .rmap-marks i.strong { height: 12px; width: 3px; background: var(--enso-strong); }
+div.rmap p.rmap-when { margin: var(--space-2) 0 0; max-width: none; font-size: 0.9rem;
+  display: flex; gap: var(--space-2); align-items: baseline; flex-wrap: wrap; }
+div.rmap .rmap-chip { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+  text-transform: uppercase; padding: 1px 8px; border-radius: var(--radius-pill);
+  border: 1px solid var(--rule-strong); color: var(--ink-muted); }
+div.rmap .rmap-chip.nino { background: var(--enso-soft); border-color: var(--enso);
+  color: var(--ink); }
+div.rmap .rmap-chip.strong { background: var(--enso); border-color: var(--enso-strong);
+  color: var(--page); }
+div.rmap .rmap-body { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: var(--space-4); margin-top: var(--space-4); align-items: start; }
+div.rmap svg { width: 100%; height: auto; display: block; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: var(--radius-md); }
+div.rmap svg path { fill: var(--surface-sunk); stroke: var(--page); stroke-width: 1.2;
+  stroke-linejoin: round; fill-rule: evenodd; outline: none; }
+div.rmap svg path.none { stroke: var(--rule-strong); stroke-dasharray: 3 3; }
+div.rmap svg path.on, div.rmap svg path:focus-visible { stroke: var(--ink); stroke-width: 2.4; }
+div.rmap svg text { font-family: var(--font-sans); font-size: 17px; font-weight: 600;
+  fill: var(--ink); text-anchor: middle; dominant-baseline: middle; pointer-events: none;
+  paint-order: stroke; stroke: var(--surface); stroke-width: 3.5px; stroke-linejoin: round; }
+div.rmap p.rmap-title { font-family: var(--font-display); font-weight: 700; font-size: 1.125rem;
+  margin: 0; }
+div.rmap p.rmap-what { margin: 4px 0 var(--space-3); font-size: 0.86rem; color: var(--ink-muted);
+  max-width: none; }
+div.rmap ul.rmap-legend { list-style: none; margin: 0 0 var(--space-3); padding: 0;
+  display: grid; gap: 3px; font-size: 0.84rem; }
+div.rmap ul.rmap-legend li { display: flex; align-items: center; gap: 8px; max-width: none; }
+div.rmap ul.rmap-legend i, div.rmap table.rmap-table .sw { width: 14px; height: 14px; flex: none;
+  border-radius: var(--radius-sm); border: 1px solid var(--rule-strong); display: inline-block; }
+div.rmap i.none, div.rmap .sw.none { background: var(--surface-sunk); border-style: dashed !important; }
+div.rmap table.rmap-table { width: 100%; font-size: 0.84rem; border-top: 1px solid var(--rule); }
+div.rmap table.rmap-table th, div.rmap table.rmap-table td { padding: 5px 4px;
+  border-bottom: 1px solid var(--rule); vertical-align: top; text-transform: none;
+  letter-spacing: 0; font-size: 0.84rem; color: var(--ink); white-space: normal; }
+div.rmap table.rmap-table th { font-weight: 600; width: 44%; }
+div.rmap table.rmap-table th .sw { margin-right: 8px; vertical-align: -2px; }
+div.rmap table.rmap-table tr.on, div.rmap table.rmap-table tr:focus-visible {
+  background: var(--surface-sunk); outline: none; }
+@media (max-width: 767px) { div.rmap .rmap-body { grid-template-columns: 1fr; } }
 div.waiting { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: var(--space-3);
   align-items: baseline; padding: var(--space-3) var(--space-4); background: var(--surface);
   border: 1px dashed var(--rule-strong); border-radius: var(--radius-md); }

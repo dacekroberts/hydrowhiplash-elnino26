@@ -111,7 +111,10 @@ checkout.
    published 2026 month with `--stamp`, refit SPEI (about 55 minutes),
    rebuild with `--stamp`, report `changed_cells.csv`, recheck
    `TRACKER_DATA_DAY`. Then the tracker's month table and tiles.
-5. The map page (D85), after item 4.
+5. The map page (D85, D98): a first version exists (`src/map_page.py`,
+   `site/map.qmd`; built 2026-10-12 on the owner's word). Open: the
+   owner's wording of its labels and sentences; this winter's months
+   after item 4; whether the class edges suit the owner.
 
 **Open, low:** pins walk one folder level (review F3); two tests need
 the tag `analysis-plan-frozen` in the clone; `scripts/methods_numbers.py`
@@ -123,7 +126,7 @@ into that copy (seen in the staged copy only; worth a look).
 DeepSeek plan; ask before any run that reads polygons; ask before every
 DeepSeek call; the going-public question is a leaning, not a decision.
 
-**Next free deviation number: D98.** The frozen plan's deviations log
+**Next free deviation number: D99.** The frozen plan's deviations log
 is at row 19.
 
 ## Part 2 · Prompt for session 12
@@ -142,7 +145,7 @@ Session 12 for hydrowhiplash-elnino26: the owner's wording on session
    Read with the Artifact tool (action "read"):
    the roadmap, https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from D98.
+   deviations from D99.
 
 2. Explain each concept as it comes up, give a short summary beside every
    hypothesis ID, and quote the actual wording beside every item ID

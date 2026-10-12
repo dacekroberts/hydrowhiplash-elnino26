@@ -1,0 +1,42 @@
+---
+title: "Seven regions, year by year"
+---
+
+<!-- The map page (ACTION_PLAN "Second goal", Map page; D85, D98). First
+     version, 2026-10-12 (session 11): the seven regions coloured by one
+     dataset for one year. The map itself is an HTML fragment built by
+     python -m src.map_page and read from ../results/ at render time; its
+     numbers come from the committed region x year tables.
+
+     DRAFT. The sentences on this page, and the labels inside the map
+     (src/map_page.py: LAYER_TEXT, REGION_NAMES), were drafted by Claude
+     for the owner to edit and approve. -->
+
+::: {.callout-note title="Draft"}
+A first version. The wording is not final.
+:::
+
+Pick a dataset and a year. Each region is coloured by how that year compares
+with the region's own normal, so a dark British Columbia and a dark Southern
+California both mean an unusual year there, not the same number of hectares
+or millimetres. The amber marks under the slider are El Niño winters, in the
+same amber the charts use.
+
+::: {.column-body-outset}
+```{python}
+#| echo: false
+#| output: asis
+from pathlib import Path
+print("```{=html}\n" + Path("../results/figures/region_map.html").read_text("utf-8") + "\n```")
+```
+:::
+
+**How to read a year.** Year Y means the winter from December Y−1 to
+February Y, the snowpack on 1 April Y, and the summer and fire season of Y.
+So 1998 shows the 1997-98 El Niño winter and the fire season that followed
+it.
+
+**What the map does not show.** No trend and no test result: for those, see
+[Methods and limitations](methods.qmd). Each region is a whole state,
+province or territory, so one colour covers wet coasts and dry interiors
+alike.

@@ -112,14 +112,14 @@ SVG(filename="../results/figures/mechanism_narrow.svg")
 
 ```{python}
 #| echo: false
-#| fig-alt: "One panel per region. Bars show December to February precipitation for every winter since 1951 as a departure from the region's average. Winters with an El Niño are shaded, and strong ones carry a darker tick."
-from IPython.display import Image
-Image(filename="../results/figures/djf_precip_series_roni.png")
+#| output: asis
+print("```{=html}\n" + Path("../results/figures/djf_precip_history_roni.html").read_text("utf-8") + "\n```")
 ```
 
 *[Draft caption] December to February precipitation in every winter since
-`{python} S["climate_first_year"] + 1`, by region. Shaded winters had an El
-Niño.*
+`{python} S["climate_first_year"] + 1`, by region, against the region's
+average winter. Shaded winters had an El Niño; a darker tick marks a strong
+one. Hover for the millimetres.*
 
 ## What happened after past El Niño winters
 
@@ -138,7 +138,8 @@ print("```{=html}\n" + Path("../results/figures/burned_area_season_history_roni.
 
 *[Draft caption] Every fire season since 1984, as a multiple of the region's
 typical season. A shaded year follows an El Niño winter; a taller, darker
-tick marks a strong one. Hover for the hectares. The dotted slot is 2027.*
+tick marks a strong one. Hover for the hectares. The dotted slot is 2027.
+The [map](map.qmd) shows the same seasons region by region.*
 
 ## Tracking the 2026–27 winter
 

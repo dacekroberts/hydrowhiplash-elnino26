@@ -322,7 +322,11 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       per dataset (fire, snowpack, rainfall, temperature), each year's
       values read from the committed region x year tables and the region
       polygons; no trend statistic. *After the stamped download paths and
-      the hard-line item.*
+      the hard-line item.* [mid-project: D98] A first version was built
+      on 2026-10-12, ahead of the hard-line item, on the owner's word:
+      `src/map_page.py`, `site/map.qmd`; four datasets, a year slider
+      with El Niño winters marked, light and dark. Wording is a draft;
+      this winter's months join it with the hard-line item.
 - [ ] **Three methods-page items** [mid-project: D96]: why regression
       and not a trained model; who the forecast is for (a responsibility
       statement); where coverage is thin. Each is the owner's to word;

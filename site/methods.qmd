@@ -302,6 +302,19 @@ files are never edited. If a bug is found, the fix is logged as decided
 after results were seen, the rerun goes in a new folder, and both sets of
 numbers are shown.
 
+### Notebooks and code
+
+<!-- DRAFT (owner, 2026-10-12: "important to state jupyter notebook usage in
+     the method/limit page"); wording for the owner to edit. -->
+
+I explored the climate data in three Jupyter notebooks: the winter
+precipitation, the drought index and snowpack, and the snow stations. The
+notebooks call the same functions as the scripts, so each figure has one
+copy of its code, and every figure and table on this site can be rebuilt
+without opening a notebook. No registered test ran in a notebook. The tests
+ran once, from a script, after a check that the inputs and the plan were
+unchanged.
+
 ## What the tests found
 
 Effect sizes first. Slopes on burned area are in log points; the percent is

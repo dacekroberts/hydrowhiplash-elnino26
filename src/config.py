@@ -661,3 +661,35 @@ PRED_1C_VARIANTS = {
     "ceiling": ((*PRED_1B_JUNE, "temp_jja", "spei3_jja", "soil_moisture"), True, True),
 }
 PRED_1C_RUN = "prediction_v1c"
+
+# Map page (ACTION_PLAN "Second goal"; D85, D98). Display settings only: no
+# test reads them. One entry per selectable dataset:
+# (committed table, value column, measure, class edges, colour tokens, detail
+# column shown as the raw value). Measures: "ratio" = the season over the
+# region's typical season (back-transformed mean log burned area of seasons
+# with a counted fire, as in the season history chart); "pct" = percent of
+# the region's mean over MAP_NORMAL_YEARS; "diff" = difference from that
+# mean; "as_is" = the column already is a percent of normal. Five classes
+# per layer, cut at the four edges (a value on an edge goes to the class
+# above). Edges chosen by eye for a readable spread, not from a test.
+MAP_NORMAL_YEARS = PRECIP_ANOM_NORMAL_YEARS
+MAP_LAYERS = {
+    "fire": ("fire_region_year.csv", "burn_ha", "ratio", (0.1, 0.5, 2.0, 10.0),
+             ("fire-1", "fire-2", "fire-3", "fire-4", "fire-5"), "burn_ha"),
+    "rain": ("climate_controls_region_year.csv", "precip_octmar_mm", "pct", (60, 85, 115, 140),
+             ("precip-dry-2", "precip-dry-1", "precip-mid", "precip-wet-1", "precip-wet-2"),
+             "precip_octmar_mm"),
+    "snow": ("station_swe_region_year.csv", "era5_swe_pct", "as_is", (50, 80, 120, 150),
+             ("snow-1", "snow-2", "snow-3", "snow-4", "snow-5"), "era5_swe_apr1_mm"),
+    "temp": ("climate_controls_region_year.csv", "temp_jja", "diff", (-1.0, -0.3, 0.3, 1.0),
+             ("temp-cold-2", "temp-cold-1", "temp-mid", "temp-warm-1", "temp-warm-2"),
+             "temp_jja"),
+}
+MAP_START_LAYER = "fire"
+# The outlines are drawn in an Albers projection centred on the study area
+# (display only; areas are measured in CRS_EQUAL_AREA), with islands and
+# other parts under MAP_MIN_PART_KM2 left out and outlines simplified.
+MAP_DISPLAY_CRS = "+proj=aea +lat_1=38 +lat_2=64 +lat_0=50 +lon_0=-132 +datum=WGS84 +units=m"
+MAP_SIMPLIFY_KM = 6
+MAP_MIN_PART_KM2 = 800
+MAP_WIDTH = 640

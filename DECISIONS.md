@@ -17,6 +17,60 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Map page, first version; interactive charts with labels and a legend
+
+- **Built (owner: "yes start a first version of the map now") the map
+  page ahead of the hard-line item (D98).** `src/map_page.py` writes one
+  HTML fragment, `results/figures/region_map.html` (137 KB): an inline
+  SVG of the seven regions, the values as JSON and a short script, no map
+  library. `site/map.qmd` includes it; "Map" is in the navigation. Four
+  datasets, each read from a pinned table through `pin_inputs.load_input`
+  and coloured in five classes against the region's own normal
+  (`MAP_LAYERS`): burned area as a multiple of the region's typical
+  season (the history chart's definition; edges 0.1, 0.5, 2, 10),
+  October to March precipitation as a percent of the 1991-2020 mean (60,
+  85, 115, 140), 1 April snowpack as a percent of normal, the committed
+  `era5_swe_pct` (50, 80, 120, 150), and June to August temperature as a
+  difference from the 1991-2020 mean (-1.0, -0.3, 0.3, 1.0 °C). The edges
+  were chosen by eye for a readable spread; they are display classes, not
+  thresholds of any test. Rejected absolute values (hectares,
+  millimetres): one colour scale across regions that differ tenfold would
+  show the regions' sizes, not the years. Rejected a map library and
+  tiles: seven shapes need neither, and the page stays one file with no
+  outside request. No trend and no test result is drawn (D85).
+- **Decided: the colours are the site's CSS variables, so the map follows
+  the light and dark themes**; the ramp tokens are the same in both. A
+  year with no value is drawn dashed ("no data"): fire before 1984, BC, AB
+  and YT in 2025, SoCal snowpack (normal under 10 mm), summer 2026.
+- **Decided: outlines are for display only.** From
+  `data/processed/regions.geojson` (Natural Earth, public domain): an
+  Albers projection centred on the study area (`MAP_DISPLAY_CRS`), parts
+  under 800 km2 left out, outlines simplified to 6 km. Nothing is measured
+  from them.
+- **Decided (owner: "we should include an el nino special color or
+  identifier across all graphs and the map site-wide"): amber is the El
+  Niño mark everywhere.** The `enso` tokens already mark El Niño winters
+  on every chart (a soft band and a tick, darker for a strong winter); the
+  map's slider carries the same ticks, its year chip the same amber, and
+  two buttons step to the previous and next El Niño winter.
+- **Rebuilt the two home-page history charts on one builder,
+  `src/interactive.py`** (owner: static year labels, a legend per
+  section, x-axis and y-axis titles). Every panel now shows its own year
+  labels, each panel has a y-axis title, the chart an x-axis title that
+  says how a year is labelled, and one legend. New:
+  `djf_precip_history_roni.html`, December to February precipitation per
+  region as a percent departure from the mean of the winters shown (raw,
+  not detrended), in place of the static image on the home page.
+  `fire_figures.history_html` uses the same builder; its numbers are
+  unchanged.
+- **Added to the home page, as drafts for the owner:** an overview
+  paragraph and a three-part panel (owner: "data areas", "Regions
+  covered", "hypotheseses/rationale"), and a dated waiting note under
+  each of the two sections that cannot be filled yet. To the methods
+  page, as a draft: a paragraph on notebook use (owner: "important to
+  state jupyter notebook usage").
+- Tests: 426 passed (5 new in `tests/test_map_page.py`).
+
 ### 2026-10-12 - This project supplies the sibling's held-back burned-area numbers
 
 - **Decided (owner, in the sibling's session; reported here by the

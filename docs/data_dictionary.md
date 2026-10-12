@@ -892,6 +892,30 @@ package versions); `conda_list_explicit.txt` is the full environment.
   snowpack, `enso` a season after an El Niño winter, `evergreen` the
   frame and the Holm verdict.
 
+**Map page and interactive charts (session 11; D98).** Three HTML
+fragments in `results/figures/`, each included by a site page as is:
+
+- `region_map.html` (`python -m src.map_page`): the seven regions as an
+  inline SVG, the values as JSON and a short script. Per dataset, region
+  and year it holds a class (0 to 4) and a text. Burned area: `burn_ha`
+  over the region's typical season, which is `exp(mean log_burn) - 1`
+  over seasons with a counted fire, the same baseline as the season
+  history chart (a multiple, not a percent). Winter rain:
+  `precip_octmar_mm` as a percent of the region's 1991-2020 mean (not the
+  z-score the tests use). Snowpack: the committed `era5_swe_pct`, with
+  `era5_swe_apr1_mm` as the raw value. Summer temperature: `temp_jja`
+  minus the region's 1991-2020 mean, in °C. Trap: a class is relative to
+  the region's own normal, so the same colour in two regions is not the
+  same number of hectares or millimetres. A missing value has no entry.
+  The outlines are simplified for display; never measure from them.
+- `djf_precip_history_roni.html` (`python -m src.interactive`): December
+  to February precipitation per region as a percent departure from the
+  mean of the winters in the table (1951 on), raw, not detrended; the
+  hover gives millimetres. Trap: the mean is over all winters shown, not
+  the 1991-2020 normal the map uses.
+- `burned_area_season_history_roni.html`: unchanged in its numbers; since
+  session 11 drawn by the same builder, with year labels on every panel.
+
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 
 Written by `python -m src.prediction` on 2026-10-12, after `run1` was

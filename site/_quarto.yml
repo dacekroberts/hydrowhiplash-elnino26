@@ -11,6 +11,8 @@ website:
     left:
       - href: index.qmd
         text: Overview
+      - href: map.qmd
+        text: Map
       - href: tracker.qmd
         text: Tracker
       - href: methods.qmd
