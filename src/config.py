@@ -263,6 +263,10 @@ INPUT_PINS_TABLE = RESULTS / "tables" / "input_pins.csv"
 # frozen-text check refuses a tag that points anywhere else, since a local
 # tag can be moved (cold check 2026-10-11 M4; src.run_guard).
 FROZEN_PLAN_COMMIT = "acf7a80232b2e1d6bc7c783162722db0b52e7cee"
+# Offline copy of every pinned input (audit 2026-10-08 round 5 S1c; owner,
+# 2026-10-11: a folder of its own inside the repository, never committed).
+# Same relative paths as the originals; no builder or downloader writes here.
+PINNED_COPY_DIR = ROOT / "pinned_inputs_copy"
 # One row per re-pin: when, at which commit, why, and which files changed
 # (audit 2026-10-08 round 5 S2; D73; docs/post_results_protocol.md).
 INPUT_PINS_LOG = RESULTS / "tables" / "input_pins_log.csv"

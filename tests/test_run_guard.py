@@ -264,6 +264,18 @@ def test_command_line_offers_no_repin_without_a_reason(monkeypatch):
             pin_inputs.main()
 
 
+def test_copy_pinned_mirrors_the_inputs_and_checks_each_copy(tree):
+    root, pins = tree
+    dest = root / "copy"
+    assert pin_inputs.copy_pinned(dest, pins) == 2
+    assert (dest / "results" / "tables" / "a.csv").read_bytes() == b"x,y\n1,2\n"
+    assert (dest / "raw" / "z.zip").read_bytes() == b"zip" and (dest / "input_pins.csv").exists()
+    (root / "raw" / "z.zip").write_bytes(b"changed")  # an altered input is never copied
+    with pytest.raises(ValueError, match="changed: raw/z.zip"):
+        pin_inputs.copy_pinned(dest, pins)
+    assert (dest / "raw" / "z.zip").read_bytes() == b"zip"
+
+
 # --- S3: the pinned loader -------------------------------------------------------
 
 def test_load_input_reads_a_pinned_table_and_refuses_the_rest(tree):

@@ -33,10 +33,12 @@ purpose (a rebuild after an audit fix), and say so in the log.
 
 Run:  python -m src.pin_inputs --verify            (check the pins)
       python -m src.pin_inputs --repin "<reason>"  (rewrite them, logged)
+      python -m src.pin_inputs --copy              (offline copy in PINNED_COPY_DIR)
 """
 from __future__ import annotations
 
 import hashlib
+import shutil
 import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
@@ -44,8 +46,8 @@ from pathlib import Path
 import pandas as pd
 
 from src.config import (DATA_PROCESSED, DATA_RAW, FIRE_EVENTS_TABLE, FIRE_RAW,
-                        INPUT_PINS_LOG, INPUT_PINS_TABLE, NBAC_RAW, PINNED_RESULT_TABLES,
-                        RESULTS, ROOT)
+                        INPUT_PINS_LOG, INPUT_PINS_TABLE, NBAC_RAW, PINNED_COPY_DIR,
+                        PINNED_RESULT_TABLES, RESULTS, ROOT)
 
 FIXED = [DATA_RAW / "roni.ascii.txt", DATA_RAW / "oni.ascii.txt",
          DATA_PROCESSED / "el_nino_winters.csv", DATA_PROCESSED / "enso_index.csv",
@@ -176,6 +178,25 @@ def repin(reason: str, path: Path = INPUT_PINS_TABLE, log: Path = INPUT_PINS_LOG
     return table
 
 
+def copy_pinned(dest: Path = PINNED_COPY_DIR, path: Path = INPUT_PINS_TABLE) -> int:
+    """Copy every pinned input, and the pins table, to `dest` under the same
+    relative paths, then check each copy's sha256 against its pin. Only
+    files that match their pin are copied (verify() runs first), and an
+    existing copy is replaced only by an identical one. Returns the number
+    of files copied or confirmed."""
+    verify(path)
+    pins = pd.read_csv(path).set_index("path")
+    for rel in pins.index:
+        target = dest / rel
+        if not (target.exists() and sha256(target) == pins.at[rel, "sha256"]):
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(ROOT / rel, target)
+            if sha256(target) != pins.at[rel, "sha256"]:
+                raise PinnedInputError(f"copy of {rel} does not match its pin")
+    shutil.copy2(path, dest / path.name)
+    return len(pins)
+
+
 def load_input(name: str, usecols=None, path: Path = INPUT_PINS_TABLE) -> pd.DataFrame:
     """Read the committed input table `name` from results/tables/. Raises
     unless it is pinned and its sha256 equals its pin, so a test never runs
@@ -203,8 +224,10 @@ def main() -> None:
         table = repin(args[args.index("--repin") + 1])
         print(f"wrote {INPUT_PINS_TABLE}: {len(table)} files, "
               f"{table['bytes'].sum() / 1e9:.2f} GB hashed; reason logged in {INPUT_PINS_LOG}")
+    elif "--copy" in args:
+        print(f"{copy_pinned()} pinned inputs copied to {PINNED_COPY_DIR}, each matching its pin")
     else:
-        raise SystemExit("usage: python -m src.pin_inputs --verify | --repin <reason>")
+        raise SystemExit("usage: python -m src.pin_inputs --verify | --copy | --repin <reason>")
 
 
 if __name__ == "__main__":

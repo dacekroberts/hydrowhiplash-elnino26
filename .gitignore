@@ -28,3 +28,5 @@ logs/export/
 # quarto build output
 site/_site/
 site/.quarto/
+# offline copy of the pinned inputs (src.pin_inputs --copy)
+pinned_inputs_copy/
