@@ -27,6 +27,26 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D82 · A second pinned reader, for the raw ENSO files
+- **Plan:** `docs/post_results_protocol.md` section 5 and D73: "Tables
+  are opened only through `src.pin_inputs.load_input`", which opens only
+  a pinned table in `results/tables/`.
+- **Actual:** owner, 2026-10-12 (session 9, before any test): the runner
+  also reads the two pinned raw ENSO files through
+  `pin_inputs.enso_raw_path(index)`, which checks the file's sha256
+  against its pin. The ONI robustness runs take their index from
+  `data/raw/oni.ascii.txt`; the RONI file is read to check that the
+  committed tables hold its values.
+- **Why:** every committed table holds RONI only; ONI exists only in
+  the pinned raw file, outside `results/tables/`.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "First hypothesis runs
+  planned; runner written"; `docs/methods_register.md` "Pinned ENSO
+  reader".
+- **Substantial:** no (safeguard code; no test, input or pin changes).
+- **Plan doc:** dated note at the bottom of
+  `docs/post_results_protocol.md`. No row in the frozen plan's
+  deviations log (no registered or reported test changes).
+
 ### D81 · NBAC coverage split reported as a limitation; no NBAC re-run
 - **Plan:** `ACTION_PLAN.md` Phase 4: "the exploratory NBAC re-run of
   the Canadian tests ... each yes or no" before the first hypothesis

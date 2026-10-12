@@ -15,6 +15,8 @@ run on the pinned input tables and downloads (fire 2026-10-07, NBAC
             committed copy in results/tables/, refused unless it is pinned
             and its sha256 equals the pin (audit round 5 S3; the config
             *_TABLE constants name the unpinned data/processed/ copies)
+  enso_raw_path(index)  the pinned raw RONI or ONI file, checked against
+            its pin (the ONI robustness runs; D82)
   guard_write(paths, rebuild)  the table builders and downloaders call it
             before any work: raises if a target is an existing pinned input
             and --rebuild was not passed (audit round 5 S2; after the gate a
@@ -49,7 +51,8 @@ from src.config import (DATA_PROCESSED, DATA_RAW, FIRE_EVENTS_TABLE, FIRE_RAW,
                         INPUT_PINS_LOG, INPUT_PINS_TABLE, NBAC_RAW, PINNED_COPY_DIR,
                         PINNED_RESULT_TABLES, RESULTS, ROOT)
 
-FIXED = [DATA_RAW / "roni.ascii.txt", DATA_RAW / "oni.ascii.txt",
+ENSO_RAW = {"RONI": DATA_RAW / "roni.ascii.txt", "ONI": DATA_RAW / "oni.ascii.txt"}
+FIXED = [*ENSO_RAW.values(),
          DATA_PROCESSED / "el_nino_winters.csv", DATA_PROCESSED / "enso_index.csv",
          FIRE_EVENTS_TABLE] + [RESULTS / "tables" / name for name in PINNED_RESULT_TABLES]
 FOLDERS = [FIRE_RAW / "mtbs", FIRE_RAW / "wfigs", FIRE_RAW / "cnfdb", NBAC_RAW]
@@ -204,13 +207,32 @@ def load_input(name: str, usecols=None, path: Path = INPUT_PINS_TABLE) -> pd.Dat
     target = assert_pinned(RESULTS / "tables" / name)
     if target.parent != (RESULTS / "tables").resolve():
         raise PinnedInputError(f"{name} is not a table in results/tables/.")
+    _matches_pin(target, path)
+    return pd.read_csv(target, usecols=usecols)
+
+
+def _matches_pin(target: Path, path: Path) -> None:
+    """Raise unless the resolved pinned file `target` has a row in the pins
+    table and its sha256 equals it."""
     key = target.relative_to(ROOT.resolve()).as_posix()
     pins = pd.read_csv(path).set_index("path")
     if key not in pins.index:
         raise PinnedInputError(f"{key} has no row in {path.name}.")
     if sha256(target) != pins.at[key, "sha256"]:
         raise PinnedInputError(f"{key} differs from its pin in {path.name}.")
-    return pd.read_csv(target, usecols=usecols)
+
+
+def enso_raw_path(index: str, path: Path = INPUT_PINS_TABLE) -> Path:
+    """Path of the pinned raw ENSO file for `index` ("RONI" or "ONI"),
+    refused unless its sha256 equals its pin. The hypothesis runner's only
+    way to an input outside results/tables/: the committed tables hold RONI
+    only, and the ONI robustness runs need the raw ONI file (owner,
+    2026-10-12; D82)."""
+    if index not in ENSO_RAW:
+        raise PinnedInputError(f"No pinned raw ENSO file for index {index!r}.")
+    target = assert_pinned(ENSO_RAW[index])
+    _matches_pin(target, path)
+    return target
 
 
 def main() -> None:

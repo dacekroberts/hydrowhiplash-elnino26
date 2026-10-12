@@ -69,3 +69,13 @@ saved by hand into the run folder at the first run; no code writes it.
 It does not decide whether a change is justified; that stays the owner's
 call, logged as above. It cannot stop a result from being seen before a
 change is proposed, so every post-result row says what had been seen.
+
+## Dated notes
+
+- **2026-10-12 (owner, session 9, before any test; D82):** section 5's
+  "tables are opened only through `src.pin_inputs.load_input`" gains one
+  more reader. The runner opens the two pinned raw ENSO files
+  (`data/raw/roni.ascii.txt`, `data/raw/oni.ascii.txt`) through
+  `src.pin_inputs.enso_raw_path`, which refuses a file whose sha256
+  differs from its pin. The committed tables hold RONI only, and the ONI
+  robustness runs need ONI.

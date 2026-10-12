@@ -17,6 +17,56 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - First hypothesis runs planned; runner written
+
+- **Decided (owner, 2026-10-12, session 9, before any test): the first
+  registered run holds all 52 registered tests in one pass, in the plan's
+  order** (H1, H2, H3a, H3b, H4, H5, H6, C1, C2), Holm and BH per family
+  at the end; nothing computed is printed, the run reports file names and
+  row counts. Rejected running hypothesis by hypothesis: an early result
+  could colour a later choice.
+- **Decided (owner): the runs reported beside the tests are made in the
+  same pass** (D75: ONI robustness, frozen-rules, Parks Canada
+  sensitivity, strong-only), **and so is every other reported piece the
+  frozen plan asks for:** zero-fire sensitivity, station-z repeats of H6
+  SWE and C1, the block bootstrap check on H3a and H3b, the H3a minus
+  H3b gap CI, H4 with `temp_jja` and with year-clustered errors and its
+  joint F, the H6 combined model, lag-1 autocorrelation, leave-one-year-
+  out and expanding-window validation. The 2027 forecast intervals are
+  left out: the DJF 2027 RONI value does not exist yet.
+- **Decided (owner): three result tables in `results/tables/run1/`:**
+  `registered_tests.csv` (52 rows), `reported_beside.csv` (a `run_kind`
+  column) and `validation.csv`; columns run estimate, CI, percent change,
+  then p, Holm p, BH p, verdict, size label, plain OLS p.
+- **Decided (owner): a second pinned reader for the raw ENSO files**
+  (D82): `pin_inputs.enso_raw_path`. Every committed table holds RONI
+  only; ONI sits in the pinned `data/raw/oni.ascii.txt`, which
+  `load_input` refuses. Rejected building a committed ONI table: it
+  needs a re-pin, a row in the re-pin log before any result exists.
+- **Built: `src/run_hypotheses.py` and `tests/test_run_hypotheses.py`**
+  (18 tests on synthetic tables shaped like the inputs; 335 tests pass).
+  Not run on fire data. Size labels read through `run_guard.size_label`
+  for the planning table: H3a 0.0675 one-sided and 0.0650 two-sided
+  (plain OLS 0.0475, 0.0410); H3b 0.0715 and 0.0815 (0.0560, 0.0495);
+  H4 contrast 0.0780; H5 and H6 0.0790 one-sided, 0.0965 two-sided; C1
+  0.0705 (0.0460); C2 0.1020 (0.0490).
+- **Points the frozen plan leaves to the code, as built (for the owner
+  to confirm before the run):** the El Nino group of H1 and H2 is
+  `phase` el_nino against all other years. Percent change is filled for
+  regression coefficients and the H4 contrast on `log_burn`, not for
+  H2's difference in detrended means. Zero-fire rows are written only
+  where a zero-fire season exists (main table: SoCal 2014, so SoCal's
+  tests and H4). The Parks Canada run holds AB's tests and H4. The ONI,
+  frozen-rules, Parks and zero-fire runs carry the H4 contrast only; the
+  joint F, the year-clustered fit and the `temp_jja` model are run on
+  the main table. H4 with `temp_jja` carries no size label (none was
+  measured for that model). Lag-1 autocorrelation covers `log_burn` and
+  its detrended residuals (7 regions), detrended DJF precipitation (5)
+  and the C1 snowpack z (3). Leave-one-year-out rows also give RMSE and
+  MAE. A comparison group under 2 years stops the run before anything
+  is written. `validation.csv` holds summaries, not per-year
+  predictions.
+
 ### 2026-10-12 - No NBAC re-run; the per-fire coverage split is a reported limitation
 
 - **Decided (owner, 2026-10-12, before any test): no exploratory NBAC
