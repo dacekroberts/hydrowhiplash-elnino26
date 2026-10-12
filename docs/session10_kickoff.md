@@ -53,6 +53,26 @@ is the prompt to paste into a new Claude Code session in the main checkout.
 - The results page states each registered hypothesis and its predicted
   direction above its results (owner's request); keep that for every
   later run's page.
+- **A rollout calendar and pings (owner, 2026-10-12):** "session 10
+  might need to scaffold exactly what the site is waiting for and when,
+  setting up pings for me in advance so i can prepare the site for the
+  changes." To build with the owner: one dated list of every arrival
+  the site waits on and what each one changes on the site (each
+  month's ERA5-Land data by the 7th, `TRACKER_DATA_DAY`; the hard-line
+  item in early November; the DJF 2027 index and full winter in early
+  March 2027; the 1 April snowpack about 8 April; the forecast stages
+  of D76; CanSWE v9 around March 2027; CNFDB 2025 when released; the
+  2027 fire season and its fall check, California after January 2028),
+  kept in one place the code can read, then reminders ahead of each
+  date. How far ahead, and through what (scheduled tasks, calendar),
+  is the owner's choice; nothing is scheduled yet.
+- **A page or site feature on the rollout timetable (owner,
+  2026-10-12):** "some sort of page or site feature dedicated to
+  informing readers about the rollout timetable." A scope addition to
+  the site plan, not started. It should read the same dated list as the
+  pings, so the public timetable and the reminders cannot disagree. The
+  tracker page already has three states and a countdown (PRs #18, #19);
+  decide whether the timetable lives there or on its own page.
 - Whether `ACTION_PLAN.md` Headlines 1 to 4 are ticked now (computed in
   `run1`) or when the charts and write-up exist (left open).
 
@@ -111,9 +131,12 @@ Session 10 for hydrowhiplash-elnino26: Phase 4, after run1.
 4. If it is early November or later, read the hard-line item in Part 1
    before anything else.
 
-5. Bring me the three open choices in Part 1 (design system, hosting,
-   the Headline boxes) with a recommendation for each. Nothing is
-   adopted without my yes.
+5. Bring me the open choices in Part 1 (design system, hosting, the
+   Headline boxes, the map page, the rollout timetable page) with a
+   recommendation for each. Then scaffold the rollout calendar with me:
+   every date the site is waiting on, what changes on the site at each,
+   and the pings I want ahead of each. Ask before scheduling anything.
+   Nothing is adopted without my yes.
 
 6. Then the work list in Part 1, in order, starting with the stamped
    download paths. Ask me before any run that reads polygons, and before
