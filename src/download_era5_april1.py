@@ -22,6 +22,7 @@ from datetime import date, timedelta
 
 import cdsapi
 
+from src import later
 from src.config import (APRIL1_FOLDER_SUFFIX, CLIMATE_FIRST_YEAR, DATA_RAW,
                         ERA5_DOMAINS, ERA5_HOURLY_DATASET, ERA5_HOURLY_LAG_DAYS)
 from src.download_era5 import is_access_error
@@ -52,9 +53,13 @@ def request(years: list[int], area: list[float]) -> dict:
     }
 
 
-def download_domain(client: cdsapi.Client, name: str, today: date) -> None:
+def download_domain(client: cdsapi.Client, name: str, today: date,
+                    stamp: str | None = None) -> None:
     area, folder = ERA5_DOMAINS[name]
-    out = RAW / f"{folder}{APRIL1_FOLDER_SUFFIX}"
+    base = RAW / f"{folder}{APRIL1_FOLDER_SUFFIX}"
+    # With a stamp, the whole file (every year) goes to the stamped twin of
+    # the folder and the file on disk is left as it is (D73).
+    out = later.open_folder(base, stamp, RAW) if stamp else base
     out.mkdir(parents=True, exist_ok=True)
     years = april1_years(today)
     target = out / FILENAME
@@ -69,9 +74,14 @@ def download_domain(client: cdsapi.Client, name: str, today: date) -> None:
                 "on the CDS page for reanalysis-era5-land, then re-run.") from err
         raise
     tmp.replace(target)  # write-then-rename: never leave a truncated file
+    if stamp:
+        later.record(out, stamp, ERA5_HOURLY_DATASET,
+                     note=f"domain {name}, 1 April 00:00 UTC, {years[0]}-{years[-1]}")
 
 
 def main(domains: list[str] | None = None) -> None:
+    domains = list(domains or [])
+    stamp = later.take_stamp(domains)
     domains = domains or list(ERA5_DOMAINS)
     unknown = set(domains) - set(ERA5_DOMAINS)
     if unknown:
@@ -79,7 +89,7 @@ def main(domains: list[str] | None = None) -> None:
     client = cdsapi.Client()
     today = date.today()
     for name in domains:
-        download_domain(client, name, today)
+        download_domain(client, name, today, stamp)
 
 
 if __name__ == "__main__":

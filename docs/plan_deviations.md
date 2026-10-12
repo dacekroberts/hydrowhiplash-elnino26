@@ -98,6 +98,129 @@ additions stay distinguishable from the original plan.
   result changes).
 - **Plan doc:** left as written.
 
+### D89 · A fire-by-fire comparison of MTBS and WFIGS, with its own years setting
+- **Plan:** `ANALYSIS_PLAN.md` and `src/config.py` hold one source check,
+  D60 as re-run on 2023 (`SOURCE_CHECK_YEAR`, union area per region). The
+  fire-by-fire match of 2021-2024 behind the methods page's "WFIGS area
+  is a median 0.96 to 0.98 of MTBS's" was a one-off probe (`DECISIONS.md`
+  2026-10-07), with no script and no setting.
+- **Actual:** owner, 2026-10-12 ("run matching"): the match is a script,
+  `scripts/source_pairs.py`, with its rule written down (same calendar
+  ignition year, whole fires of at least `MIN_FIRE_HA` in both products,
+  WFIGS fires touching a US study region, one-to-one overlaps only) and
+  its years in a new setting, `SOURCE_PAIR_YEARS` (2021, 2024). Its
+  summary goes into `results/tables/methods_numbers.csv`.
+- **Why:** the page's number needs a committed table, and the probe's
+  rule was not recorded, so it could not be rerun as it was.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Methods numbers and notices".
+- **Substantial:** no (descriptive; no test or registered number reads
+  it; decided after results were seen, and it sets no burned area beside
+  ENSO).
+- **Plan doc:** left as written.
+
+### D88 · Rebuilt tables go beside the pinned ones, not over them
+- **Plan:** `ACTION_PLAN.md` Phase 5, hard-line item: "download every
+  published 2026 month, refit SPEI and rebuild the tables, and report
+  the changed numbers"; D73: "Every later download writes to a release-
+  or retrieval-stamped path, never over a pinned input", which names
+  downloads only. The climate tables the item rebuilds are pinned
+  inputs of run1.
+- **Actual:** owner, 2026-10-12 ("option a"): one parallel tree for
+  everything after run1. Downloads go to
+  `data/raw/later/<stamp>/<source folder>/` (`--stamp` on every download
+  script, a `retrieval.json` record closing each folder); rebuilt tables
+  go to `results/tables/tracker/<stamp>/`. No pinned file is written,
+  and "report the changed numbers" is a cell-by-cell comparison of the
+  new table with the pinned one (`later.compare_tables`). New settings:
+  `LATER_RAW`, `TRACKER_TABLES`.
+- **Why:** run1's provenance points at the pinned files; a rebuild in
+  place, even with a logged re-pin, would leave `results/tables/`
+  holding files run1 did not read.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Stamped paths: one parallel
+  tree".
+- **Substantial:** yes (procedure for the hard-line item).
+- **Plan doc:** `ACTION_PLAN.md` Phase 5, hard-line item, sentence
+  marked `[mid-project: D88]`. No test or rule touched.
+
+### D87 · Rollout calendar: one dated list, new settings in `config.py`
+- **Plan:** `ACTION_PLAN.md` "Second goal", tracker item: "its dates live
+  in `src/config.py`" (`TRACKER_WINDOW`, `TRACKER_FREEZE_DATE`,
+  `TRACKER_DATA_DAY`); no plan lists the arrivals after April 2027, the
+  undated releases (CNFDB 2025, CanSWE v9) or what each one changes on
+  the site. D76: the forecast is published "in dated stages as the winter
+  data arrive, the final one after the April 1 snowpack", with no number
+  of stages and no dates.
+- **Actual:** owner, 2026-10-12: "session 10 might need to scaffold
+  exactly what the site is waiting for and when". `src/rollout.py` builds
+  one list (18 items) from the settings already in `config.py` and writes
+  `results/tables/rollout_calendar.json`; the tracker page's timetable
+  and the scheduled reminders read that file. New settings, added after
+  the freeze: `ROLLOUT_WINDOWS` (expected windows for five arrivals with
+  no fixed date; expectations from release records, not measurements),
+  `ROLLOUT_REMINDER_LEAD_DAYS` (3), `RONI_REVISION_MONTHS` (2). The six
+  tracker months are October to March: the months whose data arrives
+  inside `TRACKER_WINDOW`. The list marks two forecast stages, the first
+  at CPC's first RONI release after February 2027 (the frozen plan's
+  input for the H3a forecast), the final at the 1 April snowpack; a
+  proposal until the owner confirms the stages. Confirmed by the owner
+  the same day ("Two stages").
+- **Why:** the timetable, the reminders and the pipeline would otherwise
+  each hold their own dates.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: rollout calendar".
+- **Substantial:** no (no test, input or registered number changes; the
+  new settings are read only by `src/rollout.py`).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", tracker item, sentence
+  marked `[mid-project: D87]`.
+
+### D86 · A shared design system (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" names a Quarto site and its
+  pieces; no plan names a theme, a tokens file or a design system
+  (`site/_quarto.yml` uses the stock `cosmo` theme).
+- **Actual:** owner, 2026-10-12 (sessions 9 and 10): the site's look is
+  redesigned with a design system of its own, a Design System artifact
+  plus one tokens file in the repository read by the site, the results
+  page template, the methods page and the figures.
+- **Why:** five pages and the figures had drifted into separate
+  palettes; one source keeps them in step.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: design system,
+  hosting and the map page".
+- **Substantial:** no (presentation only; no test, input or result
+  changes).
+- **Plan doc:** left as written.
+
+### D85 · Map page (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists six site pieces; no map
+  of the regions with a dataset toggle is among them.
+- **Actual:** owner, 2026-10-12 (session 10): a map page with all seven
+  regions and a toggle per dataset (fire, snowpack, rainfall,
+  temperature), built after the stamped download paths and the hard-line
+  item. It shows each year's values from the committed region x year
+  tables; no trend statistic is computed.
+- **Why:** owner's idea at the end of session 9; a reader sees where the
+  regions are and how the datasets differ across them.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: design system,
+  hosting and the map page".
+- **Substantial:** yes (a new site piece).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", new item marked
+  `[mid-project: D85]`. No row in the frozen plan's deviations log (no
+  registered or reported test changes).
+
+### D84 · Hosting: own domain through Cloudflare, not GitHub Pages
+- **Plan:** `ACTION_PLAN.md` "Second goal": "A Quarto site in `site/`,
+  published on GitHub Pages"; `README.md`: "Quarto explainer site
+  (published to GitHub Pages)".
+- **Actual:** owner, 2026-10-12 (session 10): the static Quarto build is
+  hosted on the owner's own domain through Cloudflare. Streamlit was
+  considered and rejected. Nothing is deployed yet; the exact Cloudflare
+  setup is settled when the first piece is ready.
+- **Why:** the owner's own domain; a direct upload of the built site
+  does not need a public repository.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: design system,
+  hosting and the map page".
+- **Substantial:** yes (where the site is published).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", sentence marked
+  `[mid-project: D84]`; the `README.md` line left as written.
+
 ### D83 · Prediction model moved up: next after the registered runs
 - **Plan:** `ACTION_PLAN.md` "Later extensions": "Prediction model. ...
   Builds on Phases 2-4, so start it once the historical analysis is

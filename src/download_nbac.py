@@ -29,7 +29,7 @@ import sys
 
 import requests
 
-from src import pin_inputs
+from src import later, pin_inputs
 from src.config import NBAC_FILES, NBAC_RAW, NBAC_URL
 from src.download_cnfdb import size_check
 from src.download_mtbs import IDENTITY, now_utc, server_headers, write_manifest
@@ -39,20 +39,27 @@ OUT = NBAC_RAW
 
 
 def main(args: list[str] | None = None) -> None:
-    refresh = "--refresh" in (args or [])
-    # every file in this folder is a pinned input, and each run rewrites the
-    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
-    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
-    OUT.mkdir(parents=True, exist_ok=True)
+    args = list(args or [])
+    stamp = later.take_stamp(args)
+    refresh = "--refresh" in args
+    if stamp:
+        # a later download: its own stamped folder, never the pinned one (D73)
+        out = later.open_folder(OUT, stamp)
+    else:
+        # every file in this folder is a pinned input, and each run rewrites the
+        # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+        out = OUT
+        pin_inputs.guard_folder(out, "--rebuild" in args)
+        out.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
     record = {"url": NBAC_URL, "accessed_utc": now_utc(), "files": {}}
     try:
-        download(session, NBAC_URL, OUT / "listing.html", headers=IDENTITY)
+        download(session, NBAC_URL, out / "listing.html", headers=IDENTITY)
         for name in NBAC_FILES:
             url = NBAC_URL + name
             headers = server_headers(session, url)
             expected = int(headers["Content-Length"])
-            target = OUT / name
+            target = out / name
             record["files"][name] = {**headers, "bytes": expected}
             if target.exists() and not refresh and target.stat().st_size == expected:
                 print(f"skip {name} (present, {expected:,} bytes)")
@@ -62,8 +69,10 @@ def main(args: list[str] | None = None) -> None:
                      check=size_check(expected, name.endswith(".zip")))
     except ClientError as err:
         raise stop_on_client_error(err) from err
-    write_manifest(OUT / "manifest.json", record)
+    write_manifest(out / "manifest.json", record)
     print("manifest.json written")
+    if stamp:
+        later.record(out, stamp, NBAC_URL)
 
 
 if __name__ == "__main__":

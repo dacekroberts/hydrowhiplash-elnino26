@@ -1,0 +1,74 @@
+---
+title: "Tracking the 2026–27 winter"
+---
+
+<!-- The live tracker (ACTION_PLAN "Second goal"; D44, D46): one page in
+     three states, before winter, tracking and final. Built so far: the
+     timetable only (session 10). The region x month tiles and the countdowns
+     come with the hard-line item, when the first month of data arrives.
+
+     DRAFT 2026-10-12. The sentences on this page and the wording of each
+     timetable row were drafted by Claude for the owner to edit and approve.
+     The rows, dates and done marks are read from
+     ../results/tables/rollout_calendar.json (python -m src.rollout); nothing
+     is typed here. -->
+
+```{python}
+#| echo: false
+import html
+import json
+from pathlib import Path
+
+T = Path("../results/tables")
+CAL = json.loads((T / "rollout_calendar.json").read_text("utf-8"))
+ROWS = [row for row in CAL["items"] if row["reader"]]
+```
+
+::: {.callout-note title="Draft"}
+This page is a draft. Only the timetable is built; the month-by-month tiles
+arrive with the first month of winter data.
+:::
+
+## What this page is waiting for
+
+I fixed the tests on `{python} ROWS[0]["when"]`, before opening any fire
+data. The winter itself arrives a month at a time. Each row below is
+something this site is waiting for, when I expect it, and what changes here
+when it comes. The dates are when the data is expected to be published, not
+promises.
+
+```{python}
+#| echo: false
+#| output: asis
+lines = ['<ol class="timetable">']
+for row in ROWS:
+    state = ' class="done"' if row["done"] else ""
+    lines.append(
+        f'<li{state} data-end="{row["end"]}"><i class="st"></i>'
+        f'<span class="num">{html.escape(row["when"])}</span>'
+        f'<span class="what">{html.escape(row["title"])}<span class="chip">next</span></span>'
+        f'<span class="then">{html.escape(row["site_change"])}</span></li>')
+lines.append("</ol>")
+print("```{=html}\n" + "\n".join(lines) + "\n```")
+```
+
+```{=html}
+<script>
+// The next row is the first one not yet done whose date has not passed, as of
+// the visitor's own day. Done marks come from the build, never from the clock.
+(function () {
+  var today = new Date().toISOString().slice(0, 10);
+  var rows = document.querySelectorAll("ol.timetable > li");
+  for (var i = 0; i < rows.length; i++) {
+    if (!rows[i].classList.contains("done") && rows[i].dataset.end >= today) {
+      rows[i].classList.add("next");
+      break;
+    }
+  }
+})();
+</script>
+```
+
+A filled dot is something already in this site's files. A date that has
+passed with an open dot means the data came late or I have not rebuilt the
+page yet.

@@ -10,7 +10,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
 DATA_PROCESSED = ROOT / "data" / "processed"
+# Everything fetched or rebuilt after the registered runs (D73; src/later.py):
+# downloads under LATER_RAW/<stamp>/, rebuilt tables under
+# TRACKER_TABLES/<stamp>/ (set below, after RESULTS). Never a pinned path.
+LATER_RAW = DATA_RAW / "later"
 RESULTS = ROOT / "results"
+TRACKER_TABLES = RESULTS / "tables" / "tracker"
 
 # Coordinate reference systems
 # Geographic, for storage and display only. Never measure area or distance in it.
@@ -71,6 +76,33 @@ POOLED_LAST_YEAR = CNFDB_LAST_YEAR  # H4: 1984-2024 for all five regions
 TRACKER_WINDOW = ("2026-10-01", "2027-04-30")
 TRACKER_FREEZE_DATE = "2026-10-07"
 TRACKER_DATA_DAY = 7
+
+# Rollout calendar (D87): src/rollout.py builds one dated list of every
+# arrival the site waits on and writes it to
+# results/tables/rollout_calendar.json; the tracker page's timetable and the
+# scheduled reminders both read that file. Dates the settings above already
+# fix (monthly data, the April 1 snowpack, the verification dates) are
+# derived there, not repeated here. The windows below are expectations taken
+# from each publisher's release record, not measurements; tighten one when
+# its arrival is observed.
+#   djf_index: CPC's first RONI release after February 2027, the forecast's
+#     input (ANALYSIS_PLAN "Execution details"). CPC's posting day is not
+#     measured; each monthly check records it.
+#   cnfdb_2025, cnfdb_2026: the current release's files are dated 28 Jan 2026
+#     and end in 2024 (D56); the frozen plan says "about January 2027".
+#   canswe_v9, canswe_v10: one version a year since v5, published February
+#     or March with data to the previous July (docs/alberta_swe_sources.md).
+ROLLOUT_WINDOWS = {
+    "djf_index": ("2027-03-01", "2027-03-14"),
+    "cnfdb_2025": ("2027-01-01", "2027-02-28"),
+    "canswe_v9": ("2027-02-01", "2027-03-31"),
+    "cnfdb_2026": ("2028-01-01", "2028-02-29"),
+    "canswe_v10": ("2028-02-01", "2028-03-31"),
+}
+ROLLOUT_REMINDER_LEAD_DAYS = 3  # a reminder runs this many days before its date
+# CPC may revise a RONI value for this many months after posting it
+# (DATA_SOURCES.md, ONI/RONI row); revisions are reported, not substituted.
+RONI_REVISION_MONTHS = 2
 
 # Alaska is clipped at this longitude: west of it lie only the outer Aleutian
 # and Bering Sea islands (1.1 Mha, 0.7% of the state, almost no fire), and the
@@ -210,6 +242,10 @@ MTBS_WFIGS_CUTOVER = "2024-01-01"
 # SOURCE_CHECK_YEAR; otherwise the frozen years stand. On 2024 (D60 as
 # first computed) d was 0.23-0.90, from MTBS's unmapped 2024 fires.
 SOURCE_CHECK_YEAR = 2023
+# Calendar years over which MTBS and WFIGS are compared fire by fire for the
+# methods page (scripts/source_pairs.py): the years both products hold before
+# and at the cutover. Descriptive; no test reads it (D89).
+SOURCE_PAIR_YEARS = (2021, 2024)
 SOURCE_AGREEMENT_MAX_LOG_DIFF = 0.10
 # Each region takes fires only from its own country's records, so a
 # cross-border fire is never counted twice.

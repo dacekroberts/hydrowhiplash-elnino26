@@ -1,0 +1,434 @@
+{
+  "lead_days": 3,
+  "items": [
+    {
+      "id": "plan_frozen",
+      "kind": "record",
+      "start": "2026-10-07",
+      "end": "2026-10-07",
+      "precision": "on",
+      "title": "Analysis plan frozen",
+      "site_change": "Every page states this date: the tests were fixed before any fire data was opened.",
+      "prepare": "None.",
+      "basis": "TRACKER_FREEZE_DATE; tag analysis-plan-frozen",
+      "reader": true,
+      "own_reminder": false,
+      "checked_at": [],
+      "evidence": "tables/site_settings.json",
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "7 Oct 2026",
+      "done": true
+    },
+    {
+      "id": "registered_runs",
+      "kind": "record",
+      "start": "2026-10-12",
+      "end": "2026-10-12",
+      "precision": "on",
+      "title": "Registered tests run once and committed",
+      "site_change": "The results and the methods pages read run1.",
+      "prepare": "None.",
+      "basis": "results/tables/run1 provenance; tag registered-run1",
+      "reader": true,
+      "own_reminder": false,
+      "checked_at": [],
+      "evidence": "tables/run1/registered_tests.csv",
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "12 Oct 2026",
+      "done": true
+    },
+    {
+      "id": "era5_2026_10",
+      "kind": "data",
+      "start": "2026-11-07",
+      "end": "2026-11-07",
+      "precision": "by",
+      "title": "October's ERA5-Land monthly data",
+      "site_change": "The tracker moves from its before-winter state to tracking: October's tile fills in for each region.",
+      "prepare": "The hard-line item (ACTION_PLAN Phase 5, D55): set ERA5_LAG_MONTHS from 3 to 1, download every published 2026 month to a stamped path (D73), refit SPEI (about 55 minutes), rebuild the tables and report the changed numbers. Recheck TRACKER_DATA_DAY against the day October appeared. Needs the stamped download paths built first.",
+      "basis": "TRACKER_WINDOW, TRACKER_DATA_DAY (D55)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2026-11-04",
+      "when": "by 7 Nov 2026",
+      "done": false
+    },
+    {
+      "id": "era5_2026_11",
+      "kind": "data",
+      "start": "2026-12-07",
+      "end": "2026-12-07",
+      "precision": "by",
+      "title": "November's ERA5-Land monthly data",
+      "site_change": "November's tile fills in on the tracker for each region.",
+      "prepare": "Download November 2026 to a stamped path, rebuild the tracker tables, render the site. Record the day CPC posted this month's RONI value.",
+      "basis": "TRACKER_WINDOW, TRACKER_DATA_DAY (D55)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2026-12-04",
+      "when": "by 7 Dec 2026",
+      "done": false
+    },
+    {
+      "id": "cnfdb_2025",
+      "kind": "release",
+      "start": "2027-01-01",
+      "end": "2027-02-28",
+      "precision": "window",
+      "title": "CNFDB 2025 fire polygons (no fixed date)",
+      "site_change": "The 2025 seasons of BC, AB and YT are reported beside the results; the registered tests keep 1984 to 2024.",
+      "prepare": "Check the CNFDB release folder for new file dates. If released: download to a stamped path (D73), read the release notes, report beside (D57). Reads polygons: ask the owner first.",
+      "basis": "ROLLOUT_WINDOWS; frozen plan deviations log (D57): about January 2027",
+      "reader": false,
+      "own_reminder": false,
+      "checked_at": [
+        "era5_2026_12",
+        "era5_2027_01",
+        "era5_2027_02"
+      ],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "Jan to Feb 2027",
+      "done": false
+    },
+    {
+      "id": "era5_2026_12",
+      "kind": "data",
+      "start": "2027-01-07",
+      "end": "2027-01-07",
+      "precision": "by",
+      "title": "December's ERA5-Land monthly data",
+      "site_change": "December's tile fills in on the tracker for each region.",
+      "prepare": "Download December 2026 to a stamped path, rebuild the tracker tables, render the site. Record the day CPC posted this month's RONI value.",
+      "basis": "TRACKER_WINDOW, TRACKER_DATA_DAY (D55)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2027-01-04",
+      "when": "by 7 Jan 2027",
+      "done": false
+    },
+    {
+      "id": "season_2026_closes",
+      "kind": "season",
+      "start": "2027-01-31",
+      "end": "2027-01-31",
+      "precision": "after",
+      "title": "California's 2026 fire season closes",
+      "site_change": "The 2026 season can be shown complete for every US region, still provisional (WFIGS) and outside the tests.",
+      "prepare": "No task in the plans yet: decide whether to download WFIGS again to a stamped path and describe 2026. Reads polygons: ask the owner first.",
+      "basis": "FIRE_SEASON_MONTHS (D43); ANALYSIS_PLAN Execution details: 2026 is described only",
+      "reader": false,
+      "own_reminder": false,
+      "checked_at": [
+        "era5_2027_01"
+      ],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "after 31 Jan 2027",
+      "done": false
+    },
+    {
+      "id": "canswe_v9",
+      "kind": "release",
+      "start": "2027-02-01",
+      "end": "2027-03-31",
+      "precision": "window",
+      "title": "CanSWE v9 station snow data (no fixed date)",
+      "site_change": "The station snow check beside the ERA5-Land snowpack gains April 2026 for Alberta.",
+      "prepare": "Check the Zenodo concept record for a v9. If released: read its terms (read-licence), download to a stamped path, rebuild the station index.",
+      "basis": "ROLLOUT_WINDOWS; docs/alberta_swe_sources.md release record",
+      "reader": false,
+      "own_reminder": false,
+      "checked_at": [
+        "era5_2027_01",
+        "djf_index",
+        "era5_2027_03"
+      ],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "Feb to Mar 2027",
+      "done": false
+    },
+    {
+      "id": "era5_2027_01",
+      "kind": "data",
+      "start": "2027-02-07",
+      "end": "2027-02-07",
+      "precision": "by",
+      "title": "January's ERA5-Land monthly data",
+      "site_change": "January's tile fills in on the tracker for each region.",
+      "prepare": "Download January 2027 to a stamped path, rebuild the tracker tables, render the site. Record the day CPC posted this month's RONI value.",
+      "basis": "TRACKER_WINDOW, TRACKER_DATA_DAY (D55)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2027-02-04",
+      "when": "by 7 Feb 2027",
+      "done": false
+    },
+    {
+      "id": "djf_index",
+      "kind": "index",
+      "start": "2027-03-01",
+      "end": "2027-03-14",
+      "precision": "window",
+      "title": "The December to February El Niño index (RONI), first release",
+      "site_change": "The winter is classed as El Niño, strong El Niño or neither, and the first forecast stage is published from the registered model.",
+      "prepare": "Fetch CPC's first RONI release after February to a stamped path the day it appears and record the retrieval date: the frozen plan fixes that release as the forecast's input. Then run the 2027 forecast from the H3a model for all seven regions with 80% intervals.",
+      "basis": "ROLLOUT_WINDOWS; ANALYSIS_PLAN Execution details, The 2027 forecast",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": "first",
+      "remind_on": "2027-02-26",
+      "when": "1 to 14 Mar 2027",
+      "done": false
+    },
+    {
+      "id": "era5_2027_02",
+      "kind": "data",
+      "start": "2027-03-07",
+      "end": "2027-03-07",
+      "precision": "by",
+      "title": "February's ERA5-Land monthly data",
+      "site_change": "February's tile fills in, so the December to February winter the tests use is complete.",
+      "prepare": "Download February 2027 to a stamped path, rebuild the tracker tables, render the site. Record the day CPC posted this month's RONI value.",
+      "basis": "TRACKER_WINDOW, TRACKER_DATA_DAY (D55)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2027-03-04",
+      "when": "by 7 Mar 2027",
+      "done": false
+    },
+    {
+      "id": "era5_2027_03",
+      "kind": "data",
+      "start": "2027-04-07",
+      "end": "2027-04-07",
+      "precision": "by",
+      "title": "March's ERA5-Land monthly data",
+      "site_change": "March's tile fills in, so the October to March precipitation total is complete.",
+      "prepare": "Download March 2027 to a stamped path, rebuild the tracker tables, render the site. Record the day CPC posted this month's RONI value.",
+      "basis": "TRACKER_WINDOW, TRACKER_DATA_DAY (D55)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2027-04-04",
+      "when": "by 7 Apr 2027",
+      "done": false
+    },
+    {
+      "id": "swe_april1",
+      "kind": "data",
+      "start": "2027-04-08",
+      "end": "2027-04-08",
+      "precision": "about",
+      "title": "Snowpack on 1 April (ERA5-Land)",
+      "site_change": "The final forecast stage is published, with the two snowpack and winter moisture forecasts beside it, and the tracker becomes the record of what arrived when.",
+      "prepare": "Download the 1 April hourly field to a stamped path, rebuild the snowpack table, run the secondary H6 forecasts, move the tracker to its final state.",
+      "basis": "FORECAST_YEAR, ERA5_HOURLY_LAG_DAYS; DECISIONS 2026-10-05 SWE source",
+      "reader": true,
+      "own_reminder": false,
+      "checked_at": [
+        "era5_2027_03"
+      ],
+      "evidence": null,
+      "forecast_stage": "final",
+      "remind_on": null,
+      "when": "about 8 Apr 2027",
+      "done": false
+    },
+    {
+      "id": "roni_revisions_close",
+      "kind": "index",
+      "start": "2027-05-14",
+      "end": "2027-05-14",
+      "precision": "about",
+      "title": "Revisions to the December to February index end",
+      "site_change": "Any revision is reported beside the forecast; the forecast keeps the first release.",
+      "prepare": "Fetch RONI again to a stamped path, compare the December to February value with the first release, report the difference.",
+      "basis": "RONI_REVISION_MONTHS; ANALYSIS_PLAN: later revisions are reported, not substituted",
+      "reader": false,
+      "own_reminder": true,
+      "checked_at": [
+        "era5_2027_03"
+      ],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2027-05-11",
+      "when": "about 14 May 2027",
+      "done": false
+    },
+    {
+      "id": "verify_north",
+      "kind": "verification",
+      "start": "2027-10-31",
+      "end": "2027-10-31",
+      "precision": "after",
+      "title": "The 2027 fire season ends in PNW, BC, AB, AK and YT",
+      "site_change": "The verification panel sets what burned against the forecast for these five regions.",
+      "prepare": "Decide the 2027 burned-area source first: WFIGS is provisional for the US regions, and on its release record CNFDB 2027 arrives about January 2029, so BC, AB and YT have no registered source this fall. Reads polygons: ask the owner first.",
+      "basis": "FIRE_SEASON_MONTHS, FORECAST_YEAR (D46)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2027-10-28",
+      "when": "after 31 Oct 2027",
+      "done": false
+    },
+    {
+      "id": "cnfdb_2026",
+      "kind": "release",
+      "start": "2028-01-01",
+      "end": "2028-02-29",
+      "precision": "window",
+      "title": "CNFDB 2026 fire polygons (no fixed date)",
+      "site_change": "The 2026 seasons of BC, AB and YT are reported beside the results.",
+      "prepare": "As for CNFDB 2025.",
+      "basis": "ROLLOUT_WINDOWS; CNFDB release record (D56)",
+      "reader": false,
+      "own_reminder": false,
+      "checked_at": [
+        "verify_california"
+      ],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "Jan to Feb 2028",
+      "done": false
+    },
+    {
+      "id": "verify_california",
+      "kind": "verification",
+      "start": "2028-01-31",
+      "end": "2028-01-31",
+      "precision": "after",
+      "title": "The 2027 fire season ends in NorCal and SoCal",
+      "site_change": "The verification panel is completed for California.",
+      "prepare": "As for the fall check. Also look for CNFDB 2026 and, in February or March, CanSWE v10 (April 2027 station values).",
+      "basis": "FIRE_SEASON_MONTHS, FORECAST_YEAR (D43, D46)",
+      "reader": true,
+      "own_reminder": true,
+      "checked_at": [],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": "2028-01-28",
+      "when": "after 31 Jan 2028",
+      "done": false
+    },
+    {
+      "id": "canswe_v10",
+      "kind": "release",
+      "start": "2028-02-01",
+      "end": "2028-03-31",
+      "precision": "window",
+      "title": "CanSWE v10 station snow data (no fixed date)",
+      "site_change": "The station snow check gains April 2027, the forecast's own spring.",
+      "prepare": "As for CanSWE v9.",
+      "basis": "ROLLOUT_WINDOWS; docs/alberta_swe_sources.md",
+      "reader": false,
+      "own_reminder": false,
+      "checked_at": [
+        "verify_california"
+      ],
+      "evidence": null,
+      "forecast_stage": null,
+      "remind_on": null,
+      "when": "Feb to Mar 2028",
+      "done": false
+    }
+  ],
+  "reminders": [
+    {
+      "date": "2026-11-04",
+      "for": "era5_2026_10",
+      "also_check": []
+    },
+    {
+      "date": "2026-12-04",
+      "for": "era5_2026_11",
+      "also_check": []
+    },
+    {
+      "date": "2027-01-04",
+      "for": "era5_2026_12",
+      "also_check": [
+        "cnfdb_2025"
+      ]
+    },
+    {
+      "date": "2027-02-04",
+      "for": "era5_2027_01",
+      "also_check": [
+        "cnfdb_2025",
+        "season_2026_closes",
+        "canswe_v9"
+      ]
+    },
+    {
+      "date": "2027-02-26",
+      "for": "djf_index",
+      "also_check": [
+        "canswe_v9"
+      ]
+    },
+    {
+      "date": "2027-03-04",
+      "for": "era5_2027_02",
+      "also_check": [
+        "cnfdb_2025"
+      ]
+    },
+    {
+      "date": "2027-04-04",
+      "for": "era5_2027_03",
+      "also_check": [
+        "canswe_v9",
+        "swe_april1",
+        "roni_revisions_close"
+      ]
+    },
+    {
+      "date": "2027-05-11",
+      "for": "roni_revisions_close",
+      "also_check": []
+    },
+    {
+      "date": "2027-10-28",
+      "for": "verify_north",
+      "also_check": []
+    },
+    {
+      "date": "2028-01-28",
+      "for": "verify_california",
+      "also_check": [
+        "cnfdb_2026",
+        "canswe_v10"
+      ]
+    }
+  ]
+}

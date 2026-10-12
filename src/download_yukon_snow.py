@@ -28,6 +28,7 @@ from pathlib import Path
 
 import requests
 
+from src import later
 from src.config import YUKON_SNOW_RAW, YUKON_SNOW_URLS
 from src.download_nrcs_snow import ClientError, download, stop_on_client_error
 
@@ -50,8 +51,9 @@ def check_header(path: Path) -> None:
 
 def main(args: list[str] | None = None) -> None:
     args = list(args or [])
+    stamp = later.take_stamp(args)
     refresh = "--refresh" in args
-    out = OUT
+    out = later.open_folder(OUT, stamp) if stamp else OUT
     out.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
     for name, url in YUKON_SNOW_URLS.items():
@@ -65,6 +67,8 @@ def main(args: list[str] | None = None) -> None:
         except ClientError as err:
             raise stop_on_client_error(err) from err
         print(f"  {target.stat().st_size:,} bytes")
+    if stamp:
+        later.record(out, stamp, "Yukon snow survey")
 
 
 if __name__ == "__main__":

@@ -9,12 +9,20 @@ website:
     left:
       - href: index.qmd
         text: Overview
+      - href: tracker.qmd
+        text: Tracker
       - href: methods.qmd
         text: Methods and limitations
 
 author: "Dace Roberts"
 
+# theme/ is written by `python -m src.theme` from theme/tokens.json; edit the
+# tokens, not the files in it.
 format:
   html:
-    theme: cosmo
+    theme:
+      light: theme/light.scss
+      dark: theme/dark.scss
+    respect-user-color-scheme: true
+    include-in-header: theme/fonts.html
     toc: true

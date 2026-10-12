@@ -1,0 +1,82 @@
+// Generated from theme/tokens.json by python -m src.theme. Edit the tokens, not this file.
+/*-- scss:defaults --*/
+$body-bg: #0f1612;
+$body-color: #e6ece3;
+$link-color: #7cc79a;
+$primary: #7cc79a;
+$secondary: #a0b0a4;
+$border-color: #2c3a31;
+$code-bg: #0b100d;
+$code-color: #e6ece3;
+$navbar-bg: #0f1612;
+$navbar-fg: #e6ece3;
+$navbar-hl: #7cc79a;
+$footer-bg: #0f1612;
+$footer-fg: #a0b0a4;
+$font-family-sans-serif: "Public Sans", "Segoe UI", system-ui, sans-serif;
+$font-family-monospace: "JetBrains Mono", ui-monospace, Consolas, monospace;
+$headings-font-family: "National Park", "Arial Narrow", system-ui, sans-serif;
+$headings-color: #e6ece3;
+$font-size-root: 16px;
+$border-radius: 4px;
+/*-- scss:rules --*/
+:root { --page: #0f1612; --surface: #18211b; --surface-sunk: #0b100d; --rule: #2c3a31; --rule-strong: #6f8275; --ink: #e6ece3; --ink-muted: #a0b0a4; --evergreen: #7cc79a; --on-evergreen: #0f1612; --moss: #a9c77c; --lichen: #2a3d2f; --fire: #f2704f; --fire-soft: #45201a; --water: #7dbff0; --water-soft: #17324a; --snow: #6fcfcb; --enso: #e8b24a; --enso-strong: #f7d58f; --enso-soft: #3d3014; --enso-cold: #a99be0; --ghost: #86988b; --fire-1: #f6dcc9; --fire-2: #eeaa85; --fire-3: #de6f47; --fire-4: #c93a1e; --fire-5: #8a1f10; --rain-1: #dbe9f3; --rain-2: #a5c8e4; --rain-3: #629fd0; --rain-4: #1e68a8; --rain-5: #0f3f6e; --snow-1: #e6f4f3; --snow-2: #b3dedb; --snow-3: #74c0bd; --snow-4: #2f9a99; --snow-5: #12666a; --temp-cold-2: #2f6fae; --temp-cold-1: #9dc3e0; --temp-mid: #f0eee6; --temp-warm-1: #eeb08a; --temp-warm-2: #c8502c; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-6: 24px; --space-12: 48px; --radius-sm: 2px; --radius-md: 4px; --radius-pill: 999px; --stroke-hair: 1px; --stroke-mark: 2px; --stroke-interval: 4px; --font-display: "National Park", "Arial Narrow", system-ui, sans-serif; --font-sans: "Public Sans", "Segoe UI", system-ui, sans-serif; --font-mono: "JetBrains Mono", ui-monospace, Consolas, monospace; }
+body { line-height: 1.62; }
+main p, main li, main blockquote { max-width: 68ch; }
+h1, h2, h3, h4, .navbar-brand, .navbar-nav { font-family: var(--font-display); text-wrap: balance; }
+h1.title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; }
+main h2 { font-size: 1.625rem; font-weight: 700; line-height: 1.2; margin-top: 3rem;
+  padding: 1rem 0 0; border-bottom: 0; border-top: var(--stroke-mark) solid var(--evergreen); }
+main h3 { font-size: 1.125rem; font-weight: 700; line-height: 1.3; margin-top: 1.9rem; }
+code, pre, kbd { font-family: var(--font-mono); font-size: 0.86em; }
+p code, li code, td code { background: var(--surface-sunk); color: var(--ink);
+  padding: 1px 4px; border-radius: var(--radius-sm); }
+a { text-decoration-color: var(--rule-strong); text-underline-offset: 2px; }
+a:focus-visible { outline: var(--stroke-mark) solid var(--evergreen); outline-offset: 2px; }
+blockquote { border-left: 3px solid var(--rule); color: var(--ink-muted); padding-left: 14px; }
+main table, main .table { font-size: 0.86rem; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--rule); }
+main .table > :not(caption) > * > * { background: none; color: inherit;
+  border-bottom-color: var(--rule); padding: 6px 11px; }
+main .table thead th { font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted);
+  border-bottom: 1px solid var(--rule-strong); }
+main td[style*="right"] { font-family: var(--font-mono); font-variant-numeric: tabular-nums;
+  white-space: nowrap; }
+main td strong { color: var(--evergreen); }
+div.callout.callout-style-default { border: 0; border-top: var(--stroke-mark) solid var(--evergreen);
+  border-radius: 0 0 var(--radius-md) var(--radius-md); background: var(--surface-sunk);
+  color: var(--ink); max-width: 68ch; }
+div.callout .callout-header { background: none; padding-bottom: 0; font-family: var(--font-sans);
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--ink-muted); }
+div.callout .callout-icon-container { display: none; }
+main .cell-output-display { background: #f9faf5; border: 1px solid var(--rule);
+  border-radius: var(--radius-md); padding: var(--space-3); overflow-x: auto; }
+main .cell-output-display svg, main .cell-output-display img { display: block; margin: 0 auto;
+  max-width: 100%; height: auto; }
+.navbar { border-bottom: 1px solid var(--rule); }
+.navbar-brand { font-weight: 800; }
+#TOC, .sidebar nav[role="doc-toc"] { font-size: 0.85rem; }
+.sidebar nav[role="doc-toc"] ul > li > a.active { border-left-color: var(--evergreen);
+  color: var(--evergreen) !important; }
+.nav-footer { font-size: 0.84rem; color: var(--ink-muted); border-top: 1px solid var(--rule); }
+ol.timetable { list-style: none; margin: var(--space-4) 0 0; padding: 0; background: var(--surface);
+  border: 1px solid var(--rule); border-radius: var(--radius-md); }
+ol.timetable > li { display: grid; grid-template-columns: 18px 9.5rem minmax(0, 1fr);
+  gap: 2px var(--space-3); padding: 10px var(--space-4); border-bottom: 1px solid var(--rule);
+  align-items: baseline; max-width: none; }
+ol.timetable > li:last-child { border-bottom: 0; }
+ol.timetable .st { width: 10px; height: 10px; border-radius: 50%; box-sizing: border-box;
+  border: var(--stroke-mark) solid var(--rule-strong); align-self: center; }
+ol.timetable .done .st { background: var(--moss); border-color: var(--moss); }
+ol.timetable .next .st { border-color: var(--evergreen); box-shadow: 0 0 0 3px var(--lichen); }
+ol.timetable .num { font-family: var(--font-mono); font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums; }
+ol.timetable .what { font-weight: 600; }
+ol.timetable .then { grid-column: 3; color: var(--ink-muted); font-size: 0.84rem; }
+ol.timetable .chip { font-family: var(--font-sans); font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--evergreen); margin-left: 8px; }
+ol.timetable li:not(.next) .chip { display: none; }
+@media (max-width: 575px) { ol.timetable > li { grid-template-columns: 18px minmax(0, 1fr); }
+  ol.timetable .what, ol.timetable .then { grid-column: 2; } }

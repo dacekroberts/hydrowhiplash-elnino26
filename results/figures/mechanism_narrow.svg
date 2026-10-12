@@ -25,7 +25,7 @@ L 331.2 587.236
 L 331.2 0 
 L 0 0 
 z
-" style="fill: #ffffff"/>
+" style="fill: #f9faf5"/>
   </g>
   <g id="axes_1">
    <g id="patch_2">
@@ -39,7 +39,7 @@ Q 13.248 14.04 13.248 20.7792
 L 13.248 57.8448 
 Q 13.248 64.584 17.2224 64.584 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #f2f2ef; stroke: #8a8984; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #e1e7da; stroke: #7d8c7a; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_3">
     <path d="M 17.2224 129.168 
@@ -52,7 +52,7 @@ Q 13.248 78.624 13.248 85.3632
 L 13.248 122.4288 
 Q 13.248 129.168 17.2224 129.168 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #f2f2ef; stroke: #8a8984; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #e1e7da; stroke: #7d8c7a; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_4">
     <path d="M 10.5984 294.84 
@@ -65,7 +65,7 @@ Q 6.624 233.064 6.624 239.8032
 L 6.624 288.1008 
 Q 6.624 294.84 10.5984 294.84 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #fdede7; stroke: #eb6834; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #e1ede9; stroke: #2f8f93; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_5">
     <path d="M 10.5984 376.272 
@@ -78,7 +78,7 @@ Q 6.624 314.496 6.624 321.2352
 L 6.624 369.5328 
 Q 6.624 376.272 10.5984 376.272 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #fdede7; stroke: #eb6834; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #e1ede9; stroke: #2f8f93; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_6">
     <path d="M 10.5984 457.704 
@@ -91,7 +91,7 @@ Q 6.624 395.928 6.624 402.6672
 L 6.624 450.9648 
 Q 6.624 457.704 10.5984 457.704 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #fdede7; stroke: #eb6834; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #e1ede9; stroke: #2f8f93; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_7">
     <path d="M 176.1984 294.84 
@@ -104,7 +104,7 @@ Q 172.224 233.064 172.224 239.8032
 L 172.224 288.1008 
 Q 172.224 294.84 176.1984 294.84 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #e5effa; stroke: #2a78d6; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #dee6e9; stroke: #17568f; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_8">
     <path d="M 176.1984 376.272 
@@ -117,7 +117,7 @@ Q 172.224 314.496 172.224 321.2352
 L 172.224 369.5328 
 Q 172.224 376.272 176.1984 376.272 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #e5effa; stroke: #2a78d6; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #dee6e9; stroke: #17568f; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="patch_9">
     <path d="M 176.1984 457.704 
@@ -130,21 +130,21 @@ Q 172.224 395.928 172.224 402.6672
 L 172.224 450.9648 
 Q 172.224 457.704 176.1984 457.704 
 z
-" clip-path="url(#pf934f0de11)" style="fill: #e5effa; stroke: #2a78d6; stroke-width: 1.5; stroke-linejoin: miter"/>
+" clip-path="url(#pf934f0de11)" style="fill: #dee6e9; stroke: #17568f; stroke-width: 1.5; stroke-linejoin: miter"/>
    </g>
    <g id="line2d_1">
     <path d="M 6.624 210.0384 
 L 158.976 210.0384 
-" clip-path="url(#pf934f0de11)" style="fill: none; stroke: #eb6834; stroke-width: 3; stroke-linecap: round"/>
+" clip-path="url(#pf934f0de11)" style="fill: none; stroke: #2f8f93; stroke-width: 3; stroke-linecap: round"/>
    </g>
    <g id="line2d_2">
     <path d="M 172.224 210.0384 
 L 324.576 210.0384 
-" clip-path="url(#pf934f0de11)" style="fill: none; stroke: #2a78d6; stroke-width: 3; stroke-linecap: round"/>
+" clip-path="url(#pf934f0de11)" style="fill: none; stroke: #17568f; stroke-width: 3; stroke-linecap: round"/>
    </g>
    <g id="text_1">
     <!-- El Niño: warm water in the -->
-    <g style="fill: #0b0b0b" transform="translate(82.825859 36.439969) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(82.825859 36.439969) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-Bold-28" d="M 588 4666 
 L 3834 4666 
@@ -494,7 +494,7 @@ z
    </g>
    <g id="text_2">
     <!-- central-eastern tropical Pacific -->
-    <g style="fill: #0b0b0b" transform="translate(70.063281 50.641141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(70.063281 50.641141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-Bold-46" d="M 3366 3391 
 L 3366 2478 
@@ -668,16 +668,16 @@ z
    <g id="patch_10">
     <path d="M 165.6 64.584 
 Q 165.6 71.604 165.6 76.946949 
-" style="fill: none; stroke: #8a8984; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #7d8c7a; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 168.4 71.346949 
 L 165.6 76.946949 
 L 162.8 71.346949 
 z
-" style="fill: #8a8984; stroke: #8a8984; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #7d8c7a; stroke: #7d8c7a; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_3">
     <!-- Pacific jet stream extends east and -->
-    <g style="fill: #0b0b0b" transform="translate(68.988203 100.925141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(68.988203 100.925141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-33" d="M 1259 4147 
 L 1259 2394 
@@ -1039,7 +1039,7 @@ z
    </g>
    <g id="text_4">
     <!-- shifts south -->
-    <g style="fill: #0b0b0b" transform="translate(133.754141 115.225141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(133.754141 115.225141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-4b" d="M 3513 2113 
 L 3513 0 
@@ -1142,16 +1142,16 @@ z
    <g id="patch_11">
     <path d="M 144.9 129.168 
 Q 113.85 144.612 84.301564 159.309135 
-" style="fill: none; stroke: #8a8984; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #7d8c7a; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 90.56254 159.322215 
 L 84.301564 159.309135 
 L 88.068614 154.308202 
 z
-" style="fill: #8a8984; stroke: #8a8984; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #7d8c7a; stroke: #7d8c7a; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_5">
     <!-- North -->
-    <g style="fill: #0b0b0b" transform="translate(63.55875 182.00175) scale(0.12 -0.12)">
+    <g style="fill: #17251d" transform="translate(63.55875 182.00175) scale(0.12 -0.12)">
      <use xlink:href="#DejaVuSans-Bold-31"/>
      <use xlink:href="#DejaVuSans-Bold-52" transform="translate(83.6875 0)"/>
      <use xlink:href="#DejaVuSans-Bold-55" transform="translate(152.390625 0)"/>
@@ -1159,7 +1159,7 @@ z
      <use xlink:href="#DejaVuSans-Bold-4b" transform="translate(249.5 0)"/>
     </g>
     <!-- PNW · BC · AB -->
-    <g style="fill: #0b0b0b" transform="translate(35.656875 197.495812) scale(0.12 -0.12)">
+    <g style="fill: #17251d" transform="translate(35.656875 197.495812) scale(0.12 -0.12)">
      <defs>
       <path id="DejaVuSans-Bold-3a" d="M 191 4666 
 L 1344 4666 
@@ -1271,7 +1271,7 @@ z
    </g>
    <g id="text_6">
     <!-- Milder winter, -->
-    <g style="fill: #0b0b0b" transform="translate(45.052812 260.981141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(45.052812 260.981141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-30" d="M 628 4666 
 L 1569 4666 
@@ -1340,7 +1340,7 @@ z
    </g>
    <g id="text_7">
     <!-- often drier -->
-    <g style="fill: #0b0b0b" transform="translate(53.894922 275.281141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(53.894922 275.281141) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-52"/>
      <use xlink:href="#DejaVuSans-49" transform="translate(61.1875 0)"/>
      <use xlink:href="#DejaVuSans-57" transform="translate(94.640625 0)"/>
@@ -1357,16 +1357,16 @@ z
    <g id="patch_12">
     <path d="M 82.8 294.84 
 Q 82.8 304.668 82.8 312.818949 
-" style="fill: none; stroke: #eb6834; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #2f8f93; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 85.6 307.218949 
 L 82.8 312.818949 
 L 80 307.218949 
 z
-" style="fill: #eb6834; stroke: #eb6834; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #2f8f93; stroke: #2f8f93; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_8">
     <!-- Less snow, earlier -->
-    <g style="fill: #0b0b0b" transform="translate(33.542344 342.413141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(33.542344 342.413141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-2f" d="M 628 4666 
 L 1259 4666 
@@ -1400,7 +1400,7 @@ z
    </g>
    <g id="text_9">
     <!-- melt -->
-    <g style="fill: #0b0b0b" transform="translate(70.374297 356.713141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(70.374297 356.713141) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-50"/>
      <use xlink:href="#DejaVuSans-48" transform="translate(97.40625 0)"/>
      <use xlink:href="#DejaVuSans-4f" transform="translate(158.9375 0)"/>
@@ -1410,16 +1410,16 @@ z
    <g id="patch_13">
     <path d="M 82.8 376.272 
 Q 82.8 386.1 82.8 394.250949 
-" style="fill: none; stroke: #eb6834; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #2f8f93; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 85.6 388.650949 
 L 82.8 394.250949 
 L 80 388.650949 
 z
-" style="fill: #eb6834; stroke: #eb6834; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #2f8f93; stroke: #2f8f93; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_10">
     <!-- Earlier or longer -->
-    <g style="fill: #0b0b0b" transform="translate(38.353984 423.845141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(38.353984 423.845141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-28" d="M 628 4666 
 L 3578 4666 
@@ -1492,7 +1492,7 @@ z
    </g>
    <g id="text_11">
     <!-- fire season -->
-    <g style="fill: #0b0b0b" transform="translate(52.727891 438.145141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(52.727891 438.145141) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-13af"/>
      <use xlink:href="#DejaVuSans-55" transform="translate(62.984375 0)"/>
      <use xlink:href="#DejaVuSans-48" transform="translate(101.890625 0)"/>
@@ -1508,16 +1508,16 @@ z
    <g id="patch_14">
     <path d="M 186.3 129.168 
 Q 217.35 144.612 246.898436 159.309135 
-" style="fill: none; stroke: #8a8984; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #7d8c7a; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 243.131386 154.308202 
 L 246.898436 159.309135 
 L 240.63746 159.322215 
 z
-" style="fill: #8a8984; stroke: #8a8984; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #7d8c7a; stroke: #7d8c7a; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_12">
     <!-- South -->
-    <g style="fill: #0b0b0b" transform="translate(228.546562 182.00175) scale(0.12 -0.12)">
+    <g style="fill: #17251d" transform="translate(228.546562 182.00175) scale(0.12 -0.12)">
      <defs>
       <path id="DejaVuSans-Bold-36" d="M 3834 4519 
 L 3834 3531 
@@ -1581,7 +1581,7 @@ z
      <use xlink:href="#DejaVuSans-Bold-4b" transform="translate(259.703125 0)"/>
     </g>
     <!-- SoCal -->
-    <g style="fill: #0b0b0b" transform="translate(229.4475 197.60175) scale(0.12 -0.12)">
+    <g style="fill: #17251d" transform="translate(229.4475 197.60175) scale(0.12 -0.12)">
      <use xlink:href="#DejaVuSans-Bold-36"/>
      <use xlink:href="#DejaVuSans-Bold-52" transform="translate(72.015625 0)"/>
      <use xlink:href="#DejaVuSans-Bold-26" transform="translate(140.71875 0)"/>
@@ -1591,7 +1591,7 @@ z
    </g>
    <g id="text_13">
     <!-- Wetter winter -->
-    <g style="fill: #0b0b0b" transform="translate(210.881406 268.131141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(210.881406 268.131141) scale(0.11 -0.11)">
      <defs>
       <path id="DejaVuSans-3a" d="M 213 4666 
 L 850 4666 
@@ -1628,16 +1628,16 @@ z
    <g id="patch_15">
     <path d="M 248.4 294.84 
 Q 248.4 304.668 248.4 312.818949 
-" style="fill: none; stroke: #2a78d6; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #17568f; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 251.2 307.218949 
 L 248.4 312.818949 
 L 245.6 307.218949 
 z
-" style="fill: #2a78d6; stroke: #2a78d6; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #17568f; stroke: #17568f; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_14">
     <!-- More grass growth -->
-    <g style="fill: #0b0b0b" transform="translate(197.279219 349.563141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(197.279219 349.563141) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-30"/>
      <use xlink:href="#DejaVuSans-52" transform="translate(86.28125 0)"/>
      <use xlink:href="#DejaVuSans-55" transform="translate(147.46875 0)"/>
@@ -1660,16 +1660,16 @@ z
    <g id="patch_16">
     <path d="M 248.4 376.272 
 Q 248.4 386.1 248.4 394.250949 
-" style="fill: none; stroke: #2a78d6; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: none; stroke: #17568f; stroke-width: 1.5; stroke-linecap: round"/>
     <path d="M 251.2 388.650949 
 L 248.4 394.250949 
 L 245.6 388.650949 
 z
-" style="fill: #2a78d6; stroke: #2a78d6; stroke-width: 1.5; stroke-linecap: round"/>
+" style="fill: #17568f; stroke: #17568f; stroke-width: 1.5; stroke-linecap: round"/>
    </g>
    <g id="text_15">
     <!-- More fine fuel -->
-    <g style="fill: #0b0b0b" transform="translate(210.60125 416.695141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(210.60125 416.695141) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-30"/>
      <use xlink:href="#DejaVuSans-52" transform="translate(86.28125 0)"/>
      <use xlink:href="#DejaVuSans-55" transform="translate(147.46875 0)"/>
@@ -1687,7 +1687,7 @@ z
    </g>
    <g id="text_16">
     <!-- once grass cures, -->
-    <g style="fill: #0b0b0b" transform="translate(200.144375 430.994711) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(200.144375 430.994711) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-52"/>
      <use xlink:href="#DejaVuSans-51" transform="translate(61.1875 0)"/>
      <use xlink:href="#DejaVuSans-46" transform="translate(124.5625 0)"/>
@@ -1709,7 +1709,7 @@ z
    </g>
    <g id="text_17">
     <!-- larger grass fires -->
-    <g style="fill: #0b0b0b" transform="translate(201.997187 445.295141) scale(0.11 -0.11)">
+    <g style="fill: #17251d" transform="translate(201.997187 445.295141) scale(0.11 -0.11)">
      <use xlink:href="#DejaVuSans-4f"/>
      <use xlink:href="#DejaVuSans-44" transform="translate(27.78125 0)"/>
      <use xlink:href="#DejaVuSans-55" transform="translate(89.0625 0)"/>
@@ -1732,7 +1732,7 @@ z
   </g>
   <g id="text_18">
    <!-- Expected pathways, tested in this study. -->
-   <g style="fill: #52514e" transform="translate(69.43625 489.007406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(69.43625 489.007406) scale(0.095 -0.095)">
     <defs>
      <path id="DejaVuSans-53" d="M 1159 525 
 L 1159 -1331 
@@ -1827,7 +1827,7 @@ z
     <use xlink:href="#DejaVuSans-11" transform="translate(1992.71875 0)"/>
    </g>
    <!-- AK and YT are also analysed, as northern regions; -->
-   <g style="fill: #52514e" transform="translate(47.214414 502.307406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(47.214414 502.307406) scale(0.095 -0.095)">
     <defs>
      <path id="DejaVuSans-24" d="M 2188 4044 
 L 1331 1722 
@@ -1949,7 +1949,7 @@ z
     <use xlink:href="#DejaVuSans-1e" transform="translate(2458.640625 0)"/>
    </g>
    <!-- no pathway is drawn for them because their -->
-   <g style="fill: #52514e" transform="translate(60.253164 515.607406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(60.253164 515.607406) scale(0.095 -0.095)">
     <defs>
      <path id="DejaVuSans-45" d="M 3116 1747 
 Q 3116 2381 2855 2742 
@@ -2022,7 +2022,7 @@ z
     <use xlink:href="#DejaVuSans-55" transform="translate(2176.71875 0)"/>
    </g>
    <!-- hypotheses are not yet set. -->
-   <g style="fill: #52514e" transform="translate(100.325352 528.907406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(100.325352 528.907406) scale(0.095 -0.095)">
     <use xlink:href="#DejaVuSans-4b"/>
     <use xlink:href="#DejaVuSans-5c" transform="translate(63.375 0)"/>
     <use xlink:href="#DejaVuSans-53" transform="translate(122.5625 0)"/>
@@ -2052,7 +2052,7 @@ z
     <use xlink:href="#DejaVuSans-11" transform="translate(1342.421875 0)"/>
    </g>
    <!-- NorCal is also analysed, as a contrast region; no -->
-   <g style="fill: #52514e" transform="translate(50.845937 542.207406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(50.845937 542.207406) scale(0.095 -0.095)">
     <defs>
      <path id="DejaVuSans-31" d="M 628 4666 
 L 1478 4666 
@@ -2140,7 +2140,7 @@ z
     <use xlink:href="#DejaVuSans-52" transform="translate(2354.6875 0)"/>
    </g>
    <!-- pathway is drawn for it because its expected -->
-   <g style="fill: #52514e" transform="translate(58.82 555.507406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(58.82 555.507406) scale(0.095 -0.095)">
     <use xlink:href="#DejaVuSans-53"/>
     <use xlink:href="#DejaVuSans-44" transform="translate(63.484375 0)"/>
     <use xlink:href="#DejaVuSans-57" transform="translate(124.765625 0)"/>
@@ -2187,7 +2187,7 @@ z
     <use xlink:href="#DejaVuSans-47" transform="translate(2184.515625 0)"/>
    </g>
    <!-- response is not yet set. -->
-   <g style="fill: #52514e" transform="translate(110.04875 568.807406) scale(0.095 -0.095)">
+   <g style="fill: #4d5f54" transform="translate(110.04875 568.807406) scale(0.095 -0.095)">
     <use xlink:href="#DejaVuSans-55"/>
     <use xlink:href="#DejaVuSans-48" transform="translate(38.90625 0)"/>
     <use xlink:href="#DejaVuSans-56" transform="translate(100.4375 0)"/>

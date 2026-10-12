@@ -223,10 +223,12 @@ def spei_cache_path(domain: str):
     return DATA_PROCESSED / f"spei3_cells_{domain}.nc"
 
 
-def domain_spei(domain: str, ds: xr.Dataset, keep: xr.DataArray, refresh: bool = False) -> xr.DataArray:
+def domain_spei(domain: str, ds: xr.Dataset, keep: xr.DataArray, refresh: bool = False,
+                path=None) -> xr.DataArray:
     """Per-cell SPEI-3 for one domain, cached as NetCDF (the fit takes about
-    an hour per domain)."""
-    path = spei_cache_path(domain)
+    an hour per domain). `path` overrides the cache file: a stamped rebuild
+    keeps its own, so a new retrieval is always refitted (D88)."""
+    path = path or spei_cache_path(domain)
     if path.exists() and not refresh:
         return xr.open_dataarray(path)
     wb = water_balance(ds["tp"], pet_thornthwaite(ds["t2m"])).load()
@@ -236,9 +238,10 @@ def domain_spei(domain: str, ds: xr.Dataset, keep: xr.DataArray, refresh: bool =
     return spei
 
 
-def main(refresh: bool = False) -> None:
+def main(refresh: bool = False, stamp: str | None = None) -> None:
     import time
 
+    from src import later
     from src.config import ERA5_DOMAINS, REGIONS
     from src.era5 import assign_domains, open_domains, region_masks
     from src.regions import load_regions
@@ -246,8 +249,10 @@ def main(refresh: bool = False) -> None:
     regions = load_regions()
     domains = assign_domains(regions)
     names = sorted(set(domains), key=list(ERA5_DOMAINS).index)
-    datasets = open_domains(names)
-    winters = pd.read_csv(DATA_PROCESSED / "el_nino_winters.csv")
+    ctx = later.paths(stamp)
+    datasets = open_domains(names, ctx)
+    winters = ctx.winters()
+    out = ctx.processed(OUT)
     parts = []
     for name in names:
         sub = regions[regions["region"].map(domains) == name]
@@ -255,23 +260,30 @@ def main(refresh: bool = False) -> None:
         masks = region_masks(sub, ds)
         keep = masks.any("region") & ds["tp"].isel({TIME: 0}).notnull()
         if GLACIER_SPEI_EXCLUDED:  # same cells as the SWE means (src.snow)
-            glacier = xr.open_dataarray(DATA_PROCESSED / f"glacier_mask_{name}.nc")
+            glacier = xr.open_dataarray(
+                ctx.processed(DATA_PROCESSED / f"glacier_mask_{name}.nc"))
             keep = keep & ~glacier.reindex_like(keep, fill_value=False).astype(bool)
         t0 = time.time()
         print(f"{name}: SPEI-3 for {int(keep.sum())} region cells...", flush=True)
-        spei = domain_spei(name, ds, keep, refresh=refresh)
+        spei = domain_spei(name, ds, keep, refresh=refresh,
+                           path=ctx.processed(spei_cache_path(name)))
         print(f"{name}: done in {time.time() - t0:.0f} s", flush=True)
         parts.append(whiplash_table(regional_spei(spei, masks).compute(), winters))
     table = pd.concat(parts)
     table["region"] = pd.Categorical(table["region"], categories=list(REGIONS), ordered=True)
     table = table.sort_values(["region", "year"]).reset_index(drop=True)
     table["region"] = table["region"].astype(str)
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    table.to_csv(OUT, index=False, lineterminator="\n")
-    print(f"wrote {OUT}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    table.to_csv(out, index=False, lineterminator="\n")
+    print(f"wrote {out}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
+    ctx.close("whiplash")
 
 
 if __name__ == "__main__":
     import sys
 
-    main(refresh="--refresh" in sys.argv[1:])
+    from src import later as _later
+
+    _argv = sys.argv[1:]
+    _stamp = _later.take_stamp(_argv)
+    main(refresh="--refresh" in _argv, stamp=_stamp)

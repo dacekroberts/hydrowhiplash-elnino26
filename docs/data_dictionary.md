@@ -598,6 +598,31 @@ the gap, `burn_ha` differs from the main table's in the last printed digit
 `with_park_area`; no value a test uses changes (audit round 5 L4, left as
 is so the pinned table is not rebuilt).
 
+**Later retrievals** (`data/raw/later/<stamp>/...`, never committed;
+D73, D88): a download run with `--stamp` writes to the stamped twin of
+its usual folder and closes it with `retrieval.json`: `stamp` (the
+retrieval date), `source`, `note`, `recorded_utc`, and per file its
+`bytes` and `sha256`. A closed folder is never rewritten. Tables rebuilt
+from a retrieval go to `results/tables/tracker/<stamp>/` (committed),
+beside the pinned tables, never over them. Trap: a stamped ERA5-Land
+folder holds only the years that had no full-year file on disk, so it is
+read on top of `data/raw`, not instead of it.
+
+**Stamped rebuilds** (`results/tables/tracker/<stamp>/`, `python -m
+src.<builder> --stamp <date>`; D88): the same table names as the pinned
+ones, rebuilt from the files on disk plus the latest closed retrieval
+not after the stamp. `rebuild.json`: per builder, `run_utc`, `commit`,
+`retrievals_read` (each stamped folder read, with the sha256 of its
+`retrieval.json`) and `tables`. `changed_cells.csv`: one row per cell
+that differs from the pinned table of the same name: `table`, `region`,
+`year`, `column`, `old`, `new`, `change` (changed, added, removed).
+Floats are compared exactly. Traps: an added 2026 or 2027 row is
+expected, a changed cell in an earlier year is not and needs
+explaining; once a stamped index retrieval exists, the ENSO columns come
+from it, and CPC's revisions show up here as changed cells.
+Intermediate files (the SPEI cells, glacier masks, per-builder tables)
+go to `data/processed/later/<stamp>/`, never committed.
+
 **Input pins** (`results/tables/input_pins.csv`, `python -m
 src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
 every input the tests read: the 7 committed input tables named in
@@ -794,6 +819,34 @@ package versions); `conda_list_explicit.txt` is the full environment.
   the fire floor, test settings, the freeze date and commit), since the
   site reads only `results/`. `tests/test_site_settings.py` fails if it
   no longer matches the config.
+- **`results/tables/rollout_calendar.json`** (`python -m src.rollout`;
+  D87): the rollout calendar, one item per arrival the site waits on.
+  Not data and not a result: dates and wording only. Per item: `id`;
+  `kind` (record, data, index, release, season, verification); `start`
+  and `end` (ISO dates; equal unless `precision` is "window");
+  `precision` ("on" a day, "by" a day, "about" a day, "after" a day, or
+  a "window"); `when` (the date as shown to readers); `title`;
+  `site_change` (what changes on the site); `prepare` (the work behind
+  it); `basis` (the setting or record the date comes from); `reader`
+  (shown on the tracker page or not); `remind_on` (`start` minus
+  `ROLLOUT_REMINDER_LEAD_DAYS`, or null where the item is checked at
+  another item's reminder, listed in `checked_at`); `evidence` (a path
+  under `results/`) and `done` (true only if that file exists);
+  `forecast_stage` (first, final or null). `reminders` lists each
+  reminder date with the items folded into it. Trap: a window is an
+  expectation from a publisher's release record, not a measurement.
+  `tests/test_rollout.py` fails if the file no longer matches the
+  config.
+- **`theme/tokens.json`** (the design tokens; D86): every colour (one
+  value per theme, light and dark; the map ramps one value for both),
+  typeface, spacing step, radius and stroke width, each with a usage
+  note. Not data and not a result: presentation only. `src/theme.py`
+  reads it; `python -m src.theme` writes **`site/theme/light.scss`**,
+  **`dark.scss`** and **`fonts.html`** for the Quarto site, and
+  `tests/test_theme.py` fails if they are stale. Colour families carry
+  one meaning each: `fire` burned area, `water` precipitation, `snow`
+  snowpack, `enso` a season after an El Niño winter, `evergreen` the
+  frame and the Holm verdict.
 
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 

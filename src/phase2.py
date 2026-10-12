@@ -42,31 +42,41 @@ def build_table(whiplash: pd.DataFrame, swe: pd.DataFrame) -> pd.DataFrame:
     return table[lead + [c for c in table.columns if c not in lead]]
 
 
-def write_tables(table: pd.DataFrame, rebuild: bool = False) -> None:
+def write_tables(table: pd.DataFrame, rebuild: bool = False, ctx=None) -> None:
     """Write the table to data/processed/ and its committed copy to
     results/tables/. The committed copy is a pinned input: refused without
     `rebuild`, whoever calls (a notebook cell included; cold check
     2026-10-11 M1)."""
-    from src import pin_inputs
+    from src import later, pin_inputs
 
-    pin_inputs.guard_write([COMMITTED], rebuild)
-    for path in (OUT, COMMITTED):
+    ctx = ctx or later.paths(None)
+    if not ctx.stamp:  # a stamped rebuild writes beside the pinned copy (D88)
+        pin_inputs.guard_write([COMMITTED], rebuild)
+    for path in (ctx.processed(OUT), ctx.table(COMMITTED)):
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(table)} rows, {table['region'].nunique()} regions, "
               f"years {table['year'].min()}-{table['year'].max()}")
 
 
-def main(rebuild: bool = False) -> None:
-    from src import pin_inputs
+def main(rebuild: bool = False, stamp: str | None = None) -> None:
+    from src import later, pin_inputs
 
+    ctx = later.paths(stamp)
     # refused before any read, as in the other builders; write_tables guards
     # again for callers that skip main
-    pin_inputs.guard_write([COMMITTED], rebuild)
-    write_tables(build_table(pd.read_csv(WHIPLASH), pd.read_csv(SWE)), rebuild)
+    if not stamp:
+        pin_inputs.guard_write([COMMITTED], rebuild)
+    write_tables(build_table(pd.read_csv(ctx.processed(WHIPLASH)),
+                             pd.read_csv(ctx.processed(SWE))), rebuild, ctx)
+    ctx.close("phase2")
 
 
 if __name__ == "__main__":
     import sys
 
-    main(rebuild="--rebuild" in sys.argv[1:])
+    from src import later as _later
+
+    _argv = sys.argv[1:]
+    _stamp = _later.take_stamp(_argv)
+    main(rebuild="--rebuild" in _argv, stamp=_stamp)

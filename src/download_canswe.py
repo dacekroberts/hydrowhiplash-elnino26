@@ -39,6 +39,7 @@ from pathlib import Path
 
 import requests
 
+from src import later
 from src.config import CANSWE_FILES, CANSWE_RAW, CANSWE_RECORD_URL
 from src.download_nrcs_snow import ClientError, download, stop_on_client_error
 
@@ -81,8 +82,9 @@ def md5_check(expected: str):
 
 def main(args: list[str] | None = None) -> None:
     args = list(args or [])
+    stamp = later.take_stamp(args)
     refresh = "--refresh" in args
-    out = OUT
+    out = later.open_folder(OUT, stamp) if stamp else OUT
     out.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
     try:
@@ -101,6 +103,8 @@ def main(args: list[str] | None = None) -> None:
             print(f"  {target.stat().st_size:,} bytes, md5 OK")
     except ClientError as err:
         raise stop_on_client_error(err) from err
+    if stamp:
+        later.record(out, stamp, CANSWE_RECORD_URL)
 
 
 if __name__ == "__main__":

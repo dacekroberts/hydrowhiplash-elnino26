@@ -268,6 +268,10 @@ technique was chosen.
       runs are not committed by then, only the climate tables are
       re-pinned, logged, and only if every value a registered test reads
       is identical; the ENSO and fire pins are not touched.
+      [mid-project: D88] The downloads use `--stamp` and land in
+      `data/raw/later/<stamp>/`; the rebuilt tables go to
+      `results/tables/tracker/<stamp>/`, beside the pinned ones, and the
+      changed numbers are the comparison of the two (`src/later.py`).
 - [ ] Spring 2027: update with the final winter data and publish
 - [ ] Fall 2027: verify against the actual season, which could become a preprint
 
@@ -276,6 +280,8 @@ technique was chosen.
 A Quarto site in `site/`, published on GitHub Pages: "What past El Niños
 suggest for the 2027 fire season." Each piece reuses a figure the analysis
 already makes, so add it when its phase is done; don't design ahead of results.
+[mid-project: D84] Decided 2026-10-12: hosted as the static Quarto build
+on the owner's own domain through Cloudflare, not on GitHub Pages.
 
 - [ ] **Mechanism diagram** — the pathways (PNW/BC/AB dry → low snowpack →
       long or early season; SoCal wet → grass → big grass fires). No data
@@ -307,7 +313,16 @@ already makes, so add it when its phase is done; don't design ahead of results.
         issued before the season; the verification panel builds on it.
       Countdowns target expected data arrival, not calendar dates, and run
       in the visitor's browser; the page picks its state from what is in
-      `results/`; its dates live in `src/config.py`.
+      `results/`; its dates live in `src/config.py`. [mid-project: D87]
+      Every arrival the site waits on, to January 2028, is one list
+      built by `src/rollout.py` from those settings and written to
+      `results/tables/rollout_calendar.json`; the page's timetable and
+      the scheduled reminders read that file.
+- [ ] **Map page** [mid-project: D85]: all seven regions with a toggle
+      per dataset (fire, snowpack, rainfall, temperature), each year's
+      values read from the committed region x year tables and the region
+      polygons; no trend statistic. *After the stamped download paths and
+      the hard-line item.*
 - [ ] **Verification panel** — what actually happened in 2027 against the
       prediction. *Fall 2027* for PNW, BC, AB, AK and YT; *after January
       2028* for NorCal and SoCal, whose 2027 season runs to January 2028

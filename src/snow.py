@@ -101,7 +101,8 @@ def excluded_cells(masks: xr.DataArray, glacier: xr.DataArray) -> pd.Series:
     return (masks & glacier).sum([LAT, LON]).to_series().rename("glacier_cells")
 
 
-def main() -> None:
+def main(stamp: str | None = None) -> None:
+    from src import later
     from src.config import REGIONS
     from src.era5 import assign_domains, open_domains, region_masks
     from src.regions import load_regions
@@ -109,16 +110,18 @@ def main() -> None:
     regions = load_regions()
     domains = assign_domains(regions)
     names = sorted(set(domains), key=list(ERA5_DOMAINS).index)
-    datasets = open_domains(names)
-    winters = pd.read_csv(DATA_PROCESSED / "el_nino_winters.csv")
+    ctx = later.paths(stamp)
+    datasets = open_domains(names, ctx)
+    winters = ctx.winters()
+    out = ctx.processed(OUT)
     parts, counts = [], []
     for name in names:
         sub = regions[regions["region"].map(domains) == name]
         ds = datasets[name]
         masks = region_masks(sub, ds)
         glacier = glacier_mask(ds["sd"]).compute()
-        glacier.to_netcdf(DATA_PROCESSED / f"glacier_mask_{name}.nc")
-        april1 = open_april1(april1_dir(name))
+        glacier.to_netcdf(ctx.processed(DATA_PROCESSED / f"glacier_mask_{name}.nc"))
+        april1 = open_april1(ctx.raw_file(april1_dir(name), APRIL1_FILE).parent)
         parts.append(april1_table(april1_regional(april1, masks, glacier).compute(), winters))
         counts.append(excluded_cells(masks, glacier))
         print(f"{name}: {int(glacier.sum())} glacier cells in the domain")
@@ -126,11 +129,17 @@ def main() -> None:
     table["region"] = pd.Categorical(table["region"], categories=list(REGIONS), ordered=True)
     table = table.sort_values(["region", "year"]).reset_index(drop=True)
     table["region"] = table["region"].astype(str)
-    table.to_csv(OUT, index=False, lineterminator="\n")
-    print(f"wrote {OUT}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
+    table.to_csv(out, index=False, lineterminator="\n")
+    print(f"wrote {out}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
     summary = table.groupby("region", sort=False)[["swe_apr1_mm", "swe_apr1_mm_all_cells"]].mean()
     print(pd.concat([pd.concat(counts), summary.round(0)], axis=1).to_string())
 
+    ctx.close("snow")
+
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    from src import later as _later
+
+    main(_later.take_stamp(sys.argv[1:]))

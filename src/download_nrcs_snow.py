@@ -47,6 +47,7 @@ from pathlib import Path
 
 import requests
 
+from src import later
 from src.config import (CLIMATE_FIRST_YEAR, HTTP_BACKOFF_S, HTTP_RETRIES,
                         HTTP_TIMEOUT_S, NRCS_AWDB_URL, NRCS_BATCH_SIZE,
                         NRCS_ELEMENT, NRCS_NETWORKS, NRCS_PAUSE_S,
@@ -204,12 +205,13 @@ def write_manifest(rows: list[dict], today: date, out: Path) -> None:
 
 def main(args: list[str] | None = None) -> None:
     args = list(args or [])
+    stamp = later.take_stamp(args)
     refresh = "--refresh" in args
     states = [a for a in args if a != "--refresh"] or list(NRCS_STATES)
     unknown = set(states) - set(NRCS_STATES)
     if unknown:
         raise SystemExit(f"Unknown state(s) {sorted(unknown)}; choose from {NRCS_STATES}.")
-    out = OUT
+    out = later.open_folder(OUT, stamp) if stamp else OUT
     out.mkdir(parents=True, exist_ok=True)
     today = date.today()
     session = requests.Session()
@@ -228,6 +230,8 @@ def main(args: list[str] | None = None) -> None:
         raise SystemExit(f"{len(failures)} batch(es) failed after retries: {failures}. "
                          "Re-run to fetch them; finished files are skipped.")
     print(f"done: {len(rows)} data files listed in {manifest_path}")
+    if stamp:
+        later.record(out, stamp, NRCS_AWDB_URL)
 
 
 if __name__ == "__main__":

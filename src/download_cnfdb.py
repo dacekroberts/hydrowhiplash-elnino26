@@ -29,7 +29,7 @@ from pathlib import Path
 
 import requests
 
-from src import pin_inputs
+from src import later, pin_inputs
 from src.config import CNFDB_FILES, CNFDB_RAW, CNFDB_URL
 from src.download_mtbs import IDENTITY, check_zip, now_utc, server_headers, write_manifest
 from src.download_nrcs_snow import ClientError, download, stop_on_client_error
@@ -48,20 +48,27 @@ def size_check(expected: int, is_zip: bool):
 
 
 def main(args: list[str] | None = None) -> None:
-    refresh = "--refresh" in (args or [])
-    # every file in this folder is a pinned input, and each run rewrites the
-    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
-    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
-    OUT.mkdir(parents=True, exist_ok=True)
+    args = list(args or [])
+    stamp = later.take_stamp(args)
+    refresh = "--refresh" in args
+    if stamp:
+        # a later download: its own stamped folder, never the pinned one (D73)
+        out = later.open_folder(OUT, stamp)
+    else:
+        # every file in this folder is a pinned input, and each run rewrites the
+        # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+        out = OUT
+        pin_inputs.guard_folder(out, "--rebuild" in args)
+        out.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
     record = {"url": CNFDB_URL, "accessed_utc": now_utc(), "files": {}}
     try:
-        download(session, CNFDB_URL, OUT / "listing.html", headers=IDENTITY)
+        download(session, CNFDB_URL, out / "listing.html", headers=IDENTITY)
         for name in CNFDB_FILES:
             url = CNFDB_URL + name
             headers = server_headers(session, url)
             expected = int(headers["Content-Length"])
-            target = OUT / name
+            target = out / name
             record["files"][name] = {**headers, "bytes": expected}
             if target.exists() and not refresh and target.stat().st_size == expected:
                 print(f"skip {name} (present, {expected:,} bytes)")
@@ -71,8 +78,10 @@ def main(args: list[str] | None = None) -> None:
                      check=size_check(expected, name.endswith(".zip")))
     except ClientError as err:
         raise stop_on_client_error(err) from err
-    write_manifest(OUT / "manifest.json", record)
+    write_manifest(out / "manifest.json", record)
     print("manifest.json written")
+    if stamp:
+        later.record(out, stamp, CNFDB_URL)
 
 
 if __name__ == "__main__":

@@ -244,6 +244,259 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   reading the tables, with no fit run: 291 region-seasons, no other
   missing predictor. Affected: `src/prediction.py`,
   `tests/test_prediction.py`, `src/config.py`.
+### 2026-10-12 - One character corrected in an old entry, for the merge tool
+
+- **Corrected (owner: "option 1") the entry of 2026-10-11 "Session 8:
+  owner decisions before the first test": its literal mention of a side
+  session's placeholder id gained the backslash that marks a literal
+  mention** (`D\?a`, as `CLAUDE.md` asks). Without it
+  `merge_append_only.py` took the mention for a live placeholder, would
+  have renumbered it with PR #24's own, and so refused the merge
+  ("existing entry removed or edited"). An exception to "never edit an
+  old entry": one character, no change of meaning. Rejected merging the
+  two logs by hand: the same refusal would return at every later merge.
+
+### 2026-10-12 - Methods numbers and notices
+
+- **Confirmed the methods page's notices against each publisher's
+  current page (owner: "delegate to subagent"; read-licence method,
+  2026-10-12).** Notices 4 to 13 (BC and Yukon snow surveys, NRCS,
+  CanSWE, MTBS, WFIGS, CNFDB, NBAC, CNFDB's BC polygons, Alaska climate
+  divisions) and the ERA5-Land hourly entry all match word for word; no
+  recorded wording was wrong. Added to `site/methods.qmd` in the
+  publishers' wording: the ERA5-Land hourly citations (access date
+  04-OCT-2026, the day the two files were downloaded), the CanSWE paper
+  and v8 dataset citations, the Alaska climate divisions citation.
+  `DATA_SOURCES.md`: the CanSWE row gained the v8 dataset citation. Two
+  lines on the page are drafts for the owner (the hourly "changes made"
+  sentence, the MTBS access line). Left as found, for the owner: the
+  sources table calls WFIGS "Public domain" while the ledger's verdict
+  is "No licence named"; the NRCS line carries no access date or
+  address; the MTBS ledger row says its in-zip metadata was read in one
+  cell and "unread" in another. Not re-read: the CanSWE ReadMe and the
+  CNFDB update log (both under `data/`).
+- **Decided (owner: "1 yes") to replace the eight typed numbers on the
+  methods page with values read from a committed table,
+  `results/tables/methods_numbers.csv`, built by
+  `scripts/methods_numbers.py` from the tables behind each number.** Two
+  of the typed numbers did not match their source and will change when
+  the page reads the table: the overlap counted twice is 100,813 ha in
+  the committed `double_ha` column (the page said 127,000; the log's own
+  figures of 2026-10-07 add to 86,218), and the station correlation is
+  0.77 to 0.95 on the standardised series (the page's "0.78 to 0.95"
+  took the low end of the percent-of-normal series, 0.78 to 0.94).
+  "17 of 76 winters" counts a change of phase or of strong status (15
+  change phase alone).
+- **Decided (owner: "run matching") to rerun the MTBS to WFIGS
+  comparison as a script (D89)**, `scripts/source_pairs.py`, reading
+  both pinned US fire files. Its rule is new wording for an unrecorded
+  probe, so its pair counts may differ from the 108, 192, 85 and 127
+  pairs of 2026-10-07; the difference is reported when the run ends.
+  Started 2026-10-12 11:02; not finished at this commit, so the table
+  and the page edits follow in a later commit.
+
+### 2026-10-12 - Stamped paths: one parallel tree
+
+- **Decided (owner, "option a"): everything fetched or rebuilt after
+  run1 goes into one parallel tree, and no pinned file is written
+  (D73, D88).** Downloads: `data/raw/later/<stamp>/<source folder>/`,
+  the stamp being the retrieval date. Rebuilt tables:
+  `results/tables/tracker/<stamp>/`. Rejected stamped downloads with
+  tables rebuilt in place under a logged re-pin: less code, but
+  `results/tables/` would then hold files run1 did not read. Rejected a
+  release stamp in each file name (as NBAC's own names carry): only NBAC
+  publishes one, and a folder per retrieval keeps each source's file
+  names unchanged for the readers.
+- **Built `src/later.py` and a `--stamp` option on eleven download
+  scripts** (the index, ERA5-Land monthly and 1 April, MTBS, WFIGS,
+  CNFDB, NBAC, CanSWE, NRCS, BC and Yukon snow). A stamped folder is
+  closed by `retrieval.json` (size and sha256 of each file) and is never
+  written again; an interrupted run leaves no record and can be re-run
+  under the same stamp. Without the flag every script behaves as
+  before, including the refusal to overwrite a pinned file. The Alaska
+  climate-division boundaries were left without the flag: fixed
+  polygons, no later release expected. Superseded the same day (owner
+  asked whether that was a concern): the flag was added there too,
+  because that folder is not pinned and its script overwrites a file
+  whose size has changed on the server, so a re-run could silently
+  replace the boundaries behind the Interior Alaska check (D79). All
+  twelve download scripts now take `--stamp`.
+- **Decided that a stamped index retrieval fetches both RONI and ONI
+  and writes nothing to `data/processed/`**, where the classified
+  winters are pinned. The frozen plan's "DJF 2027 value in CPC's first
+  release after February 2027, with its retrieval date recorded" is
+  then the stamped folder itself.
+- **Decided that a stamped ERA5-Land run requests only the years with
+  no full-year file on disk** (today: 2026) and leaves the existing
+  partial file in place, so the pinned climate tables stay rebuildable
+  from the files they were made from.
+- **Not built, left for the hard-line item:** the builders (`era5`,
+  `climate_vars`, `snow`, `whiplash`) do not yet read a stamped folder
+  on top of `data/raw` or write to `tables_dir(stamp)`. Tested on
+  made-up files only (9 tests); no download was run and no polygon was
+  read. Files: `src/later.py`, `src/config.py`, the eleven
+  `src/download_*.py`, `tests/test_later.py`.
+
+- **Built the stamped rebuild for the six climate builders the same day
+  (owner: "we can build the stamped folder item here if allowed");
+  supersedes "Not built" above for those six.** Writing the code is not
+  the hard-line item: `ERA5_LAG_MONTHS` stays 3 and nothing was run on
+  real data. `python -m src.<builder> --stamp <date>` (`era5`, `snow`,
+  `whiplash`, `phase2`, `climate_vars`, `snow_soil`) reads the files on
+  disk with the latest closed retrieval not after the stamp laid over
+  them (a stamped year file replaces the file on disk for that year),
+  writes intermediate files to `data/processed/later/<stamp>/` and
+  tables to `results/tables/tracker/<stamp>/`, and adds itself to
+  `rebuild.json` there (commit, time, the retrievals read with the
+  sha256 of each record). Each run rewrites `changed_cells.csv`: every
+  cell that differs from the pinned table of the same name, which is the
+  hard-line item's "report the changed numbers". The SPEI fit keeps a
+  cache per stamp, so a new retrieval is always refitted. Order within a
+  stamp: `snow` before `whiplash` (the glacier mask), both before
+  `phase2`.
+- **Decided that a stamped rebuild reads the winters from the latest
+  stamped index retrieval if one exists, else from the pinned table.**
+  CPC revises recent values, so once an index retrieval exists the ENSO
+  columns of a rebuilt table can differ from the pinned ones; every such
+  cell lands in `changed_cells.csv`. Rejected always using the pinned
+  winters: the tracker needs the 2027 winter, which only a later
+  retrieval holds. Open for the owner: whether a rebuild should be able
+  to name the index retrieval it reads, apart from the ERA5-Land one.
+- **Still not built:** the station snow index (`stations`) and the fire
+  builders take no stamp; the tracker's own region x month table and
+  tiles do not exist. 16 tests on made-up files (`tests/test_later.py`,
+  `tests/test_later_rebuild.py`).
+
+### 2026-10-12 - Session 10: rollout calendar
+
+- **Decided to keep the rollout calendar as a list built in code from
+  the settings in `src/config.py`, written to
+  `results/tables/rollout_calendar.json` (D87).** `src/rollout.py`
+  derives every date a setting already fixes: the six monthly ERA5-Land
+  arrivals (October to March, by the 7th of the next month), the 1 April
+  snowpack (1 April plus `ERA5_HOURLY_LAG_DAYS`, 8 April 2027) and the
+  two verification dates (after 31 October 2027 for PNW, BC, AB, AK and
+  YT; after 31 January 2028 for NorCal and SoCal). Five arrivals with no
+  fixed date get an expected window in `ROLLOUT_WINDOWS`. Rejected a
+  hand-written YAML or JSON list: it would repeat dates the config
+  already holds, and the site reads only `results/`. Rejected typing the
+  list into `config.py` itself: 18 items with prose would bury the
+  settings. Files: `src/rollout.py`, `src/config.py`,
+  `tests/test_rollout.py`, `site/tracker.qmd`, `src/theme.py`.
+- **Decided that an item is marked done only when a committed file under
+  `results/` shows it**, in keeping with "the page picks its state from
+  what the pipeline has written to `results/`, so nobody flips it by
+  hand" (2026-10-05). Two items are done (the freeze, run1). The other
+  16 carry no evidence file yet, because the tracker tables that would
+  show a month's arrival are not built; each gets its evidence when its
+  code is written. The "next" mark is set in the visitor's browser from
+  the date.
+- **Found while listing the arrivals, none of it changed:** (1) the
+  frozen plan fixes the forecast's input as "the DJF 2027 value in CPC's
+  first release after February 2027, with its retrieval date recorded",
+  so that release has to be fetched to a stamped path the day it
+  appears; CPC's posting day has not been measured, and the window
+  1 to 14 March 2027 is an expectation. (2) RONI values may be revised
+  for two months, so the December to February value can move until
+  about 14 May 2027; revisions are reported, not substituted. (3) On its
+  release record (2024 data in files dated 28 January 2026) CNFDB 2027
+  would arrive about January 2029, so BC, AB and YT have no registered
+  burned-area source for the fall 2027 verification; open, the owner's
+  to decide before October 2027. (4) No plan says whether the 2026
+  season is redrawn once California's closes at the end of January
+  2027; listed as an item with no task. (5) D76 sets no number of
+  forecast stages; the list marks two, as a proposal.
+- **Built the tracker page as a timetable only** (`site/tracker.qmd`,
+  marked draft; its sentences and the wording of each row are drafts
+  for the owner). The region x month tiles and the countdowns wait for
+  the hard-line item. Twelve of the 18 items are shown to readers; the
+  six left off are the undated releases, the 2026 season's close and
+  the end of the index revisions.
+
+- **Decided (owner): the 2027 forecast is published in two stages
+  (D76, D87).** The first at CPC's first RONI release after February
+  2027 (expected 1 to 14 March), from the registered H3a model; the
+  final after the 1 April snowpack (about 8 April 2027), adding the two
+  secondary single-predictor H6 forecasts. Rejected one stage in April:
+  the H3a forecast needs only the index, and a dated March statement is
+  the earlier record. Open for the first stage's wording: H3a showed no
+  gain over a trend-only model in run1 (-0.03 to +0.01).
+- **Decided (owner): ten reminders scheduled as one-time tasks, three
+  days ahead of each date at 9:00 local, look and report only.** Each
+  reads its item from `rollout_calendar.json` by id, quotes it, and
+  reads the publishers' public pages (CNFDB folder, CanSWE record, CPC
+  index file) for the undated arrivals; none downloads, edits, commits
+  or reads polygons. Dates: 2026-11-04, 2026-12-04, 2027-01-04,
+  2027-02-04, 2027-02-26 (the index), 2027-03-04, 2027-04-04 (with the
+  snowpack), 2027-05-11 (index revisions), 2027-10-28, 2028-01-28. Task
+  ids start `whiplash-rollout-`; they live in the owner's
+  `~/.claude/scheduled-tasks/`, outside the repository, and run only
+  while the desktop app is open (a missed one runs at the next launch).
+  If a date in the calendar changes, the matching task has to be moved
+  by hand: the tasks read the items, not their own run dates.
+
+### 2026-10-12 - Session 10: design system, hosting and the map page
+
+- **Decided (owner, session 10): a new design system for this project,
+  kept as a Design System artifact with one tokens file in the
+  repository that the site, the results page template, the methods page
+  and the figures read (D86).** Owner's direction: "integrate color
+  green as essential (ecosystems) with a natural earth vibe. pop colors
+  are the red and blue for fire/rainfall data". Rejected adapting Night
+  Line or Storefronts Near Transit (both built for transit subjects) and
+  a tokens file with no browsable reference. Nothing in the look is
+  adopted until the owner has seen a draft.
+- **Decided (owner): the site is hosted as the static Quarto build on
+  the owner's own domain through Cloudflare, not on GitHub Pages and not
+  as a Streamlit app (D84).** Rejected Streamlit: it needs a running
+  Python server and would replace the Quarto build that reads only
+  `results/`. Cloudflare's documentation (read 2026-10-12) recommends
+  Workers static assets over Pages for new static sites, and requires
+  the domain's nameservers to be on Cloudflare; no R2 page read states
+  that a bucket serves `index.html` for a folder URL, so R2 is kept for
+  large files only, if the map page needs them. The exact setup is
+  settled when the first piece is ready to publish; nothing is deployed.
+  A direct upload of the built site leaves the repository private.
+- **Decided (owner): the map page is taken up as a scope addition, built
+  after the stamped download paths and the hard-line item (D85).** All
+  seven regions with a toggle per dataset (fire, snowpack, rainfall,
+  temperature). It shows each year's values from the committed region x
+  year tables; no new trend statistic is computed, so nothing is added
+  to the analyses made after `run1`. Its colour ramps are designed into
+  the design system now. Rejected trend legends for now: a trend per
+  region and dataset would be a new analysis after results were seen
+  (`docs/post_results_protocol.md` section 2). Stated limit: one shade
+  per region repeats the limitation that wet coasts sit inside the
+  regional mean.
+- **Adopted (owner, session 10: "love the winter to fire, looks great"):
+  the design system "Hydrowhiplash: Winter to Fire".** A pale lichen
+  ground and an evergreen for the frame; red only for burned area, blue
+  only for precipitation, teal for snowpack, amber for seasons after an
+  El Niño winter, a violet reserved for La Niña; National Park, Public
+  Sans and JetBrains Mono. `theme/tokens.json` is the master copy and
+  the artifact mirrors it; `src/theme.py` reads it and writes the Quarto
+  theme (`site/theme/`), and the results page and the methods reading
+  copy take their CSS variables from it (`scripts/build_results_page.py`,
+  `scripts/build_methods_copy.py`, new). Tests hold the text colours to
+  4.5:1 on their grounds in both themes and fail if `site/theme/` is
+  stale. Three calls made in the draft and left standing by the owner's
+  yes: "significant after Holm" is a filled evergreen dot with the word
+  (it was ember orange, and red now means fire); green is never a data
+  series beside red; the typefaces.
+- **Redrew the mechanism diagram and the methods flowchart from the
+  tokens** (`python -m src.diagrams`; owner: "yes regenerate the
+  flowchart"). The flowchart's boxes stay neutral. In the mechanism
+  diagram the north pathway moved from orange to the snow colour and the
+  south stays blue (the water colour): orange read as fire under the new
+  system, and both pathways end in fire. Supersedes the colour choice in
+  2026-10-04 "Mechanism diagram"; the wording, layout and footnotes are
+  unchanged. Not restyled yet: the data figures drawn by
+  `src/figures.py` (they need `data/`, and one reads polygons); they
+  follow with the site charts for Headlines 1 to 4. The diagrams keep
+  DejaVu Sans so their SVGs stay byte-identical between machines.
+- **Noted (owner, session 10): "if at all necessary invoke deepseek".**
+  Read as leave to call the DeepSeek worker where a task needs it,
+  reported when used; `data/` stays out of reach of every DeepSeek plan.
 
 ### 2026-10-12 - Prediction model scope agreed
 
@@ -584,7 +837,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   "Checks".**
 - **Housekeeping:** `side/nbac-probe` (c4981de, patch-identical to main)
   and `side/fire-licence-reads` (31c7cc0; PR #21 squash-merged 2026-10-07,
-  its `D?a` now D56, its three ledger rows revised in main since) deleted
+  its `D\?a` now D56, its three ledger rows revised in main since) deleted
   after the comparison was reported. PR #23 (site methods flowchart, D74)
   merged with the owner's yes, squash commit 2fb0e37.
 - **Added to `scripts/nbac_coverage.py`: a per-fire output and split**
