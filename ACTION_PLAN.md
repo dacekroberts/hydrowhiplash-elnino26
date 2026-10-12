@@ -197,7 +197,9 @@ cold round with no high and no medium findings), tag
       the runner once written. No delegated build before the registered
       runs are committed. *After the runs:* a delegated-build pilot (the
       pin report after `--rebuild`), and the methods-page line on where
-      DeepSeek was used.
+      DeepSeek was used. Review run 2026-10-12 on the four files and
+      `src/run_hypotheses.py`: 8 findings, 2 fixed, 6 not taken
+      (`DECISIONS.md` 2026-10-12); the after-the-runs parts stay open.
 - [ ] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB

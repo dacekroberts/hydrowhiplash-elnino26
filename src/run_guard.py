@@ -23,6 +23,7 @@ from __future__ import annotations
 import difflib
 import hashlib
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -229,6 +230,12 @@ def write_result(table: pd.DataFrame, name: str, run: str, inputs=(),
     record["result"] = name
     record["result_sha256"] = hashlib.sha256(data).hexdigest()
     path.parent.mkdir(parents=True, exist_ok=True)
-    side.write_bytes((json.dumps(record, indent=2) + "\n").encode("utf-8"))
-    path.write_bytes(data)
+    # both files are written under temporary names and renamed only once both
+    # are complete, so an interrupted write leaves no truncated table under a
+    # result's name (DeepSeek review 2026-10-12 F1)
+    contents = {side: (json.dumps(record, indent=2) + "\n").encode("utf-8"), path: data}
+    for target, content in contents.items():
+        target.with_name(target.name + ".tmp").write_bytes(content)
+    for target in contents:
+        os.replace(target.with_name(target.name + ".tmp"), target)
     return path

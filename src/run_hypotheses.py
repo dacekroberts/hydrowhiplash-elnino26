@@ -505,6 +505,9 @@ def compute_all(tables: dict[str, pd.DataFrame], robustness_winters: pd.DataFram
     beside += _tag(block_rows(fire, n_boot), **main)
     beside += _tag(lag1_rows(fire, climate), **main)
 
+    for row in registered + beside:  # H1, C1 and the climate series read no fire table
+        if not str(row.get("outcome", "")).startswith("log_burn"):
+            row["fire_table"] = None
     return {"registered_tests.csv": pd.DataFrame(registered, columns=COLUMNS),
             "reported_beside.csv": pd.DataFrame(beside, columns=COLUMNS),
             "validation.csv": pd.DataFrame(validation_rows(fire), columns=VALIDATION_COLUMNS)}
@@ -513,7 +516,8 @@ def compute_all(tables: dict[str, pd.DataFrame], robustness_winters: pd.DataFram
 def main(run: str) -> None:
     if not re.fullmatch(r"run[1-9]\d*", run):
         raise SystemExit(f"--run takes run1, run2, ...; got {run!r}.")
-    existing = [name for name in OUTPUTS if (RESULTS / "tables" / run / name).exists()]
+    existing = [name for output in OUTPUTS for name in (output, output + ".provenance.json")
+                if (RESULTS / "tables" / run / name).exists()]
     if existing:
         raise SystemExit(f"results/tables/{run}/ already holds {existing}; results are never "
                          "overwritten (docs/post_results_protocol.md).")

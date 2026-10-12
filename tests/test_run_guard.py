@@ -208,6 +208,26 @@ def test_write_result_leaves_nothing_behind_when_provenance_fails(tmp_path, monk
     assert not (tmp_path / "tables" / "run1" / "h3a.csv").exists()
 
 
+def test_write_result_interrupted_leaves_no_file_under_a_result_name(tmp_path, monkeypatch):
+    # DeepSeek review 2026-10-12 F1: a failed table write left a provenance
+    # file, and could leave a truncated table, under the final names
+    monkeypatch.setattr(run_guard, "RESULTS", tmp_path)
+    monkeypatch.setattr(run_guard, "provenance", lambda **kwargs: {"commit": "c"})
+    real = run_guard.Path.write_bytes
+
+    def fail_on_table(self, data):
+        if self.name == "h3a.csv.tmp":
+            raise OSError("disk full")
+        return real(self, data)
+
+    monkeypatch.setattr(run_guard.Path, "write_bytes", fail_on_table)
+    with pytest.raises(OSError, match="disk full"):
+        run_guard.write_result(pd.DataFrame({"x": [1]}), "h3a.csv", "run1")
+    folder = tmp_path / "tables" / "run1"
+    assert not (folder / "h3a.csv").exists()
+    assert not (folder / "h3a.csv.provenance.json").exists()
+
+
 # --- S2: rebuild guard and re-pin log -------------------------------------------
 
 @pytest.fixture

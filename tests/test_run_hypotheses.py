@@ -91,6 +91,9 @@ def test_registered_table_holds_the_52_tests_in_plan_order(results):
     assert ((reg["ci_low"] <= reg["estimate"]) & (reg["estimate"] <= reg["ci_high"])).all()
     assert (reg["p_holm"] >= reg["p"] - 1e-12).all()
     assert (reg["significant"] == (reg["p_holm"] < 0.05)).all()
+    climate = reg["test"].isin(["H1", "C1"])  # they read no fire table (review F7)
+    assert reg.loc[climate, "fire_table"].isna().all()
+    assert (reg.loc[~climate, "fire_table"] == "fire_region_year.csv").all()
 
 
 def test_effect_sizes_and_cis_come_before_p_values():
@@ -276,6 +279,16 @@ def test_main_runs_nothing_when_preflight_fails(monkeypatch):
         rh.main("run1")
     with pytest.raises(SystemExit, match="run1, run2"):
         rh.main("results")
+
+
+def test_main_refuses_a_run_folder_holding_a_result_or_its_provenance(monkeypatch, tmp_path):
+    monkeypatch.setattr(rh, "RESULTS", tmp_path)
+    monkeypatch.setattr(run_guard, "preflight", lambda run=None: pytest.fail("preflight reached"))
+    folder = tmp_path / "tables" / "run1"
+    folder.mkdir(parents=True)
+    (folder / "validation.csv.provenance.json").write_bytes(b"{}")  # review F1
+    with pytest.raises(SystemExit, match="never overwritten"):
+        rh.main("run1")
 
 
 def test_main_reads_through_the_pinned_readers_and_writes_through_write_result(

@@ -17,6 +17,42 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - DeepSeek review of the safeguards and the runner (D77)
+
+- **Ran the D77 read-only review once, with the owner's yes: 8 findings,
+  2 fixed as bugs, 6 checked and not taken.** `deepseek-flash` at `max`
+  effort, 2026-10-12 09:15-09:18 UTC (peak hours; owner: no need to wait
+  for a cheap call), on staged copies of `src/run_guard.py`,
+  `src/pin_inputs.py`, `src/run_hypotheses.py`, `scripts/preflight.py`
+  and `scripts/check_plan_frozen.py` in a temporary folder outside the
+  repository (1,080 lines; 40,160 input and 32,599 output tokens). The
+  worker read those five files and nothing else. It found no path by
+  which `main()` starts or writes without preflight passing.
+- **Fixed, F1 (medium): `write_result` wrote the provenance file and
+  then the table under their final names**, so an interrupted write
+  could leave a truncated table beside a provenance file stating the
+  full hash, in a folder the runner then refuses to write again. Both
+  files are now written under `.tmp` names and renamed once both are
+  complete; `main` also refuses a run folder that holds only a
+  provenance file. **Fixed, F7 (low): H1 and C1 rows carried
+  `fire_table` = `fire_region_year.csv`** though they read no fire
+  table; the column is now empty for every row whose outcome is not
+  `log_burn`. No estimate, p-value or rule changed. Tests: 337 collected
+  in the suite (2 added in `tests/test_run_guard.py` and
+  `tests/test_run_hypotheses.py`, one assertion extended).
+- **Not taken, each checked against the code:** F2 (the size table is
+  read without a pin check): it is a committed script output, preflight
+  refuses an unclean tree, and its sha256 is in every provenance file.
+  F4 (a missing predictor would shorten a fit silently) and F6 (H4's
+  panel could be unbalanced): `stats.fit_ols_hac`, `fit_driscoll_kraay`
+  and `expanding_window` raise on a dropped row or an unbalanced panel;
+  the reviewer could not see `src/stats.py`. F5 (a region missing from
+  `FIRE_LAST_YEAR_BY_REGION` would vanish): all seven are there and
+  `add_corrections` raises before anything is written. F3 (pins walk
+  one folder level): the four download folders are flat, 30 files
+  pinned; left as a low open point. F8 (a BOM or cp1252 save of
+  `ANALYSIS_PLAN.md` fails preflight): it fails closed, with no run.
+
 ### 2026-10-12 - First hypothesis runs planned; runner written
 
 - **Decided (owner, 2026-10-12, session 9, before any test): the first
