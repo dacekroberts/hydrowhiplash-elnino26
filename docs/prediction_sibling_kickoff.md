@@ -118,13 +118,27 @@ What that leaves:
    pressure deficit, and Canada's Fire Weather Index drought code, which
    carries over the winter (a Copernicus fire-danger reanalysis exists;
    coverage and licence to be checked).
-5. **Smaller units for AB, PNW and SoCal:** ecoregions or fire zones,
-   and for Alberta a spring window apart from the summer one. This
-   rebuilds the fire and climate tables, so it is the largest step.
-6. **Other targets:** counts of large fires, or the chance of a
+5. **Fuel amount:** satellite greenness of the previous growing season
+   (a vegetation index such as NDVI). It fits the NorCal and SoCal
+   finding that last winter's rain raises burned area. A new source:
+   ledger row and licence read first.
+6. **Smaller units:** ecoregions or fire zones instead of whole states
+   and provinces. For AB, PNW and SoCal, where the ceiling is near zero,
+   and for Alberta a spring window apart from the summer one; also for
+   AK and BC, whose averages mix wet coast with the interior that burns.
+   This rebuilds the fire and climate tables, so it is the largest step.
+7. **A longer record:** Canadian and Alaskan fire polygons before 1984.
+   More years is the binding limit (22 unseen years here), but record
+   quality drops before satellite mapping, so the older seasons would
+   need their own check.
+8. **Other targets:** counts of large fires, or the chance of a
    top-decile season, which one fire dominates less than total area.
-7. **Only then machine learning,** and on a grid-cell and month table
-   (tens of thousands of rows), not on 291 region-seasons.
+9. **Only then machine learning,** as a grid-cell model: burn
+   probability per cell and month from weather and fuel, summed up to
+   regions (tens of thousands of rows), not on 291 region-seasons.
+
+Already done in this project, so not on the list: the ceiling check and
+last season's burned area as an input (both version 1c, section 2).
 
 Out of scope unless the owner says otherwise: predicting individual
 weather events (owner, 2026-10-12: "predicting actual weather events
@@ -137,7 +151,7 @@ which is out of scope here").
   with its own roadmap, decisions log and licence files) or a folder in
   this one.
 - **Regions:** all seven, or the four where the ceiling is high first.
-- **Which of steps 2 to 6 is first.** The session recommends step 2.
+- **Which of steps 2 to 8 is first.** The session recommends step 2.
 - **Registered or exploratory:** whether the 2026 and 2027 held-back
   scores are written down in advance as a registered test of the
   sibling. The session recommends yes, since they are the only clean
