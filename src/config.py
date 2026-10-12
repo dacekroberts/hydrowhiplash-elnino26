@@ -567,3 +567,27 @@ SNOWFALL_MONTHS = (11, 12, 1, 2, 3)  # Nov-Mar
 SOIL_MONTHS = SUMMER_MONTHS          # JJA
 SOIL_LAYER_WEIGHTS = {"swvl1": 0.25, "swvl2": 0.75}
 SNOW_SOIL_TABLE = DATA_PROCESSED / "snow_soil_region_year.csv"
+
+# Seasonal-outlook prediction model, version 1 (exploratory; planned after
+# run1 was seen; D83; docs/prediction_model_spec.md; settings agreed by the
+# owner 2026-10-12). Column names as in run_hypotheses.fire_frame, with
+# precip_octmar_mm added. Scoring reuses FORWARD_MIN_TRAIN_YEARS,
+# PREDICTION_ALPHA, N_BOOTSTRAP and RANDOM_SEED.
+PRED_PREDICTORS = ("enso_djf", "precip_octmar_mm", "swe_z", "spei3_djf")
+# hindsight run only: not known in spring, never a forecasting predictor
+PRED_HINDSIGHT_PREDICTORS = (*PRED_PREDICTORS, "temp_jja")
+# Ridge penalties tried at each step, per training row on predictors
+# standardised within region: 13 values, 0.01 (almost none) to 1000 (the
+# predictors switched off, leaving the trend-only baseline).
+PRED_RIDGE_GRID = tuple(10 ** (-2 + 5 * k / 12) for k in range(13))
+PRED_TOP_SHARE = 1 / 3        # yes or no outcome: top third of the region's training seasons
+PRED_YES_PROBABILITY = 0.5    # a "yes" call in the hits and false alarms count
+PRED_SKILL_CI = 0.95          # interval on skill, unseen years resampled
+# regions with no snowpack predictor (ERA5_SWE_MIN_NORMAL_MM leaves swe_z
+# empty): the value is set to 0, "no information", so the region stays pooled
+PRED_NO_SNOW_REGIONS = ("SoCal",)
+# skill is reported for these groups beside each region
+PRED_GROUPS = {"all seven": tuple(REGIONS),
+               "AK and YT": tuple(r for r, role in REGIONS.items() if role == "north"),
+               "other five": tuple(r for r, role in REGIONS.items() if role != "north")}
+PRED_RUN = "prediction_v1"    # results/tables/<PRED_RUN>[_<label>]/

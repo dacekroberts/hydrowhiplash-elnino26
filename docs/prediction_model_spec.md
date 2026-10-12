@@ -3,8 +3,8 @@
 Written 2026-10-12 on branch `side/prediction-model`, before any model is
 fitted. Sections 1 to 6 are the scope the owner agreed on 2026-10-12
 ("i agree with proposed scope"; `DECISIONS.md` 2026-10-12 "Prediction model
-scope agreed"). Section 7 lists what is not agreed yet; no fit happens
-until each line there has the owner's yes and is moved up.
+scope agreed"). Section 7 holds the settings the owner agreed the same day, also
+before any fit.
 
 **Status of this analysis.** Planned after all of `run1` was seen,
 including `validation.csv` (H3a skill against a trend-only model -0.03 to
@@ -72,29 +72,47 @@ the missing skill is summer weather.
   anything trained on El Niño years only, any claim that replaces a
   registered test.
 
-## 7. Not agreed yet (proposals; nothing here is in force)
+## 7. Settings agreed on 2026-10-12, before any fit
 
-Left open by the agreed scope:
+Each was chosen after `run1` was seen and before any model was fitted
+(`DECISIONS.md` 2026-10-12 "Prediction model: settings agreed before the
+fit"; D\?a). Values live in `src/config.py` (`PRED_*`).
 
-- **A. Shrinkage setting**, and how it is chosen inside the training
-  seasons only.
-- **B. Skill measure for the yes or no outcome.**
-- **C. The rule that decides whether version 2 is tried.**
-
-Gaps found while reading the tables (no fit was run to find them):
-
-- **D. SoCal has no snowpack value.** `era5_swe_z` is empty for all 42
-  SoCal seasons (its 1 April snowpack averages 0.06 mm).
-- **E. SoCal's zero-fire season, 2014.** `log_burn` is 0, about 10 log
-  points under any other SoCal season.
-- **F. How the 80% interval and the interval on skill are made.** A
-  shrunken model has no textbook formula for either.
-- **G. Trend and region terms.** The scope says "a year trend" and "region
-  terms" without saying whether the trend is shared or one per region.
-  `run1`'s baseline is one trend per region.
+- **A. Shrinkage.** Only the four climate predictors are shrunk. Each
+  region's own level and its own year trend are left unshrunk, so at a
+  very large penalty the model is the trend-only baseline exactly. At each
+  step the penalty is picked from a fixed grid of 13 values (0.01 to 1000,
+  per training row) by leaving out one training year at a time and taking
+  the value with the lowest error; the unseen year plays no part.
+  Predictors are standardised per region from the training seasons only.
+- **B. Yes or no skill.** The Brier score: the average squared gap between
+  the forecast probability and what happened (1 or 0). The probability is
+  read off the same model's forecast, as the chance the season lands above
+  the training cut. Brier skill is reported against two references: the
+  one-in-three base rate, and the trend-only model's probability. Beside
+  it: hits and false alarms when the probability is 0.5 or more.
+- **C. Rule for version 2.** Tried only if the forecast run's skill on log
+  burned area, all seven regions together, has a 95% interval wholly above
+  zero. The hindsight run does not count. Owner: "interval above zero, if
+  lands below have follow-up dialogue": if the rule is not met, the next
+  step is a conversation with the owner, not a second model.
+- **D. SoCal snowpack.** `era5_swe_z` is empty for all 42 SoCal seasons
+  (its 1 April snowpack averages 0.06 mm). It is set to 0 for SoCal, "no
+  information", so SoCal stays in the pool.
+- **E. SoCal's zero-fire season, 2014** (`log_burn` 0, about 10 log points
+  under any other SoCal season) is kept in, as in `run1`. A third run
+  without it, in training and in scoring, is shown beside the forecast run.
+- **F. Intervals.** The 80% interval is the forecast plus or minus 1.28
+  times that region's training residual spread. The interval on skill
+  comes from resampling the unseen years 10,000 times, whole years at a
+  time so regions in one year stay together, seed 2026.
+- **G. Trend and region terms.** One level and one trend per region,
+  matching `run1`'s baseline.
 
 ## Outputs
 
-`results/tables/prediction_v1/` (and `prediction_v1_hindsight/`), written
-through `src.run_guard.write_result` with a provenance record beside each
-table. Settings in `src/config.py`.
+`results/tables/prediction_v1/` (the forecast run),
+`prediction_v1_hindsight/` and `prediction_v1_no_zero_fire/`, each with
+`predictions.csv`, `skill.csv` and `coefficients.csv`, written by
+`python -m src.prediction` through `src.run_guard.write_result` with a
+provenance record beside each table.
