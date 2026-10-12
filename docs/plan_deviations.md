@@ -47,7 +47,8 @@ additions stay distinguishable from the original plan.
   inside `TRACKER_WINDOW`. The list marks two forecast stages, the first
   at CPC's first RONI release after February 2027 (the frozen plan's
   input for the H3a forecast), the final at the 1 April snowpack; a
-  proposal until the owner confirms the stages.
+  proposal until the owner confirms the stages. Confirmed by the owner
+  the same day ("Two stages").
 - **Why:** the timetable, the reminders and the pipeline would otherwise
   each hold their own dates.
 - **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: rollout calendar".

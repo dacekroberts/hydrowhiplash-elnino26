@@ -63,6 +63,28 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   six left off are the undated releases, the 2026 season's close and
   the end of the index revisions.
 
+- **Decided (owner): the 2027 forecast is published in two stages
+  (D76, D87).** The first at CPC's first RONI release after February
+  2027 (expected 1 to 14 March), from the registered H3a model; the
+  final after the 1 April snowpack (about 8 April 2027), adding the two
+  secondary single-predictor H6 forecasts. Rejected one stage in April:
+  the H3a forecast needs only the index, and a dated March statement is
+  the earlier record. Open for the first stage's wording: H3a showed no
+  gain over a trend-only model in run1 (-0.03 to +0.01).
+- **Decided (owner): ten reminders scheduled as one-time tasks, three
+  days ahead of each date at 9:00 local, look and report only.** Each
+  reads its item from `rollout_calendar.json` by id, quotes it, and
+  reads the publishers' public pages (CNFDB folder, CanSWE record, CPC
+  index file) for the undated arrivals; none downloads, edits, commits
+  or reads polygons. Dates: 2026-11-04, 2026-12-04, 2027-01-04,
+  2027-02-04, 2027-02-26 (the index), 2027-03-04, 2027-04-04 (with the
+  snowpack), 2027-05-11 (index revisions), 2027-10-28, 2028-01-28. Task
+  ids start `whiplash-rollout-`; they live in the owner's
+  `~/.claude/scheduled-tasks/`, outside the repository, and run only
+  while the desktop app is open (a missed one runs at the next launch).
+  If a date in the calendar changes, the matching task has to be moved
+  by hand: the tasks read the items, not their own run dates.
+
 ### 2026-10-12 - Session 10: design system, hosting and the map page
 
 - **Decided (owner, session 10): a new design system for this project,
