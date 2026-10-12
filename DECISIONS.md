@@ -17,6 +17,22 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model: the in-project record stops at version 1c; further work goes to its own repository
+
+- **Decided (owner): versions 1, 1b and 1c are this project's
+  exploratory record of the prediction model, and anything further is a
+  sibling project in its own repository.** Owner: "i agree that up to 1c
+  should represent the in-project exploratory record"; "we can do own
+  repo"; "roadmap for it will be essential". This settles the "Not
+  decided" point of the entry "Prediction model version 1c: summer
+  conditions matter in four regions, last season's burn adds nothing".
+  Machine learning (version 2) was not tried here. The main session
+  drafts the new project's kickoff; `docs/prediction_sibling_kickoff.md`
+  is its source material, and its proposals stay proposals. Rejected:
+  more variants on this branch (six forecasting variants already share
+  the same 22 unseen years, and the remaining ideas need `data/` or new
+  sources).
+
 ### 2026-10-12 - Prediction model version 1c: summer conditions matter in four regions, last season's burn adds nothing
 
 - **Found (exploratory, after versions 1 and 1b and `run1`; D?c): last
