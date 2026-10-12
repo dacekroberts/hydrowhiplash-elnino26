@@ -10,6 +10,7 @@
 <button type="button" data-nino="1" aria-label="Next El Niño winter">El Niño ▸</button>
 </div>
 <div class="rmap-slide"><input type="range" step="1" aria-label="Year"><div class="rmap-marks" aria-hidden="true"></div></div>
+<p class="rmap-key" aria-hidden="true"><i class="strong"></i>strong El Niño<i class="nino"></i>El Niño<i class="neutral"></i>neutral<i class="nina"></i>La Niña<span>each winter, by its December to February index</span></p>
 <p class="rmap-when"><span class="rmap-chip"></span><span class="rmap-winter"></span></p>
 </div>
 <div class="rmap-body">
@@ -90,12 +91,17 @@
     var after = nino.filter(function (y) { return y > year; });
     if (after.length) go(after[0]);
   });
+  // The strip under the slider: one cell per winter, coloured by its class
+  // (owner, 2026-10-12). A click on a cell goes to that year.
   var marks = q(".rmap-marks");
-  nino.forEach(function (y) {
-    var m = document.createElement("i");
+  years.forEach(function (y) {
+    var w = D.years[y], m = document.createElement("i");
     m.style.left = (100 * (y - lo) / (hi - lo)) + "%";
-    if (D.years[y][2]) m.className = "strong";
-    m.title = y + ": " + words(D.years[y]);
+    m.style.width = (100 / (hi - lo)) + "%";
+    m.className = w[1] === "el_nino" ? (w[2] ? "strong" : "nino") :
+      (w[1] === "la_nina" ? "nina" : "neutral");
+    m.title = y + ": " + words(w);
+    m.addEventListener("click", function () { go(y); });
     marks.appendChild(m);
   });
   function link(a, b) {

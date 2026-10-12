@@ -19,8 +19,9 @@ A first version. The wording is not final.
 Pick a dataset and a year. Each region is coloured by how that year compares
 with the region's own normal, so a dark British Columbia and a dark Southern
 California both mean an unusual year there, not the same number of hectares
-or millimetres. The amber marks under the slider are El Niño winters, in the
-same amber the charts use.
+or millimetres. The strip under the slider shows every winter: amber for an
+El Niño winter, a second amber for a strong one, purple for La Niña. Click
+a cell to go to that year.
 
 ::: {.column-body-outset}
 ```{python}

@@ -17,6 +17,27 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Map: every winter's El Niño class under the year slider
+
+- **Replaced the El Niño ticks under the map's slider with a strip of
+  all 76 winters, one cell each** (owner: "yes do option 1 now"): `enso`
+  for an El Niño winter, `enso-strong` for a strong one, `enso-cold` for
+  La Niña, the sunk surface for neutral, with a key; a click on a cell
+  goes to that year. Classes are the tables' own `phase` and `strong`,
+  so no new threshold. Rejected a continuous colour scale of the index:
+  the project's classes are what every chart marks, and a scale would
+  need a second legend. Noted: in the dark theme `enso-strong` is the
+  paler of the two ambers, so the page says "a second amber", not
+  "darker".
+- **Agreed with the owner for a later step (not built, no data
+  fetched): sea-surface temperature on the map.** The part of the
+  Pacific beside the seven regions on the main map, and a separate
+  diagram of the whole tropical Pacific on the same slider; the cool to
+  warm temperature ramp; anomalies with the tropical mean removed, as
+  RONI does; a plain statement beside it that the tests found no
+  reliable link from El Niño itself to burned area. A new source: plan
+  first, then a ledger row and licence read before any download.
+
 ### 2026-10-12 - Map page, first version; interactive charts with labels and a legend
 
 - **Built (owner: "yes start a first version of the map now") the map

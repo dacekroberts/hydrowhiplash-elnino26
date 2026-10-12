@@ -87,6 +87,7 @@ def test_fragment_draws_seven_regions_and_carries_every_value(regions):
     assert page.count("<path data-region=") == len(REGIONS)
     assert page.count('name="rmap-layer"') == len(MAP_LAYERS)
     assert page.count("<tr data-region=") == len(REGIONS)
+    assert 'class="rmap-key"' in page and "La Niña" in page  # the strip under the slider has its key
     data = json.loads(page.split('<script type="application/json">')[1].split("</script>")[0]
                       .replace("<\\/", "</"))
     assert set(data["layers"]) == set(MAP_LAYERS) and set(data["names"]) == set(REGIONS)

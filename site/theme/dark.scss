@@ -122,12 +122,21 @@ div.rmap .rmap-step button { font: inherit; font-size: 0.84rem; color: var(--ink
 div.rmap .rmap-step button[data-nino] { border-color: var(--enso); }
 div.rmap .rmap-y { font-family: var(--font-display); font-weight: 800; font-size: 1.75rem;
   font-variant-numeric: tabular-nums; min-width: 4.5ch; text-align: center; }
-div.rmap .rmap-slide { position: relative; margin-top: var(--space-2); padding-bottom: 14px; }
+div.rmap .rmap-slide { position: relative; margin-top: var(--space-2); padding-bottom: 18px; }
 div.rmap .rmap-slide input { width: 100%; accent-color: var(--evergreen); margin: 0; }
-div.rmap .rmap-marks { position: absolute; left: 8px; right: 8px; bottom: 0; height: 12px; }
-div.rmap .rmap-marks i { position: absolute; bottom: 0; width: 2px; height: 7px; margin-left: -1px;
-  background: var(--enso); }
-div.rmap .rmap-marks i.strong { height: 12px; width: 3px; background: var(--enso-strong); }
+div.rmap .rmap-marks { position: absolute; left: 8px; right: 8px; bottom: 0; height: 14px; }
+div.rmap .rmap-marks i { position: absolute; bottom: 0; height: 14px; transform: translateX(-50%);
+  cursor: pointer; box-shadow: inset -1px 0 0 var(--surface); }
+div.rmap .rmap-marks i.neutral, div.rmap .rmap-key i.neutral { background: var(--surface-sunk); }
+div.rmap .rmap-marks i.nino, div.rmap .rmap-key i.nino { background: var(--enso); }
+div.rmap .rmap-marks i.strong, div.rmap .rmap-key i.strong { background: var(--enso-strong); }
+div.rmap .rmap-marks i.nina, div.rmap .rmap-key i.nina { background: var(--enso-cold); }
+div.rmap p.rmap-key { margin: 6px 0 0; max-width: none; font-size: 0.78rem; color: var(--ink-muted);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; }
+div.rmap p.rmap-key i { width: 12px; height: 12px; border: 1px solid var(--rule-strong);
+  margin-left: 8px; display: inline-block; }
+div.rmap p.rmap-key i:first-child { margin-left: 0; }
+div.rmap p.rmap-key span { margin-left: 10px; }
 div.rmap p.rmap-when { margin: var(--space-2) 0 0; max-width: none; font-size: 0.9rem;
   display: flex; gap: var(--space-2); align-items: baseline; flex-wrap: wrap; }
 div.rmap .rmap-chip { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
