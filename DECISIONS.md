@@ -17,6 +17,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Sibling repository: its own downloads, and a split point
+
+- **Decided (owner: "have it download copies for full independence"):
+  the sibling repository downloads its own data and does not read this
+  project's `data/`.** Answers the open question in
+  `docs/sibling_kickoff_climate_whiplash_prediction.md` Part 4. Rejected
+  reading `data/` in place (the proposal until now): the two projects
+  would stay tied to one folder. Passed to the sibling's session by
+  message; the downloads, their ledger rows and licence reads are
+  planned and approved there. Left for the owner there: whether the
+  sibling also builds its own burned-area table from fire polygons.
+- **Proposed to the sibling's session (owner's request) a split point:**
+  a record of every file taken from this project at the tag
+  `prediction-handoff`, tables matching their pins, tests passing with
+  no path into this project, and `spring_inputs` reproduced; after it,
+  no read of this project without the owner's yes there. The sibling
+  reported all four as holding (23 files; 0.0122, 95% interval -0.0012
+  to 0.0323) and is waiting for the owner's yes in its own session. The
+  split is recorded here when its message arrives.
+
 ### 2026-10-12 - Session 11: the delegated-build pilot is prepared on a staged copy; the run was blocked (D77)
 
 - **Decided (owner, from four options: "Yes, staged copy"): the D77

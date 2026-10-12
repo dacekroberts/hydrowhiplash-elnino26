@@ -134,8 +134,9 @@ What to weigh before choosing any:
 
 ## Part 4 · Decisions still open
 
-- Whether the sibling reads the parent's `data/` in place (proposed) or
-  downloads again.
+- Settled 2026-10-12 (owner: "have it download copies for full
+  independence"): the sibling downloads its own data and does not read
+  the parent's `data/`.
 - What the held-back scores are compared with: the trend-only model
   (proposed) and the parent's H3a forecast.
 - Whether the sibling's results are ever shown beside the parent's site.
