@@ -59,6 +59,36 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   read. Files: `src/later.py`, `src/config.py`, the eleven
   `src/download_*.py`, `tests/test_later.py`.
 
+- **Built the stamped rebuild for the six climate builders the same day
+  (owner: "we can build the stamped folder item here if allowed");
+  supersedes "Not built" above for those six.** Writing the code is not
+  the hard-line item: `ERA5_LAG_MONTHS` stays 3 and nothing was run on
+  real data. `python -m src.<builder> --stamp <date>` (`era5`, `snow`,
+  `whiplash`, `phase2`, `climate_vars`, `snow_soil`) reads the files on
+  disk with the latest closed retrieval not after the stamp laid over
+  them (a stamped year file replaces the file on disk for that year),
+  writes intermediate files to `data/processed/later/<stamp>/` and
+  tables to `results/tables/tracker/<stamp>/`, and adds itself to
+  `rebuild.json` there (commit, time, the retrievals read with the
+  sha256 of each record). Each run rewrites `changed_cells.csv`: every
+  cell that differs from the pinned table of the same name, which is the
+  hard-line item's "report the changed numbers". The SPEI fit keeps a
+  cache per stamp, so a new retrieval is always refitted. Order within a
+  stamp: `snow` before `whiplash` (the glacier mask), both before
+  `phase2`.
+- **Decided that a stamped rebuild reads the winters from the latest
+  stamped index retrieval if one exists, else from the pinned table.**
+  CPC revises recent values, so once an index retrieval exists the ENSO
+  columns of a rebuilt table can differ from the pinned ones; every such
+  cell lands in `changed_cells.csv`. Rejected always using the pinned
+  winters: the tracker needs the 2027 winter, which only a later
+  retrieval holds. Open for the owner: whether a rebuild should be able
+  to name the index retrieval it reads, apart from the ERA5-Land one.
+- **Still not built:** the station snow index (`stations`) and the fire
+  builders take no stamp; the tracker's own region x month table and
+  tiles do not exist. 16 tests on made-up files (`tests/test_later.py`,
+  `tests/test_later_rebuild.py`).
+
 ### 2026-10-12 - Session 10: rollout calendar
 
 - **Decided to keep the rollout calendar as a list built in code from

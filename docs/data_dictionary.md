@@ -608,6 +608,21 @@ beside the pinned tables, never over them. Trap: a stamped ERA5-Land
 folder holds only the years that had no full-year file on disk, so it is
 read on top of `data/raw`, not instead of it.
 
+**Stamped rebuilds** (`results/tables/tracker/<stamp>/`, `python -m
+src.<builder> --stamp <date>`; D88): the same table names as the pinned
+ones, rebuilt from the files on disk plus the latest closed retrieval
+not after the stamp. `rebuild.json`: per builder, `run_utc`, `commit`,
+`retrievals_read` (each stamped folder read, with the sha256 of its
+`retrieval.json`) and `tables`. `changed_cells.csv`: one row per cell
+that differs from the pinned table of the same name: `table`, `region`,
+`year`, `column`, `old`, `new`, `change` (changed, added, removed).
+Floats are compared exactly. Traps: an added 2026 or 2027 row is
+expected, a changed cell in an earlier year is not and needs
+explaining; once a stamped index retrieval exists, the ENSO columns come
+from it, and CPC's revisions show up here as changed cells.
+Intermediate files (the SPEI cells, glacier masks, per-builder tables)
+go to `data/processed/later/<stamp>/`, never committed.
+
 **Input pins** (`results/tables/input_pins.csv`, `python -m
 src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
 every input the tests read: the 7 committed input tables named in

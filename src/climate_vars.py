@@ -36,7 +36,7 @@ from __future__ import annotations
 import pandas as pd
 import xarray as xr
 
-from src.config import (CLIMATE_CONTROLS_TABLE, DATA_PROCESSED, ERA5_DOMAINS,
+from src.config import (CLIMATE_CONTROLS_TABLE, ERA5_DOMAINS,
                         PRECIP_ANOM_MONTHS, PRECIP_ANOM_NORMAL_YEARS, REGIONS, RESULTS,
                         SPRING_MONTHS, SUMMER_MONTHS, WINTER_MONTHS)
 from src.era5 import join_enso, regional_series, winter_total
@@ -94,19 +94,22 @@ def climate_controls_table(regional: xr.Dataset, winters: pd.DataFrame) -> pd.Da
     return join_enso(table, winters)[COLUMNS]
 
 
-def main(rebuild: bool = False) -> None:
-    from src import pin_inputs
+def main(rebuild: bool = False, stamp: str | None = None) -> None:
+    from src import later, pin_inputs
     from src.era5 import assign_domains, open_domains, region_masks
     from src.regions import load_regions
 
-    # the committed copy is a pinned input: refused without --rebuild
-    pin_inputs.guard_write([COMMITTED], rebuild)
+    ctx = later.paths(stamp)
+    # the committed copy is a pinned input: refused without --rebuild. A
+    # stamped rebuild writes beside it instead (D88).
+    if not stamp:
+        pin_inputs.guard_write([COMMITTED], rebuild)
 
     regions = load_regions()
     domains = assign_domains(regions)
     names = sorted(set(domains), key=list(ERA5_DOMAINS).index)
-    datasets = open_domains(names)
-    winters = pd.read_csv(DATA_PROCESSED / "el_nino_winters.csv")
+    datasets = open_domains(names, ctx)
+    winters = ctx.winters()
     parts = []
     for name in names:
         masks = region_masks(regions[regions["region"].map(domains) == name], datasets[name])
@@ -116,11 +119,13 @@ def main(rebuild: bool = False) -> None:
     table["region"] = pd.Categorical(table["region"], categories=list(REGIONS), ordered=True)
     table = table.sort_values(["region", "year"]).reset_index(drop=True)
     table["region"] = table["region"].astype(str)
-    for path in (CLIMATE_CONTROLS_TABLE, COMMITTED):
+    for path in (ctx.processed(CLIMATE_CONTROLS_TABLE), ctx.table(COMMITTED)):
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
-    pin_inputs.report_rebuild([COMMITTED])
+    if not stamp:
+        pin_inputs.report_rebuild([COMMITTED])
+    ctx.close("climate_vars")
     print(table.groupby("region", sort=False)[["temp_jja", "temp_mam", "precip_octmar_mm"]]
           .agg(["mean", "count"]).round(2).to_string())
 
@@ -128,4 +133,8 @@ def main(rebuild: bool = False) -> None:
 if __name__ == "__main__":
     import sys
 
-    main(rebuild="--rebuild" in sys.argv[1:])
+    from src import later as _later
+
+    _argv = sys.argv[1:]
+    _stamp = _later.take_stamp(_argv)
+    main(rebuild="--rebuild" in _argv, stamp=_stamp)

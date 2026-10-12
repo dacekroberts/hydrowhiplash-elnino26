@@ -81,15 +81,17 @@ def convert_units(ds: xr.Dataset) -> xr.Dataset:
     return out
 
 
-def open_era5(directory: Path = ERA5_DIR) -> xr.Dataset:
+def open_era5(directory: Path = ERA5_DIR, paths: list[Path] | None = None) -> xr.Dataset:
     """Every yearly file as one lazily loaded Dataset, in project units.
+    `paths` names the files to read instead of every file in `directory`
+    (a stamped rebuild lays a later retrieval over the files on disk; D88).
 
     Raises if a year was unpacked into a folder (a zipped CDS reply, see
     src.download_era5.retrieve), which the file glob would skip, or if the
     months are not contiguous: either would silently drop winters, because
     seasons missing a month are dropped (Phase 1 audit, finding 3).
     """
-    paths = sorted(directory.glob("era5_land_*.nc"))
+    paths = sorted(directory.glob("era5_land_*.nc")) if paths is None else list(paths)
     if not paths:
         raise FileNotFoundError(f"No ERA5-Land files in {directory}; run python -m src.download_era5.")
     folders = sorted(p.name for p in directory.glob("era5_land_*") if p.is_dir())
@@ -192,13 +194,16 @@ def assign_domains(regions: gpd.GeoDataFrame) -> pd.Series:
     return pd.Series(out, name="domain")
 
 
-def open_domains(names) -> dict[str, xr.Dataset]:
-    """Open each named domain; raises if a domain has not been downloaded."""
+def open_domains(names, ctx=None) -> dict[str, xr.Dataset]:
+    """Open each named domain; raises if a domain has not been downloaded.
+    `ctx` is a src.later.paths() object; with a stamp it adds the later
+    retrieval's files."""
     missing = [n for n in names if not any(domain_dir(n).glob("era5_land_*.nc"))]
     if missing:
         raise FileNotFoundError(f"ERA5 domain(s) {missing} not downloaded; run "
                                 f"python -m src.download_era5 {' '.join(missing)}.")
-    return {n: open_era5(domain_dir(n)) for n in names}
+    return {n: open_era5(domain_dir(n), ctx.era5_paths(domain_dir(n)) if ctx else None)
+            for n in names}
 
 
 def join_enso(table: pd.DataFrame, winters: pd.DataFrame,
@@ -256,21 +261,30 @@ def build_winter_precip_table(regions: gpd.GeoDataFrame, winters: pd.DataFrame,
     return table, pd.concat(cells).loc[order]
 
 
-def main() -> None:
+def main(stamp: str | None = None) -> None:
+    from src import later
     from src.regions import load_regions
 
+    ctx = later.paths(stamp)
     regions = load_regions()
-    datasets = open_domains(sorted(set(assign_domains(regions)), key=list(ERA5_DOMAINS).index))
-    winters = pd.read_csv(DATA_PROCESSED / "el_nino_winters.csv")
+    datasets = open_domains(sorted(set(assign_domains(regions)), key=list(ERA5_DOMAINS).index),
+                            ctx)
+    winters = ctx.winters()
     table, cells = build_winter_precip_table(regions, winters, datasets)
     if list(dict.fromkeys(table["region"])) != list(REGIONS):
         raise SystemExit("Region list differs from config.REGIONS.")
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    table.to_csv(OUT, index=False, lineterminator="\n")
-    print(f"wrote {OUT}: {len(table)} rows, winters "
+    out = ctx.processed(OUT)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    table.to_csv(out, index=False, lineterminator="\n")
+    print(f"wrote {out}: {len(table)} rows, winters "
           f"{table['winter'].iloc[0]} to {table['winter'].iloc[-1]}")
     print(cells.to_string())
+    ctx.close("era5")
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    from src import later as _later
+
+    main(_later.take_stamp(sys.argv[1:]))

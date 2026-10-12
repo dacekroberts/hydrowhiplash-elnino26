@@ -20,17 +20,20 @@ same stamp.
   record(folder, stamp, ...)   close a stamped folder
   tables_dir(stamp)            where a rebuild writes its tables
   compare_tables(old, new, keys)  the cells a rebuild changed or added
+  paths(stamp)                 Base() or Rebuild(stamp): where a builder
+                               reads raw files and writes its outputs
 """
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 
 from src import pin_inputs
-from src.config import DATA_RAW, LATER_RAW, TRACKER_TABLES
+from src.config import DATA_PROCESSED, DATA_RAW, LATER_RAW, RESULTS, TRACKER_TABLES
 
 FLAG = "--stamp"
 RECORD_NAME = "retrieval.json"
@@ -142,3 +145,149 @@ def compare_tables(old: pd.DataFrame, new: pd.DataFrame, keys: list[str]) -> pd.
             rows.append({**dict(zip(keys, key_values)), "column": column,
                          "old": before, "new": after, "change": change})
     return pd.DataFrame(rows, columns=[*keys, "column", "old", "new", "change"])
+
+
+ERA5_YEAR_FILE = re.compile(r"era5_land_(\d{4})(_partial)?\.nc$")
+REBUILD_RECORD = "rebuild.json"
+CHANGES_NAME = "changed_cells.csv"
+TABLE_KEYS = ["region", "year"]
+
+
+def latest(folder: Path, stamp: str, base: Path | None = None) -> Path | None:
+    """The closed retrieval of `folder` with the latest stamp not after
+    `stamp`, or None if there is none. Open (unrecorded) folders are not
+    read: an interrupted download is not an input."""
+    stamp = check_stamp(stamp)
+    if not LATER_RAW.is_dir():
+        return None
+    found = None
+    for candidate in sorted(p.name for p in LATER_RAW.iterdir() if p.is_dir()):
+        if candidate <= stamp and (mirror(folder, candidate, base) / RECORD_NAME).exists():
+            found = mirror(folder, candidate, base)
+    return found
+
+
+class Base:
+    """The paths a builder uses without a stamp: data/raw, data/processed
+    and results/tables, exactly as before D73."""
+    stamp = None
+
+    def era5_paths(self, directory: Path, base: Path | None = None) -> list[Path] | None:
+        return None  # open_era5 globs the directory itself
+
+    def raw_file(self, directory: Path, name: str, base: Path | None = None) -> Path:
+        return Path(directory) / name
+
+    def processed(self, path: Path) -> Path:
+        return Path(path)
+
+    def table(self, path: Path) -> Path:
+        return Path(path)
+
+    def winters(self) -> pd.DataFrame:
+        return pd.read_csv(DATA_PROCESSED / "el_nino_winters.csv")
+
+    def close(self, builder: str) -> None:
+        return None
+
+
+class Rebuild(Base):
+    """The paths of a rebuild under a stamp (D88). Raw files: the files on
+    disk, with the latest closed retrieval not after the stamp laid over
+    them. Intermediate files: data/processed/later/<stamp>/. Tables:
+    results/tables/tracker/<stamp>/. Nothing pinned is written. close()
+    records what was read and lists every cell that differs from the
+    pinned table of the same name."""
+
+    def __init__(self, stamp: str):
+        self.stamp = check_stamp(stamp)
+        self.read: dict[str, str] = {}
+        self.written: dict[str, Path] = {}
+
+    def _source(self, directory: Path, base: Path | None) -> Path | None:
+        found = latest(directory, self.stamp, base)
+        if found is not None:
+            self.read[found.relative_to(LATER_RAW).as_posix()] = \
+                pin_inputs.sha256(found / RECORD_NAME)
+        return found
+
+    def era5_paths(self, directory: Path, base: Path | None = None) -> list[Path] | None:
+        """Yearly files of `directory`, a stamped file replacing the file on
+        disk for the same year (a fuller partial year, or the full year)."""
+        found = self._source(directory, base)
+        if found is None:
+            return None
+        by_year: dict[str, Path] = {}
+        for folder in (Path(directory), found):
+            for path in sorted(folder.glob("era5_land_*.nc")):
+                match = ERA5_YEAR_FILE.search(path.name)
+                if match:
+                    by_year[match.group(1)] = path
+        return [by_year[year] for year in sorted(by_year)]
+
+    def raw_file(self, directory: Path, name: str, base: Path | None = None) -> Path:
+        found = self._source(directory, base)
+        if found is not None and (found / name).exists():
+            return found / name
+        return Path(directory) / name
+
+    def processed(self, path: Path) -> Path:
+        out = DATA_PROCESSED / "later" / self.stamp / Path(path).name
+        out.parent.mkdir(parents=True, exist_ok=True)
+        return out
+
+    def table(self, path: Path) -> Path:
+        out = tables_dir(self.stamp) / Path(path).name
+        if out.resolve() in {p.resolve() for p in pin_inputs.pinned_files()}:
+            raise StampedFolderError(f"{out} is a pinned input.")
+        out.parent.mkdir(parents=True, exist_ok=True)
+        self.written[Path(path).name] = out
+        return out
+
+    def winters(self) -> pd.DataFrame:
+        """Winters from the latest stamped index retrieval, if there is one;
+        otherwise the pinned table. CPC revises recent values, so a stamped
+        retrieval can differ from the pinned winters; close() lists every
+        cell that does."""
+        from src import download_oni
+        from src.config import ENSO_INDEX
+
+        base = DATA_RAW / "enso"
+        raw = self.raw_file(base, f"{ENSO_INDEX.lower()}.ascii.txt")
+        if raw.parent == base:  # no stamped retrieval
+            return super().winters()
+        return download_oni.classify_winters(download_oni.parse(raw), ENSO_INDEX)
+
+    def close(self, builder: str) -> None:
+        """Add this builder to rebuild.json and rewrite changed_cells.csv
+        for every table written so far that has a pinned counterpart."""
+        folder = tables_dir(self.stamp)
+        folder.mkdir(parents=True, exist_ok=True)
+        record_path = folder / REBUILD_RECORD
+        content = (json.loads(record_path.read_text("utf-8")) if record_path.exists()
+                   else {"stamp": self.stamp, "builders": {}})
+        content["builders"][builder] = {
+            "run_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "commit": pin_inputs.head_commit(),
+            "retrievals_read": dict(sorted(self.read.items())),
+            "tables": sorted(self.written),
+        }
+        record_path.write_bytes((json.dumps(content, indent=2) + "\n").encode("utf-8"))
+        parts = []
+        for path in sorted(folder.glob("*.csv")):
+            pinned = RESULTS / "tables" / path.name
+            if path.name == CHANGES_NAME or not pinned.exists():
+                continue
+            diff = compare_tables(pd.read_csv(pinned), pd.read_csv(path), TABLE_KEYS)
+            diff.insert(0, "table", path.name)
+            parts.append(diff)
+            print(f"{path.name}: {len(diff)} cell(s) differ from the pinned table "
+                  f"({int((diff['change'] == 'changed').sum())} changed, "
+                  f"{int((diff['change'] == 'added').sum())} added)")
+        if parts:
+            pd.concat(parts).to_csv(folder / CHANGES_NAME, index=False, lineterminator="\n")
+
+
+def paths(stamp: str | None) -> Base:
+    """Rebuild(stamp) for a stamped rebuild, Base() for the usual paths."""
+    return Rebuild(stamp) if stamp else Base()
