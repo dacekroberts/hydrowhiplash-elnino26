@@ -268,6 +268,10 @@ technique was chosen.
       runs are not committed by then, only the climate tables are
       re-pinned, logged, and only if every value a registered test reads
       is identical; the ENSO and fire pins are not touched.
+      [mid-project: D88] The downloads use `--stamp` and land in
+      `data/raw/later/<stamp>/`; the rebuilt tables go to
+      `results/tables/tracker/<stamp>/`, beside the pinned ones, and the
+      changed numbers are the comparison of the two (`src/later.py`).
 - [ ] Spring 2027: update with the final winter data and publish
 - [ ] Fall 2027: verify against the actual season, which could become a preprint
 

@@ -35,7 +35,7 @@ from pathlib import Path
 import pyogrio
 import requests
 
-from src import pin_inputs
+from src import later, pin_inputs
 from src.config import (WFIGS_EXPORT_URL, WFIGS_EXPORT_WAIT_S, WFIGS_ITEM_URL,
                         WFIGS_LAYER_URL, WFIGS_RAW)
 from src.download_mtbs import IDENTITY, now_utc, write_manifest
@@ -70,36 +70,46 @@ def count_check(expected: int | None):
 
 
 def main(args: list[str] | None = None) -> None:
-    refresh = "--refresh" in (args or [])
-    # every file in this folder is a pinned input, and each run rewrites the
-    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
-    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
-    OUT.mkdir(parents=True, exist_ok=True)
-    if TARGET.exists() and not refresh:
-        print(f"skip {TARGET.name} (present)")
+    args = list(args or [])
+    stamp = later.take_stamp(args)
+    refresh = "--refresh" in args
+    if stamp:
+        # a later download: its own stamped folder, never the pinned one (D73)
+        out = later.open_folder(OUT, stamp)
+    else:
+        # every file in this folder is a pinned input, and each run rewrites the
+        # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+        out = OUT
+        pin_inputs.guard_folder(out, "--rebuild" in args)
+        out.mkdir(parents=True, exist_ok=True)
+    target = out / TARGET.name
+    if target.exists() and not refresh:
+        print(f"skip {target.name} (present)")
         return
     session = requests.Session()
     try:
-        download(session, WFIGS_ITEM_URL, OUT / "item.json", params={"f": "json"})
-        download(session, WFIGS_LAYER_URL, OUT / "layer.json", params={"f": "json"})
+        download(session, WFIGS_ITEM_URL, out / "item.json", params={"f": "json"})
+        download(session, WFIGS_LAYER_URL, out / "layer.json", params={"f": "json"})
         # Ask for a fresh snapshot first, so the export cannot be an old cache.
         session.get(WFIGS_EXPORT_URL, params={"redirect": "false", "layers": "0"}, timeout=120)
         status = request_export(session)
         accessed = now_utc()
-        print(f"{TARGET.name} <- {status['resultUrl']}")
-        download(session, status["resultUrl"], TARGET, headers=IDENTITY,
+        print(f"{target.name} <- {status['resultUrl']}")
+        download(session, status["resultUrl"], target, headers=IDENTITY,
                  check=count_check(status.get("recordCount")))
     except ClientError as err:
         raise stop_on_client_error(err) from err
-    layer = json.loads((OUT / "layer.json").read_text(encoding="utf-8"))
-    write_manifest(OUT / "manifest.json", {
+    layer = json.loads((out / "layer.json").read_text(encoding="utf-8"))
+    write_manifest(out / "manifest.json", {
         "export_url": WFIGS_EXPORT_URL, "result_url": status["resultUrl"],
         "export_status": status, "accessed_utc": accessed,
         "layer_editing_info": layer.get("editingInfo"),
-        "bytes": TARGET.stat().st_size,
-        "features": pyogrio.read_info(TARGET)["features"],
+        "bytes": target.stat().st_size,
+        "features": pyogrio.read_info(target)["features"],
     })
-    print(f"  {TARGET.stat().st_size:,} bytes; manifest.json written")
+    print(f"  {target.stat().st_size:,} bytes; manifest.json written")
+    if stamp:
+        later.record(out, stamp, WFIGS_EXPORT_URL)
 
 
 if __name__ == "__main__":

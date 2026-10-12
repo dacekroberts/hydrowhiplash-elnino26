@@ -28,6 +28,10 @@ Regional means must be area-weighted: use src.geo.regional_mean.
 Run:  python -m src.download_era5                       core set, every domain
       python -m src.download_era5 north                 core set, one domain
       python -m src.download_era5 --set snow_soil main  another set
+      python -m src.download_era5 --stamp [YYYY-MM-DD]  a later retrieval (D73):
+          only the years with no full-year file on disk are requested, and
+          they go to data/raw/later/<stamp>/<folder>/; nothing under
+          data/raw/<folder> is written or removed.
 """
 import sys
 import zipfile
@@ -35,6 +39,7 @@ from datetime import date
 
 import cdsapi
 
+from src import later
 from src.config import (CLIMATE_FIRST_YEAR, DATA_RAW, ERA5_DATASET, ERA5_DOMAINS,
                         ERA5_LAG_MONTHS, ERA5_VARIABLE_SETS)
 
@@ -99,10 +104,13 @@ def retrieve(client: cdsapi.Client, year: int, months: list[int], area: list[flo
 
 
 def download_domain(client: cdsapi.Client, name: str, today: date,
-                    variable_set: str = "core") -> None:
+                    variable_set: str = "core", stamp: str | None = None) -> None:
     area, folder = ERA5_DOMAINS[name]
     variables, suffix = ERA5_VARIABLE_SETS[variable_set]
-    out = RAW / f"{folder}{suffix}"
+    base = RAW / f"{folder}{suffix}"
+    # With a stamp, files go to the stamped twin of the folder; the files
+    # already on disk are only looked at, to skip finished years (D73).
+    out = later.open_folder(base, stamp, RAW) if stamp else base
     out.mkdir(parents=True, exist_ok=True)
     print(f"domain {name}, set {variable_set} {variables}: {area} -> {out}")
     for year in range(CLIMATE_FIRST_YEAR, today.year + 1):
@@ -112,6 +120,9 @@ def download_domain(client: cdsapi.Client, name: str, today: date,
         full = len(months) == 12
         target = out / (f"era5_land_{year}.nc" if full else f"era5_land_{year}_partial.nc")
         partial = out / f"era5_land_{year}_partial.nc"
+        on_disk = base / f"era5_land_{year}.nc"
+        if stamp and (on_disk.exists() or on_disk.with_suffix("").is_dir()):
+            continue
         if full and (target.exists() or target.with_suffix("").is_dir()):
             if partial.exists():
                 partial.unlink()  # full year supersedes the partial file
@@ -129,10 +140,15 @@ def download_domain(client: cdsapi.Client, name: str, today: date,
                     "Stopped: access refused (HTTP 401/403). Check the key in "
                     ".cdsapirc and that the dataset licence is accepted on the CDS "
                     "Download tab, then re-run; finished years are skipped.") from err
+    if stamp:
+        later.record(out, stamp, ERA5_DATASET,
+                     note=f"domain {name}, set {variable_set}, months published by "
+                          f"{today.isoformat()} with ERA5_LAG_MONTHS at its current value")
 
 
 def main(args: list[str] | None = None) -> None:
     args = list(args or [])
+    stamp = later.take_stamp(args)
     variable_set = "core"
     if "--set" in args:
         i = args.index("--set")
@@ -150,7 +166,7 @@ def main(args: list[str] | None = None) -> None:
     client = cdsapi.Client()
     today = date.today()
     for name in domains:
-        download_domain(client, name, today, variable_set)
+        download_domain(client, name, today, variable_set, stamp)
 
 
 if __name__ == "__main__":

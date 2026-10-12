@@ -10,7 +10,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DATA_RAW = ROOT / "data" / "raw"
 DATA_PROCESSED = ROOT / "data" / "processed"
+# Everything fetched or rebuilt after the registered runs (D73; src/later.py):
+# downloads under LATER_RAW/<stamp>/, rebuilt tables under
+# TRACKER_TABLES/<stamp>/ (set below, after RESULTS). Never a pinned path.
+LATER_RAW = DATA_RAW / "later"
 RESULTS = ROOT / "results"
+TRACKER_TABLES = RESULTS / "tables" / "tracker"
 
 # Coordinate reference systems
 # Geographic, for storage and display only. Never measure area or distance in it.

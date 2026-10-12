@@ -14,13 +14,17 @@ Year convention: the DJF value labelled with year Y is the winter of
 (Y-1)-Y, which affects the fire season of year Y.
 
 Run:  python -m src.download_oni
+      python -m src.download_oni --stamp [YYYY-MM-DD]   a later retrieval (D73):
+          both raw index files go to data/raw/later/<stamp>/enso/ with a
+          retrieval record; data/raw and data/processed are not touched.
+          parse() and classify_winters() read a stamped file like any other.
 """
 from pathlib import Path
 
 import pandas as pd
 import requests
 
-from src import pin_inputs
+from src import later, pin_inputs
 from src.config import (CLIMATE_FIRST_YEAR, DATA_PROCESSED, DATA_RAW,
                         EL_NINO_THRESHOLD, ENSO_INDEX, ENSO_INDEX_URLS,
                         LA_NINA_THRESHOLD, STRONG_THRESHOLD)
@@ -79,6 +83,23 @@ def classify_winters(index: pd.DataFrame, name: str) -> pd.DataFrame:
                 "strong"]].reset_index(drop=True)
 
 
+def download_stamped(stamp: str) -> Path:
+    """Fetch every index in ENSO_INDEX_URLS to its stamped folder and close
+    it. CPC revises recent values, and the 2027 forecast reads the first
+    release that holds DJF 2027 (ANALYSIS_PLAN "Execution details"), so each
+    retrieval is kept as its own dated record. Returns the folder."""
+    out = later.open_folder(DATA_RAW / "enso", stamp)
+    for index, url in ENSO_INDEX_URLS.items():
+        if not url:
+            continue
+        resp = requests.get(url, timeout=60)
+        resp.raise_for_status()
+        (out / f"{index.lower()}.ascii.txt").write_bytes(resp.content)
+        print(f"{index} <- {url}")
+    later.record(out, stamp, ", ".join(u for u in ENSO_INDEX_URLS.values() if u))
+    return out
+
+
 def main(rebuild: bool = False) -> None:
     pin_inputs.guard_write([DATA_RAW / f"{ENSO_INDEX.lower()}.ascii.txt",
                             DATA_PROCESSED / "enso_index.csv",
@@ -103,4 +124,9 @@ def main(rebuild: bool = False) -> None:
 if __name__ == "__main__":
     import sys
 
-    main(rebuild="--rebuild" in sys.argv[1:])
+    argv = sys.argv[1:]
+    stamp = later.take_stamp(argv)
+    if stamp:
+        download_stamped(stamp)
+    else:
+        main(rebuild="--rebuild" in argv)

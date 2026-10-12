@@ -32,7 +32,7 @@ from pathlib import Path
 
 import requests
 
-from src import pin_inputs
+from src import later, pin_inputs
 from src.config import MTBS_PERIMETER_URL, MTBS_RAW
 from src.download_nrcs_snow import ClientError, download, stop_on_client_error
 
@@ -75,12 +75,19 @@ def extract_metadata(zip_path: Path, out: Path) -> list[str]:
 
 
 def main(args: list[str] | None = None) -> None:
-    refresh = "--refresh" in (args or [])
-    # every file in this folder is a pinned input, and each run rewrites the
-    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
-    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
-    OUT.mkdir(parents=True, exist_ok=True)
-    target = OUT / Path(MTBS_PERIMETER_URL).name
+    args = list(args or [])
+    stamp = later.take_stamp(args)
+    refresh = "--refresh" in args
+    if stamp:
+        # a later download: its own stamped folder, never the pinned one (D73)
+        out = later.open_folder(OUT, stamp)
+    else:
+        # every file in this folder is a pinned input, and each run rewrites the
+        # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+        out = OUT
+        pin_inputs.guard_folder(out, "--rebuild" in args)
+        out.mkdir(parents=True, exist_ok=True)
+    target = out / Path(MTBS_PERIMETER_URL).name
     session = requests.Session()
     if target.exists() and not refresh:
         check_zip(target)
@@ -96,12 +103,14 @@ def main(args: list[str] | None = None) -> None:
         raise stop_on_client_error(err) from err
     with zipfile.ZipFile(target) as zf:
         members = zf.namelist()
-    write_manifest(OUT / "manifest.json", {
+    write_manifest(out / "manifest.json", {
         "url": MTBS_PERIMETER_URL, "accessed_utc": accessed, "server": headers,
         "bytes": target.stat().st_size, "members": members,
-        "metadata_extracted": extract_metadata(target, OUT),
+        "metadata_extracted": extract_metadata(target, out),
     })
     print(f"  {target.stat().st_size:,} bytes, zip valid; manifest.json written")
+    if stamp:
+        later.record(out, stamp, MTBS_PERIMETER_URL)
 
 
 if __name__ == "__main__":

@@ -17,6 +17,43 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Stamped paths: one parallel tree
+
+- **Decided (owner, "option a"): everything fetched or rebuilt after
+  run1 goes into one parallel tree, and no pinned file is written
+  (D73, D88).** Downloads: `data/raw/later/<stamp>/<source folder>/`,
+  the stamp being the retrieval date. Rebuilt tables:
+  `results/tables/tracker/<stamp>/`. Rejected stamped downloads with
+  tables rebuilt in place under a logged re-pin: less code, but
+  `results/tables/` would then hold files run1 did not read. Rejected a
+  release stamp in each file name (as NBAC's own names carry): only NBAC
+  publishes one, and a folder per retrieval keeps each source's file
+  names unchanged for the readers.
+- **Built `src/later.py` and a `--stamp` option on eleven download
+  scripts** (the index, ERA5-Land monthly and 1 April, MTBS, WFIGS,
+  CNFDB, NBAC, CanSWE, NRCS, BC and Yukon snow). A stamped folder is
+  closed by `retrieval.json` (size and sha256 of each file) and is never
+  written again; an interrupted run leaves no record and can be re-run
+  under the same stamp. Without the flag every script behaves as
+  before, including the refusal to overwrite a pinned file. The Alaska
+  climate-division boundaries were left without the flag: fixed
+  polygons, no later release expected.
+- **Decided that a stamped index retrieval fetches both RONI and ONI
+  and writes nothing to `data/processed/`**, where the classified
+  winters are pinned. The frozen plan's "DJF 2027 value in CPC's first
+  release after February 2027, with its retrieval date recorded" is
+  then the stamped folder itself.
+- **Decided that a stamped ERA5-Land run requests only the years with
+  no full-year file on disk** (today: 2026) and leaves the existing
+  partial file in place, so the pinned climate tables stay rebuildable
+  from the files they were made from.
+- **Not built, left for the hard-line item:** the builders (`era5`,
+  `climate_vars`, `snow`, `whiplash`) do not yet read a stamped folder
+  on top of `data/raw` or write to `tables_dir(stamp)`. Tested on
+  made-up files only (9 tests); no download was run and no polygon was
+  read. Files: `src/later.py`, `src/config.py`, the eleven
+  `src/download_*.py`, `tests/test_later.py`.
+
 ### 2026-10-12 - Session 10: rollout calendar
 
 - **Decided to keep the rollout calendar as a list built in code from

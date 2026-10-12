@@ -27,6 +27,30 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D88 · Rebuilt tables go beside the pinned ones, not over them
+- **Plan:** `ACTION_PLAN.md` Phase 5, hard-line item: "download every
+  published 2026 month, refit SPEI and rebuild the tables, and report
+  the changed numbers"; D73: "Every later download writes to a release-
+  or retrieval-stamped path, never over a pinned input", which names
+  downloads only. The climate tables the item rebuilds are pinned
+  inputs of run1.
+- **Actual:** owner, 2026-10-12 ("option a"): one parallel tree for
+  everything after run1. Downloads go to
+  `data/raw/later/<stamp>/<source folder>/` (`--stamp` on every download
+  script, a `retrieval.json` record closing each folder); rebuilt tables
+  go to `results/tables/tracker/<stamp>/`. No pinned file is written,
+  and "report the changed numbers" is a cell-by-cell comparison of the
+  new table with the pinned one (`later.compare_tables`). New settings:
+  `LATER_RAW`, `TRACKER_TABLES`.
+- **Why:** run1's provenance points at the pinned files; a rebuild in
+  place, even with a logged re-pin, would leave `results/tables/`
+  holding files run1 did not read.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Stamped paths: one parallel
+  tree".
+- **Substantial:** yes (procedure for the hard-line item).
+- **Plan doc:** `ACTION_PLAN.md` Phase 5, hard-line item, sentence
+  marked `[mid-project: D88]`. No test or rule touched.
+
 ### D87 · Rollout calendar: one dated list, new settings in `config.py`
 - **Plan:** `ACTION_PLAN.md` "Second goal", tracker item: "its dates live
   in `src/config.py`" (`TRACKER_WINDOW`, `TRACKER_FREEZE_DATE`,

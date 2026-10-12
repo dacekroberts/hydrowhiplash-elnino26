@@ -598,6 +598,16 @@ the gap, `burn_ha` differs from the main table's in the last printed digit
 `with_park_area`; no value a test uses changes (audit round 5 L4, left as
 is so the pinned table is not rebuilt).
 
+**Later retrievals** (`data/raw/later/<stamp>/...`, never committed;
+D73, D88): a download run with `--stamp` writes to the stamped twin of
+its usual folder and closes it with `retrieval.json`: `stamp` (the
+retrieval date), `source`, `note`, `recorded_utc`, and per file its
+`bytes` and `sha256`. A closed folder is never rewritten. Tables rebuilt
+from a retrieval go to `results/tables/tracker/<stamp>/` (committed),
+beside the pinned tables, never over them. Trap: a stamped ERA5-Land
+folder holds only the years that had no full-year file on disk, so it is
+read on top of `data/raw`, not instead of it.
+
 **Input pins** (`results/tables/input_pins.csv`, `python -m
 src.pin_inputs`, 2026-10-08): path, size, sha256 and modification time of
 every input the tests read: the 7 committed input tables named in
