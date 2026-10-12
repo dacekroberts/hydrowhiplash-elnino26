@@ -167,14 +167,16 @@ cold round with no high and no medium findings), tag
       hypothesis test runs while either is open. Settled: Interior Alaska
       measured and reported (2026-10-11, D79); no NBAC re-run, the
       per-fire coverage split reported as a limitation (2026-10-12, D81).
-- [ ] **Registered runs committed by Friday 2026-11-06** [mid-project: D73]:
+- [x] **Registered runs committed by Friday 2026-11-06** [mid-project: D73]:
       the day before October's ERA5-Land data is expected
       (`TRACKER_DATA_DAY` 7), so the first tracker update cannot change a
       pinned input under the tests. If the date is missed, see the
       hard-line item in Phase 5. [mid-project: D75] The same commit
       holds the runs reported beside the registered tests: the ONI
       robustness check, the frozen-rules run, the Parks Canada
-      sensitivity run and the strong-only results.
+      sensitivity run and the strong-only results. Done 2026-10-12
+      (session 9): `results/tables/run1/`, commit 4951e41, tag
+      `registered-run1`.
 - [x] **Runner safeguards before the first run** [mid-project: D73]
       (audit round 5): first, a written protocol for changes after results
       exist (the first results are never edited, reruns go beside them,
@@ -200,17 +202,25 @@ cold round with no high and no medium findings), tag
       DeepSeek was used. Review run 2026-10-12 on the four files and
       `src/run_hypotheses.py`: 8 findings, 2 fixed, 6 not taken
       (`DECISIONS.md` 2026-10-12); the after-the-runs parts stay open.
-- [ ] **Parks Canada sensitivity run** [mid-project: D69]: every
+- [x] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB
-      2016-2019), beside the main results, uncorrected, exploratory
+      2016-2019), beside the main results, uncorrected, exploratory.
+      Done 2026-10-12: `run1/reported_beside.csv`, `run_kind` =
+      `parks_nbac`.
 
-- [ ] **Frozen-rules robustness run** [mid-project: D62]: every burned-area
+- [x] **Frozen-rules robustness run** [mid-project: D62]: every burned-area
       test (H2, H3a, H3b, H4, H5, H6, C2) rerun on a fire table built under
       the rules as frozen where they can still be built (summed area, MTBS
       "Other" dropped, undated CNFDB fires dropped, the frozen years), one
       table beside the main results, uncorrected; a difference from the
-      main results is reported as a limitation of the main analysis
+      main results is reported as a limitation of the main analysis.
+      Done 2026-10-12: `run1/reported_beside.csv`, `run_kind` =
+      `frozen_rules`.
+
+Headlines 1 to 4 and the supporting tests below were computed in
+`run1` (2026-10-12); their boxes stay open until the charts and the
+write-up that report them exist.
 
 - [ ] **Full-record view:** fire-season anomaly for every year 1984–present
       (climate variables 1950–present), El Niño years highlighted

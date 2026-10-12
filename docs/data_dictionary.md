@@ -725,6 +725,62 @@ division number and its area fields are not used.
   leave-one-year-out, the model never sees years after the one predicted,
   as in the 2027 forecast.
 
+### 8a. Result tables of the registered run (`results/tables/run1/`)
+
+Written once by `src.run_hypotheses` on 2026-10-12 (tag
+`registered-run1`); never edited (`docs/post_results_protocol.md`). Each
+has a `.provenance.json` beside it (commit, input hashes, UTC time, seed,
+package versions); `conda_list_explicit.txt` is the full environment.
+
+- **`registered_tests.csv`** (52 rows): one row per registered test and
+  region. **`reported_beside.csv`** (205 rows): the same columns for
+  everything reported beside them, uncorrected. Columns:
+  - `run_kind`: `registered`, or which side run: `oni_robustness` (ONI in
+    place of RONI), `frozen_rules`, `parks_nbac`, `zero_fire` (SoCal's
+    zero-fire season 2014 dropped from H2 and given its own 0/1 column
+    in the regressions), `station_z` (station SWE in place of
+    ERA5-Land), `strong_only` (strong El Niño winters against all other
+    years, H1 and H2, once per index) and `strong_flip` (the same with
+    every winter near the strong threshold switched to the other
+    group; D52), `h4_secondary`,
+    `h6_combined`, `block_bootstrap`, `h3_gap`, `lag1_autocorrelation`.
+  - `enso_index`, `fire_table`: the index and fire table read
+    (`fire_table` empty where no burned area is read: H1, C1).
+  - `family`, `test`, `region`, `term`, `outcome`, `method`,
+    `alternative`, `years`, `n`: the Holm family, the test, the
+    coefficient or difference reported, the outcome, the method, the
+    registered direction, the first and last year and the number of
+    years (region-years for H4).
+  - `n_group`: El Niño winters in the group (permutation tests only).
+    `n_zero`: zero-fire seasons in the sample.
+  - `estimate`, `ci_low`, `ci_high`, `ci_method`: the effect and its 95%
+    interval. Units: mm of December to February precipitation for H1;
+    log points of burned area for every `log_burn` row (per 1 unit of
+    the predictor: 1 degree C of DJF index, 1 standard deviation of
+    precipitation, SWE or SPEI); SWE standard deviations per index unit
+    per year for C1; log points per index unit per year for C2. The
+    interval is always two-sided, also where the test is one-sided.
+  - `pct_change`, `pct_low`, `pct_high`: `100 × (exp(b) - 1)` for
+    regression rows on `log_burn`; empty for H1, H2 and C1.
+  - `se`, `statistic`, `df`, `p`: standard error, t (or F) statistic,
+    degrees of freedom, and the p-value in the registered direction.
+  - `p_holm`, `p_bh`, `significant`: Holm- and BH-adjusted p within the
+    family, and the Holm verdict at 0.05; filled for registered rows
+    only.
+  - `size`, `size_shape`: the simulated rejection rate under no effect
+    for this kind of test, and which row of `test_size.csv` it came
+    from. `plain_ols_p`, `plain_ols_size`: the same test with ordinary
+    standard errors, and its size (D66, D68).
+  - `note`: the number of distinct permutations, or what a side row
+    changed.
+- **`validation.csv`** (39 rows): prediction checks per model and
+  region. `method` is leave-one-year-out or expanding window;
+  `coverage` is the share of years whose burned area fell inside the
+  80% prediction interval (0.80 is the target); `rmse`, `mae` are the
+  errors in log points; `rmse_trend`, `mae_trend` are the same for a
+  model with the year trend only, over the same years; `skill` =
+  1 - rmse / rmse_trend (above 0: the predictor beat the trend alone).
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired

@@ -1,0 +1,123 @@
+# Session 10 kickoff: Phase 4, after run1
+
+Written at the end of session 9 (2026-10-12). Part 1 is the handoff; Part 2
+is the prompt to paste into a new Claude Code session in the main checkout.
+
+## Part 1 · Handoff
+
+**Where things stand.**
+
+- **The registered runs are made and committed**, 25 days before the
+  D73 deadline: `results/tables/run1/`, commit 4951e41, tag
+  `registered-run1` (`DECISIONS.md` 2026-10-12 "run1: the first
+  registered runs"). `registered_tests.csv` (52 rows, 12 Holm families),
+  `reported_beside.csv` (205 rows), `validation.csv` (39 rows), a
+  provenance file beside each, `conda_list_explicit.txt`.
+- **Nothing in `run1/` is edited, renamed or deleted.** Any change that
+  can move a registered number follows `docs/post_results_protocol.md`:
+  a deviations-log row saying "decided after results were seen" and what
+  had been seen, a rerun in `run2/`, and `changes_from_run1.csv`.
+- After Holm at 0.05, 4 of 52 are significant: H1 SoCal (El Niño
+  winters wetter), H5 lag 0 AB (a wetter winter, less burned area the
+  same year), H5 lag 1 NorCal (a wetter winter, more burned area the
+  next year), H6 SWE NorCal (more snow, less burned area). No test of
+  ENSO on burned area (H2, H3a, H3b, H4, C2) and no C1 test is
+  significant. The nulls are reported, not dropped. The owner has not
+  written any interpretation yet; that prose is the owner's.
+- The runner is `src/run_hypotheses.py` (`--run runN`; refuses a run
+  folder that already holds an output). ONI is read through
+  `pin_inputs.enso_raw_path` (D82).
+- A results page format exists: `scripts/build_results_page.py --run
+  run1 --out <file>` fills `scripts/results_page/template.html` from the
+  run folder, no number typed. Published privately at
+  https://claude.ai/artifact/Af97Us4ZZoXsnEqnWue9Tk. It was
+  syntax-checked, not viewed in a browser; the owner has not reviewed
+  it. `NOTES` in the script holds the owner's reading per hypothesis and
+  is empty.
+
+**Open, for the owner to decide (raised 2026-10-12, not decided):**
+
+- A design system so the site, the results page, the data guide and the
+  roadmap share one theme. The three artifacts already share Archivo,
+  IBM Plex Sans and IBM Plex Mono and a blue and ember palette. A good
+  moment is the start of session 10, before any site page is written.
+- Hosting: Streamlit, or the owner's own domain with Cloudflare R2. The
+  project rule today is a Quarto site that only reads `results/`; a
+  Streamlit app would be a scope change to log.
+- Whether `ACTION_PLAN.md` Headlines 1 to 4 are ticked now (computed in
+  `run1`) or when the charts and write-up exist (left open).
+
+**Next work, in order:**
+
+1. Later downloads to stamped paths (D73, audit round 5 S1): owner,
+   2026-10-12: "built after the registered runs are committed and
+   before the hard-line item". Not built yet.
+2. The hard-line item (early November 2026, ACTION_PLAN Phase 5, D55):
+   lag setting 3 to 1 month, download every published 2026 month, refit
+   SPEI, rebuild, report the changed numbers. Never over a pinned file.
+3. D77, after the runs: the delegated-build pilot (the pin report after
+   `--rebuild`) and the methods-page line on where DeepSeek was used.
+   Each DeepSeek call needs its own yes; flash at peak hours, pro
+   off-peak (memory note).
+4. The full-record view and the charts for Headlines 1 to 4; the Methods
+   and limitations section, every null included.
+5. From the portfolio review: three methods-page items as one scope
+   addition (next free deviation number).
+
+**Open, low:** pins walk one folder level (review F3); two tests need
+the tag `analysis-plan-frozen` in the clone; one needs `data/`.
+
+**Carried over, unchanged:** no task goes to the DeepSeek worker until
+the owner says so; `data/` stays out of reach of every DeepSeek plan;
+ask before any run that reads polygons (shared machine memory); the
+going-public question is a leaning, not a decision.
+
+**Next free deviation number: D83.** The frozen plan's deviations log is
+at row 19.
+
+## Part 2 · Prompt for session 10
+
+```text
+Session 10 for hydrowhiplash-elnino26: Phase 4, after run1.
+
+1. Orient: read CLAUDE.md, docs/session10_kickoff.md (Part 1),
+   logs/2026-10-12.md, the top of DECISIONS.md (2026-10-12 entries),
+   docs/plan_deviations.md D77-D82, docs/post_results_protocol.md,
+   docs/data_dictionary.md section 8a, ANALYSIS_PLAN.md (frozen: never
+   edit above the deviations log) and ACTION_PLAN.md Phases 4 and 5.
+   Read the roadmap artifact with the Artifact tool (action "read"):
+   https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
+   and the results page: https://claude.ai/artifact/Af97Us4ZZoXsnEqnWue9Tk
+   Tell me in 3-4 lines what this session covers. Main numbers its own
+   deviations from D83.
+
+2. Explain each concept as it comes up, give a short summary beside every
+   hypothesis ID, and quote the actual wording beside every item ID
+   (memory notes).
+
+3. Nothing in results/tables/run1/ is edited, renamed or deleted. If
+   anything would change a registered number, stop and walk me through
+   docs/post_results_protocol.md first.
+
+4. If it is early November or later, read the hard-line item in Part 1
+   before anything else.
+
+5. Bring me the three open choices in Part 1 (design system, hosting,
+   the Headline boxes) with a recommendation for each. Nothing is
+   adopted without my yes.
+
+6. Then the work list in Part 1, in order, starting with the stamped
+   download paths. Ask me before any run that reads polygons, and before
+   every DeepSeek call.
+
+7. My interpretation of the results is mine to write. Discuss the
+   numbers, flag stale or inconsistent wording, and suggest; don't
+   rewrite.
+
+8. End of session: daily-log skill, python scripts/log.py list,
+   python scripts/check_no_em_dashes.py, python scripts/check_plan_frozen.py,
+   commit and push; refresh the data guide artifact
+   (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P), rebuild the
+   results page if a new run exists, and offer to update the roadmap
+   artifact; write the next kickoff the same way.
+```

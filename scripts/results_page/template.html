@@ -1,0 +1,345 @@
+<title>Whiplash Run Results</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; each hypothesis is a ledger of regions with an interval plot on a shared scale. */
+:root {
+  --bg: #f3f6f7; --surface: #ffffff; --ink: #13232b; --muted: #586a73; --rule: #d3dce0;
+  --track: #e6ecef; --ember: #c2501a; --ember-soft: #f6e3d8; --ghost: #6f8691;
+  --display: "Archivo", "Arial Narrow", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f171b; --surface: #162127; --ink: #e5ecef; --muted: #93a5ad; --rule: #2a3a42;
+  --track: #1f2c33; --ember: #f08a4e; --ember-soft: #3a2418; --ghost: #8ea2ac; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0f171b; --surface: #162127; --ink: #e5ecef; --muted: #93a5ad; --rule: #2a3a42;
+  --track: #1f2c33; --ember: #f08a4e; --ember-soft: #3a2418; --ghost: #8ea2ac; color-scheme: dark }
+
+body { background: var(--bg); color: var(--ink); font: 15px/1.55 var(--body); }
+.page { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; display: flex; flex-direction: column; gap: 44px; }
+h1, h2, h3 { font-family: var(--display); font-stretch: 85%; text-wrap: balance; margin: 0; line-height: 1.15; }
+h1 { font-size: 2.3rem; font-weight: 750; letter-spacing: -0.01em; }
+h2 { font-size: 1.45rem; font-weight: 700; }
+h3 { font-size: 0.8rem; font-weight: 600; font-stretch: 100%; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+p { margin: 0; max-width: 65ch; }
+.muted { color: var(--muted); }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 0.82rem; }
+
+header.top { display: flex; flex-direction: column; gap: 14px; }
+.stamp { display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+.stamp b { color: var(--ink); font-weight: 500; }
+
+.passed { display: flex; flex-direction: column; gap: 12px; }
+.passed ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0; border-top: 2px solid var(--ink); }
+.passed li { padding: 12px 14px 14px 0; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.passed .big { font-family: var(--display); font-stretch: 80%; font-weight: 700; font-size: 1.7rem; color: var(--ember); line-height: 1.1; }
+.passed a { color: inherit; text-decoration: none; }
+.passed a:hover .what, .passed a:focus-visible .what { text-decoration: underline; }
+
+nav.jump { display: flex; flex-wrap: wrap; gap: 6px; }
+nav.jump a { font-family: var(--mono); font-size: 0.78rem; color: var(--ink); text-decoration: none; padding: 3px 9px; border: 1px solid var(--rule); border-radius: 3px; }
+nav.jump a:hover, nav.jump a:focus-visible { border-color: var(--ink); outline: none; }
+
+section.hyp { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 16px; }
+.hyp-head { display: flex; flex-direction: column; gap: 6px; }
+.hyp-id { font-family: var(--mono); font-size: 0.8rem; color: var(--ember); font-weight: 500; }
+.reading { border-left: 3px solid var(--ember); padding-left: 12px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.chips span.lab { font-size: 0.78rem; color: var(--muted); margin-right: 4px; }
+.chips button { font: 500 0.78rem var(--body); color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: 999px; padding: 3px 11px; cursor: pointer; }
+.chips button:hover { border-color: var(--ghost); }
+.chips button:focus-visible { outline: 2px solid var(--ember); outline-offset: 1px; }
+.chips button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+.ledger { background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; padding: 6px 16px 12px; min-width: 0; }
+.row { display: grid; grid-template-columns: 6.5rem minmax(140px, 1fr) 11.5rem 4.2rem 4rem 4rem 3.4rem; gap: 0 14px; align-items: center; padding-block: 7px; border-bottom: 1px solid var(--rule); }
+.row.head { border-bottom: 1px solid var(--ink); padding-block: 8px 6px; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); align-items: end; }
+.row.sub { border-bottom: 0; padding-block: 12px 2px; }
+.row.sub span { grid-column: 1 / -1; font-family: var(--display); font-weight: 650; font-size: 0.92rem; }
+.row.ghost { padding-block: 2px 6px; color: var(--ghost); }
+.row.ghost .region { font-size: 0.74rem; padding-left: 10px; }
+.row:last-child { border-bottom: 0; }
+.row .r { text-align: right; }
+.region { font-weight: 600; min-width: 0; }
+.region small { display: block; font-weight: 400; color: var(--muted); font-size: 0.7rem; line-height: 1.2; }
+.kv { min-width: 0; }
+.kv i { display: none; font-style: normal; color: var(--muted); font-family: var(--body); font-size: 0.7rem; margin-right: 5px; }
+
+.plot { position: relative; height: 22px; min-width: 0; }
+.plot .track { position: absolute; inset: 10px 0 auto 0; height: 2px; background: var(--track); }
+.plot .zero { position: absolute; top: -8px; bottom: -8px; width: 1px; background: var(--muted); opacity: 0.55; }
+.plot .ci { position: absolute; top: 9px; height: 4px; background: var(--ink); border-radius: 2px; }
+.plot .dot { position: absolute; top: 5px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; background: var(--surface); border: 2.5px solid var(--ink); box-sizing: border-box; }
+.plot.sig .ci { background: var(--ember); }
+.plot.sig .dot { background: var(--ember); border-color: var(--ember); }
+.plot.ghost { height: 12px; }
+.plot.ghost .track { display: none; }
+.plot.ghost .ci { top: 5px; height: 2px; background: var(--ghost); }
+.plot.ghost .dot { top: 1px; width: 10px; height: 10px; margin-left: -5px; border-radius: 0; transform: rotate(45deg); border: 2px solid var(--ghost); background: var(--surface); }
+.axis { position: relative; height: 18px; }
+.axis span { position: absolute; transform: translateX(-50%); font-family: var(--mono); font-size: 0.68rem; color: var(--muted); white-space: nowrap; }
+.unit { font-size: 0.78rem; color: var(--muted); padding-top: 4px; }
+.sigtxt { color: var(--ember); font-weight: 600; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; font-size: 0.78rem; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend .plot { width: 46px; flex: none; }
+
+.tablewrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--rule); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 0.82rem; }
+th, td { padding: 6px 12px; text-align: left; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+th { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); font-weight: 500; border-bottom-color: var(--ink); }
+td.r, th.r { text-align: right; }
+tr:last-child td { border-bottom: 0; }
+.cov { position: relative; display: inline-block; width: 84px; height: 8px; background: var(--track); vertical-align: middle; margin-right: 8px; }
+.cov b { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ink); }
+.cov u { position: absolute; left: 80%; top: -3px; bottom: -3px; width: 2px; background: var(--ember); }
+select { font: 0.85rem var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 3px; padding: 4px 8px; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+footer { border-top: 1px solid var(--rule); padding-top: 14px; font-size: 0.78rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+
+@media (max-width: 860px) {
+  h1 { font-size: 1.8rem; }
+  .row { grid-template-columns: 5.2rem minmax(0, 1fr); gap: 2px 12px; }
+  .row.head { display: none; }
+  .row .kv { grid-column: 1 / -1; text-align: left; display: inline; }
+  .row .nums { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0 14px; }
+  .kv i { display: inline; }
+  .ledger { padding-inline: 12px; }
+  .axisrow { grid-template-columns: 5.2rem minmax(0, 1fr); }
+}
+@media (min-width: 861px) { .row .nums { display: contents; } }
+</style>
+
+<div class="page">
+  <header class="top">
+    <h1 id="title"></h1>
+    <p id="lede"></p>
+    <div class="stamp" id="stamp"></div>
+  </header>
+
+  <div class="passed">
+    <h3 id="passed-h"></h3>
+    <ul id="passed"></ul>
+  </div>
+
+  <nav class="jump" id="jump" aria-label="Hypotheses"></nav>
+
+  <div class="legend" aria-hidden="true">
+    <span><span class="plot sig"><span class="ci" style="left:8%;width:84%"></span><span class="dot" style="left:50%"></span></span>significant after Holm correction</span>
+    <span><span class="plot"><span class="ci" style="left:8%;width:84%"></span><span class="dot" style="left:50%"></span></span>not significant</span>
+    <span><span class="plot ghost"><span class="ci" style="left:8%;width:84%"></span><span class="dot" style="left:50%"></span></span>a run reported beside, uncorrected</span>
+    <span>bars are 95% intervals; the vertical line is no effect</span>
+  </div>
+
+  <div id="sections" style="display:flex;flex-direction:column;gap:52px"></div>
+
+  <section class="hyp" id="beside">
+    <div class="hyp-head"><h2>Other runs reported beside the tests</h2>
+      <p class="muted">Exploratory and uncorrected. None of these replaces a registered test.</p></div>
+    <div class="bar"><label for="kind" class="muted">Show</label><select id="kind"></select></div>
+    <div class="tablewrap"><table id="beside-table"></table></div>
+  </section>
+
+  <section class="hyp" id="validation">
+    <div class="hyp-head"><h2>How well the models predict</h2>
+      <p class="muted">Each model predicted every season it had not seen. Coverage is the share of seasons that fell inside the 80% prediction interval; the orange tick is 80%. Skill above 0 means the predictor beat a year trend alone.</p></div>
+    <div class="tablewrap"><table id="val-table"></table></div>
+  </section>
+
+  <footer id="foot"></footer>
+</div>
+
+<script>
+const D = __DATA__;
+const REGIONS = ["PNW", "BC", "AB", "AK", "YT", "NorCal", "SoCal", "PNW/BC/AB minus SoCal"];
+const SECTIONS = [
+  {id: "H1", tests: ["H1"], title: "Winter precipitation in El Niño winters",
+   sum: "El Niño winters against all other winters: December to February precipitation with its trend removed, 1951 to 2026.",
+   unit: "mm of winter precipitation, El Niño winters minus the rest"},
+  {id: "H2", tests: ["H2"], title: "Burned area after an El Niño winter",
+   sum: "Fire seasons after an El Niño winter against all other seasons: burned area with its trend removed.",
+   unit: "log points of burned area, El Niño seasons minus the rest"},
+  {id: "H3a", tests: ["H3a"], title: "Burned area against El Niño strength",
+   sum: "The slope of burned area on the winter index value, with a year trend.",
+   unit: "log points of burned area per 1 °C of the winter index"},
+  {id: "H3b", tests: ["H3b"], title: "The same slope with summer temperature held fixed",
+   sum: "As H3a, with June to August temperature added to the model.",
+   unit: "log points of burned area per 1 °C of the winter index"},
+  {id: "H4", tests: ["H4"], title: "The north against Southern California",
+   sum: "The mean El Niño slope of PNW, BC and Alberta minus Southern California's, from one pooled model.",
+   unit: "difference in slopes, log points per 1 °C"},
+  {id: "H5", tests: ["H5_lag0", "H5_lag1"], title: "Wet winters, this year and the next",
+   sum: "The slope of burned area on October to March precipitation of the same year and of the year before.",
+   unit: "log points of burned area per 1 standard deviation of precipitation"},
+  {id: "H6", tests: ["H6_swe", "H6_spei"], title: "Snowpack and winter drought",
+   sum: "The slope of burned area on snow water equivalent and on the winter drought index SPEI-3.",
+   unit: "log points of burned area per 1 standard deviation"},
+  {id: "C1", tests: ["C1"], title: "Is El Niño's effect on snowpack changing?",
+   sum: "The change per year in the slope of snow water equivalent on the winter index, 1951 to 2026.",
+   unit: "standard deviations per 1 °C, per year"},
+  {id: "C2", tests: ["C2"], title: "Is El Niño's effect on burned area changing?",
+   sum: "The change per year in the slope of burned area on the winter index.",
+   unit: "log points per 1 °C, per year"},
+];
+const SUB = {H5_lag0: "Same year (lag 0)", H5_lag1: "Year before (lag 1)", H6_swe: "Snow water equivalent", H6_spei: "Winter SPEI-3"};
+const KINDS = {oni_robustness: "ONI index", frozen_rules: "Frozen rules", parks_nbac: "Parks Canada area", zero_fire: "Zero-fire season", station_z: "Station snow"};
+const KIND_NAMES = Object.assign({}, KINDS, {strong_only: "Strong El Niño winters only", strong_flip: "Strong winters, near-threshold flipped",
+  h4_secondary: "H4 secondary fits", h6_combined: "H6, both predictors together", block_bootstrap: "Block bootstrap intervals",
+  h3_gap: "H3a minus H3b", lag1_autocorrelation: "Lag-1 autocorrelation"});
+const ALT = {greater: "> 0", less: "< 0", "two-sided": "≠ 0"};
+
+const el = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+const has = v => v !== null && v !== undefined && !Number.isNaN(v);
+const fmtP = p => !has(p) ? "" : p < 0.001 ? "<0.001" : p.toFixed(3);
+const decimalsFor = span => span >= 20 ? 1 : span >= 0.5 ? 2 : 4;
+const fmt = (v, d) => !has(v) ? "" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(d);
+const fmtPct = v => !has(v) ? "" : (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(0) + "%";
+const regionOrder = r => { const i = REGIONS.indexOf(r); return i < 0 ? 99 : i; };
+
+function niceTicks(lo, hi) {
+  const raw = (hi - lo) / 5, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const step = [1, 2, 5, 10].map(m => m * mag).find(s => s >= raw);
+  const out = [];
+  for (let t = Math.ceil(lo / step) * step; t <= hi + step * 1e-9; t += step) out.push(Math.abs(t) < step * 1e-9 ? 0 : t);
+  return {ticks: out, step};
+}
+
+function plot(row, scale, cls) {
+  const p = el("div", "plot" + (cls ? " " + cls : ""));
+  const lo = scale(row.ci_low), hi = scale(row.ci_high);
+  p.innerHTML = `<span class="track"></span><span class="zero" style="left:${scale(0)}%"></span>` +
+    `<span class="ci" style="left:${lo}%;width:${Math.max(hi - lo, 0.4)}%"></span><span class="dot" style="left:${scale(row.estimate)}%"></span>`;
+  p.setAttribute("role", "img");
+  p.setAttribute("aria-label", `estimate ${row.estimate}, 95% interval ${row.ci_low} to ${row.ci_high}`);
+  return p;
+}
+
+function nums(row, d, ghost) {
+  const sig = row.significant === true;
+  const cells = [
+    ["Estimate", `${fmt(row.estimate, d)} <span class="muted">[${fmt(row.ci_low, d)}, ${fmt(row.ci_high, d)}]</span>`],
+    ["Change", has(row.pct_change) ? fmtPct(row.pct_change) : ""],
+    ["p", fmtP(row.p)],
+    ["Holm p", ghost ? "" : `<span class="${sig ? "sigtxt" : ""}">${fmtP(row.p_holm)}</span>`],
+    ["Size", ghost || !has(row.size) ? "" : row.size.toFixed(3)],
+  ];
+  const wrap = el("div", "nums");
+  cells.forEach(([k, v], i) => { if (v !== "" || true) wrap.append(el("span", "kv num" + (i ? " r" : ""), v === "" ? "" : `<i>${k}</i>${v}`)); });
+  return wrap;
+}
+
+function renderSection(sec) {
+  const rows = D.registered.filter(r => sec.tests.includes(r.test))
+    .sort((a, b) => sec.tests.indexOf(a.test) - sec.tests.indexOf(b.test) || regionOrder(a.region) - regionOrder(b.region));
+  const beside = D.beside.filter(r => KINDS[r.run_kind] && sec.tests.includes(r.test) && has(r.estimate));
+  const kinds = Object.keys(KINDS).filter(k => beside.some(r => r.run_kind === k));
+  const all = rows.concat(beside);
+  let lo = Math.min(0, ...all.map(r => r.ci_low)), hi = Math.max(0, ...all.map(r => r.ci_high));
+  const pad = (hi - lo) * 0.04; lo -= pad; hi += pad;
+  const scale = v => +(((v - lo) / (hi - lo)) * 100).toFixed(2);
+  const d = decimalsFor(hi - lo);
+  const active = new Set();
+
+  const s = el("section", "hyp"); s.id = sec.id;
+  const nSig = rows.filter(r => r.significant === true).length;
+  s.append(el("div", "hyp-head", `<span class="hyp-id">${sec.id} · ${rows.length} test${rows.length > 1 ? "s" : ""} · ${nSig} significant after Holm</span><h2>${esc(sec.title)}</h2><p class="muted">${esc(sec.sum)}</p>`));
+  if (D.notes && D.notes[sec.id]) s.append(el("p", "reading", esc(D.notes[sec.id])));
+
+  const ledger = el("div", "ledger");
+  const draw = () => {
+    ledger.innerHTML = "";
+    ledger.append(el("div", "row head", `<span>Region</span><span>${esc(sec.unit)}</span><span>Estimate [95% interval]</span><span class="r">Change</span><span class="r">p</span><span class="r">Holm p</span><span class="r">Size</span>`));
+    let last = null;
+    rows.forEach(r => {
+      if (sec.tests.length > 1 && r.test !== last) { ledger.append(el("div", "row sub", `<span>${esc(SUB[r.test] || r.test)}</span>`)); last = r.test; }
+      const row = el("div", "row");
+      const fam = r.family.startsWith("north_") ? "northern family · " : "";
+      row.append(el("span", "region", `${esc(r.region)}<small>${fam}expects ${ALT[r.alternative] || ""} · n ${r.n}</small>`));
+      row.append(plot(r, scale, r.significant === true ? "sig" : ""));
+      row.append(nums(r, d, false));
+      ledger.append(row);
+      active.forEach(k => {
+        const g = beside.find(b => b.run_kind === k && b.test === r.test && b.region === r.region);
+        if (!g) return;
+        const gr = el("div", "row ghost");
+        gr.append(el("span", "region", esc(KINDS[k])));
+        gr.append(plot(g, scale, "ghost"));
+        gr.append(nums(g, d, true));
+        ledger.append(gr);
+      });
+    });
+    const ax = el("div", "row axisrow"); ax.style.borderBottom = "0"; ax.style.paddingBlock = "2px 0";
+    const axis = el("div", "axis");
+    const t = niceTicks(lo + pad, hi - pad), td = t.step >= 1 ? 0 : Math.min(4, Math.ceil(-Math.log10(t.step)) + (String(t.step).includes("5") && t.step < 1 ? 0 : 0));
+    t.ticks.forEach(v => { const sp = el("span", "", (v < 0 ? "−" : "") + Math.abs(v).toFixed(td)); sp.style.left = scale(v) + "%"; axis.append(sp); });
+    ax.append(el("span"), axis);
+    ledger.append(ax);
+  };
+  if (kinds.length) {
+    const chips = el("div", "chips", `<span class="lab">Compare with</span>`);
+    kinds.forEach(k => {
+      const b = el("button", "", esc(KINDS[k])); b.type = "button"; b.id = `chip-${sec.id}-${k}`; b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => { active.has(k) ? active.delete(k) : active.add(k); b.setAttribute("aria-pressed", String(active.has(k))); draw(); });
+      chips.append(b);
+    });
+    s.append(chips);
+  }
+  draw();
+  s.append(ledger);
+  s.append(el("p", "unit", `Scale: ${esc(sec.unit)}. “Expects” is the direction registered before the run; p is in that direction, the interval is two-sided. Size is how often this kind of test rejects when there is no effect (0.05 would be exact).`));
+  return s;
+}
+
+function renderTop() {
+  const m = D.meta, reg = D.registered, sig = reg.filter(r => r.significant === true);
+  document.getElementById("title").textContent = `Registered results, ${m.run}`;
+  document.getElementById("lede").textContent = `${reg.length} tests fixed in advance, in ${new Set(reg.map(r => r.family)).size} correction families, on fire seasons 1984 to 2025 and winters 1951 to 2026. Effect sizes and intervals first; every result is shown, significant or not.`;
+  document.getElementById("stamp").innerHTML = `<span>run <b>${esc(m.run)}</b></span><span>written <b>${esc(m.run_utc)}</b></span><span>code <b>${esc(m.commit.slice(0, 7))}</b></span><span>tag <b>${esc(m.tag)}</b></span><span>seed <b>${m.seed}</b></span>`;
+  document.getElementById("passed-h").textContent = `${sig.length} of ${reg.length} significant after Holm correction`;
+  const ul = document.getElementById("passed");
+  sig.forEach(r => {
+    const sec = SECTIONS.find(s => s.tests.includes(r.test));
+    const big = has(r.pct_change) ? fmtPct(r.pct_change) : fmt(r.estimate, 0) + " mm";
+    const what = has(r.pct_change) ? `burned area per unit, ${SUB[r.test] ? SUB[r.test].toLowerCase() : sec.title.toLowerCase()}` : "winter precipitation in El Niño winters";
+    ul.append(el("li", "", `<a href="#${sec.id}"><span class="big">${big}</span><br><b>${esc(r.region)}</b> <span class="hyp-id">${sec.id}</span><br><span class="what muted">${esc(what)}</span></a>`));
+  });
+  const jump = document.getElementById("jump");
+  SECTIONS.map(s => [s.id, s.id]).concat([["beside", "Beside"], ["validation", "Prediction"]]).forEach(([id, t]) => {
+    const a = el("a", "", t); a.href = "#" + id; jump.append(a);
+  });
+  document.getElementById("foot").innerHTML = `<span>Built from results/tables/${esc(m.run)}/ by scripts/build_results_page.py. No number on this page was typed by hand.</span><span>Snapshot: tag ${esc(m.tag)}, code commit ${esc(m.commit.slice(0, 7))}, page built ${esc(m.built_utc)}.</span><span>© Dace Roberts. Associations, not causes.</span>`;
+}
+
+function renderBeside() {
+  const sel = document.getElementById("kind"), table = document.getElementById("beside-table");
+  const kinds = [...new Set(D.beside.map(r => r.run_kind))].filter(k => !KINDS[k]);
+  kinds.forEach(k => sel.append(new Option(KIND_NAMES[k] || k, k)));
+  const draw = () => {
+    const rows = D.beside.filter(r => r.run_kind === sel.value);
+    const span = Math.max(...rows.map(r => Math.abs(r.estimate || 0)));
+    const d = decimalsFor(span * 2);
+    table.innerHTML = `<tr><th>Test</th><th>Region</th><th>Index</th><th>What</th><th class="r">Estimate</th><th class="r">95% interval</th><th class="r">p</th><th>Note</th></tr>` +
+      rows.map(r => `<tr><td>${esc(r.test)}</td><td>${esc(r.region)}</td><td>${esc(r.enso_index)}</td><td>${esc(r.term || r.method)}${r.method && r.term ? ` <span class="muted">· ${esc(r.method)}</span>` : ""}</td>` +
+        `<td class="r num">${fmt(r.estimate, d)}</td><td class="r num">${has(r.ci_low) ? `[${fmt(r.ci_low, d)}, ${fmt(r.ci_high, d)}]` : ""}</td><td class="r num">${fmtP(r.p)}</td><td class="muted">${esc(r.note)}${has(r.n_group) ? ` · group of ${r.n_group}` : ""}</td></tr>`).join("");
+  };
+  sel.addEventListener("change", draw); draw();
+}
+
+function renderValidation() {
+  const t = document.getElementById("val-table");
+  t.innerHTML = `<tr><th>Model</th><th>Region</th><th>Method</th><th>Seasons</th><th>Coverage of the 80% interval</th><th class="r">RMSE</th><th class="r">Trend-only RMSE</th><th class="r">Skill</th></tr>` +
+    D.validation.map(r => `<tr><td>${esc(r.model)}</td><td>${esc(r.region)}</td><td>${esc(r.method)}</td><td class="num">${esc(r.years)}</td>` +
+      `<td><span class="cov"><b style="width:${(r.coverage * 100).toFixed(1)}%"></b><u></u></span><span class="num">${(r.coverage * 100).toFixed(0)}%</span></td>` +
+      `<td class="r num">${r.rmse.toFixed(2)}</td><td class="r num">${has(r.rmse_trend) ? r.rmse_trend.toFixed(2) : ""}</td><td class="r num">${has(r.skill) ? fmt(r.skill, 3) : ""}</td></tr>`).join("");
+}
+
+renderTop();
+const host = document.getElementById("sections");
+SECTIONS.forEach(s => host.append(renderSection(s)));
+renderBeside();
+renderValidation();
+</script>

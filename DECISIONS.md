@@ -17,6 +17,49 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - run1: the first registered runs
+
+- **Ran the registered tests once, on the owner's go ("start run1"), and
+  committed them: `results/tables/run1/`, commit 4951e41, tag
+  `registered-run1`, both pushed.** `python -m src.run_hypotheses --run
+  run1` on commit 777eafd with a clean tree; started 2026-10-12 09:41:27
+  UTC, results written 09:44:33 UTC; preflight passed (30 pinned inputs,
+  the frozen plan text, the statistics tests). Run commit made
+  2026-10-12 02:45 local (09:45 UTC), 25 days before the D73 deadline of
+  Friday 2026-11-06. Three tables, each with a provenance file:
+  `registered_tests.csv` (52 rows, 12 Holm families),
+  `reported_beside.csv` (205 rows: ONI robustness 33, frozen rules 44,
+  Parks Canada 9, zero-fire 7, station z 6, strong-only 24, strong-flip
+  24, H4 secondary 7, H6 combined 8, block bootstrap 14, H3a minus H3b
+  gap 7, lag-1 autocorrelation 22) and `validation.csv` (39 rows).
+  `conda_list_explicit.txt` (356 lines) was saved into the folder by
+  hand before the commit, as `docs/post_results_protocol.md` section 5
+  requires. Nothing in `run1/` is edited, renamed or deleted from here
+  on; any rerun goes to `run2/` under the protocol.
+- **Found, registered tests after Holm at 0.05: 4 of 52 significant.**
+  H1 SoCal (El Niño winters wetter: +64.4 mm DJF, 95% CI 31.0 to 99.6);
+  H5 lag 0 AB (a wetter winter, less burned area the same year: slope
+  -0.687, CI -1.099 to -0.276, about -50% per unit); H5 lag 1 NorCal
+  (a wetter winter, more burned area the next year: +0.388, CI 0.188 to
+  0.589, about +47%); H6 SWE NorCal (more snow, less burned area:
+  -0.377, CI -0.616 to -0.138, about -31%). No ENSO-on-burned-area test
+  (H2, H3a, H3b, H4, C2) and no C1 test was significant, before or
+  after correction; every H3a interval spans 0. These are reported as
+  nulls, not dropped.
+- **Built a results page format on the owner's request, filled from the
+  run folder by a script** (`scripts/build_results_page.py`,
+  `scripts/results_page/template.html`), so the look is settled before
+  the site pages are written. Per hypothesis: every region's estimate
+  and 95% interval on one scale, Holm verdict by colour, the
+  reported-beside runs as an overlay, then the other side runs and the
+  validation table. No number is typed; a rerun gets its own page.
+  Published privately as an artifact, not part of the Quarto site and
+  not in `results/`. Rejected a hand-written page: its numbers could
+  drift from `run1/`. A scope addition outside the plans; no test,
+  input or result changed. Left open by the owner: a shared design
+  system for the site, and hosting (Streamlit, or the owner's domain
+  with Cloudflare R2).
+
 ### 2026-10-12 - DeepSeek review of the safeguards and the runner (D77)
 
 - **Ran the D77 read-only review once, with the owner's yes: 8 findings,
