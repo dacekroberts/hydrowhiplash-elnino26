@@ -128,7 +128,10 @@ copy in `results/tables/`.
 before Phase 3. Any change since then goes in its deviations log. Then set up
 the Claude Code Project (on standby since 2026-10-04) using
 `docs/claude_code_project_setup.md`, so H1-H5 and the site pages can run as
-parallel threads.
+parallel threads. [mid-project: D78] Decided 2026-10-11: the registered
+runs and the runs reported beside them are made by one runner in the main
+checkout, not in Project threads; the Project is taken up again for site
+pages after the runs.
 
 **Pre-results audit gate** [mid-project: D51]: every piece of statistics
 code the plan needs but `src/stats.py` lacks at the freeze (one-sided

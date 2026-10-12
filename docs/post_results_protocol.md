@@ -1,8 +1,8 @@
 # Protocol for changes after results exist (S6)
 
 Written 2026-10-11 (session 8), before any hypothesis test has run on fire
-data and before the runner exists (audit round 5 S6; D73). Draft until the
-owner approves it; after approval it changes only by a dated note at the
+data and before the runner exists (audit round 5 S6; D73). Approved by
+the owner on 2026-10-11; from here it changes only by a dated note at the
 bottom.
 
 D62 fixes what may change before the first test (bug fixes only). This

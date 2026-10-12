@@ -58,6 +58,11 @@ def write_tables(table: pd.DataFrame, rebuild: bool = False) -> None:
 
 
 def main(rebuild: bool = False) -> None:
+    from src import pin_inputs
+
+    # refused before any read, as in the other builders; write_tables guards
+    # again for callers that skip main
+    pin_inputs.guard_write([COMMITTED], rebuild)
     write_tables(build_table(pd.read_csv(WHIPLASH), pd.read_csv(SWE)), rebuild)
 
 
