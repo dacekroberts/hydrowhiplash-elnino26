@@ -37,7 +37,12 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   under the same stamp. Without the flag every script behaves as
   before, including the refusal to overwrite a pinned file. The Alaska
   climate-division boundaries were left without the flag: fixed
-  polygons, no later release expected.
+  polygons, no later release expected. Superseded the same day (owner
+  asked whether that was a concern): the flag was added there too,
+  because that folder is not pinned and its script overwrites a file
+  whose size has changed on the server, so a re-run could silently
+  replace the boundaries behind the Interior Alaska check (D79). All
+  twelve download scripts now take `--stamp`.
 - **Decided that a stamped index retrieval fetches both RONI and ONI
   and writes nothing to `data/processed/`**, where the classified
   winters are pinned. The frozen plan's "DJF 2027 value in CPC's first
