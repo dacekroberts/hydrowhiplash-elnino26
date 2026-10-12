@@ -27,7 +27,7 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
-### D?c · Prediction model version 1c: two more variants after version 1b was seen
+### D92 · Prediction model version 1c: two more variants after version 1b was seen
 - **Plan:** `docs/prediction_model_spec.md` section 8: six variants,
   "fixed before running", and "Summer weather stays out of every
   forecasting variant".
@@ -52,7 +52,7 @@ additions stay distinguishable from the original plan.
 - **Plan doc:** `docs/prediction_model_spec.md` section 9 added; sections
   1 to 8 left as written.
 
-### D?b · Prediction model version 1b: changes made after version 1 was seen
+### D91 · Prediction model version 1b: changes made after version 1 was seen
 - **Plan:** `docs/prediction_model_spec.md` sections 2 to 7 (agreed
   before any fit): one shared coefficient per predictor, four spring
   predictors, the yes or no bar from the training seasons' own values,
@@ -77,7 +77,7 @@ additions stay distinguishable from the original plan.
 - **Plan doc:** `docs/prediction_model_spec.md` section 8 added; sections
   1 to 7 left as written.
 
-### D?a · Prediction model: four settings the agreed scope did not cover
+### D90 · Prediction model: four settings the agreed scope did not cover
 - **Plan:** `docs/session10_kickoff.md` Part 3 (the agreed scope): "1
   April snowpack" as a predictor for "the seven regions"; "region terms"
   and "a year trend"; "how often its 80% interval held the real value";

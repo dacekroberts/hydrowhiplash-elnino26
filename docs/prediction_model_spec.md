@@ -76,7 +76,7 @@ the missing skill is summer weather.
 
 Each was chosen after `run1` was seen and before any model was fitted
 (`DECISIONS.md` 2026-10-12 "Prediction model: settings agreed before the
-fit"; D?a). Values live in `src/config.py` (`PRED_*`).
+fit"; D90). Values live in `src/config.py` (`PRED_*`).
 
 - **A. Shrinkage.** Only the four climate predictors are shrunk. Each
   region's own level and its own year trend are left unshrunk, so at a

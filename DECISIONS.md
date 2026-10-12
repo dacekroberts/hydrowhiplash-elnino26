@@ -35,7 +35,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ### 2026-10-12 - Prediction model version 1c: summer conditions matter in four regions, last season's burn adds nothing
 
-- **Found (exploratory, after versions 1 and 1b and `run1`; D?c): last
+- **Found (exploratory, after versions 1 and 1b and `run1`; D92): last
   season's burned area did not help.** `last_burn`, all seven regions,
   151 unseen region-seasons, 2004 to 2025: skill 0.008 (95% interval
   -0.008 to 0.025) against `spring_inputs` 0.012 (-0.001 to 0.032);
@@ -79,7 +79,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ### 2026-10-12 - Prediction model version 1c: last season's burned area and a ceiling run
 
-- **Decided (owner, after version 1b was seen; D?c): two more variants
+- **Decided (owner, after version 1b was seen; D92): two more variants
   are run before any larger change, both from committed tables.** Owner:
   "yes 1c sounds good. ceiling = bigger ideas for separate project makes
   sense". `last_burn` adds the region's `log_burn` of the season before
@@ -106,7 +106,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ### 2026-10-12 - Prediction model version 1b: the fixes worked, the gain is about 0.01
 
-- **Found (exploratory, after version 1 and `run1`; D?b): with the five
+- **Found (exploratory, after version 1 and `run1`; D91): with the five
   changes, the best forecasting variant beats the trend by 0.012 on
   unseen seasons, and its interval reaches zero.**
   `results/tables/prediction_v1b/variants.csv`, 151 region-seasons, 2004
@@ -147,7 +147,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ### 2026-10-12 - Prediction model version 1b: five changes before machine learning
 
-- **Decided (owner, after version 1 was seen; D?b): five changes are
+- **Decided (owner, after version 1 was seen; D91): five changes are
   tried before any machine learning, on the same branch, merged with
   version 1 as one PR.** Owner: "i agree with 1-5 before machine
   learning. we can start version 1b now and merge all at once unless
@@ -216,7 +216,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 ### 2026-10-12 - Prediction model: settings agreed before the fit
 
 - **Decided (owner, after `run1` was seen, before any model was fitted;
-  D83, D?a): the seven settings the agreed scope left open or did not
+  D83, D90): the seven settings the agreed scope left open or did not
   cover**, written into `docs/prediction_model_spec.md` section 7 and
   `src/config.py` (`PRED_*`). (A) Shrinkage: only the four climate
   predictors are shrunk; each region's level and year trend are unshrunk,
