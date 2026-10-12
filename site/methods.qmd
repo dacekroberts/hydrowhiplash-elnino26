@@ -597,8 +597,11 @@ and the
 
 - **La Niña.** The labels exist in every table; the tests here look only at
   El Niño.
-- **A prediction model** trained on every year and checked on years it has
-  not seen, which is a different thing from the tests on this page.
+- **A prediction model, which is the next step.** Trained on every past
+  year and scored only on years it has not seen, against a model with the
+  year trend alone. It is planned after these results were seen, so it is
+  exploratory and sits apart from the registered tests on this page; the
+  2027 season is its first real test.
 - **Finer regions**, starting with Interior Alaska and the dry interior of
   British Columbia, so that the climate average matches where fires burn.
 - **Climate projections** for whether the winter signal is changing; the

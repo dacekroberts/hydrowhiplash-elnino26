@@ -17,6 +17,40 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model is next; owner's answers at the end of session 9
+
+- **Decided (owner, after `run1` was seen): the seasonal-outlook
+  prediction model is the next analysis, moved up from "Later
+  extensions", scoped first and then built as a side session beside the
+  design-focused session 10 (D83).** Owner: "try training it on the past
+  years and have it try on years not yet seen", and asked to scope its
+  extent, its training, and whether machine learning would be a second
+  version. It reads only committed region x year tables, so a worktree
+  session can do it without `data/`; it touches `src/` and `results/`,
+  while session 10 touches the site. It is exploratory and reported
+  apart from the registered tests, never in place of one; the registered
+  2027 forecast stays the H3a model. Because every result has been seen,
+  the predictors, the scoring on unseen years (expanding window, as in
+  `validation.csv`), the trend-only baseline and what counts as skill
+  are written down and agreed before any model is fitted. Rejected
+  starting it inside session 10: the two would compete for one session's
+  attention. Scope proposed to the owner the same day (a pooled linear
+  model first; machine learning as a second version only if the first
+  beats the trend); not yet agreed, nothing built.
+- **Decided (owner): the rollout timetable for readers lives on the
+  tracker page**, not on a page of its own.
+- **Decided (owner): reminders ahead of each rollout date are scheduled
+  tasks, a few days in advance; arrivals with no fixed date are folded
+  into the reminder nearest to when they are best checked.** Set up in
+  session 10; nothing is scheduled yet.
+- **Decided (owner): the site's look is redesigned with a design system
+  in session 10.** The results page and the methods draft were read
+  ("looks good for starters ... the content is good"); the open choices
+  (design system, hosting, the map page) are put to the owner at the
+  start of session 10 with a recommendation each. The methods wording is
+  not yet signed off line by line, so the `ACTION_PLAN.md` Methods item
+  stays open with its typed numbers and notices.
+
 ### 2026-10-12 - Full-record burned-area view; methods and limitations draft
 
 - **Built the full-record view of burned area as each season's departure

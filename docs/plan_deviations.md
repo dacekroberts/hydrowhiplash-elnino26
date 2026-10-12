@@ -27,6 +27,39 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D83 · Prediction model moved up: next after the registered runs
+- **Plan:** `ACTION_PLAN.md` "Later extensions": "Prediction model. ...
+  Builds on Phases 2-4, so start it once the historical analysis is
+  solid", and the roadmap's "after Phase 4, when asked". `CLAUDE.md`
+  scope guard: "Don't build either unless asked."
+- **Actual:** owner, 2026-10-12 (session 9, after `run1` was seen):
+  "note the prediction model in roadmap and methodology. this is what i
+  want to get to next, maybe we can try training it on the past years
+  and have it try on years not yet seen. maybe this can be done in
+  parallel with the design-focused session 10?" and "maybe we should
+  scope out the extent of the model, how it should be trained, whether
+  machine learning would be an interesting V2 after what's currently
+  scoped out for it". The seasonal-outlook model becomes the next
+  analysis, scoped first, then built as a side session beside session
+  10. Nothing is built yet.
+- **Why:** the registered tests are committed, and `run1` showed where
+  the signal is (winter moisture and snowpack, not the El Niño index).
+- **Constraint (post-results protocol, section 2):** it is a new
+  analysis added after results were seen: exploratory, uncorrected,
+  reported apart from the registered tests, never replacing one. What
+  had been seen: all of `run1`, including the validation table (H3a
+  skill against a trend-only model -0.03 to +0.01; H6 snowpack up to
+  +0.06). The registered 2027 forecast stays the H3a model. The model's
+  inputs, the way it is scored on unseen years and its baseline are
+  written down and agreed before any model is fitted.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model is next;
+  owner's answers at the end of session 9".
+- **Substantial:** yes (order of work and scope; no registered test,
+  input or result changes).
+- **Plan doc:** `ACTION_PLAN.md` "Later extensions", marker
+  `[mid-project: D83]`. No row in the frozen plan's deviations log (no
+  registered or reported test changes).
+
 ### D82 · A second pinned reader, for the raw ENSO files
 - **Plan:** `docs/post_results_protocol.md` section 5 and D73: "Tables
   are opened only through `src.pin_inputs.load_input`", which opens only

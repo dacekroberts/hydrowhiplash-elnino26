@@ -370,6 +370,13 @@ aren't worth building yet:
     item in `ANALYSIS_PLAN.md`; the projection part belongs with the CMIP6
     direction above.
   Builds on Phases 2–4, so start it once the historical analysis is solid.
+  [mid-project: D83] Owner, 2026-10-12, after `run1`: the seasonal
+  outlook is the next analysis: scoped with the owner first (extent,
+  training, whether machine learning is a second version), then built as
+  a side session beside session 10. Exploratory and reported apart from
+  the registered tests (`docs/post_results_protocol.md` section 2); its
+  inputs, scoring on unseen years and baseline are agreed in writing
+  before any fit. The registered 2027 forecast stays the H3a model.
 
 ---
 

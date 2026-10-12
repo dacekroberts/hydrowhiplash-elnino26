@@ -35,7 +35,22 @@ is the prompt to paste into a new Claude Code session in the main checkout.
   it. `NOTES` in the script holds the owner's reading per hypothesis and
   is empty.
 
-**Open, for the owner to decide (raised 2026-10-12, not decided):**
+**Owner's answers on 2026-10-12, after reading the results page and the
+methods draft** (`DECISIONS.md` 2026-10-12 "Prediction model is next"):
+
+- "looks good for starters. i think we will totally redesign the look of
+  final site with design system in session 10, but the content is good."
+  Session 10 is design-focused.
+- The open choices below are put to the owner at the start of session
+  10, each with a recommendation.
+- The rollout timetable lives on the tracker page.
+- Pings are scheduled tasks, a few days ahead of each date; arrivals
+  with no fixed date are folded into the reminder nearest to when they
+  are best checked.
+- The prediction model is next (D83): scoped with the owner first, then
+  built beside session 10 as a side session. Part 3.
+
+**Open, for the owner to decide (raised 2026-10-12):**
 
 - A design system so the site, the results page, the data guide and the
   roadmap share one theme. The three artifacts already share Archivo,
@@ -109,7 +124,7 @@ the owner says so; `data/` stays out of reach of every DeepSeek plan;
 ask before any run that reads polygons (shared machine memory); the
 going-public question is a leaning, not a decision.
 
-**Next free deviation number: D83.** The frozen plan's deviations log is
+**Next free deviation number: D84.** The frozen plan's deviations log is
 at row 19.
 
 ## Part 2 · Prompt for session 10
@@ -126,7 +141,8 @@ Session 10 for hydrowhiplash-elnino26: Phase 4, after run1.
    https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    and the results page: https://claude.ai/artifact/Af97Us4ZZoXsnEqnWue9Tk
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from D83.
+   deviations from D84. This session is design-focused; the prediction
+   model runs beside it as a side session (Part 3).
 
 2. Explain each concept as it comes up, give a short summary beside every
    hypothesis ID, and quote the actual wording beside every item ID
@@ -160,4 +176,75 @@ Session 10 for hydrowhiplash-elnino26: Phase 4, after run1.
    (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P), rebuild the
    results page if a new run exists, and offer to update the roadmap
    artifact; write the next kickoff the same way.
+```
+
+## Part 3 · Prediction model side session (D83)
+
+Runs in a worktree beside session 10. It needs no `data/`: it reads only
+committed tables in `results/tables/`. Side-session rules apply: no edits
+to `logs/`, the session block goes in the PR description, new deviations
+use a placeholder number.
+
+**Scope proposed to the owner on 2026-10-12, not yet agreed:**
+
+- *Version 1, the registered-style model.* Outcome: log burned area per
+  region and season. Predictors known before the fire season: the winter
+  index, October to March precipitation, 1 April snowpack, winter
+  SPEI-3, and a year trend. One pooled linear model across the seven
+  regions with region terms (291 region-seasons instead of about 42 per
+  region), with shrinkage (ridge) so correlated predictors do not blow
+  up. Scored only on seasons it has not seen: expanding window from 20
+  training seasons, every region predicted for the same year at once.
+  Baseline: the year trend alone. Reported: skill against the baseline
+  with an interval, and how often its 80% interval held the real value.
+  The 2027 season is the first real test.
+- *Version 2, machine learning, only if version 1 beats the trend.* A
+  small tree ensemble (gradient boosting or a random forest) on the same
+  inputs and the same scoring, to ask one question: do interactions and
+  thresholds (for example, snowpack mattering only in warm summers) add
+  anything a linear model misses? With 291 rows it can easily memorise,
+  so it is judged only on the unseen years, against version 1.
+- *Not in either version:* summer weather as a predictor (not known in
+  spring), anything trained on El Niño years only, and any claim that
+  replaces a registered test.
+- *Open for the owner:* whether the outcome stays total burned area or
+  also asks a yes or no question ("a season in the top third?"), which
+  is often easier to predict and easier to explain; whether Alaska and
+  Yukon are pooled with the rest; whether summer temperature is added
+  in a separate, clearly labelled "hindsight" run to show how much of
+  the missing skill is summer.
+
+```text
+Side session for hydrowhiplash-elnino26: the seasonal-outlook prediction
+model (D83), exploratory, in a worktree.
+
+1. Orient: read CLAUDE.md, docs/session10_kickoff.md (Parts 1 and 3),
+   docs/plan_deviations.md D83, DECISIONS.md 2026-10-12 "Prediction model
+   is next", docs/post_results_protocol.md section 2, ACTION_PLAN.md
+   "Later extensions", docs/data_dictionary.md section 8a, and
+   results/tables/run1/validation.csv. Tell me in 3-4 lines what this
+   session covers.
+
+2. This analysis was planned after run1 was seen. It is exploratory,
+   uncorrected and reported apart from the registered tests; it never
+   replaces one, and the registered 2027 forecast stays the H3a model.
+   Nothing in results/tables/run1/ is edited.
+
+3. Before fitting anything, settle the scope in Part 3 with me and
+   commit it as a one-page spec: the outcome, the predictors (only what
+   is known before the fire season), the model, how it is scored on
+   years it has not seen, the trend-only baseline, what would count as
+   skill, and the rule for whether a machine-learning version 2 is
+   tried. Explain each concept as it comes up. Nothing is adopted
+   without my yes.
+
+4. Then build version 1 in src/ as plain functions with tests on
+   synthetic data, read tables only from results/tables/, and write its
+   outputs to their own folder under results/tables/ with a provenance
+   record. Report skill with intervals, and say plainly if the model
+   does not beat the trend.
+
+5. End: checks (pytest, check_no_em_dashes.py, check_plan_frozen.py),
+   open a PR with the session block in its description. Do not edit
+   logs/.
 ```
