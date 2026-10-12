@@ -181,6 +181,15 @@ cold round with no high and no medium findings), tag
       every result (S5), the size labels read from `test_size.csv`; tests,
       then a short cold check of that code. An offline copy of the 30
       pinned inputs (S1).
+- [ ] **DeepSeek review of the safeguard code** [mid-project: D77]: a
+      read-only review of `src/run_guard.py`, `src/pin_inputs.py`,
+      `scripts/preflight.py` and `scripts/check_plan_frozen.py` with the
+      `deepseek-delegate` skill, an extra read outside the closed gate;
+      each finding checked before it counts, bug fixes only; the same for
+      the runner once written. No delegated build before the registered
+      runs are committed. *After the runs:* a delegated-build pilot (the
+      pin report after `--rebuild`), and the methods-page line on where
+      DeepSeek was used.
 - [ ] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB

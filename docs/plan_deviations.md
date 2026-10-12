@@ -27,6 +27,24 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-11
 
+### D77 · DeepSeek review and delegation (scope addition)
+- **Plan:** `ACTION_PLAN.md` Phase 4: the pre-results audit runs in cold
+  read-only rounds until the gate closes; `CLAUDE.md` names no outside
+  model. No DeepSeek step anywhere.
+- **Actual:** owner, 2026-10-11: a DeepSeek read-only review of the
+  safeguard code (and of the runner once written) as an extra read
+  outside the closed gate; no delegated build before the registered
+  runs are committed; a delegated-build pilot and a methods-page line
+  ("DeepSeek helper agents contributed here") after them.
+- **Why:** a second model's read of code that one short cold check has
+  covered is cheap; a build before 2026-11-06 is new scope the date does
+  not need.
+- **Recorded:** `DECISIONS.md` 2026-10-11 "DeepSeek delegation: what is
+  taken up, and when".
+- **Substantial:** yes (a new review step and an outside service).
+- **Plan doc:** `ACTION_PLAN.md` Phase 4, new item marked
+  `[mid-project: D77]`. No test or rule touched.
+
 ### D76 · Rolling publication of the site
 - **Plan:** `ACTION_PLAN.md` "Second goal": "Done when: the site is public
   with the first four pieces"; Phase 5: "Spring 2027: update with the
