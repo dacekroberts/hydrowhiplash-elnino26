@@ -161,10 +161,12 @@ high, no medium, 6 low). **Gate closed on round 5** (owner's standard: a
 cold round with no high and no medium findings), tag
 `pre-results-gate-closed`.
 
-- [ ] **Decide before the first hypothesis test (owner, 2026-10-08):** the
+- [x] **Decide before the first hypothesis test (owner, 2026-10-08):** the
       exploratory NBAC re-run of the Canadian tests and the NOAA NCEI
       Interior Alaska check, each yes or no, logged in `DECISIONS.md`. No
-      hypothesis test runs while either is open.
+      hypothesis test runs while either is open. Settled: Interior Alaska
+      measured and reported (2026-10-11, D79); no NBAC re-run, the
+      per-fire coverage split reported as a limitation (2026-10-12, D81).
 - [ ] **Registered runs committed by Friday 2026-11-06** [mid-project: D73]:
       the day before October's ERA5-Land data is expected
       (`TRACKER_DATA_DAY` 7), so the first tracker update cannot change a
@@ -173,7 +175,7 @@ cold round with no high and no medium findings), tag
       holds the runs reported beside the registered tests: the ONI
       robustness check, the frozen-rules run, the Parks Canada
       sensitivity run and the strong-only results.
-- [ ] **Runner safeguards before the first run** [mid-project: D73]
+- [x] **Runner safeguards before the first run** [mid-project: D73]
       (audit round 5): first, a written protocol for changes after results
       exist (the first results are never edited, reruns go beside them,
       any change gets a log row and an old-vs-new table; S6); then
@@ -183,7 +185,10 @@ cold round with no high and no medium findings), tag
       preflight the runner calls first (S4), a provenance record beside
       every result (S5), the size labels read from `test_size.csv`; tests,
       then a short cold check of that code. An offline copy of the 30
-      pinned inputs (S1).
+      pinned inputs (S1). Done 2026-10-11 to 12 (session 8):
+      `docs/post_results_protocol.md`, `src/run_guard.py`,
+      `src/pin_inputs.py`, `pinned_inputs_copy/`; cold check 4 medium,
+      8 low, all fixed.
 - [ ] **DeepSeek review of the safeguard code** [mid-project: D77]: a
       read-only review of `src/run_guard.py`, `src/pin_inputs.py`,
       `scripts/preflight.py` and `scripts/check_plan_frozen.py` with the

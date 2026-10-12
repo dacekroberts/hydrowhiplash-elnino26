@@ -27,6 +27,26 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D81 · NBAC coverage split reported as a limitation; no NBAC re-run
+- **Plan:** `ACTION_PLAN.md` Phase 4: "the exploratory NBAC re-run of
+  the Canadian tests ... each yes or no" before the first hypothesis
+  test. `ANALYSIS_PLAN.md` (frozen) names CNFDB as the Canadian fire
+  source and reports no coverage figure against NBAC.
+- **Actual:** owner, 2026-10-12, before any test: no re-run. The
+  per-fire split is reported beside the BC, AB and YT results: NBAC area
+  in fires with no same-YEAR CNFDB polygon under more than half of them,
+  on provincial labels, AB 2.7%, BC 2.0%, YT 3.1% of NBAC area
+  (1984-2024), with the seasons over 10% named (AB 6, BC 9, YT 3 of 41).
+- **Why:** 2-3% of area, log-series correlation 0.990-0.997, parks and
+  defence lands already handled (D69, D71); a re-run needs its own date
+  rule and another build before 2026-11-06.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "No NBAC re-run";
+  `docs/methods_register.md` "NBAC per-fire split".
+- **Substantial:** no (a reported number; no test, input or rule
+  changes).
+- **Plan doc:** `ANALYSIS_PLAN.md` deviations log, row 19 (added);
+  `ACTION_PLAN.md` Phase 4 item ticked.
+
 ### D80 · Plain OLS check one-sided beside the one-sided H3a and H3b tests
 - **Plan:** D66 and the `ANALYSIS_PLAN.md` deviations log, eighth row: a
   plain OLS p beside the registered p of the ENSO tests, kept where its

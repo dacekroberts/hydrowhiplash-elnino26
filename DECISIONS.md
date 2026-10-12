@@ -17,6 +17,49 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - No NBAC re-run; the per-fire coverage split is a reported limitation
+
+- **Decided (owner, 2026-10-12, before any test): no exploratory NBAC
+  re-run of the Canadian tests; the per-fire coverage split is reported
+  beside the BC, AB and YT results as a measured limitation** (D81;
+  frozen plan's deviations log, row 19). With the Interior Alaska check
+  (D79) this settles both items that had to be decided before the first
+  hypothesis test. Measured 2026-10-11 to 12
+  (`scripts/nbac_coverage.py`, 88 minutes;
+  `data/processed/nbac_coverage_fires.csv`, 3,035 fire-by-label rows,
+  2,892 NBAC fires of 405 ha or more, 1984-2024; the regenerated season
+  table equals the 2026-10-08 one in all 264 rows). NBAC area with no
+  same-YEAR CNFDB polygon under it, split at an uncovered share of 0.5
+  (`NBAC_MISSING_SHARE`) into fires missing from CNFDB and rim
+  disagreement: AB 547,394 ha missing (103 fires) and 265,694 rim, of
+  10,523,204; BC 173,688 (85) and 336,563, of 8,239,696; YT 194,517 (89)
+  and 238,196, of 6,306,203. Of the 297 missing rows, 213 are wholly
+  uncovered (690,395 ha). AB's missing area by land: defence 109,773 ha
+  (D71), national parks 217,386 (Wood Buffalo; D69 covers 2016-2019),
+  provincial and other labels 219,900. Provincial-label missing area as
+  a share of that NBAC area: AB 2.7%, BC 2.0% (166,800 ha), YT 3.1%
+  (193,555 ha). Rim on provincial labels: AB 2.2%, BC 4.2%, YT 3.9%,
+  above the 0.3-1.2% floor of audit round 5 L6 (three AB seasons), so
+  the 0.5 cut leaves partly covered fires in the rim class. Seasons
+  where provincial-label missing fires exceed 10% of the season's NBAC
+  area: AB 6 of 41 (1986, 2000, 2001, 2005, 2006, 2024), BC 9 (1985,
+  1987, 1989, 1991, 1992, 1996, 1998, 1999, 2000), YT 3 (1986, 2000,
+  2019); the large recent ones AB 2024 (105,541 ha, 14.7%, one fire of
+  81,134 ha with no CNFDB polygon), YT 2019 (70,493 ha, 26.4%, 19 fires)
+  and AB 2006 (41,677 ha, 27.9%). Not checked: whether CNFDB files any
+  of these fires under a neighbouring YEAR. Reasons for no re-run: the
+  provincial missing area is 2-3%, the log series correlate at 0.990
+  (BC), 0.994 (AB) and 0.997 (YT), parks and defence lands are already
+  handled (D69, D71), and a re-run needs its own date rule (NBAC has no
+  ignition date) and another fire build before 2026-11-06. Rejected the
+  re-run as the direct check of the 18 region-seasons over 10%; rejected
+  deciding after results. No fire total was set beside ENSO.
+- **Record check closed (session 8 kickoff): the register's "Union
+  area" figures agree.** WFIGS overlap left out is 79,443 ha over every
+  season built and 52,834 ha inside the table's 291 seasons; the other
+  26,609 ha is the unfinished 2026 season (PNW 24,243, NorCal 2,367),
+  built but outside the table. Sentence added to the register row.
+
 ### 2026-10-12 - Plain OLS check takes the registered test's sidedness
 
 - **Decided (owner, option chosen 2026-10-11, sizes accepted 2026-10-12,
