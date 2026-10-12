@@ -173,10 +173,11 @@ def items() -> list[dict]:
               "California's 2026 fire season closes",
               "The 2026 season can be shown complete for every US region, still "
               "provisional (WFIGS) and outside the tests.",
-              "No task in the plans yet: decide whether to download WFIGS again to a "
-              "stamped path and describe 2026. Reads polygons: ask the owner first.",
+              "Download WFIGS again to a stamped path and redraw the 2026 season for "
+              "PNW, AK, NorCal and SoCal: described only, provisional, outside the "
+              "tests (owner, 2026-10-12; D95). Reads polygons: ask the owner first.",
               "FIRE_SEASON_MONTHS (D43); ANALYSIS_PLAN Execution details: 2026 is "
-              "described only",
+              "described only; D95",
               reader=False, own_reminder=False, checked_at=[month_key[(2027, 2)]]),
         _item("canswe_v9", "release", *windows["canswe_v9"], "window",
               "CanSWE v9 station snow data (no fixed date)",

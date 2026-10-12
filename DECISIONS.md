@@ -17,6 +17,37 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Session 11: fonts, reminders, the 2026 season and the sibling repository
+
+- **Bundled the three design typefaces with the site (owner: "yes all
+  three in repo bundle").** Four variable font files and their three
+  licence texts in `site/fonts/`, from github.com/google/fonts at commit
+  bd8f81d (`ofl/nationalpark`, `ofl/publicsans`, `ofl/jetbrainsmono`),
+  SIL Open Font License 1.1: `NationalPark-wght.ttf` (159,332 bytes),
+  `PublicSans-wght.ttf` (103,316), `PublicSans-Italic-wght.ttf`
+  (107,940), `JetBrainsMono-wght.ttf` (187,208), saved without the
+  square brackets of the publisher's file names. `src.theme.fonts_html`
+  now writes `@font-face` rules for them in place of the Google Fonts
+  link, and `site/_quarto.yml` lists `fonts/*` as a resource. The
+  private artifact pages cannot load local files and keep the Google
+  Fonts link. Found: matplotlib draws a variable font at its default
+  weight only (Public Sans came out thin, no bold), so the figures stay
+  on the system sans; static Regular and Bold files would be needed, and
+  google/fonts carries none for these three. Left for the owner. JetBrains
+  Mono's italic was not taken (the site sets no italic code).
+- **Decided (owner): the 2026 season is redrawn after California's
+  closes (D95).** Described only, provisional, US regions; the calendar
+  item now carries the task.
+- **Scheduled (owner: yes) two more look-and-report reminders**, same
+  form as the ten of session 10: 2028-04-28 for `nbac_2027` and
+  2028-12-29 for `cnfdb_2027`, 9:00 local.
+- **Created (owner: "create now"; "you can create the sister project
+  repo folder in portfolio as well") the private repository
+  `climate-whiplash-prediction`**, checked out beside this project. It
+  holds its licence files, a README and the kickoff as `docs/kickoff.md`
+  only; stage 0 (copying and verifying the tables and the model code) is
+  its own first session.
+
 ### 2026-10-12 - Session 11: sibling prediction project settled
 
 - **Decided (owner): the sibling is a private repository named

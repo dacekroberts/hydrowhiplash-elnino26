@@ -60,6 +60,15 @@ def test_css_variables_cover_both_theme_states():
     assert "--font-display:" in css and "--radius-md:" in css
 
 
+def test_bundled_fonts_exist_with_their_licences():
+    families = {family for family, *_ in theme.SITE_FONTS}
+    assert families == {stack.split(',')[0].strip('"') for stack in theme.families().values()}
+    for _, name, _, _ in theme.SITE_FONTS:
+        assert (theme.SITE_FONTS_DIR / name).stat().st_size > 50_000, name
+        assert f'fonts/{name}' in theme.fonts_html()
+    assert len(list(theme.SITE_FONTS_DIR.glob('OFL-*.txt'))) == 3
+
+
 def test_committed_site_theme_matches_the_tokens():
     # Fails when theme/tokens.json or the site rules change without a rewrite.
     # Fix: python -m src.theme, commit site/theme/.

@@ -19,6 +19,18 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 TOKENS = ROOT / "theme" / "tokens.json"
 SITE_THEME = ROOT / "site" / "theme"
+# The design typefaces, bundled with the site (owner, 2026-10-12) so no page
+# depends on Google Fonts and matplotlib can draw with them. Variable fonts
+# from github.com/google/fonts, SIL Open Font License 1.1 (OFL-*.txt beside
+# them). (family, file, weight range, style). The private artifact pages
+# cannot load these files and keep font_url().
+SITE_FONTS_DIR = ROOT / "site" / "fonts"
+SITE_FONTS = (
+    ("National Park", "NationalPark-wght.ttf", "200 800", "normal"),
+    ("Public Sans", "PublicSans-wght.ttf", "100 900", "normal"),
+    ("Public Sans", "PublicSans-Italic-wght.ttf", "100 900", "italic"),
+    ("JetBrains Mono", "JetBrainsMono-wght.ttf", "100 800", "normal"),
+)
 LENGTH_FAMILIES = ("spacing", "radius", "stroke")
 # Text tokens and the grounds each must read on at 4.5:1 or better in every
 # theme (WCAG 2); checked by tests/test_theme.py.
@@ -199,9 +211,12 @@ def quarto_scss(theme: str) -> str:
 
 
 def fonts_html() -> str:
-    return (f'<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-            f'<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-            f'<link rel="stylesheet" href="{font_url()}">\n')
+    """@font-face rules for the site's bundled font files. Every page sits
+    at the site root, so the relative address fonts/<file> resolves."""
+    faces = [f'@font-face {{ font-family: "{family}"; src: url("fonts/{name}") '
+             f'format("truetype"); font-weight: {weight}; font-style: {style}; '
+             f'font-display: swap; }}' for family, name, weight, style in SITE_FONTS]
+    return "<style>\n" + "\n".join(faces) + "\n</style>\n"
 
 
 def site_files() -> dict[str, str]:

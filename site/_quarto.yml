@@ -1,6 +1,8 @@
 project:
   type: website
   output-dir: _site
+  resources:
+    - "fonts/*"
 
 website:
   title: "El Niño and the 2027 fire season"

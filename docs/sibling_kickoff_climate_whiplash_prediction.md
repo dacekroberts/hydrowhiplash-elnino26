@@ -1,8 +1,10 @@
 # Kickoff: climate-whiplash-prediction
 
 Drafted 2026-10-12 (session 11 of hydrowhiplash-elnino26) with the owner.
-A draft until the owner says the repository can be created; nothing below
-exists yet except the tag `prediction-handoff`. Source material:
+The repository was created the same day on the owner's word (private,
+github.com/dacekroberts/climate-whiplash-prediction, checked out beside
+the parent); it holds this file as `docs/kickoff.md`, a README and the
+licence files, and nothing else. Stage 0 is its first session. Source material:
 `docs/prediction_sibling_kickoff.md` (the side session's proposals) and
 `docs/prediction_model_spec.md`.
 

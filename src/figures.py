@@ -46,6 +46,9 @@ def _font_stack(role: str) -> list[str]:
     text draw for a missing one). DejaVu Sans ships with matplotlib."""
     from matplotlib import font_manager
 
+    # The files bundled in site/fonts are variable fonts. Matplotlib draws a
+    # variable font at its default weight only (Public Sans: thin), so they
+    # are not registered here; a static Regular and Bold would be needed.
     design = theme.families()[role].split(",")[0].strip().strip('"')
     installed = {font.name for font in font_manager.fontManager.ttflist}
     return [name for name in (design, "Segoe UI", "Helvetica", "Arial")

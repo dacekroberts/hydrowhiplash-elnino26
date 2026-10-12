@@ -127,8 +127,8 @@
       "precision": "after",
       "title": "California's 2026 fire season closes",
       "site_change": "The 2026 season can be shown complete for every US region, still provisional (WFIGS) and outside the tests.",
-      "prepare": "No task in the plans yet: decide whether to download WFIGS again to a stamped path and describe 2026. Reads polygons: ask the owner first.",
-      "basis": "FIRE_SEASON_MONTHS (D43); ANALYSIS_PLAN Execution details: 2026 is described only",
+      "prepare": "Download WFIGS again to a stamped path and redraw the 2026 season for PNW, AK, NorCal and SoCal: described only, provisional, outside the tests (owner, 2026-10-12; D95). Reads polygons: ask the owner first.",
+      "basis": "FIRE_SEASON_MONTHS (D43); ANALYSIS_PLAN Execution details: 2026 is described only; D95",
       "reader": false,
       "own_reminder": false,
       "checked_at": [

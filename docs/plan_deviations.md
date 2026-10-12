@@ -27,6 +27,25 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D95 · The 2026 season is redrawn once California's closes
+- **Plan:** `ANALYSIS_PLAN.md` Execution details: 2026 is described only,
+  never tested. No plan holds a task to draw it again after the WFIGS
+  snapshot of 2026-10-07, taken while California's June to January
+  season was still open.
+- **Actual:** owner, 2026-10-12 (session 11): yes. After 31 January 2027
+  WFIGS is downloaded again to a stamped path and the 2026 season of PNW,
+  AK, NorCal and SoCal is redrawn: described only, provisional, beside
+  the results. The Canadian 2026 seasons wait for CNFDB (about January
+  2028). Checked at the 4 February 2027 reminder.
+- **Why:** the pinned snapshot holds 26,609 ha for 2026 (PNW 24,243,
+  NorCal 2,367), an unfinished season.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 11: fonts, reminders,
+  the 2026 season and the sibling repository".
+- **Substantial:** no (no test, pinned input or registered number
+  changes; the run reads polygons and needs the owner's yes then).
+- **Plan doc:** left as written; the calendar item `season_2026_closes`
+  carries the task.
+
 ### D94 · Prediction work continues in a sibling repository
 - **Plan:** `ACTION_PLAN.md` "Later extensions": "Prediction model. Turn
   the historical results into a model that forecasts what comes next",
