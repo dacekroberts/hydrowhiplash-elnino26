@@ -44,6 +44,11 @@ nav.jump a:hover, nav.jump a:focus-visible { border-color: var(--ink); outline: 
 section.hyp { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 16px; }
 .hyp-head { display: flex; flex-direction: column; gap: 6px; }
 .hyp-id { font-family: var(--mono); font-size: 0.8rem; color: var(--ember); font-weight: 500; }
+.hypo { margin: 4px 0 0; display: grid; grid-template-columns: 6.5rem minmax(0, 1fr); gap: 3px 14px; max-width: 78ch; }
+.hypo dt { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); padding-top: 3px; }
+.hypo dd { margin: 0; }
+.hypo dd:first-of-type { font-weight: 600; }
+@media (max-width: 520px) { .hypo { grid-template-columns: 1fr; gap: 0; } .hypo dd { margin-bottom: 6px; } }
 .reading { border-left: 3px solid var(--ember); padding-left: 12px; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
@@ -184,6 +189,18 @@ const SECTIONS = [
    sum: "The change per year in the slope of burned area on the winter index.",
    unit: "log points per 1 °C, per year"},
 ];
+// Registered wording and predicted direction, from ANALYSIS_PLAN.md "Hypotheses" and "Directions and sidedness".
+const HYP = {
+  H1: ["Winter precipitation differs in El Niño winters vs the rest.", "lower in PNW, BC and AB; higher in SoCal. A check, not a finding: the values were seen before the plan was frozen."],
+  H2: ["Fire-season burned area differs after El Niño winters vs the rest.", "higher in PNW, BC and AB (one-sided); two-sided elsewhere."],
+  H3a: ["Total effect: ENSO strength predicts burned area, controlling for the long-term trend only.", "positive in PNW, BC and AB (one-sided); two-sided elsewhere."],
+  H3b: ["Direct effect: ENSO strength still predicts burned area after also controlling for summer temperature.", "smaller than H3a; positive in PNW, BC and AB (one-sided)."],
+  H4: ["El Niño's effect on burned area differs between northern regions and SoCal.", "the contrast is not 0 (two-sided)."],
+  H5: ["Wet years raise burned area afterwards (whiplash mechanism).", "a positive lag-1 slope, strongest in SoCal (one-sided there); a negative same-year slope in PNW, BC and AB (one-sided)."],
+  H6: ["Low April 1 snowpack and a dry winter predict more burned area.", "negative slopes in PNW, BC and AB (one-sided); two-sided in NorCal and SoCal."],
+  C1: ["Secondary: El Niño's effect on snowpack grows over time.", "a negative El Niño × year term in PNW, BC and AB (one-sided)."],
+  C2: ["Secondary: El Niño's effect on burned area changes over time.", "two-sided in PNW, BC and AB."],
+};
 const SUB = {H5_lag0: "Same year (lag 0)", H5_lag1: "Year before (lag 1)", H6_swe: "Snow water equivalent", H6_spei: "Winter SPEI-3"};
 const KINDS = {oni_robustness: "ONI index", frozen_rules: "Frozen rules", parks_nbac: "Parks Canada area", zero_fire: "Zero-fire season", station_z: "Station snow"};
 const KIND_NAMES = Object.assign({}, KINDS, {strong_only: "Strong El Niño winters only", strong_flip: "Strong winters, near-threshold flipped",
@@ -246,7 +263,8 @@ function renderSection(sec) {
 
   const s = el("section", "hyp"); s.id = sec.id;
   const nSig = rows.filter(r => r.significant === true).length;
-  s.append(el("div", "hyp-head", `<span class="hyp-id">${sec.id} · ${rows.length} test${rows.length > 1 ? "s" : ""} · ${nSig} significant after Holm</span><h2>${esc(sec.title)}</h2><p class="muted">${esc(sec.sum)}</p>`));
+  s.append(el("div", "hyp-head", `<span class="hyp-id">${sec.id} · ${rows.length} test${rows.length > 1 ? "s" : ""} · ${nSig} significant after Holm</span><h2>${esc(sec.title)}</h2>` +
+    (HYP[sec.id] ? `<dl class="hypo"><dt>Hypothesis</dt><dd>${esc(HYP[sec.id][0])}</dd><dt>Predicted</dt><dd>${esc(HYP[sec.id][1])}</dd><dt>Measured as</dt><dd>${esc(sec.sum)}</dd></dl>` : `<p class="muted">${esc(sec.sum)}</p>`)));
   if (D.notes && D.notes[sec.id]) s.append(el("p", "reading", esc(D.notes[sec.id])));
 
   const ledger = el("div", "ledger");

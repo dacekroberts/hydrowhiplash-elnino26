@@ -44,6 +44,15 @@ is the prompt to paste into a new Claude Code session in the main checkout.
 - Hosting: Streamlit, or the owner's own domain with Cloudflare R2. The
   project rule today is a Quarto site that only reads `results/`; a
   Streamlit app would be a scope change to log.
+- A site page idea from the owner (2026-10-12): a map of all seven
+  regions with a toggle per dataset (fire, snowpack, rainfall,
+  temperature) and a legend drawn for each that shows the general trend
+  in that sphere. A scope addition to the site plan, not started; it
+  would read the committed region x year tables and the region
+  polygons, and belongs with the design system choice.
+- The results page states each registered hypothesis and its predicted
+  direction above its results (owner's request); keep that for every
+  later run's page.
 - Whether `ACTION_PLAN.md` Headlines 1 to 4 are ticked now (computed in
   `run1`) or when the charts and write-up exist (left open).
 
