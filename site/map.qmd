@@ -21,7 +21,10 @@ with the region's own normal, so a dark British Columbia and a dark Southern
 California both mean an unusual year there, not the same number of hectares
 or millimetres. The strip under the slider shows every winter: amber for an
 El Niño winter, a second amber for a strong one, purple for La Niña. Click
-a cell to go to that year.
+a cell to go to that year. The ocean around the regions, and the strip of
+the tropical Pacific under the map, show that winter's sea-surface
+temperature. They are a picture of the winter, not an input to anything
+on this site.
 
 ::: {.column-body-outset}
 ```{python}

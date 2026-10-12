@@ -930,6 +930,12 @@ this project reads it: it colours the map's ocean panels and nothing else.
   `relative`: the same with the area-weighted mean anomaly of 20°S to
   20°N removed, which is what the relative index (RONI) does. The map
   shows `relative`.
+- On the page (`src.map_page.sea`): each cell's `relative` value, floored
+  to 0.1 °C and clipped to ±3.0 °C, one character per cell. Flooring, not
+  rounding, so a cell's class is exact (the class edges are multiples of
+  0.1). "Smoothed" draws each pixel from the up to four cells around it;
+  "2° cells, as measured" draws the cell itself and is the closer reading
+  of the numbers. Neither adds information to the 2° grid.
 - `results/tables/sst_nino34_check.csv`: per winter, the Niño 3.4 box
   mean (5°S to 5°N, 170°W to 120°W) of both fields beside the project's
   `enso_djf`. Trap: `sst_relative_nino34` is not RONI. RONI is rescaled

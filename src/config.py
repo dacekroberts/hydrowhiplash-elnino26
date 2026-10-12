@@ -704,9 +704,17 @@ SST_MONTHS = (12, 1, 2)            # December of Y-1 with January and February o
 SST_NORMAL_YEARS = (1991, 2020)    # winters; the base period of ONI and RONI
 SST_TROPICS_LAT = (-20, 20)        # the tropical mean RONI subtracts, every longitude
 NINO34_BOX = ((-5, 5), (190, 240))  # 5S-5N, 170W-120W, as (lat, lon east) ranges
-# The two panels, as (lat, lon east) ranges of cell centres: the whole tropical
-# Pacific, and the ocean beside the seven regions.
-SST_PANELS = {"tropics": ((-30, 30), (120, 290)), "coast": ((24, 62), (170, 246))}
+# The two panels, as (lat, lon east) ranges of cell centres: the tropical
+# Pacific (the belt of SST_TROPICS_LAT), and the ocean beside the seven
+# regions, drawn under the map of the regions as far as that map's frame
+# reaches. The coast panel stops at 66N, the Bering Strait: north of it the
+# winter ocean is ice, which ERSST holds at a fixed temperature.
+SST_PANELS = {"tropics": ((-20, 20), (120, 290)), "coast": ((20, 66), (150, 252))}
+SST_STEP_C = 0.1                   # values on the page are floored to this step, so that
+                                   # a cell's class (edges are multiples of it) is exact
+SST_LIMIT_C = 3.0                  # and clipped to this size either side of zero
+SST_LATTICE_PX = 16                # spacing of the pixel-to-cell lookup, in map units
+SST_TROPICS_WIDTH = 688            # the tropical panel's canvas width, 4 px per degree
 # Five classes of the relative anomaly in degrees Celsius, cut at these edges
 # (by eye, as MAP_LAYERS), coloured with the temperature ramp.
 SST_EDGES = (-1.0, -0.4, 0.4, 1.0)

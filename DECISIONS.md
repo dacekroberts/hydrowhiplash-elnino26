@@ -17,6 +17,51 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Ocean panels on the map page: smoothed by default, cells on a switch
+
+- **Built the ocean panels (D99) with smoothed bands as the default and a
+  switch to the 2° cells (owner: "go with smoothed, build the ocean
+  panels. we could also have a switch for blocky, stating the more
+  realistic numbers interpretation").** The page receives each winter's
+  cells as one character per cell and draws them in the browser, so one
+  set of numbers serves both views. Smoothed: each pixel is the
+  distance-weighted mean of the up to four cells around it, drawn where
+  at least half that weight is ocean. Cells: each pixel takes the cell it
+  lies in. Rejected: contour shapes made in Python for every winter (76
+  winters of paths for two panels and two views, several megabytes).
+  The fragment is 401 KB, up from 137 KB.
+- **Values are floored to 0.1 °C before they reach the page**
+  (`SST_STEP_C`), not rounded. The class edges are multiples of 0.1, so
+  flooring keeps every cell in its class (a test checks the edge cases);
+  rounding would move a cell at 0.38 °C into the class that starts at
+  0.4. The smoothed view adds half a step back before it averages.
+- **Changed the two panel boxes (`SST_PANELS`) from the sample's.** Coast:
+  20-66°N, 150°E-108°W, wide enough to fill the frame of the regions'
+  map, stopping at the Bering Strait because the winter ocean north of it
+  is ice held at a fixed temperature. Tropics: 20°S-20°N (was 30°S-30°N),
+  the belt whose mean is removed, which also keeps the strip short.
+- **Drew the ocean under the regions at 62% opacity** (the tropical panel
+  at full strength). Found in the browser: at full strength a warm patch
+  beside British Columbia read as land in a bad fire year, and cool water
+  read as a wet region on the rain layer. Not solved, only reduced: the
+  ocean shares the temperature ramp with the summer temperature layer.
+  Left for the owner: a separate ramp for the ocean.
+- **Land that is not one of the seven regions is blank**, taken from
+  ERSST's own missing cells, so coasts outside the regions are stepped at
+  2°. Not done, and flagged: a land backdrop from the Natural Earth file
+  would need a new polygon read, which needs the owner's yes.
+- **The caution sits in a bordered note under the panels** ("A picture
+  only."), a draft for the owner like every sentence on the page:
+  `SEA_TEXT` in `src/map_page.py`. Under it the page gives the Niño 3.4
+  box mean of the picture beside the winter's RONI and says why they
+  differ. Hiding the ocean hides the note with it.
+- Checked in the browser: 2016 and 1998, both views, light and dark (the
+  canvas is repainted when the theme changes), the hide switch, phone
+  width with no sideways scroll. Full suite: 431 passed.
+- **Owner, on the DeepSeek build pilot: "when we complete that we should
+  pass results to the prediction modelling session (sister)".** Recorded
+  in `docs/session12_kickoff.md`; the pilot itself is still not run.
+
 ### 2026-10-12 - Sea-surface temperature for the map: ERSST v6, display only
 
 - **Added (owner: "go ahead to download") NOAA ERSST v6 as a source for

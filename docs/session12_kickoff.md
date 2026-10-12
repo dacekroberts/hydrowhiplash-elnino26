@@ -106,6 +106,9 @@ checkout.
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
    4).
+   When the pilot is complete, its results go to the sibling session
+   (owner, 2026-10-12: "we should pass results to the prediction
+   modelling session (sister)").
 4. The hard-line item, when the 4 November reminder fires (ACTION_PLAN
    Phase 5; D55, D88): `ERA5_LAG_MONTHS` 3 to 1, download every
    published 2026 month with `--stamp`, refit SPEI (about 55 minutes),
@@ -115,12 +118,14 @@ checkout.
    `site/map.qmd`; built 2026-10-12 on the owner's word). Open: the
    owner's wording of its labels and sentences; this winter's months
    after item 4; whether the class edges suit the owner. Ocean panels
-   (D99): NOAA ERSST v6 is downloaded and `src/ocean.py` makes each
-   winter's field; the panels are not on the page yet. The owner
-   chooses blocky cells or smoothed bands from a sample render, then
-   they are built with a hide toggle and a plain statement that the
-   data entered no calculation and that the tests found no reliable
-   link from El Niño itself to burned area.
+   (D99): built 2026-10-12 from NOAA ERSST v6, display only: the
+   ocean under the regions and a tropical Pacific strip on the same
+   slider, smoothed by default with a switch to the 2° cells, a hide
+   switch, and a note that the data entered no calculation. Open for
+   the owner: the wording (`SEA_TEXT`), whether the ocean should have
+   its own colour ramp (it shares the temperature layer's), and
+   whether to draw other land from Natural Earth (a new polygon read,
+   so it needs a yes).
 
 **Open, low:** pins walk one folder level (review F3); two tests need
 the tag `analysis-plan-frozen` in the clone; `scripts/methods_numbers.py`

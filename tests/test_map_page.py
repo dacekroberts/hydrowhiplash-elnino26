@@ -9,7 +9,8 @@ import pytest
 from shapely.geometry import box
 
 from src import interactive, map_page, theme
-from src.config import MAP_LAYERS, MAP_NORMAL_YEARS, REGIONS
+from src.config import (MAP_LAYERS, MAP_NORMAL_YEARS, NINO34_BOX, REGIONS, SST_EDGES, SST_PANELS,
+                        SST_STEP_C)
 
 YEARS = range(1984, 2026)
 
@@ -108,3 +109,58 @@ def test_winter_rain_html_labels_every_panel(tmp_path):
     # Plotly writes non-ASCII letters as escapes, so the legend is matched on its ASCII part
     assert "winter (shaded year)" in text and "(darker tick)" in text
     assert text.count('"showticklabels":true') >= len(REGIONS)
+
+
+def sea_fields():
+    import xarray as xr
+
+    lat, lon = np.arange(-88.0, 89.0, 2.0), np.arange(0.0, 360.0, 2.0)
+    data = np.zeros((2, lat.size, lon.size))
+    (b0, b1), (c0, c1) = NINO34_BOX
+    box = ((lat[:, None] >= b0) & (lat[:, None] <= b1) & (lon[None, :] >= c0) & (lon[None, :] <= c1))
+    data[1][box] = 1.7
+    data[:, lat > 60, :] = np.nan                              # stands in for land and ice
+    field = xr.DataArray(data, coords={"year": [1997, 1998], "lat": lat, "lon": lon},
+                         dims=("year", "lat", "lon"))
+    return xr.Dataset({"relative": field})
+
+
+def test_encode_keeps_every_cell_in_its_class():
+    step = round(1 / SST_STEP_C)
+    assert all(abs(e * step - round(e * step)) < 1e-9 for e in SST_EDGES)  # edges on the step
+    values = np.array([-5.0, -1.0, -0.41, -0.4, 0.39, 0.4, 0.999, 1.0, 9.0, np.nan])
+    text = map_page.encode(values)
+    assert text[-1] == map_page.SST_ALPHABET[-1] and len(text) == values.size
+    tenths = [map_page.SST_ALPHABET.index(c) - map_page.SST_HALF for c in text[:-1]]
+    edges = [round(e * step) for e in SST_EDGES]
+    assert ([int(np.searchsorted(edges, t, side="right")) for t in tenths]
+            == [int(np.searchsorted(SST_EDGES, v, side="right")) for v in values[:-1]])
+
+
+def test_ocean_panels_carry_cells_a_lookup_and_the_caution(regions):
+    payload = map_page.build(tables(), regions, sea_fields())
+    sea = payload["sea"]
+    assert "frame" not in payload["shapes"]
+    for key in ("coast", "tropics"):
+        grid = sea[key]
+        (la0, la1), (lo0, lo1) = SST_PANELS[key]
+        assert (grid["lat0"], grid["lon0"], grid["cell"]) == (la0, lo0, 2.0)
+        assert all(len(row) == grid["nlat"] * grid["nlon"] for row in grid["years"].values())
+        lattice = grid["lattice"]
+        assert len(lattice["fi"]) == len(lattice["fj"]) == lattice["nx"] * lattice["ny"]
+        assert (lattice["nx"] - 1) * lattice["stepx"] >= grid["canvas"][0]
+    # the made-up regions sit at 40-44N, so every lookup point lies near those latitudes
+    row = (np.array(sea["coast"]["lattice"]["fi"]) * 2 + sea["coast"]["lat0"])
+    assert 36 < row.min() and row.max() < 48
+    zero = map_page.SST_ALPHABET[map_page.SST_HALF]
+    tropics = sea["tropics"]
+    assert set(tropics["years"]["1997"]) == {zero} and len(set(tropics["years"]["1998"])) == 2
+    assert map_page.SST_ALPHABET[-1] in sea["coast"]["years"]["1998"]      # the cells north of 60
+    assert sea["nino34"] == {"1997": 0.0, "1998": 1.7}
+    left, top, wide, tall = tropics["box"]
+    assert 0 < left < left + wide < 100 and 0 < top < top + tall < 100
+    page = map_page.fragment(payload)
+    assert page.count("<canvas") == 2 and 'name="rmap-sea"' in page
+    assert 'value="cells"' in page and "No test, no reported number and no forecast" in page
+    plain = map_page.fragment(map_page.build(tables(), regions))
+    assert "<canvas" not in plain and 'class="rmap-ocean"' not in plain and '"sea":null' in plain
