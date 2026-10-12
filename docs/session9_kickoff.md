@@ -67,6 +67,10 @@ ERA5-Land data is expected (`TRACKER_DATA_DAY` 7).
 **Open from the session 8 cold check (none blocks a run):**
 
 - Later downloads to stamped paths (D73, audit round 5 S1) are not built.
+  Owner, 2026-10-12: built after the registered runs are committed and
+  before the hard-line item, not before the runs (the rebuild guards and
+  the offline copy cover the pinned inputs until then). If the
+  2026-11-06 date looks likely to be missed, build them first.
 - The downloaders print no pin diff after `--rebuild`; this is the
   delegated-build pilot of D77, after the runs.
 - Two tests in `tests/test_run_guard.py` need the tag
