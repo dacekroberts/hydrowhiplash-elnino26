@@ -180,12 +180,17 @@ Session 10 for hydrowhiplash-elnino26: Phase 4, after run1.
 
 ## Part 3 · Prediction model side session (D83)
 
-Runs in a worktree beside session 10. It needs no `data/`: it reads only
-committed tables in `results/tables/`. Side-session rules apply: no edits
-to `logs/`, the session block goes in the PR description, new deviations
-use a placeholder number.
+Runs beside session 10 in a named worktree, not an auto-named one:
+branch `side/prediction-model`, created from `main` at the start
+(owner: "started in a proper worktree (not random)"). It needs no
+`data/`: it reads only committed tables in `results/tables/`.
+Side-session rules apply: no edits to `logs/`, the session block goes
+in the PR description, new deviations use a placeholder number.
 
-**Scope proposed to the owner on 2026-10-12, not yet agreed:**
+**Scope agreed by the owner on 2026-10-12** ("i agree with proposed
+scope"; `DECISIONS.md` 2026-10-12 "Prediction model scope agreed"). The
+side session writes it up as a one-page spec and commits that before
+any fit:
 
 - *Version 1, the registered-style model.* Outcome: log burned area per
   region and season. Predictors known before the fire season: the winter
@@ -207,12 +212,22 @@ use a placeholder number.
 - *Not in either version:* summer weather as a predictor (not known in
   spring), anything trained on El Niño years only, and any claim that
   replaces a registered test.
-- *Open for the owner:* whether the outcome stays total burned area or
-  also asks a yes or no question ("a season in the top third?"), which
-  is often easier to predict and easier to explain; whether Alaska and
-  Yukon are pooled with the rest; whether summer temperature is added
-  in a separate, clearly labelled "hindsight" run to show how much of
-  the missing skill is summer.
+- *Outcome, two forms (owner: "add yes no"):* total log burned area,
+  and a yes or no outcome, whether the season falls in the top third of
+  that region's seasons. The cut for the top third is taken from the
+  training seasons only at each step, so the unseen year never sets its
+  own bar. Scored against the base rate (one in three).
+- *Hindsight run (owner: "yes"):* the same model with June to August
+  temperature added, in a separate, clearly labelled run. It cannot be
+  used to forecast; it shows how much of the missing skill is summer
+  weather.
+- *Alaska and Yukon (owner: "pool them report skill separately"):* in
+  the one pooled model with the other five regions; skill is reported
+  per region and for the two groups apart.
+- *Still to fix in the spec, before any fit:* the shrinkage setting and
+  how it is chosen inside the training seasons only; the exact skill
+  measure for the yes or no outcome; the rule that decides whether
+  version 2 is tried.
 
 ```text
 Side session for hydrowhiplash-elnino26: the seasonal-outlook prediction
@@ -230,16 +245,17 @@ model (D83), exploratory, in a worktree.
    replaces one, and the registered 2027 forecast stays the H3a model.
    Nothing in results/tables/run1/ is edited.
 
-3. Before fitting anything, settle the scope in Part 3 with me and
-   commit it as a one-page spec: the outcome, the predictors (only what
-   is known before the fire season), the model, how it is scored on
-   years it has not seen, the trend-only baseline, what would count as
-   skill, and the rule for whether a machine-learning version 2 is
-   tried. Explain each concept as it comes up. Nothing is adopted
-   without my yes.
+3. Work on branch side/prediction-model in its own worktree, created
+   from main; do not use an auto-named worktree. Before fitting
+   anything, write the scope I agreed in Part 3 as a one-page spec and
+   commit it, then bring me the three points still to fix (the
+   shrinkage setting, the skill measure for the yes or no outcome, the
+   rule for trying version 2). Explain each concept as it comes up.
+   Nothing is adopted without my yes.
 
-4. Then build version 1 in src/ as plain functions with tests on
-   synthetic data, read tables only from results/tables/, and write its
+4. Then build version 1 (both outcomes, the hindsight run, skill per
+   region and for Alaska and Yukon apart) in src/ as plain functions
+   with tests on synthetic data, read tables only from results/tables/, and write its
    outputs to their own folder under results/tables/ with a provenance
    record. Report skill with intervals, and say plainly if the model
    does not beat the trend.

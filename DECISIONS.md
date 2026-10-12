@@ -17,6 +17,30 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model scope agreed
+
+- **Decided (owner, after `run1` was seen, before any model is fitted;
+  D83): the scope proposed for the prediction model.** Version 1: one
+  pooled linear model with shrinkage across all seven regions, region
+  terms, predictors known before the fire season (winter index, October
+  to March precipitation, 1 April snowpack, winter SPEI-3, year trend),
+  scored only on unseen seasons by expanding window from 20 training
+  seasons against a trend-only baseline. Two outcomes: log burned area,
+  and a yes or no for a season in the top third of the region's seasons
+  (owner: "add yes no"), the cut taken from the training seasons only.
+  A separate hindsight run adds June to August temperature to show how
+  much of the missing skill is summer weather (owner: "yes"). Alaska and
+  Yukon are pooled with the other five regions and their skill reported
+  apart (owner: "pool them report skill separately"). Version 2, a small
+  tree ensemble, is tried only if version 1 beats the trend. It is built
+  in a named worktree, branch `side/prediction-model`, beside session
+  10. Left for the written spec, before any fit: the shrinkage setting,
+  the skill measure for the yes or no outcome, the rule for version 2.
+  Rejected one model per region: about 42 seasons each, where `run1`
+  already showed single predictors gaining at most 0.06 over the trend.
+  Exploratory throughout; the registered 2027 forecast stays the H3a
+  model.
+
 ### 2026-10-12 - Prediction model is next; owner's answers at the end of session 9
 
 - **Decided (owner, after `run1` was seen): the seasonal-outlook
