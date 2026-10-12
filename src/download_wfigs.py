@@ -35,6 +35,7 @@ from pathlib import Path
 import pyogrio
 import requests
 
+from src import pin_inputs
 from src.config import (WFIGS_EXPORT_URL, WFIGS_EXPORT_WAIT_S, WFIGS_ITEM_URL,
                         WFIGS_LAYER_URL, WFIGS_RAW)
 from src.download_mtbs import IDENTITY, now_utc, write_manifest
@@ -70,6 +71,9 @@ def count_check(expected: int | None):
 
 def main(args: list[str] | None = None) -> None:
     refresh = "--refresh" in (args or [])
+    # every file in this folder is a pinned input, and each run rewrites the
+    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
     OUT.mkdir(parents=True, exist_ok=True)
     if TARGET.exists() and not refresh:
         print(f"skip {TARGET.name} (present)")

@@ -253,6 +253,13 @@ FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
 # 2026-10-07 and NBAC of 2026-10-08; no re-download until the results are in
 # (src.pin_inputs).
 INPUT_PINS_TABLE = RESULTS / "tables" / "input_pins.csv"
+# Commit the tag analysis-plan-frozen points at (frozen 2026-10-07 13:35). The
+# frozen-text check refuses a tag that points anywhere else, since a local
+# tag can be moved (cold check 2026-10-11 M4; src.run_guard).
+FROZEN_PLAN_COMMIT = "acf7a80232b2e1d6bc7c783162722db0b52e7cee"
+# One row per re-pin: when, at which commit, why, and which files changed
+# (audit 2026-10-08 round 5 S2; D73; docs/post_results_protocol.md).
+INPUT_PINS_LOG = RESULTS / "tables" / "input_pins_log.csv"
 # The committed input tables the tests read, pinned by name (audit 2026-10-08
 # round 3 M1): the hypothesis runs write their own tables to results/tables/,
 # which a folder rule would refuse or pin as inputs. Script outputs such as

@@ -32,6 +32,7 @@ from pathlib import Path
 
 import requests
 
+from src import pin_inputs
 from src.config import MTBS_PERIMETER_URL, MTBS_RAW
 from src.download_nrcs_snow import ClientError, download, stop_on_client_error
 
@@ -75,6 +76,9 @@ def extract_metadata(zip_path: Path, out: Path) -> list[str]:
 
 def main(args: list[str] | None = None) -> None:
     refresh = "--refresh" in (args or [])
+    # every file in this folder is a pinned input, and each run rewrites the
+    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
     OUT.mkdir(parents=True, exist_ok=True)
     target = OUT / Path(MTBS_PERIMETER_URL).name
     session = requests.Session()

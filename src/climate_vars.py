@@ -94,9 +94,13 @@ def climate_controls_table(regional: xr.Dataset, winters: pd.DataFrame) -> pd.Da
     return join_enso(table, winters)[COLUMNS]
 
 
-def main() -> None:
+def main(rebuild: bool = False) -> None:
+    from src import pin_inputs
     from src.era5 import assign_domains, open_domains, region_masks
     from src.regions import load_regions
+
+    # the committed copy is a pinned input: refused without --rebuild
+    pin_inputs.guard_write([COMMITTED], rebuild)
 
     regions = load_regions()
     domains = assign_domains(regions)
@@ -116,9 +120,12 @@ def main() -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
+    pin_inputs.report_rebuild([COMMITTED])
     print(table.groupby("region", sort=False)[["temp_jja", "temp_mam", "precip_octmar_mm"]]
           .agg(["mean", "count"]).round(2).to_string())
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(rebuild="--rebuild" in sys.argv[1:])

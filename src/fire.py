@@ -40,6 +40,7 @@ import numpy as np
 import pandas as pd
 import pyogrio
 
+from src import pin_inputs
 from src.config import (CNFDB_MERGE_KM, CNFDB_PRESCRIBED_CAUSE, CNFDB_RAW, CRS_EQUAL_AREA, DATA_PROCESSED,
                         FIRE_COUNTRY, FIRE_EVENTS_TABLE, FIRE_FIRST_YEAR,
                         FIRE_LAST_YEAR_BY_REGION, FIRE_READ_BBOX, FIRE_REGION_TABLE,
@@ -414,16 +415,19 @@ def frozen_rules_table(pieces: pd.DataFrame,
     return region_year_table(frozen_rules_pieces(pieces), last_year=last_year)
 
 
-def main_frozen() -> None:
+def main_frozen(rebuild: bool = False) -> None:
     """Build FIRE_REGION_TABLE_FROZEN and its committed copy from
     FIRE_EVENTS_TABLE; prints burned-area totals of both tables by region
-    over all seasons (no ENSO column printed; D62 firm line)."""
+    over all seasons (no ENSO column printed; D62 firm line). The committed
+    copy is a pinned input: refused without `rebuild` (--rebuild)."""
+    pin_inputs.guard_write([COMMITTED_FROZEN], rebuild)
     events = read_events()
     table = join_enso(frozen_rules_table(events), pd.read_csv(WINTERS))
     for path in (FIRE_REGION_TABLE_FROZEN, COMMITTED_FROZEN):
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(table)} rows")
+    pin_inputs.report_rebuild([COMMITTED_FROZEN])
     main_table = pd.read_csv(FIRE_REGION_TABLE)
     dropped = events.drop(frozen_rules_pieces(events).index)
     totals = pd.DataFrame({
@@ -440,7 +444,10 @@ def main_frozen() -> None:
     print(totals.round(3).to_string())
 
 
-def write_tables(table: pd.DataFrame) -> None:
+def write_tables(table: pd.DataFrame, rebuild: bool = False) -> None:
+    """Write the table and its committed copy, a pinned input: refused
+    without `rebuild`, whoever calls (cold check 2026-10-11 M1)."""
+    pin_inputs.guard_write([COMMITTED], rebuild)
     for path in (FIRE_REGION_TABLE, COMMITTED):
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
@@ -468,7 +475,10 @@ class Prepare:
         return types, pd.concat(self.floor).groupby(level=0).sum()
 
 
-def main() -> None:
+def main(rebuild: bool = False) -> None:
+    """Build FIRE_EVENTS_TABLE and the region x season table. Both are
+    pinned inputs: refused without `rebuild` (--rebuild)."""
+    pin_inputs.guard_write([FIRE_EVENTS_TABLE, COMMITTED], rebuild)
     regions = load_regions()
     prep = Prepare()
     fires = [prep(read_mtbs()), read_wfigs(prepare=prep), prep(read_cnfdb())]
@@ -496,10 +506,12 @@ def main() -> None:
                                                          lineterminator="\n")
     table = region_year_table(pieces, areas=areas)
     table = join_enso(table, pd.read_csv(WINTERS))
-    write_tables(table)
+    write_tables(table, rebuild)
+    pin_inputs.report_rebuild([FIRE_EVENTS_TABLE, COMMITTED])
 
 
 if __name__ == "__main__":
     import sys
 
-    main_frozen() if "--frozen-rules" in sys.argv[1:] else main()
+    _rebuild = "--rebuild" in sys.argv[1:]
+    main_frozen(_rebuild) if "--frozen-rules" in sys.argv[1:] else main(_rebuild)

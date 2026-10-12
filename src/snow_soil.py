@@ -69,9 +69,13 @@ def snow_soil_dir(domain: str):
     return DATA_RAW / f"{ERA5_DOMAINS[domain][1]}{ERA5_VARIABLE_SETS['snow_soil'][1]}"
 
 
-def main() -> None:
+def main(rebuild: bool = False) -> None:
+    from src import pin_inputs
     from src.era5 import assign_domains, open_domains, open_era5, region_masks
     from src.regions import load_regions
+
+    # the committed copy is a pinned input: refused without --rebuild
+    pin_inputs.guard_write([COMMITTED], rebuild)
 
     regions = load_regions()
     domains = assign_domains(regions)
@@ -100,4 +104,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(rebuild="--rebuild" in sys.argv[1:])

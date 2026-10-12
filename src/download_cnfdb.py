@@ -29,6 +29,7 @@ from pathlib import Path
 
 import requests
 
+from src import pin_inputs
 from src.config import CNFDB_FILES, CNFDB_RAW, CNFDB_URL
 from src.download_mtbs import IDENTITY, check_zip, now_utc, server_headers, write_manifest
 from src.download_nrcs_snow import ClientError, download, stop_on_client_error
@@ -48,6 +49,9 @@ def size_check(expected: int, is_zip: bool):
 
 def main(args: list[str] | None = None) -> None:
     refresh = "--refresh" in (args or [])
+    # every file in this folder is a pinned input, and each run rewrites the
+    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
     OUT.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
     record = {"url": CNFDB_URL, "accessed_utc": now_utc(), "files": {}}

@@ -29,6 +29,7 @@ import sys
 
 import requests
 
+from src import pin_inputs
 from src.config import NBAC_FILES, NBAC_RAW, NBAC_URL
 from src.download_cnfdb import size_check
 from src.download_mtbs import IDENTITY, now_utc, server_headers, write_manifest
@@ -39,6 +40,9 @@ OUT = NBAC_RAW
 
 def main(args: list[str] | None = None) -> None:
     refresh = "--refresh" in (args or [])
+    # every file in this folder is a pinned input, and each run rewrites the
+    # listing and manifest: refused without --rebuild (audit round 5 S1, S2)
+    pin_inputs.guard_folder(OUT, "--rebuild" in (args or []))
     OUT.mkdir(parents=True, exist_ok=True)
     session = requests.Session()
     record = {"url": NBAC_URL, "accessed_utc": now_utc(), "files": {}}

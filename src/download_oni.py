@@ -20,16 +20,20 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from src import pin_inputs
 from src.config import (CLIMATE_FIRST_YEAR, DATA_PROCESSED, DATA_RAW,
                         EL_NINO_THRESHOLD, ENSO_INDEX, ENSO_INDEX_URLS,
                         LA_NINA_THRESHOLD, STRONG_THRESHOLD)
 
 
-def download(index: str = ENSO_INDEX, refresh: bool = True) -> Path:
+def download(index: str = ENSO_INDEX, refresh: bool = True, rebuild: bool = False) -> Path:
     """Fetch the raw table for `index` ("ONI" or "RONI") to data/raw/.
 
     With refresh=False an existing file is reused (for exploration of the
     index not selected in config, e.g. RONI next to ONI before the freeze).
+    The raw files are pinned inputs and CPC revises past values monthly, so
+    a refresh over an existing file is refused without `rebuild` (audit
+    2026-10-08 round 5 S1, S2).
     """
     url = ENSO_INDEX_URLS[index]
     if not url:
@@ -38,6 +42,7 @@ def download(index: str = ENSO_INDEX, refresh: bool = True) -> Path:
     out = DATA_RAW / f"{index.lower()}.ascii.txt"
     if out.exists() and not refresh:
         return out
+    pin_inputs.guard_write([out], rebuild)
     resp = requests.get(url, timeout=60)
     resp.raise_for_status()
     out.write_text(resp.text)
@@ -74,9 +79,12 @@ def classify_winters(index: pd.DataFrame, name: str) -> pd.DataFrame:
                 "strong"]].reset_index(drop=True)
 
 
-def main() -> None:
+def main(rebuild: bool = False) -> None:
+    pin_inputs.guard_write([DATA_RAW / f"{ENSO_INDEX.lower()}.ascii.txt",
+                            DATA_PROCESSED / "enso_index.csv",
+                            DATA_PROCESSED / "el_nino_winters.csv"], rebuild)
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
-    index = parse(download())
+    index = parse(download(rebuild=rebuild))
     index.to_csv(DATA_PROCESSED / "enso_index.csv", index=False, lineterminator="\n")
 
     winters = classify_winters(index, ENSO_INDEX)
@@ -93,4 +101,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(rebuild="--rebuild" in sys.argv[1:])

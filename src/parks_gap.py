@@ -47,6 +47,7 @@ import numpy as np
 import pandas as pd
 import pyogrio
 
+from src import pin_inputs
 from src.config import (CNFDB_LAST_YEAR, CRS_EQUAL_AREA, DATA_PROCESSED, FIRE_FIRST_YEAR,
                         FIRE_REGION_TABLE, FIRE_REGION_TABLE_PARKS, FIRE_SEASON_MONTHS,
                         MIN_FIRE_HA, NBAC_DND_ADMIN, NBAC_FILES, NBAC_PARK_ADMIN, NBAC_RAW,
@@ -251,6 +252,8 @@ def main() -> None:
     if "--measure" in sys.argv[1:]:
         measure()
         return
+    # the committed copy is a pinned input: refused without --rebuild
+    pin_inputs.guard_write([COMMITTED], "--rebuild" in sys.argv[1:])
     parks = park_area()
     table = pd.read_csv(FIRE_REGION_TABLE)
     out = with_park_area(table, parks)
@@ -258,6 +261,7 @@ def main() -> None:
         path.parent.mkdir(parents=True, exist_ok=True)
         out.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(out)} rows")
+    pin_inputs.report_rebuild([COMMITTED])
     # fire columns only (no ENSO column printed; D62 firm line)
     report = parks.merge(table[["region", "year", "burn_ha"]], on=["region", "year"])
     report["missing_share"] = report["nbac_park_ha"] / (report["burn_ha"] + report["nbac_park_ha"])

@@ -17,6 +17,58 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-11 - Runner safeguards built (session 8)
+
+- **Built the runner safeguards S2-S5 and the size-label lookup, after the
+  protocol for changes after results (S6) was written first** (D73; audit
+  round 5; `docs/post_results_protocol.md`, a draft until the owner
+  approves it). No hypothesis test has run, no polygon file was read and
+  no pinned input changed (`pin_inputs --verify`: all match). S2: every
+  builder and downloader whose output is a pinned input calls
+  `pin_inputs.guard_write` first and refuses without `--rebuild`; a re-pin
+  needs `--repin "<reason>"` and appends to
+  `results/tables/input_pins_log.csv` (`INPUT_PINS_LOG`); the bare
+  `python -m src.pin_inputs` no longer writes pins. S3:
+  `pin_inputs.load_input(name)` opens only a pinned table in
+  `results/tables/` whose sha256 equals its pin. S4:
+  `scripts/check_plan_frozen.py` and `scripts/preflight.py`
+  (`src/run_guard.py`). S5: `run_guard.write_result` writes a provenance
+  file beside each result and never overwrites one. Size labels:
+  `run_guard.size_shape` and `size_label`; each of the 39 registered
+  regression tests and the four H4 shapes maps to exactly one label row of
+  `test_size.csv`. Tests: 311 passed.
+- **Wider than the audit's list, by the same rule:** the audit named
+  `src.fire`, `src.parks_gap`, `src.climate_vars` and `pin()`. The guard
+  also covers `src.phase2`, `src.snow_soil`, `src.stations` (each writes a
+  pinned table), `src.download_oni` (its default overwrote the pinned RONI
+  file) and the four fire downloaders (each run rewrote the pinned listing
+  and manifest, with or without `--refresh`). Rejected leaving the
+  downloaders to S1's stamped paths alone: until those exist, one run
+  would break `--verify`.
+- **Short cold check (Fable 5.1 subagent, read-only, on the uncommitted
+  tree): no high, 4 medium, 8 low; fixed before the commit.** M1, the
+  guard sat in `main()` only, so the notebook 02 cell calling
+  `phase2.write_tables` could still overwrite a pinned table: the guard
+  moved into `write_tables` in `src/phase2.py` and `src/fire.py`. M2,
+  `write_result` wrote the table before its provenance record: the record
+  is now built first. M3, the run folder's own untracked files marked
+  every later result dirty and failed a second preflight: the folder being
+  written is left out of the clean-tree check. M4, the frozen-text check
+  trusted a movable local tag: the tag must point at `FROZEN_PLAN_COMMIT`
+  (acf7a80). Lows fixed: `load_input` refuses a path outside
+  `results/tables/`; a deviations-log row edited or removed against HEAD
+  is reported; a clearer error for a wrong H4 shape; the protocol no
+  longer claims an environment file no code writes; UTF-8 for the
+  preflight's pytest output.
+- **Left open, for the owner:** S1's release- or retrieval-stamped
+  download paths and the offline copy of the 30 pinned inputs (3.38 GB)
+  are not built; the downloaders print no pin diff after `--rebuild`. The
+  plain OLS check for H3a and H3b was measured two-sided only, while PNW,
+  BC and AB are registered one-sided: which plain OLS p is reported there
+  is undecided. `scripts/check_plan_frozen.py` is not yet in `CLAUDE.md`'s
+  "Checks". Two tests need the tag `analysis-plan-frozen`, so a clone
+  without tags fails them.
+
 ### 2026-10-11 - Portfolio review follow-up
 
 - **Decided (owner, 2026-10-11, before any test): the commit due by

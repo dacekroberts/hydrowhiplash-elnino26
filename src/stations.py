@@ -555,7 +555,11 @@ def build() -> tuple[pd.DataFrame, dict]:
     return table, report
 
 
-def main() -> None:
+def main(rebuild: bool = False) -> None:
+    from src import pin_inputs
+
+    # the committed index is a pinned input: refused without --rebuild
+    pin_inputs.guard_write([COMMITTED_INDEX], rebuild)
     table, report = build()
     STATION_TABLE.parent.mkdir(parents=True, exist_ok=True)
     table.to_csv(STATION_TABLE, index=False, date_format="%Y-%m-%d", lineterminator="\n")
@@ -583,4 +587,6 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(rebuild="--rebuild" in sys.argv[1:])

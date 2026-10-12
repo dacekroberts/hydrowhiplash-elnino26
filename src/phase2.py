@@ -42,8 +42,14 @@ def build_table(whiplash: pd.DataFrame, swe: pd.DataFrame) -> pd.DataFrame:
     return table[lead + [c for c in table.columns if c not in lead]]
 
 
-def write_tables(table: pd.DataFrame) -> None:
-    """Write the table to data/processed/ and its committed copy to results/tables/."""
+def write_tables(table: pd.DataFrame, rebuild: bool = False) -> None:
+    """Write the table to data/processed/ and its committed copy to
+    results/tables/. The committed copy is a pinned input: refused without
+    `rebuild`, whoever calls (a notebook cell included; cold check
+    2026-10-11 M1)."""
+    from src import pin_inputs
+
+    pin_inputs.guard_write([COMMITTED], rebuild)
     for path in (OUT, COMMITTED):
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
@@ -51,9 +57,11 @@ def write_tables(table: pd.DataFrame) -> None:
               f"years {table['year'].min()}-{table['year'].max()}")
 
 
-def main() -> None:
-    write_tables(build_table(pd.read_csv(WHIPLASH), pd.read_csv(SWE)))
+def main(rebuild: bool = False) -> None:
+    write_tables(build_table(pd.read_csv(WHIPLASH), pd.read_csv(SWE)), rebuild)
 
 
 if __name__ == "__main__":
-    main()
+    import sys
+
+    main(rebuild="--rebuild" in sys.argv[1:])
