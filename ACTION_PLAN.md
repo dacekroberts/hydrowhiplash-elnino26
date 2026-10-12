@@ -218,19 +218,21 @@ cold round with no high and no medium findings), tag
       Done 2026-10-12: `run1/reported_beside.csv`, `run_kind` =
       `frozen_rules`.
 
-Headlines 1 to 4 and the supporting tests below were computed in
-`run1` (2026-10-12); their boxes stay open until the charts and the
-write-up that report them exist.
+Headlines 1 to 4 were computed in `run1` (2026-10-12) and ticked the
+same day on the owner's word; the charts and the write-up that report
+them are still to come (the full-record view and the Methods item
+below). The supporting item was computed in `run1` too and stays open
+until the owner says.
 
 - [ ] **Full-record view:** fire-season anomaly for every year 1984–present
       (climate variables 1950–present), El Niño years highlighted
-- [ ] **Headline 1 — permutation test + bootstrap CI:** El Niño years vs
+- [x] **Headline 1 — permutation test + bootstrap CI:** El Niño years vs
       the rest, per region, for winter precipitation and burned area
-- [ ] **Headline 2 — regression with controls:** burned area on ONI strength
+- [x] **Headline 2 — regression with controls:** burned area on ONI strength
       with summer temperature and a year trend, Newey-West errors
-- [ ] **Headline 3 — interaction term:** regions pooled with ONI × region,
+- [x] **Headline 3 — interaction term:** regions pooled with ONI × region,
       answering "does El Niño affect the north differently from SoCal?"
-- [ ] **Headline 4 — leave-one-year-out prediction intervals:** how often
+- [x] **Headline 4 — leave-one-year-out prediction intervals:** how often
       past 80% intervals contained the real outcome
 - [ ] Supporting: lag test for the whiplash mechanism, autocorrelation check
       with block bootstrap, Holm/BH correction within each hypothesis's
