@@ -17,6 +17,20 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-11 - DeepSeek: the repo's source may be sent
+
+- **Decided (owner, on a recommendation): the repo's source may go to
+  DeepSeek, and every review runs on staged copies.** The files under
+  review are copied to a temporary folder outside the repo and reviewed
+  there, so `data/`, the logs and `DECISIONS.md` are not beside them.
+  Downsides weighed: the code leaves the machine for an outside service
+  whose retention and training terms were not read; the code is MIT and
+  the repo is likely to go public, so the exposure is early rather than
+  extra; no result exists yet to leak. Rejected reviewing in the main
+  checkout: the prompt's "read only these files" is an instruction, not
+  a lock. Closes the open point in the entry below. Each call still
+  needs its own yes.
+
 ### 2026-10-11 - DeepSeek delegation: what is taken up, and when
 
 - **Decided (owner, 2026-10-11, before any test): a DeepSeek read-only
