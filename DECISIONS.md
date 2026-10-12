@@ -17,6 +17,50 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model version 1c: summer conditions matter in four regions, last season's burn adds nothing
+
+- **Found (exploratory, after versions 1 and 1b and `run1`; D?c): last
+  season's burned area did not help.** `last_burn`, all seven regions,
+  151 unseen region-seasons, 2004 to 2025: skill 0.008 (95% interval
+  -0.008 to 0.025) against `spring_inputs` 0.012 (-0.001 to 0.032);
+  with each region on its own scale 0.010 (-0.003 to 0.028). The
+  coefficient on `burn_lag1` in the last step was between -0.04 and
+  +0.04 log points per standard deviation in every region. Six
+  forecasting variants have now been scored on the same 22 years; the
+  best is still 0.012.
+- **Found: with the summer's mean temperature, SPEI-3 and soil moisture
+  known, pooled skill is 0.126 (0.061 to 0.231), under the 0.15 written
+  into the guide before the run.** 1b's hindsight run, with summer
+  temperature only, was 0.090 (0.030 to 0.184). `ceiling` cannot
+  forecast. Alaska and Yukon together 0.277 (0.135 to 0.426); the other
+  five 0.088 (0.032 to 0.182). Yes or no outcome: Brier skill against
+  the trend-only model 0.292 (0.185 to 0.403); 39 seasons called, 29 of
+  them among the 57 that were "yes", 10 false alarms.
+- **Found: the pooled figure hides a split.** By region
+  (`prediction_v1c/ceiling/skill.csv`): BC 0.483 (0.351 to 0.594), AK
+  0.345 (0.162 to 0.513), NorCal 0.257 (0.130 to 0.383), YT 0.221 (0.027
+  to 0.444); PNW 0.020 (-0.157 to 0.160), AB 0.003 (-0.317 to 0.182),
+  SoCal -0.038 (-0.435 to 0.009). With summer temperature only (1b
+  `hindsight`): BC 0.263, AK 0.210, NorCal 0.255, YT 0.135. Summer soil
+  moisture carried the largest summer coefficient in every region, -0.25
+  (NorCal) to -0.87 (BC) log points per standard deviation in the last
+  step. The split by region was looked at after the run; the guide named
+  only the pooled figure.
+- **Read against the guide:** pooled 0.126 is under 0.15, which the
+  guide reads as "that project would need a different target or unit,
+  not only new inputs". The regional figures support that reading for
+  AB, PNW and SoCal, where seasonal means over a whole province or state
+  explain nothing, and point the other way for BC, AK, NorCal and YT,
+  where summer moisture explains a fifth to a half of the trend-only
+  error. `ceiling` is linear in three seasonal means, so each figure is
+  a low estimate of what the summer holds.
+- **Not decided:** whether further work becomes a sibling project. Put
+  to the owner with a recommendation: this branch stops at version 1c,
+  and anything further (inputs that carry summer information, later
+  issue dates, smaller units) needs `data/`, new sources and its own
+  held-back seasons, so it belongs in its own project. Machine learning
+  (version 2) was not tried.
+
 ### 2026-10-12 - Prediction model version 1c: last season's burned area and a ceiling run
 
 - **Decided (owner, after version 1b was seen; D?c): two more variants

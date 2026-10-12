@@ -884,6 +884,28 @@ as in 8c except:
   and behind BC. For the first 8 unseen years of each region the
   interval still comes from the training spread.
 
+### 8e. Prediction model version 1c (`results/tables/prediction_v1c/`; exploratory, D83)
+
+Written by `python -m src.prediction_1c` on 2026-10-12, after version
+1b's results were seen (`docs/prediction_model_spec.md` section 9). Two
+sub-folders, `last_burn` and `ceiling` (the second cannot forecast),
+each with the three tables of 8d, and `variants.csv`: 1b's rows with the
+two new variants below them. Columns as in 8d except:
+
+- **`burn_lag1`** (input of `last_burn`; built in memory, not stored):
+  the region's `log_burn` of the season before, in log points. The first
+  season (1984) takes the mean of the region's values for 1985 to 2003.
+- **`spei3_jja`**, **`soil_moisture`** (inputs of `ceiling`, with
+  `temp_jja`): summer SPEI-3 in standard deviations and June to August
+  soil moisture, 0 to 28 cm, in m3/m3 (section 4). Known only after the
+  summer.
+- **Traps:** `ceiling` is not a forecast: it shows how much of the
+  trend-only error the summer's seasonal means account for (pooled
+  0.126; BC 0.483, AK 0.345, NorCal 0.257, YT 0.221; AB, PNW and SoCal
+  near zero). Soil moisture in June to August is measured while the
+  season is under way. For a real spring forecast, `burn_lag1` needs
+  last season's fires already counted, and CNFDB polygons arrive late.
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired
