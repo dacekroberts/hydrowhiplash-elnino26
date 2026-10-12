@@ -20,7 +20,7 @@ title: "Methods and limitations"
 ::: {.d-none .d-sm-block}
 ```{python}
 #| echo: false
-#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check."
+#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check. Note: arrows show groups, not single sources; snow stations are used only to check the ERA5-Land snowpack."
 from IPython.display import SVG
 SVG(filename="../results/figures/methods_flow.svg")
 ```
@@ -29,7 +29,7 @@ SVG(filename="../results/figures/methods_flow.svg")
 ::: {.d-sm-none}
 ```{python}
 #| echo: false
-#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check."
+#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check. Note: arrows show groups, not single sources; snow stations are used only to check the ERA5-Land snowpack."
 from IPython.display import SVG
 SVG(filename="../results/figures/methods_flow_narrow.svg")
 ```

@@ -63,6 +63,14 @@ def test_flowchart_names_every_decided_source_and_variable():
         assert name in text, name
 
 
+def test_flowchart_note_wording():
+    # Owner-approved wording (2026-10-11); a change here needs the owner.
+    assert diagrams.FLOW_NOTES == (
+        "Arrows show groups, not single sources.",
+        "Snow stations are used only to check the ERA5-Land snowpack.")
+    assert diagrams.flow_labels()[-2:] == list(diagrams.FLOW_NOTES)
+
+
 def test_flowchart_labels_carry_no_numbers():
     # Structure only: no result, estimate or data value. The one digit allowed
     # is in the dataset name ERA5-Land.

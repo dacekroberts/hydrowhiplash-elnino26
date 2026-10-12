@@ -91,6 +91,10 @@ FLOW_COLUMNS = (
 FLOW_SPINE = ("Region × year table", "Pre-registered tests", "Site charts")
 # Drawn dashed, beside the tests it re-runs, not among the main sources.
 FLOW_SENSITIVITY = "NBAC (sensitivity check)"
+# Printed under the chart so the reading of the arrows travels with the
+# image. Wording approved by the owner, 2026-10-11.
+FLOW_NOTES = ("Arrows show groups, not single sources.",
+              "Snow stations are used only to check the ERA5-Land snowpack.")
 
 # Two layouts of the flowchart, in the same units as MECHANISM_LAYOUTS (0-100
 # across, 100 units per `unit_h` inches down). Heights are built from the
@@ -101,12 +105,12 @@ FLOW_LAYOUTS = {
         width=9, unit_h=7, font=12, head_font=12, margin=2, pad=3, head_h=5,
         gap=2.5, stage_gap=7, cols=(17.5, 50, 82.5), box_w=29, src_h=7, var_h=8.5,
         spine_x=50, spine_w=36, spine_h=7.5, side_x=85.5, side_w=25, side_h=12,
-        wrap_box=24, wrap_side=16),
+        wrap_box=24, wrap_side=16, foot_font=10.5, wrap_foot=90, note_gap=4),
     "methods_flow_narrow": dict(
         width=4.6, unit_h=7, font=10, head_font=10.5, margin=2, pad=3, head_h=5,
         gap=2.5, stage_gap=7, cols=(17.5, 50, 82.5), box_w=29, src_h=8.5, var_h=11,
         spine_x=32, spine_w=58, spine_h=7.5, side_x=83.5, side_w=29, side_h=11,
-        wrap_box=13, wrap_side=12),
+        wrap_box=13, wrap_side=12, foot_font=9.5, wrap_foot=50, note_gap=4),
 }
 
 _SVG_HASHSALT = "hydrowhiplash-elnino26"
@@ -261,7 +265,7 @@ def flow_labels() -> list[str]:
     """Every text label on the methods flowchart, in reading order."""
     labels = [FLOW_STAGES[0]] + [s for sources, _ in FLOW_COLUMNS for s in sources]
     labels += [FLOW_STAGES[1]] + [v for _, variables in FLOW_COLUMNS for v in variables]
-    return labels + list(FLOW_SPINE) + [FLOW_SENSITIVITY]
+    return labels + list(FLOW_SPINE) + [FLOW_SENSITIVITY] + list(FLOW_NOTES)
 
 
 def _draw_flow(lay: dict) -> Figure:
@@ -282,7 +286,12 @@ def _draw_flow(lay: dict) -> Figure:
     for _ in FLOW_SPINE:
         spine.append((depth, depth + lay["spine_h"]))
         depth += lay["spine_h"] + lay["stage_gap"]
-    total = depth - lay["stage_gap"] + lay["margin"]
+    # The note sits under the chart; its height follows its line count.
+    note = "\n".join(_wrap(line, lay["wrap_foot"]) for line in FLOW_NOTES)
+    note_h = ((note.count("\n") + 1) * 1.4 * lay["foot_font"] / 72
+              * 100 / lay["unit_h"])
+    total = (depth - lay["stage_gap"] + lay["note_gap"] + note_h
+             + lay["margin"])
 
     fig = Figure(figsize=(lay["width"], total * lay["unit_h"] / 100), facecolor="white")
     ax = fig.add_axes((0, 0, 1, 1))
@@ -327,6 +336,9 @@ def _draw_flow(lay: dict) -> Figure:
          linestyle="dashed")
     _arrow(ax, (lay["side_x"] - lay["side_w"] / 2, tests_y),
            (x + lay["spine_w"] / 2, tests_y), NEUTRAL_EDGE, linestyle="dashed")
+    ax.text(50, lay["margin"] + note_h / 2, note, ha="center", va="center",
+            fontsize=lay["foot_font"], color=INK_MUTED, linespacing=1.4,
+            fontfamily=FONT)
     return fig
 
 
@@ -335,7 +347,8 @@ def methods_flowchart(out_dir: Path = FIGURES) -> list[Path]:
 
     Sources at the top, the variables made from them, the region x year
     table, the pre-registered tests, then the site's charts; NBAC sits
-    beside the tests as a sensitivity source. Structure only: no result,
+    beside the tests as a sensitivity source, and a two-line note under
+    the chart says how to read the arrows. Structure only: no result,
     estimate or data value is drawn, and no data is read. Writes
     methods_flow.* (page width) and methods_flow_narrow.* (phone width).
     Returns the paths written.

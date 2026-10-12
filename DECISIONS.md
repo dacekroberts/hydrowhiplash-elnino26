@@ -33,9 +33,15 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   columns by kind of source.
 - **Decided to draw arrows per group, not per source.** Three columns
   (ENSO index; climate; fire), each a group of sources above the variables
-  made from that group, with one arrow per column. Snow stations feed
-  snowpack only, and that is not shown. Rejected one arrow per source and
+  made from that group, with one arrow per column. Rejected
+  one arrow per source and
   variable pair (eight crossing arrows at phone width).
+- **Decided (owner, 2026-10-11) to print a two-line note under the
+  chart:** "Arrows show groups, not single sources. Snow stations are
+  used only to check the ERA5-Land snowpack." The second sentence follows
+  `ANALYSIS_PLAN.md` H6 ("ERA5-Land April 1 SWE z (station z as the
+  check)"). Printed in the figure, as the mechanism diagram's framing
+  line is, so it travels with the image. Rejected the page caption alone.
 - **Decided to put NBAC beside the pre-registered tests, dashed, not among
   the sources.** Among the sources it would read as part of the main
   burned-area series. Rejected a footnote (the 2026-10-08 entry names it
