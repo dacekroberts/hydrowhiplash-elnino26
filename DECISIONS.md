@@ -17,6 +17,234 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model: the in-project record stops at version 1c; further work goes to its own repository
+
+- **Decided (owner): versions 1, 1b and 1c are this project's
+  exploratory record of the prediction model, and anything further is a
+  sibling project in its own repository.** Owner: "i agree that up to 1c
+  should represent the in-project exploratory record"; "we can do own
+  repo"; "roadmap for it will be essential". This settles the "Not
+  decided" point of the entry "Prediction model version 1c: summer
+  conditions matter in four regions, last season's burn adds nothing".
+  Machine learning (version 2) was not tried here. The main session
+  drafts the new project's kickoff; `docs/prediction_sibling_kickoff.md`
+  is its source material, and its proposals stay proposals. Rejected:
+  more variants on this branch (six forecasting variants already share
+  the same 22 unseen years, and the remaining ideas need `data/` or new
+  sources).
+
+### 2026-10-12 - Prediction model version 1c: summer conditions matter in four regions, last season's burn adds nothing
+
+- **Found (exploratory, after versions 1 and 1b and `run1`; D92): last
+  season's burned area did not help.** `last_burn`, all seven regions,
+  151 unseen region-seasons, 2004 to 2025: skill 0.008 (95% interval
+  -0.008 to 0.025) against `spring_inputs` 0.012 (-0.001 to 0.032);
+  with each region on its own scale 0.010 (-0.003 to 0.028). The
+  coefficient on `burn_lag1` in the last step was between -0.04 and
+  +0.04 log points per standard deviation in every region. Six
+  forecasting variants have now been scored on the same 22 years; the
+  best is still 0.012.
+- **Found: with the summer's mean temperature, SPEI-3 and soil moisture
+  known, pooled skill is 0.126 (0.061 to 0.231), under the 0.15 written
+  into the guide before the run.** 1b's hindsight run, with summer
+  temperature only, was 0.090 (0.030 to 0.184). `ceiling` cannot
+  forecast. Alaska and Yukon together 0.277 (0.135 to 0.426); the other
+  five 0.088 (0.032 to 0.182). Yes or no outcome: Brier skill against
+  the trend-only model 0.292 (0.185 to 0.403); 39 seasons called, 29 of
+  them among the 57 that were "yes", 10 false alarms.
+- **Found: the pooled figure hides a split.** By region
+  (`prediction_v1c/ceiling/skill.csv`): BC 0.483 (0.351 to 0.594), AK
+  0.345 (0.162 to 0.513), NorCal 0.257 (0.130 to 0.383), YT 0.221 (0.027
+  to 0.444); PNW 0.020 (-0.157 to 0.160), AB 0.003 (-0.317 to 0.182),
+  SoCal -0.038 (-0.435 to 0.009). With summer temperature only (1b
+  `hindsight`): BC 0.263, AK 0.210, NorCal 0.255, YT 0.135. Summer soil
+  moisture carried the largest summer coefficient in every region, -0.25
+  (NorCal) to -0.87 (BC) log points per standard deviation in the last
+  step. The split by region was looked at after the run; the guide named
+  only the pooled figure.
+- **Read against the guide:** pooled 0.126 is under 0.15, which the
+  guide reads as "that project would need a different target or unit,
+  not only new inputs". The regional figures support that reading for
+  AB, PNW and SoCal, where seasonal means over a whole province or state
+  explain nothing, and point the other way for BC, AK, NorCal and YT,
+  where summer moisture explains a fifth to a half of the trend-only
+  error. `ceiling` is linear in three seasonal means, so each figure is
+  a low estimate of what the summer holds.
+- **Not decided:** whether further work becomes a sibling project. Put
+  to the owner with a recommendation: this branch stops at version 1c,
+  and anything further (inputs that carry summer information, later
+  issue dates, smaller units) needs `data/`, new sources and its own
+  held-back seasons, so it belongs in its own project. Machine learning
+  (version 2) was not tried.
+
+### 2026-10-12 - Prediction model version 1c: last season's burned area and a ceiling run
+
+- **Decided (owner, after version 1b was seen; D92): two more variants
+  are run before any larger change, both from committed tables.** Owner:
+  "yes 1c sounds good. ceiling = bigger ideas for separate project makes
+  sense". `last_burn` adds the region's `log_burn` of the season before
+  to `spring_inputs`; `ceiling` adds summer SPEI-3 and summer soil
+  moisture to 1b's hindsight run and cannot forecast. Both were written
+  into `docs/prediction_model_spec.md` section 9 before either was run
+  (commit fba914a), with a guide for reading the ceiling: 0.20 or more
+  for all seven regions, inputs carrying summer information are worth a
+  project of their own; under 0.15, that project would need a different
+  target or unit; in between, a conversation. The guide was proposed by
+  the session and not confirmed line by line by the owner.
+- **Decided: the first season's `burn_lag1` is the mean of the region's
+  lagged values for 1985 to 2003.** 1984 has no earlier season in the
+  table. Rejected: dropping 1984 (the first predicted year would move
+  from 2004 to 2005 and the 151 unseen seasons would no longer match
+  versions 1 and 1b); the region's mean over all years (it would read
+  seasons later than the ones being predicted).
+- **Rejected for this branch:** later issue dates, seasonal forecasts of
+  the summer, spring fuel dryness, smaller units, a longer fire record
+  and a grid-cell model. Each needs `data/` or a new source; the owner
+  would treat them as a sibling project if the ceiling supports one.
+  Affected: `src/prediction_1c.py`, `tests/test_prediction_1c.py`,
+  `src/config.py` (`PRED_1C_*`).
+
+### 2026-10-12 - Prediction model version 1b: the fixes worked, the gain is about 0.01
+
+- **Found (exploratory, after version 1 and `run1`; D91): with the five
+  changes, the best forecasting variant beats the trend by 0.012 on
+  unseen seasons, and its interval reaches zero.**
+  `results/tables/prediction_v1b/variants.csv`, 151 region-seasons, 2004
+  to 2025, skill with 95% interval, all seven regions: version 1 0.002
+  (-0.007 to 0.015); `regions` 0.006 (-0.008 to 0.025); `scaled` 0.004
+  (-0.009 to 0.019); `regions_scaled` 0.009 (-0.006 to 0.031);
+  `spring_inputs` 0.012 (-0.001 to 0.032); `june_update` 0.009 (-0.007
+  to 0.039). With each region on its own scale, `spring_inputs` is 0.012
+  (0.001 to 0.035), the one forecasting figure whose interval clears
+  zero, and the best of five tried. By region in `spring_inputs`: NorCal
+  0.067 (-0.004 to 0.132), AB 0.052 (-0.003 to 0.136), PNW 0.025 (-0.001
+  to 0.060); AK, BC, SoCal and YT between -0.005 and 0.005.
+- **Found: the design flaws named after version 1 were addressed, and
+  that was not what held skill down.** The forecast now leaves the
+  trend: typical move 0.39 log points in AB and 0.28 in BC (0.11 and
+  0.13 in version 1); the moves track what happened in NorCal (0.46), AB
+  (0.34) and PNW (0.33), and not elsewhere (pooled 0.16, from 0.07).
+  Regional coefficients took opposite signs where `run1` had them (last
+  winter's precipitation +0.13 in SoCal and +0.10 in NorCal, -0.04 in
+  BC; winter SPEI +0.14 in SoCal, -0.08 in BC). The model still chose a
+  shared penalty of 1000 (shared coefficients switched off) in 14 of 22
+  steps, with regional departures allowed.
+- **Found: March to May temperature added nothing** (`june_update` 0.009
+  against 0.012), and regional coefficients did not raise the ceiling:
+  the 1b hindsight run is 0.090 (0.030 to 0.184) against version 1's
+  0.096.
+- **Found, changes 4 and 5:** 57 of 151 unseen seasons were "yes" under
+  the bar measured from the trend (38%; 83 under version 1's bar), but
+  unevenly: AB 14%, BC 62%, because a straight trend runs ahead of AB
+  and behind BC. Brier skill against the trend-only model 0.023 (-0.002
+  to 0.048); the model's probability reached 0.5 twice. The 80% interval
+  held 77.5% of seasons: 83% of the 95 that used earlier errors, 68% of
+  the 56 early ones on the training spread. BC rose from 52% to 62%.
+- **Not decided:** whether to try machine learning. Version 1's rule
+  (interval wholly above zero) is met by no forecasting variant on the
+  unscaled figure and by one on the scaled figure, by 0.001, as the best
+  of five. Put to the owner.
+
+### 2026-10-12 - Prediction model version 1b: five changes before machine learning
+
+- **Decided (owner, after version 1 was seen; D91): five changes are
+  tried before any machine learning, on the same branch, merged with
+  version 1 as one PR.** Owner: "i agree with 1-5 before machine
+  learning. we can start version 1b now and merge all at once unless
+  harmful", "i also agree on why it went flat, make sure we address in
+  1b", and that the model is "no longer limited to strict rules since it
+  is exploratory". The changes
+  (`docs/prediction_model_spec.md` section 8): regional coefficients
+  shrunk toward a shared one; each region scored and tuned on its own
+  scale; three more spring inputs (`precip_anom_lag1`, `snowfall_frac`,
+  `temp_mam`); the yes or no bar measured against the trend; intervals
+  from the region's own earlier unseen-year errors. What version 1's
+  outputs showed, with no new fit: forecasts moved 0.03 to 0.13 log
+  points off the trend while seasons missed it by 0.96 to 2.67; `run1`'s
+  estimates have opposite signs across regions (winter precipitation
+  -0.69 in AB, +0.26 in SoCal); SoCal 2014 alone is 28% of the pooled
+  squared error and SoCal 35%; 83 of 151 unseen seasons cleared the yes
+  or no bar; BC ran about 0.9 log points above its trend in both halves.
+  Owner's note: "erratic weathering in recent years makes predictions
+  harder. especially predicting actual weather events which is out of
+  scope here"; summer weather stays out of every forecasting variant.
+  The trend-only miss was larger in 2015 to 2025 than in 2004 to 2014 in
+  AB (2.18 against 1.34) and BC (2.03 against 1.78), smaller in AK, YT
+  and PNW, and equal pooled without SoCal 2014 (1.45 and 1.45).
+- **Decided (Claude, flagged to the owner): March to May temperature is
+  kept to its own variant, `june_update`.** It is known by 1 June, two
+  months into the season in BC, AB, AK and YT; the owner had not yet
+  answered whether a June update is wanted. Six variants were fixed in
+  the spec before any was run, and all are reported: looser rules still
+  reuse the same 22 unseen years, so the best of several flatters
+  itself. Rejected adding last year's burned area: detrended lag-1
+  autocorrelation is -0.13 to 0.12 across regions in `run1`. Settings
+  chosen without the owner's line-by-line yes, all in `src/config.py`
+  (`PRED_1B_*`): 7 penalty values per penalty, and 8 earlier errors
+  before they set an interval.
+
+### 2026-10-12 - Prediction model version 1: no gain over the trend
+
+- **Found (exploratory, after `run1`; D83): the pooled model with the
+  four spring predictors does not beat the trend-only baseline on unseen
+  seasons.** `results/tables/prediction_v1/forecast/`, 151
+  region-seasons, 2004 to 2025: skill 0.002 (95% interval -0.007 to
+  0.015); Alaska and Yukon -0.006 (-0.031 to 0.013), the other five
+  0.005 (-0.004 to 0.022). Alberta is the one region with an interval
+  above zero, 0.022 (0.008 to 0.046). The 80% interval held 75% of
+  seasons (BC 52%). Yes or no outcome: Brier skill 0.005 (-0.013 to
+  0.024) against the trend-only model, 0.056 (-0.081 to 0.190) against
+  one in three; 83 of 151 unseen seasons cleared the training cut. The
+  chosen penalties (mostly 3.2 or 8.3) shrank every coefficient to at
+  most 0.12 log points per standard deviation. Without SoCal's zero-fire
+  season: 0.008 (-0.008 to 0.023).
+- **Found: with June to August temperature added (hindsight run, not a
+  forecast), skill is 0.096 (0.041 to 0.183)**: Alaska and Yukon 0.215
+  (0.094 to 0.328), the other five 0.066 (0.013 to 0.157); NorCal 0.285,
+  AK 0.250, BC 0.209, YT 0.186; AB, PNW and SoCal near zero.
+- **Version 2 not tried: the agreed rule was not met** (the pooled
+  interval, -0.007 to 0.015, is not wholly above zero). Per the owner's
+  answer ("if lands below have follow-up dialogue"), what comes next is
+  put to the owner; nothing further was fitted.
+- **Checked:** the model's trend-only errors equal `run1`
+  `validation.csv` `rmse_trend` in all seven regions (largest gap 7e-14).
+  A first write put the three runs in three folders, which marked two
+  provenance records as written from a dirty tree; those uncommitted
+  folders were deleted and the run repeated into one folder with three
+  sub-folders, with identical numbers (commit 21ab883).
+
+### 2026-10-12 - Prediction model: settings agreed before the fit
+
+- **Decided (owner, after `run1` was seen, before any model was fitted;
+  D83, D90): the seven settings the agreed scope left open or did not
+  cover**, written into `docs/prediction_model_spec.md` section 7 and
+  `src/config.py` (`PRED_*`). (A) Shrinkage: only the four climate
+  predictors are shrunk; each region's level and year trend are unshrunk,
+  so a very large penalty gives the trend-only baseline exactly; the
+  penalty is picked at each step from 13 values (0.01 to 1000, per
+  training row) by leaving out one training year at a time; predictors
+  are standardised per region from training seasons only. Rejected an
+  inner expanding window: only a handful of inner years at the first
+  steps. (B) The yes or no outcome is scored by Brier skill against both
+  the one-in-three base rate and the trend-only model's probability, the
+  probability read off the one model; hits and false alarms at 0.5
+  beside it. Rejected the base rate alone (burned area trends up, so it
+  credits the model for the trend) and a separate logistic model (a
+  second fit on few events). (C) Version 2 is tried only if pooled skill
+  on log burned area in the forecast run has a 95% interval wholly above
+  zero; owner: "interval above zero, if lands below have follow-up
+  dialogue". Rejected a point-skill bar of 0.05: within what chance
+  produces from about 22 unseen years. (D) `swe_z` is set to 0 for SoCal,
+  where it is empty for all 42 seasons. (E) SoCal's zero-fire season
+  2014 is kept, as in `run1`, with a third run without it shown beside.
+  (F) The 80% interval is the forecast plus or minus 1.28 times the
+  region's training residual spread; the interval on skill resamples the
+  unseen years 10,000 times, whole years together, seed 2026. (G) One
+  level and one trend per region, as `run1`'s baseline. Found while
+  reading the tables, with no fit run: 291 region-seasons, no other
+  missing predictor. Affected: `src/prediction.py`,
+  `tests/test_prediction.py`, `src/config.py`.
+
 ### 2026-10-12 - One character corrected in an old entry, for the merge tool
 
 - **Corrected (owner: "option 1") the entry of 2026-10-11 "Session 8:

@@ -603,3 +603,56 @@ SNOWFALL_MONTHS = (11, 12, 1, 2, 3)  # Nov-Mar
 SOIL_MONTHS = SUMMER_MONTHS          # JJA
 SOIL_LAYER_WEIGHTS = {"swvl1": 0.25, "swvl2": 0.75}
 SNOW_SOIL_TABLE = DATA_PROCESSED / "snow_soil_region_year.csv"
+
+# Seasonal-outlook prediction model, version 1 (exploratory; planned after
+# run1 was seen; D83; docs/prediction_model_spec.md; settings agreed by the
+# owner 2026-10-12). Column names as in run_hypotheses.fire_frame, with
+# precip_octmar_mm added. Scoring reuses FORWARD_MIN_TRAIN_YEARS,
+# PREDICTION_ALPHA, N_BOOTSTRAP and RANDOM_SEED.
+PRED_PREDICTORS = ("enso_djf", "precip_octmar_mm", "swe_z", "spei3_djf")
+# hindsight run only: not known in spring, never a forecasting predictor
+PRED_HINDSIGHT_PREDICTORS = (*PRED_PREDICTORS, "temp_jja")
+# Ridge penalties tried at each step, per training row on predictors
+# standardised within region: 13 values, 0.01 (almost none) to 1000 (the
+# predictors switched off, leaving the trend-only baseline).
+PRED_RIDGE_GRID = tuple(10 ** (-2 + 5 * k / 12) for k in range(13))
+PRED_TOP_SHARE = 1 / 3        # yes or no outcome: top third of the region's training seasons
+PRED_YES_PROBABILITY = 0.5    # a "yes" call in the hits and false alarms count
+PRED_SKILL_CI = 0.95          # interval on skill, unseen years resampled
+# regions with no snowpack predictor (ERA5_SWE_MIN_NORMAL_MM leaves swe_z
+# empty): the value is set to 0, "no information", so the region stays pooled
+PRED_NO_SNOW_REGIONS = ("SoCal",)
+# skill is reported for these groups beside each region
+PRED_GROUPS = {"all seven": tuple(REGIONS),
+               "AK and YT": tuple(r for r, role in REGIONS.items() if role == "north"),
+               "other five": tuple(r for r, role in REGIONS.items() if role != "north")}
+PRED_RUN = "prediction_v1"    # results/tables/<PRED_RUN>/<label>/
+
+# Version 1b (agreed 2026-10-12, after version 1 was seen; spec section 8;
+# D91). The variants are fixed before any is run and all are reported.
+PRED_1B_SPRING = (*PRED_PREDICTORS, "precip_anom_lag1", "snowfall_frac")
+# temp_mam is known by 1 June: before the season in PNW, NorCal and SoCal,
+# two months into it in BC, AB, AK and YT (FIRE_SEASON_MONTHS)
+PRED_1B_JUNE = (*PRED_1B_SPRING, "temp_mam")
+# variant -> (predictors, regional coefficients, per-region scale)
+PRED_1B_VARIANTS = {
+    "regions": (PRED_PREDICTORS, True, False),
+    "scaled": (PRED_PREDICTORS, False, True),
+    "regions_scaled": (PRED_PREDICTORS, True, True),
+    "spring_inputs": (PRED_1B_SPRING, True, True),
+    "june_update": (PRED_1B_JUNE, True, True),
+    "hindsight": ((*PRED_1B_JUNE, "temp_jja"), True, True),  # cannot forecast
+}
+PRED_1B_GRID = PRED_RIDGE_GRID[::2]  # 7 values, 0.01 to 1000, for each penalty
+PRED_1B_MIN_PAST_ERRORS = 8          # unseen-year errors needed before they set the interval
+PRED_1B_RUN = "prediction_v1b"
+
+# Version 1c (agreed 2026-10-12, after version 1b was seen; spec section 9;
+# D92). Two variants, fixed before either is run, both in spring_inputs'
+# design. burn_lag1 is the region's log_burn of the season before.
+PRED_1C_VARIANTS = {
+    "last_burn": ((*PRED_1B_SPRING, "burn_lag1"), True, True),
+    # cannot forecast: the summer's mean temperature, SPEI-3 and soil moisture
+    "ceiling": ((*PRED_1B_JUNE, "temp_jja", "spei3_jja", "soil_moisture"), True, True),
+}
+PRED_1C_RUN = "prediction_v1c"

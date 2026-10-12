@@ -27,6 +27,77 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D92 · Prediction model version 1c: two more variants after version 1b was seen
+- **Plan:** `docs/prediction_model_spec.md` section 8: six variants,
+  "fixed before running", and "Summer weather stays out of every
+  forecasting variant".
+- **Actual:** version 1b's best forecasting variant gained about 0.01
+  over the trend. Owner, 2026-10-12: "yes 1c sounds good. ceiling =
+  bigger ideas for separate project makes sense". Two more variants,
+  fixed in spec section 9 before either was run: `last_burn` (last
+  season's burned area added to `spring_inputs`) and `ceiling` (summer
+  SPEI-3 and summer soil moisture added to 1b's hindsight run; it cannot
+  forecast). Outputs go to `results/tables/prediction_v1c/`; versions 1
+  and 1b are kept as written.
+- **Why:** the committed tables hold no other input known in spring, and
+  the size of the gain available from knowing the summer had only been
+  measured with temperature.
+- **Constraint:** chosen after versions 1 and 1b and all of `run1` were
+  seen. `last_burn` is the sixth forecasting variant scored on the same
+  22 unseen years. Exploratory, uncorrected, reported apart from the
+  registered tests; the registered 2027 forecast stays the H3a model.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model version 1c:
+  last season's burned area and a ceiling run".
+- **Substantial:** no (no registered test, input or result changes).
+- **Plan doc:** `docs/prediction_model_spec.md` section 9 added; sections
+  1 to 8 left as written.
+
+### D91 · Prediction model version 1b: changes made after version 1 was seen
+- **Plan:** `docs/prediction_model_spec.md` sections 2 to 7 (agreed
+  before any fit): one shared coefficient per predictor, four spring
+  predictors, the yes or no bar from the training seasons' own values,
+  intervals from the training spread, and "Version 2, only if version 1
+  beats the trend".
+- **Actual:** version 1 did not beat the trend, and the rule for version
+  2 was not met. Owner, 2026-10-12: "i agree with 1-5 before machine
+  learning. we can start version 1b now". Version 1b changes all five
+  points above and is run as six variants fixed before any was run
+  (spec section 8). Version 1's tables are kept as written; 1b goes to
+  `results/tables/prediction_v1b/`.
+- **Why:** version 1's outputs showed where it went flat (one coefficient
+  across regions that respond in opposite directions; one season
+  carrying 28% of the pooled score; missing spring inputs).
+- **Constraint:** every choice in 1b was made after version 1's results
+  and all of `run1` were seen. Exploratory, uncorrected, reported apart
+  from the registered tests; the registered 2027 forecast stays the H3a
+  model.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model version 1b:
+  five changes before machine learning".
+- **Substantial:** no (no registered test, input or result changes).
+- **Plan doc:** `docs/prediction_model_spec.md` section 8 added; sections
+  1 to 7 left as written.
+
+### D90 · Prediction model: four settings the agreed scope did not cover
+- **Plan:** `docs/session10_kickoff.md` Part 3 (the agreed scope): "1
+  April snowpack" as a predictor for "the seven regions"; "region terms"
+  and "a year trend"; "how often its 80% interval held the real value";
+  three points "still to fix in the spec".
+- **Actual:** reading the committed tables before any fit showed four
+  more points to settle, each agreed by the owner on 2026-10-12, after
+  `run1` was seen: SoCal has no snowpack value (`era5_swe_z` empty for
+  all 42 seasons), so it is set to 0 there; SoCal's zero-fire season
+  2014 is kept and a third run without it is added; the 80% interval and
+  the interval on skill each needed a method (a shrunken model has no
+  textbook formula); the trend is one per region, not one shared. The
+  hindsight run and this third run make three labelled runs, not two.
+- **Why:** the scope was written from `run1`'s tables without checking
+  each predictor's coverage per region.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model: settings
+  agreed before the fit"; `docs/prediction_model_spec.md` section 7.
+- **Substantial:** no (exploratory analysis; no registered test, input or
+  result changes).
+- **Plan doc:** left as written.
+
 ### D89 · A fire-by-fire comparison of MTBS and WFIGS, with its own years setting
 - **Plan:** `ANALYSIS_PLAN.md` and `src/config.py` hold one source check,
   D60 as re-run on 2023 (`SOURCE_CHECK_YEAR`, union area per region). The

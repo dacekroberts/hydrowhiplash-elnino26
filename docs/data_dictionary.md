@@ -848,6 +848,117 @@ package versions); `conda_list_explicit.txt` is the full environment.
   snowpack, `enso` a season after an El Niño winter, `evergreen` the
   frame and the Holm verdict.
 
+### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
+
+Written by `python -m src.prediction` on 2026-10-12, after `run1` was
+seen. Exploratory and uncorrected: reported apart from the registered
+tests, never in place of one (`docs/prediction_model_spec.md`). One
+sub-folder per run, same three tables in each, a `.provenance.json`
+beside every table: `forecast/` (predictors known in spring),
+`hindsight/` (June to August temperature added; cannot forecast),
+`no_zero_fire/` (the forecast run without SoCal 2014). Column `run`
+repeats the label.
+
+- **`predictions.csv`**: one row per region and unseen season (2004 to
+  the region's last test year). `n_train`: the region's seasons before
+  that year. `penalty`: the ridge penalty chosen inside the training
+  seasons, per training row (dimensionless; larger means the predictors
+  count for less). `actual`, `predicted`, `pi_low`, `pi_high`: `log_burn`
+  in log points, and the 80% interval (prediction plus or minus 1.28
+  times the region's training residual spread). `covered`: whether the
+  interval held the actual value. `cut`: the two-thirds quantile of the
+  region's training `log_burn`; `actual_yes`: `actual` above `cut`;
+  `p_yes`: the model's probability of that, 0 to 1. Columns ending
+  `_trend` are the same for the trend-only baseline (`log_burn ~ year`
+  per region).
+- **`skill.csv`**: one row per `scope` (all seven, AK and YT, other five,
+  then each region). `rmse`, `mae` in log points, with `_trend` for the
+  baseline; `skill` = 1 - rmse / rmse_trend (above 0: the predictors
+  beat the trend). `coverage`: share of seasons inside the 80% interval
+  (0.80 is the target). `brier`, `brier_trend`, `brier_base`: mean
+  squared gap between the probability and the 0 or 1 outcome, for the
+  model, the trend-only model and a constant one in three (lower is
+  better). `bss_base`, `bss_trend` = 1 - brier / the reference's.
+  `n_yes`: seasons above the cut; `n_called`: seasons with `p_yes` of 0.5
+  or more; `hits`, `false_alarms`: called seasons that were, or were not,
+  above the cut. `*_low`, `*_high`: 95% interval from resampling the
+  unseen years (whole years, 10,000 draws, seed 2026); descriptive, not
+  a test.
+- **`coefficients.csv`**: one row per predicted year: `n_train_rows`,
+  `penalty`, and each predictor's coefficient in log points of burned
+  area per 1 standard deviation of the predictor (standardised within
+  region on the training seasons).
+- **Traps:** the yes or no cut comes from earlier seasons, and burned
+  area trends up, so more than a third of unseen seasons are "yes" (83
+  of 151 in the forecast run): `bss_base` credits the trend, `bss_trend`
+  does not. `swe_z` is 0 for SoCal ("no information"). Only the fit is
+  forward-looking: `swe_z` and `spei3_djf` are built on fixed reference
+  periods that contain later years (as in `stats.expanding_window`).
+
+### 8d. Prediction model version 1b (`results/tables/prediction_v1b/`; exploratory, D83)
+
+Written by `python -m src.prediction_1b` on 2026-10-12, after version 1's
+results were seen (`docs/prediction_model_spec.md` section 8). One
+sub-folder per variant (`regions`, `scaled`, `regions_scaled`,
+`spring_inputs`, `june_update`, `hindsight`; the last cannot forecast),
+each with the three tables of 8c, and `variants.csv` at the top. Columns
+as in 8c except:
+
+- **New inputs:** `precip_anom_lag1` (the previous winter's October to
+  March precipitation, in standard deviations from the 1991-2020 normal;
+  section 4);
+  `snowfall_frac` (snowfall over total precipitation, November to March,
+  0 to 1); `temp_mam` (March to May mean temperature, degrees C; known
+  by 1 June).
+- **`predictions.csv`:** `penalty_shared`, `penalty_region`: the two
+  ridge penalties chosen (`inf` in the second: no regional departures).
+  `scale`: the region's training spread around its trend, log points;
+  the divisor behind `skill_scaled`. `train_spread`: the model's
+  training residual spread, log points. `cut_above_trend`: the
+  two-thirds quantile of the training seasons' distances above the
+  trend, log points. `actual_yes`: `actual` more than `cut_above_trend`
+  above `predicted_trend` (a different bar from 8c's `cut`; the two
+  yes or no outcomes are not comparable). `spread`, `spread_trend`: the
+  spread behind the 80% interval and `p_yes`; `spread_from` says whether
+  it came from the region's earlier unseen-year errors ("past errors",
+  once 8 exist) or the training spread ("training").
+- **`skill.csv`:** adds `skill_scaled` with its interval: skill with
+  every error divided by its region's `scale` first, so regions count
+  about equally in a pooled row.
+- **`coefficients.csv`:** long: one row per predicted year, region and
+  predictor; `coefficient` is the region's own (shared plus departure),
+  in log points per standard deviation of the predictor.
+- **`variants.csv`:** the three group rows of every variant's
+  `skill.csv`, with version 1's forecast and hindsight runs (`v1`,
+  `v1_hindsight`) rescored with 1b's intervals and yes or no bar.
+- **Traps:** the variants share the same 22 unseen years, so the best of
+  them flatters itself; read the whole table. `actual_yes` rates differ
+  by region (AB 14%, BC 62%) because a straight trend runs ahead of AB
+  and behind BC. For the first 8 unseen years of each region the
+  interval still comes from the training spread.
+
+### 8e. Prediction model version 1c (`results/tables/prediction_v1c/`; exploratory, D83)
+
+Written by `python -m src.prediction_1c` on 2026-10-12, after version
+1b's results were seen (`docs/prediction_model_spec.md` section 9). Two
+sub-folders, `last_burn` and `ceiling` (the second cannot forecast),
+each with the three tables of 8d, and `variants.csv`: 1b's rows with the
+two new variants below them. Columns as in 8d except:
+
+- **`burn_lag1`** (input of `last_burn`; built in memory, not stored):
+  the region's `log_burn` of the season before, in log points. The first
+  season (1984) takes the mean of the region's values for 1985 to 2003.
+- **`spei3_jja`**, **`soil_moisture`** (inputs of `ceiling`, with
+  `temp_jja`): summer SPEI-3 in standard deviations and June to August
+  soil moisture, 0 to 28 cm, in m3/m3 (section 4). Known only after the
+  summer.
+- **Traps:** `ceiling` is not a forecast: it shows how much of the
+  trend-only error the summer's seasonal means account for (pooled
+  0.126; BC 0.483, AK 0.345, NorCal 0.257, YT 0.221; AB, PNW and SoCal
+  near zero). Soil moisture in June to August is measured while the
+  season is under way. For a real spring forecast, `burn_lag1` needs
+  last season's fires already counted, and CNFDB polygons arrive late.
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired
