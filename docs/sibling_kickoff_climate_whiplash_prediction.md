@@ -134,8 +134,6 @@ What to weigh before choosing any:
 
 ## Part 4 · Decisions still open
 
-- Create the repository now, or after the parent's hard-line item in
-  early November.
 - Whether the sibling reads the parent's `data/` in place (proposed) or
   downloads again.
 - What the held-back scores are compared with: the trend-only model
