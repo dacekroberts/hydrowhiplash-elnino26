@@ -794,6 +794,16 @@ package versions); `conda_list_explicit.txt` is the full environment.
   the fire floor, test settings, the freeze date and commit), since the
   site reads only `results/`. `tests/test_site_settings.py` fails if it
   no longer matches the config.
+- **`theme/tokens.json`** (the design tokens; D86): every colour (one
+  value per theme, light and dark; the map ramps one value for both),
+  typeface, spacing step, radius and stroke width, each with a usage
+  note. Not data and not a result: presentation only. `src/theme.py`
+  reads it; `python -m src.theme` writes **`site/theme/light.scss`**,
+  **`dark.scss`** and **`fonts.html`** for the Quarto site, and
+  `tests/test_theme.py` fails if they are stale. Colour families carry
+  one meaning each: `fire` burned area, `water` precipitation, `snow`
+  snowpack, `enso` a season after an El Niño winter, `evergreen` the
+  frame and the Holm verdict.
 
 ## 9. Time conventions
 

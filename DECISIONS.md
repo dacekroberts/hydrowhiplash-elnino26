@@ -17,6 +17,69 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Session 10: design system, hosting and the map page
+
+- **Decided (owner, session 10): a new design system for this project,
+  kept as a Design System artifact with one tokens file in the
+  repository that the site, the results page template, the methods page
+  and the figures read (D86).** Owner's direction: "integrate color
+  green as essential (ecosystems) with a natural earth vibe. pop colors
+  are the red and blue for fire/rainfall data". Rejected adapting Night
+  Line or Storefronts Near Transit (both built for transit subjects) and
+  a tokens file with no browsable reference. Nothing in the look is
+  adopted until the owner has seen a draft.
+- **Decided (owner): the site is hosted as the static Quarto build on
+  the owner's own domain through Cloudflare, not on GitHub Pages and not
+  as a Streamlit app (D84).** Rejected Streamlit: it needs a running
+  Python server and would replace the Quarto build that reads only
+  `results/`. Cloudflare's documentation (read 2026-10-12) recommends
+  Workers static assets over Pages for new static sites, and requires
+  the domain's nameservers to be on Cloudflare; no R2 page read states
+  that a bucket serves `index.html` for a folder URL, so R2 is kept for
+  large files only, if the map page needs them. The exact setup is
+  settled when the first piece is ready to publish; nothing is deployed.
+  A direct upload of the built site leaves the repository private.
+- **Decided (owner): the map page is taken up as a scope addition, built
+  after the stamped download paths and the hard-line item (D85).** All
+  seven regions with a toggle per dataset (fire, snowpack, rainfall,
+  temperature). It shows each year's values from the committed region x
+  year tables; no new trend statistic is computed, so nothing is added
+  to the analyses made after `run1`. Its colour ramps are designed into
+  the design system now. Rejected trend legends for now: a trend per
+  region and dataset would be a new analysis after results were seen
+  (`docs/post_results_protocol.md` section 2). Stated limit: one shade
+  per region repeats the limitation that wet coasts sit inside the
+  regional mean.
+- **Adopted (owner, session 10: "love the winter to fire, looks great"):
+  the design system "Hydrowhiplash: Winter to Fire".** A pale lichen
+  ground and an evergreen for the frame; red only for burned area, blue
+  only for precipitation, teal for snowpack, amber for seasons after an
+  El Niño winter, a violet reserved for La Niña; National Park, Public
+  Sans and JetBrains Mono. `theme/tokens.json` is the master copy and
+  the artifact mirrors it; `src/theme.py` reads it and writes the Quarto
+  theme (`site/theme/`), and the results page and the methods reading
+  copy take their CSS variables from it (`scripts/build_results_page.py`,
+  `scripts/build_methods_copy.py`, new). Tests hold the text colours to
+  4.5:1 on their grounds in both themes and fail if `site/theme/` is
+  stale. Three calls made in the draft and left standing by the owner's
+  yes: "significant after Holm" is a filled evergreen dot with the word
+  (it was ember orange, and red now means fire); green is never a data
+  series beside red; the typefaces.
+- **Redrew the mechanism diagram and the methods flowchart from the
+  tokens** (`python -m src.diagrams`; owner: "yes regenerate the
+  flowchart"). The flowchart's boxes stay neutral. In the mechanism
+  diagram the north pathway moved from orange to the snow colour and the
+  south stays blue (the water colour): orange read as fire under the new
+  system, and both pathways end in fire. Supersedes the colour choice in
+  2026-10-04 "Mechanism diagram"; the wording, layout and footnotes are
+  unchanged. Not restyled yet: the data figures drawn by
+  `src/figures.py` (they need `data/`, and one reads polygons); they
+  follow with the site charts for Headlines 1 to 4. The diagrams keep
+  DejaVu Sans so their SVGs stay byte-identical between machines.
+- **Noted (owner, session 10): "if at all necessary invoke deepseek".**
+  Read as leave to call the DeepSeek worker where a task needs it,
+  reported when used; `data/` stays out of reach of every DeepSeek plan.
+
 ### 2026-10-12 - Prediction model scope agreed
 
 - **Decided (owner, after `run1` was seen, before any model is fitted;

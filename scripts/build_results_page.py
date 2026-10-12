@@ -1,8 +1,9 @@
 """Build the private results page for one run folder.
 
 Reads results/tables/<run>/ (the three result tables and one provenance
-file), puts the rows into scripts/results_page/template.html as JSON and
-writes one HTML file. The page holds no number typed by hand; a rerun gets
+file), puts the rows into scripts/results_page/template.html as JSON, with
+the design tokens from theme/tokens.json as its CSS variables, and writes
+one HTML file. The page holds no number typed by hand; a rerun gets
 its own page from its own folder.
 
 Usage, from the repo root:
@@ -16,12 +17,17 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+
+from src import theme  # noqa: E402  (the design tokens; needs ROOT on the path)
+
 TEMPLATE = ROOT / "scripts" / "results_page" / "template.html"
 TAGS = {"run1": "registered-run1"}
 NOTES: dict[str, str] = {}
@@ -62,7 +68,13 @@ def build(run: str) -> str:
         "validation": _records(folder / "validation.csv"),
     }
     payload = json.dumps(data, ensure_ascii=False, allow_nan=False).replace("</", "<\\/")
-    return TEMPLATE.read_text("utf-8").replace("__DATA__", payload)
+    page = TEMPLATE.read_text("utf-8")
+    for marker, text in (("__FONT_URL__", theme.font_url()),
+                         ("__THEME__", theme.css_variables()), ("__DATA__", payload)):
+        if page.count(marker) != 1:
+            raise ValueError(f"{TEMPLATE.name} must hold {marker} exactly once.")
+        page = page.replace(marker, text)
+    return page
 
 
 def main() -> None:

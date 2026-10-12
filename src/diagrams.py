@@ -22,21 +22,24 @@ import matplotlib as mpl
 from matplotlib.figure import Figure
 from matplotlib.patches import FancyBboxPatch
 
+from src import theme
 from src.config import REGIONS, RESULTS
 
 FIGURES = RESULTS / "figures"
 FONT = "DejaVu Sans"
 
-# Colours: categorical slots 1-2 of the dataviz reference palette, validated
-# as a pair on a light surface (CVD dE 24.7, normal-vision dE 33.6); the same
-# orange and blue src/figures.py uses. Dry north in orange, wet south in
-# blue; text stays in neutral ink.
-INK = "#0b0b0b"
-INK_MUTED = "#52514e"
-NEUTRAL_EDGE = "#8a8984"
-NEUTRAL_FILL = "#f2f2ef"
-NORTH_COLOUR = "#eb6834"
-SOUTH_COLOUR = "#2a78d6"
+# Colours come from theme/tokens.json (light theme; D86). The north pathway
+# runs through snowpack and takes the snow colour, the south pathway runs
+# through rain and takes the water colour; the fire colour is kept for burned
+# area. The two differ in lightness as well as hue (contrast 1.9:1), and each
+# column is headed North or South in text. Text stays in ink.
+INK = theme.colour("ink")
+INK_MUTED = theme.colour("ink-muted")
+NEUTRAL_EDGE = theme.colour("rule-strong")
+NEUTRAL_FILL = theme.colour("surface-sunk")
+PAPER = theme.colour("surface")
+NORTH_COLOUR = theme.colour("snow")
+SOUTH_COLOUR = theme.colour("water")
 
 # Pathway membership for the mechanism diagram. North is every primary region;
 # the south pathway is SoCal only. Every other region is named in a footnote
@@ -99,7 +102,7 @@ FLOW_NOTES = ("Arrows show groups, not single sources.",
 # Two layouts of the flowchart, in the same units as MECHANISM_LAYOUTS (0-100
 # across, 100 units per `unit_h` inches down). Heights are built from the
 # box sizes, so the figure grows with the tallest column. All boxes are
-# neutral: orange and blue mean north and south in the mechanism diagram.
+# neutral: teal and blue mean north and south in the mechanism diagram.
 FLOW_LAYOUTS = {
     "methods_flow": dict(
         width=9, unit_h=7, font=12, head_font=12, margin=2, pad=3, head_h=5,
@@ -121,9 +124,10 @@ def _wrap(text: str, width: int) -> str:
 
 
 def _tint(hex_colour: str, amount: float) -> str:
-    """Mix a colour with white; amount is the share of the original colour."""
-    r, g, b = mpl.colors.to_rgb(hex_colour)
-    return mpl.colors.to_hex([1 - amount * (1 - c) for c in (r, g, b)])
+    """Mix a colour with the paper; amount is the share of the original colour."""
+    paper = mpl.colors.to_rgb(PAPER)
+    return mpl.colors.to_hex([p + amount * (c - p)
+                              for c, p in zip(mpl.colors.to_rgb(hex_colour), paper)])
 
 
 def _box(ax, x: float, y: float, w: float, h: float, text: str, fontsize: float,
@@ -199,7 +203,7 @@ def _draw_mechanism(lay: dict) -> Figure:
     diagram_in = (100 - lay["y_cut"]) * lay["unit_h"] / 100
     height = diagram_in + foot_in
 
-    fig = Figure(figsize=(lay["width"], height), facecolor="white")
+    fig = Figure(figsize=(lay["width"], height), facecolor=PAPER)
     ax = fig.add_axes((0, foot_in / height, 1, diagram_in / height))
     ax.set_xlim(0, 100)
     ax.set_ylim(lay["y_cut"], 100)
@@ -293,7 +297,7 @@ def _draw_flow(lay: dict) -> Figure:
     total = (depth - lay["stage_gap"] + lay["note_gap"] + note_h
              + lay["margin"])
 
-    fig = Figure(figsize=(lay["width"], total * lay["unit_h"] / 100), facecolor="white")
+    fig = Figure(figsize=(lay["width"], total * lay["unit_h"] / 100), facecolor=PAPER)
     ax = fig.add_axes((0, 0, 1, 1))
     ax.set_xlim(0, 100)
     ax.set_ylim(0, total)
@@ -303,7 +307,7 @@ def _draw_flow(lay: dict) -> Figure:
         ax.add_patch(FancyBboxPatch((1, total - bottom), 98, bottom - top,
                                     boxstyle="round,pad=0,rounding_size=1.2",
                                     linewidth=1, edgecolor=_tint(NEUTRAL_EDGE, 0.5),
-                                    facecolor="white"))
+                                    facecolor=PAPER))
         ax.text(3, total - (top + lay["pad"] + lay["head_h"] / 2 - 0.5), title, ha="left",
                 va="center", fontsize=lay["head_font"], fontweight="bold",
                 color=INK_MUTED, fontfamily=FONT)
@@ -332,7 +336,7 @@ def _draw_flow(lay: dict) -> Figure:
 
     tests_y = total - sum(spine[1]) / 2
     _box(ax, lay["side_x"], tests_y, lay["side_w"], lay["side_h"],
-         _wrap(FLOW_SENSITIVITY, lay["wrap_side"]), lay["font"], NEUTRAL_EDGE, "white",
+         _wrap(FLOW_SENSITIVITY, lay["wrap_side"]), lay["font"], NEUTRAL_EDGE, PAPER,
          linestyle="dashed")
     _arrow(ax, (lay["side_x"] - lay["side_w"] / 2, tests_y),
            (x + lay["spine_w"] / 2, tests_y), NEUTRAL_EDGE, linestyle="dashed")

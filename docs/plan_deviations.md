@@ -27,6 +27,55 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D86 · A shared design system (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" names a Quarto site and its
+  pieces; no plan names a theme, a tokens file or a design system
+  (`site/_quarto.yml` uses the stock `cosmo` theme).
+- **Actual:** owner, 2026-10-12 (sessions 9 and 10): the site's look is
+  redesigned with a design system of its own, a Design System artifact
+  plus one tokens file in the repository read by the site, the results
+  page template, the methods page and the figures.
+- **Why:** five pages and the figures had drifted into separate
+  palettes; one source keeps them in step.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: design system,
+  hosting and the map page".
+- **Substantial:** no (presentation only; no test, input or result
+  changes).
+- **Plan doc:** left as written.
+
+### D85 · Map page (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists six site pieces; no map
+  of the regions with a dataset toggle is among them.
+- **Actual:** owner, 2026-10-12 (session 10): a map page with all seven
+  regions and a toggle per dataset (fire, snowpack, rainfall,
+  temperature), built after the stamped download paths and the hard-line
+  item. It shows each year's values from the committed region x year
+  tables; no trend statistic is computed.
+- **Why:** owner's idea at the end of session 9; a reader sees where the
+  regions are and how the datasets differ across them.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: design system,
+  hosting and the map page".
+- **Substantial:** yes (a new site piece).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", new item marked
+  `[mid-project: D85]`. No row in the frozen plan's deviations log (no
+  registered or reported test changes).
+
+### D84 · Hosting: own domain through Cloudflare, not GitHub Pages
+- **Plan:** `ACTION_PLAN.md` "Second goal": "A Quarto site in `site/`,
+  published on GitHub Pages"; `README.md`: "Quarto explainer site
+  (published to GitHub Pages)".
+- **Actual:** owner, 2026-10-12 (session 10): the static Quarto build is
+  hosted on the owner's own domain through Cloudflare. Streamlit was
+  considered and rejected. Nothing is deployed yet; the exact Cloudflare
+  setup is settled when the first piece is ready.
+- **Why:** the owner's own domain; a direct upload of the built site
+  does not need a public repository.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 10: design system,
+  hosting and the map page".
+- **Substantial:** yes (where the site is published).
+- **Plan doc:** `ACTION_PLAN.md` "Second goal", sentence marked
+  `[mid-project: D84]`; the `README.md` line left as written.
+
 ### D83 · Prediction model moved up: next after the registered runs
 - **Plan:** `ACTION_PLAN.md` "Later extensions": "Prediction model. ...
   Builds on Phases 2-4, so start it once the historical analysis is
