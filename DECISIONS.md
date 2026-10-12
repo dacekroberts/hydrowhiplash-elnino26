@@ -17,6 +17,22 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - This project supplies the sibling's held-back burned-area numbers
+
+- **Decided (owner, in the sibling's session; reported here by the
+  owner: "sibling agreed on burned area"): the sibling scores its
+  held-back seasons from this project's region x season numbers and
+  builds burned area from polygons only at its stage 6.** So three
+  tables built here are also owed there, each handed over from this
+  side when it exists: the 2025 season of BC, AB and YT (CNFDB 2025,
+  about January 2027), the redrawn 2026 season (D95; US regions after
+  31 January 2027, Canada about January 2028) and the 2027 season (D93;
+  from fall 2027). Same fire rules as the tables the sibling trains on.
+  No new work is added here: each table is already a rollout calendar
+  item; the handover is one copy with a manifest at each. Rejected the
+  sibling building its own now: a second set of fire code, and outcomes
+  sitting in its `data/` before their scoring day.
+
 ### 2026-10-12 - Redacted copies for the sibling; D95's quoted figure corrected
 
 - **Corrected (D97): the figure D95 gives as the 2026 season's area is

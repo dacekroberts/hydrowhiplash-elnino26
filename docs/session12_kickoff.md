@@ -48,7 +48,12 @@ checkout.
   independence"). The tag `prediction-handoff` (a669813) is never moved
   or deleted. Its roadmap is
   https://claude.ai/artifact/1HcVPoH7YdwFBFUxwLGtcg; its sessions keep it
-  current from here on.
+  current from here on. Owed to it from here, each when it exists and
+  handed over from this side with a manifest: the 2025 burned area of BC,
+  AB and YT, the redrawn 2026 season and the 2027 season (`DECISIONS.md`
+  2026-10-12 "This project supplies the sibling's held-back burned-area
+  numbers"). A large handover was made on 2026-10-12; three documents
+  went redacted.
 - **Three methods-page items (D96).** Drafts sit in `site/methods.qmd`
   as HTML comments, shown to no reader: "Why regression, not a trained
   model" (after "How the tests work"), "Who this forecast is for" (top
