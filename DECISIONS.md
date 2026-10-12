@@ -17,6 +17,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - One character corrected in an old entry, for the merge tool
+
+- **Corrected (owner: "option 1") the entry of 2026-10-11 "Session 8:
+  owner decisions before the first test": its literal mention of a side
+  session's placeholder id gained the backslash that marks a literal
+  mention** (`D\?a`, as `CLAUDE.md` asks). Without it
+  `merge_append_only.py` took the mention for a live placeholder, would
+  have renumbered it with PR #24's own, and so refused the merge
+  ("existing entry removed or edited"). An exception to "never edit an
+  old entry": one character, no change of meaning. Rejected merging the
+  two logs by hand: the same refusal would return at every later merge.
+
 ### 2026-10-12 - Methods numbers and notices
 
 - **Confirmed the methods page's notices against each publisher's
@@ -598,7 +610,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   "Checks".**
 - **Housekeeping:** `side/nbac-probe` (c4981de, patch-identical to main)
   and `side/fire-licence-reads` (31c7cc0; PR #21 squash-merged 2026-10-07,
-  its `D?a` now D56, its three ledger rows revised in main since) deleted
+  its `D\?a` now D56, its three ledger rows revised in main since) deleted
   after the comparison was reported. PR #23 (site methods flowchart, D74)
   merged with the owner's yes, squash commit 2fb0e37.
 - **Added to `scripts/nbac_coverage.py`: a per-fire output and split**
