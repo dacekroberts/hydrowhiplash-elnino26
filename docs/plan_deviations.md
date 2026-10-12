@@ -27,6 +27,24 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D97 · Correction to D95: the figure quoted is overlap, not the 2026 season's area
+- **Plan:** D95, "Why": "the pinned snapshot holds 26,609 ha for 2026
+  (PNW 24,243, NorCal 2,367), an unfinished season."
+- **Actual:** that figure is the overlap left out of the 2026 season by
+  the union rule (area that summing perimeters would count twice), from
+  `docs/methods_register.md` "Union area" and `DECISIONS.md` 2026-10-12
+  "Record check closed". It is not the season's burned area, which is
+  much larger and is not stated here. Misread when D95 was written
+  (session 11); found the same day while preparing copies for the
+  sibling repository.
+- **Why:** D95's decision stands for its real reason: the WFIGS snapshot
+  of 2026-10-07 was taken while the US seasons were still open, so the
+  2026 season in it is unfinished.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Redacted copies for the
+  sibling; D95's quoted figure corrected".
+- **Substantial:** no (no test, input, table or decision changes).
+- **Plan doc:** left as written; D95 is not edited.
+
 ### D96 · Three methods-page items from the portfolio review (scope addition)
 - **Plan:** `ACTION_PLAN.md` "Second goal" lists the site's pieces; none
   is a statement of why regression was used, who the forecast is for, or

@@ -17,6 +17,32 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Redacted copies for the sibling; D95's quoted figure corrected
+
+- **Corrected (D97): the figure D95 gives as the 2026 season's area is
+  the overlap left out of that season by the union rule.** D95 and the
+  entry "Session 11: fonts, reminders, the 2026 season and the sibling
+  repository" misread a line of the methods register; the decision to
+  redraw the season is unchanged. The same misreading went to the
+  sibling's session in the handover message ("the partial 2026 burned
+  area") and was corrected there.
+- **Sent (owner: "send the redacted copies") `DECISIONS.md`,
+  `docs/plan_deviations.md` and `docs/methods_register.md` to the
+  sibling with every 2026-season figure removed.** Three places: this
+  log's "Record check closed" entry and its fire-table entry of
+  2026-10-07, D95's "Why" (and D97's quotation of it), and the "Union
+  area" row of the register. Each removal is marked in place. Rejected
+  leaving the figures in on the ground that they are overlap and not
+  burned area: they are still measurements of a season the sibling holds
+  back. The copies sit in its `parent_handover/redacted/` with their own
+  manifest.
+- **Passed on (owner, in this session): `parent_handover/` is not
+  tracked in the sibling's git; the climate modules are copied
+  unedited.** Advised on the third question, burned area: the sibling
+  takes this project's region x season numbers for scoring its held-back
+  seasons and builds from polygons only at its stage 6 (smaller units).
+  The owner decides there.
+
 ### 2026-10-12 - One large handover to the sibling repository; four items held back
 
 - **Handed over (owner: "so we can do one big copy over now rather than

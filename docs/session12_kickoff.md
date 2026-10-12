@@ -115,7 +115,7 @@ into that copy (seen in the staged copy only; worth a look).
 DeepSeek plan; ask before any run that reads polygons; ask before every
 DeepSeek call; the going-public question is a leaning, not a decision.
 
-**Next free deviation number: D97.** The frozen plan's deviations log
+**Next free deviation number: D98.** The frozen plan's deviations log
 is at row 19.
 
 ## Part 2 · Prompt for session 12
@@ -134,7 +134,7 @@ Session 12 for hydrowhiplash-elnino26: the owner's wording on session
    Read with the Artifact tool (action "read"):
    the roadmap, https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from D97.
+   deviations from D98.
 
 2. Explain each concept as it comes up, give a short summary beside every
    hypothesis ID, and quote the actual wording beside every item ID
