@@ -17,6 +17,47 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model version 1b: the fixes worked, the gain is about 0.01
+
+- **Found (exploratory, after version 1 and `run1`; D\?b): with the five
+  changes, the best forecasting variant beats the trend by 0.012 on
+  unseen seasons, and its interval reaches zero.**
+  `results/tables/prediction_v1b/variants.csv`, 151 region-seasons, 2004
+  to 2025, skill with 95% interval, all seven regions: version 1 0.002
+  (-0.007 to 0.015); `regions` 0.006 (-0.008 to 0.025); `scaled` 0.004
+  (-0.009 to 0.019); `regions_scaled` 0.009 (-0.006 to 0.031);
+  `spring_inputs` 0.012 (-0.001 to 0.032); `june_update` 0.009 (-0.007
+  to 0.039). With each region on its own scale, `spring_inputs` is 0.012
+  (0.001 to 0.035), the one forecasting figure whose interval clears
+  zero, and the best of five tried. By region in `spring_inputs`: NorCal
+  0.067 (-0.004 to 0.132), AB 0.052 (-0.003 to 0.136), PNW 0.025 (-0.001
+  to 0.060); AK, BC, SoCal and YT between -0.005 and 0.005.
+- **Found: the design flaws named after version 1 were addressed, and
+  that was not what held skill down.** The forecast now leaves the
+  trend: typical move 0.39 log points in AB and 0.28 in BC (0.11 and
+  0.13 in version 1); the moves track what happened in NorCal (0.46), AB
+  (0.34) and PNW (0.33), and not elsewhere (pooled 0.16, from 0.07).
+  Regional coefficients took opposite signs where `run1` had them (last
+  winter's precipitation +0.13 in SoCal and +0.10 in NorCal, -0.04 in
+  BC; winter SPEI +0.14 in SoCal, -0.08 in BC). The model still chose a
+  shared penalty of 1000 (shared coefficients switched off) in 14 of 22
+  steps, with regional departures allowed.
+- **Found: March to May temperature added nothing** (`june_update` 0.009
+  against 0.012), and regional coefficients did not raise the ceiling:
+  the 1b hindsight run is 0.090 (0.030 to 0.184) against version 1's
+  0.096.
+- **Found, changes 4 and 5:** 57 of 151 unseen seasons were "yes" under
+  the bar measured from the trend (38%; 83 under version 1's bar), but
+  unevenly: AB 14%, BC 62%, because a straight trend runs ahead of AB
+  and behind BC. Brier skill against the trend-only model 0.023 (-0.002
+  to 0.048); the model's probability reached 0.5 twice. The 80% interval
+  held 77.5% of seasons: 83% of the 95 that used earlier errors, 68% of
+  the 56 early ones on the training spread. BC rose from 52% to 62%.
+- **Not decided:** whether to try machine learning. Version 1's rule
+  (interval wholly above zero) is met by no forecasting variant on the
+  unscaled figure and by one on the scaled figure, by 0.001, as the best
+  of five. Put to the owner.
+
 ### 2026-10-12 - Prediction model version 1b: five changes before machine learning
 
 - **Decided (owner, after version 1 was seen; D\?b): five changes are

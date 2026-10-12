@@ -842,6 +842,48 @@ repeats the label.
   forward-looking: `swe_z` and `spei3_djf` are built on fixed reference
   periods that contain later years (as in `stats.expanding_window`).
 
+### 8d. Prediction model version 1b (`results/tables/prediction_v1b/`; exploratory, D83)
+
+Written by `python -m src.prediction_1b` on 2026-10-12, after version 1's
+results were seen (`docs/prediction_model_spec.md` section 8). One
+sub-folder per variant (`regions`, `scaled`, `regions_scaled`,
+`spring_inputs`, `june_update`, `hindsight`; the last cannot forecast),
+each with the three tables of 8c, and `variants.csv` at the top. Columns
+as in 8c except:
+
+- **New inputs:** `precip_anom_lag1` (the previous winter's October to
+  March precipitation, in standard deviations from the 1991-2020 normal;
+  section 4);
+  `snowfall_frac` (snowfall over total precipitation, November to March,
+  0 to 1); `temp_mam` (March to May mean temperature, degrees C; known
+  by 1 June).
+- **`predictions.csv`:** `penalty_shared`, `penalty_region`: the two
+  ridge penalties chosen (`inf` in the second: no regional departures).
+  `scale`: the region's training spread around its trend, log points;
+  the divisor behind `skill_scaled`. `train_spread`: the model's
+  training residual spread, log points. `cut_above_trend`: the
+  two-thirds quantile of the training seasons' distances above the
+  trend, log points. `actual_yes`: `actual` more than `cut_above_trend`
+  above `predicted_trend` (a different bar from 8c's `cut`; the two
+  yes or no outcomes are not comparable). `spread`, `spread_trend`: the
+  spread behind the 80% interval and `p_yes`; `spread_from` says whether
+  it came from the region's earlier unseen-year errors ("past errors",
+  once 8 exist) or the training spread ("training").
+- **`skill.csv`:** adds `skill_scaled` with its interval: skill with
+  every error divided by its region's `scale` first, so regions count
+  about equally in a pooled row.
+- **`coefficients.csv`:** long: one row per predicted year, region and
+  predictor; `coefficient` is the region's own (shared plus departure),
+  in log points per standard deviation of the predictor.
+- **`variants.csv`:** the three group rows of every variant's
+  `skill.csv`, with version 1's forecast and hindsight runs (`v1`,
+  `v1_hindsight`) rescored with 1b's intervals and yes or no bar.
+- **Traps:** the variants share the same 22 unseen years, so the best of
+  them flatters itself; read the whole table. `actual_yes` rates differ
+  by region (AB 14%, BC 62%) because a straight trend runs ahead of AB
+  and behind BC. For the first 8 unseen years of each region the
+  interval still comes from the training spread.
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired

@@ -1,0 +1,25 @@
+{
+  "commit": "fffc5ff1af4cf151f8a6974b0e120dfc8e34499d",
+  "dirty": false,
+  "input_pins_sha256": "2b6e4e6862e67ba67b62a7899ced5d822c8d0fc00bf5b587f6519fbb62e16b81",
+  "test_size_sha256": "dbe7d0519c41c7211fd3b6d85782331d4ec5a9d3710738a094b5288b5cb2fd43",
+  "run_utc": "2026-10-12T11:46:25Z",
+  "seed": 2026,
+  "python": "3.12.14",
+  "packages": {
+    "statsmodels": "0.15.0",
+    "scipy": "1.18.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3"
+  },
+  "inputs": [
+    "climate_controls_region_year.csv",
+    "fire_region_year.csv",
+    "snow_soil_region_year.csv",
+    "station_swe_region_year.csv",
+    "whiplash_swe_region_year.csv"
+  ],
+  "result": "regions/predictions.csv",
+  "result_sha256": "fb4e2708ebd4dea609308fff8963ab6f56ed30466abe5a96c97d79dca716b7a9"
+}
