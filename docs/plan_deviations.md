@@ -27,6 +27,28 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D96 · Three methods-page items from the portfolio review (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists the site's pieces; none
+  is a statement of why regression was used, who the forecast is for, or
+  where coverage is thin. `DECISIONS.md` 2026-10-11 "Portfolio review
+  handoff: what is taken up, and when": "Taken up after the runs, as one
+  scope addition with its own deviation number and `[mid-project]`
+  markers in ACTION_PLAN's 'Second goal': three methods-page items, each
+  a draft for the owner to word".
+- **Actual:** owner, 2026-10-12 (session 11): "we can start all of these
+  in this session". One item added to "Second goal". A draft of each sits
+  in `site/methods.qmd` as an HTML comment at the place suggested for it
+  (after "How the tests work"; at the top of "The 2027 forecast"; before
+  "What the whole analysis cannot say"). No reader-visible line changed.
+- **Why:** the registered runs are committed (`run1`), which was the
+  condition; the three items read no result that is not already on the
+  page.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Session 11: methods-page items
+  from the portfolio review (D96)".
+- **Substantial:** yes (scope addition; `ACTION_PLAN.md` marked
+  `[mid-project: D96]`). No test, input or registered number touched.
+- **Plan doc:** updated with the marker.
+
 ### D95 · The 2026 season is redrawn once California's closes
 - **Plan:** `ANALYSIS_PLAN.md` Execution details: 2026 is described only,
   never tested. No plan holds a task to draw it again after the WFIGS

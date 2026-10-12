@@ -276,6 +276,22 @@ intervals are always two-sided.
   the real value, and whether the model beat a model with the year trend
   alone.
 
+<!-- DRAFT (D96, item 1 of 3) for the owner to word; not shown to readers.
+     Square brackets stand for numbers the page already reads from results/.
+
+### Why regression, not a trained model
+
+I used regression (a straight-line fit of burned area on a few named
+inputs), not a trained machine-learning model. A trained model can pick up
+patterns a straight line misses, and with thousands of cases I would have
+tried one. Here each region has [n_fire_years] fire seasons. Say a model
+with twenty adjustable parts is fitted to those seasons: it can match the
+past closely and still say nothing about 2027. A regression has one slope
+per question, so I could write each test down before opening the fire data,
+and a reader can check it. What this leaves out: effects that are not
+straight lines, and inputs that only matter together.
+-->
+
 ### What the run did
 
 The run checked that the working tree was clean, that every input file
@@ -524,6 +540,19 @@ correlation of `{python} f"{mn('interior_alaska_correlation', 'precip_djf_mm'):.
 
 ### "The 2027 forecast"
 
+<!-- DRAFT (D96, item 2 of 3) for the owner to word; not shown to readers.
+     The two agency names are to be checked, and linked, by the owner.
+
+**Who this forecast is for.** I am publishing it so that a claim made in
+advance can be checked against the season. It is for readers who want to
+see how much a winter can tell us, and so far the answer is: not much. It
+is not for deciding where crews go, whether to leave, or what to insure.
+For those, use the seasonal outlooks from the National Interagency Fire
+Center and Natural Resources Canada, which draw on fuels, weather forecasts
+and people on the ground. The analysis and its errors are mine; the
+agencies whose data I used did not review it.
+-->
+
 **The registered forecast model has shown no skill.** The plan says the
 2027 forecast comes from the H3a model. On past seasons that model did no
 better than the trend alone (above). Its
@@ -546,6 +575,27 @@ record; a summer that overrides the winter, as heat domes and lightning
 outbreaks do; ignitions, which no winter variable carries. The drought
 index is also sensitive to warmth in a way that may overstate dryness in a
 warm, wet Southern California winter.
+
+<!-- DRAFT (D96, item 3 of 3) for the owner to word; not shown to readers.
+     Square brackets stand for numbers the page already reads from results/.
+     Each line gathers a limit stated above; none is new.
+
+### Where coverage is thin
+
+- **Strong El Niño seasons.** The fire record holds [n_strong_seasons]. The
+  1982-83 event falls before the record starts in [fire_first_year].
+- **The Canadian regions.** Their record stops at [ca_last], one season
+  short of the US regions, and misses national-park fires in
+  [park_gap_years] and two military bases in Alberta in every year.
+- **Small fires.** Nothing under [min_fire_ha] ha is counted, so regions
+  where small fires add up are undercounted.
+- **Wet coasts inside the averages.** Alaska's and British Columbia's
+  climate means include places that rarely burn.
+- **Snow.** The snowpack is a model's. The stations that check it sit high,
+  above where the Pacific Northwest loses snow in an El Niño winter.
+- **Seasons, not places.** One number per region and year: nothing here
+  says where in a region the fire was.
+-->
 
 ### What the whole analysis cannot say
 
@@ -717,5 +767,7 @@ Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
      figures were written with Claude Code under the owner's direction and
      decisions (DECISIONS.md); read-only audits were run in separate cold
      sessions before any result; one read-only review of the run code used
-     DeepSeek on copies holding no data (2026-10-12). What the owner
-     verified by hand is the owner's to state. -->
+     DeepSeek on copies holding no data (2026-10-12). The owner's line
+     for it (D77): "DeepSeek helper agents contributed here"; suggested
+     place, this section, naming the review. What the owner verified by
+     hand is the owner's to state. -->

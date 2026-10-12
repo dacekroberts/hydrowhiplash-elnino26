@@ -17,6 +17,63 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Session 11: the delegated-build pilot is prepared on a staged copy; the run was blocked (D77)
+
+- **Decided (owner, from four options: "Yes, staged copy"): the D77
+  build pilot runs on a staged copy, not on a worktree of this
+  repository.** The copy is a temporary git repository outside the
+  project holding the tracked files of `src/` and `tests/`,
+  `scripts/check_no_em_dashes.py` and `environment.yml` (85 files,
+  1.5 MB) at commit 2e5ab0b: no `data/`, no logs, no `DECISIONS.md`, no
+  `results/`. Rejected the skill's usual worktree of this repository:
+  every committed file would be readable by the worker, against the
+  reason given for staged reviews (2026-10-11 "DeepSeek: the repo's
+  source may be sent"). Rejected building it without a call: the owner
+  chose to run the pilot.
+- **Scoped the task: eight modules guard a pinned write and print no
+  pin report afterwards** (`src/download_cnfdb.py`, `download_mtbs.py`,
+  `download_nbac.py`, `download_wfigs.py`, `download_oni.py`,
+  `phase2.py`, `snow_soil.py`, `stations.py`); `src/fire.py`,
+  `src/climate_vars.py` and `src/parks_gap.py` already call
+  `pin_inputs.report_rebuild`. The plan is a goal with acceptance tests,
+  as the handoff asked, and leaves out on purpose: the stamped-path case
+  (a `--stamp` run cannot replace a pinned file), the double guard in
+  `phase2`, the lazy import in `stations`, which files a download folder
+  reports, and how to test a `main` that calls the network. Baseline in
+  the copy: 115 passed, 6 failed (tests that need the freeze tag or
+  `results/`), named in the plan as outside the task.
+- **Not run: the implement call was refused by Claude Code's own
+  permission check** (the worker starts with `--allow-bypass`, classed
+  as creating an unsafe agent). The skill's preflight and the offline
+  compatibility check passed (`deepseek-compat: OK claude 2.1.296, 9/9
+  settings found`); no DeepSeek call was made and nothing was sent. The
+  staged copy, its worktree and the plan stay in the session's scratch
+  folder for the owner to run or discard. The review on 2026-10-12 ran in
+  review mode, which needs no such flag.
+
+### 2026-10-12 - Session 11: methods-page items from the portfolio review (D96)
+
+- **Added (owner: "we can start all of these in this session") the three
+  methods-page items as one scope addition, D96, each as a draft in a
+  comment.** Why regression and not a trained model; who the forecast is
+  for; where coverage is thin. The drafts follow the owner's tone guide
+  (answer first, one concrete case, the limit last) and use only numbers
+  the page already reads from `results/`; the third gathers limits stated
+  elsewhere on the page and adds none. Rejected placing them as visible
+  text: the second is a personal statement of responsibility, and the
+  wording of all three is the owner's. Rejected a separate drafts file:
+  the page is where each will be read. The two agencies named in the
+  second draft (the National Interagency Fire Center and Natural
+  Resources Canada, for their seasonal outlooks) are pointers for a
+  reader, not data sources: no ledger row.
+- **Found stale, left as written (owner's page): "What a fuller version
+  would add" calls a prediction model "the next step" and "planned".**
+  Versions 1 to 1c are merged (D83, D90 to D92) and further work moved to
+  the sibling repository (D94).
+- **Kept (owner: "leave font for now, address how we can work around
+  this when the time comes"): the figures stay on the system sans.** The
+  static-weight question is carried in the next kickoff as an open item.
+
 ### 2026-10-12 - Session 11: fonts, reminders, the 2026 season and the sibling repository
 
 - **Bundled the three design typefaces with the site (owner: "yes all

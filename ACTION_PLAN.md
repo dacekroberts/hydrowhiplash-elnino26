@@ -323,6 +323,11 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       values read from the committed region x year tables and the region
       polygons; no trend statistic. *After the stamped download paths and
       the hard-line item.*
+- [ ] **Three methods-page items** [mid-project: D96]: why regression
+      and not a trained model; who the forecast is for (a responsibility
+      statement); where coverage is thin. Each is the owner's to word;
+      drafts sit in `site/methods.qmd` as comments, shown to no reader.
+      *After the runs.*
 - [ ] **Verification panel** — what actually happened in 2027 against the
       prediction. *Fall 2027* for PNW, BC, AB, AK and YT; *after January
       2028* for NorCal and SoCal, whose 2027 season runs to January 2028
