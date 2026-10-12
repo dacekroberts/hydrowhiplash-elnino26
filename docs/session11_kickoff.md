@@ -97,6 +97,16 @@ the owner in session 11.
 - Google Fonts are hot-linked on the site; matplotlib uses the new
   typefaces only where the font files are installed.
 
+**Housekeeping first (owner, end of session 10: "clean these up in
+session 11"):**
+
+- Update the roadmap artifact to the end of session 10, in the new
+  design.
+- Remove the side session's worktree
+  `..\hydrowhiplash-elnino26-prediction-model` and its local branch:
+  `git worktree list` and `git status` in it first, and ask if it holds
+  anything uncommitted.
+
 **Next work, in order:**
 
 1. The site charts for Headlines 1 to 4 in the new design, with the
@@ -159,8 +169,9 @@ the sibling prediction project, and readiness for the hard-line item.
 4. If it is 4 November 2026 or later, read the hard-line item in Part 1
    (item 5) before anything else, and tell me what the reminder found.
 
-5. Start with the list "Yours to word or decide" in Part 1: put each to
-   me briefly, with a recommendation where you have one.
+5. Do the two housekeeping items in Part 1 (roadmap artifact, the side
+   session's worktree). Then the list "Yours to word or decide": put
+   each to me briefly, with a recommendation where you have one.
 
 6. Then the work list in Part 1, in order. Ask me before any run that
    reads polygons, and before every DeepSeek call. Flag scope additions
