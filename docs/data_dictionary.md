@@ -781,6 +781,20 @@ package versions); `conda_list_explicit.txt` is the full environment.
   model with the year trend only, over the same years; `skill` =
   1 - rmse / rmse_trend (above 0: the predictor beat the trend alone).
 
+### 8b. Outputs for the site
+
+- **`results/figures/burned_area_anomaly_series_roni.png`**
+  (`python -m src.fire_figures`): per region, each fire season's
+  `log_burn` minus the region's mean over its seasons with a counted
+  fire, in log points; raw, not detrended. +2.3 is ten times the typical
+  season (the right-hand axis), where "typical" is the geometric mean in
+  the panel title. The zero-fire season is a marker, not a bar.
+- **`results/tables/site_settings.json`** (`python -m src.site_settings`):
+  the `src/config.py` values the site quotes in prose (thresholds, years,
+  the fire floor, test settings, the freeze date and commit), since the
+  site reads only `results/`. `tests/test_site_settings.py` fails if it
+  no longer matches the config.
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired

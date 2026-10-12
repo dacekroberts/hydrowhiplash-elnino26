@@ -223,8 +223,11 @@ Headlines 1 to 4 and the supporting item were computed in `run1`
 and the write-up that report them are still to come (the full-record
 view and the Methods item below).
 
-- [ ] **Full-record view:** fire-season anomaly for every year 1984–present
-      (climate variables 1950–present), El Niño years highlighted
+- [x] **Full-record view:** fire-season anomaly for every year 1984–present
+      (climate variables 1950–present), El Niño years highlighted. Done
+      2026-10-12: `results/figures/burned_area_anomaly_series_roni.png`
+      (`python -m src.fire_figures`); the climate series were built in
+      Phases 1 and 2.
 - [x] **Headline 1 — permutation test + bootstrap CI:** El Niño years vs
       the rest, per region, for winter precipitation and burned area
 - [x] **Headline 2 — regression with controls:** burned area on ONI strength
@@ -237,7 +240,10 @@ view and the Methods item below).
       with block bootstrap, Holm/BH correction within each hypothesis's
       family (as defined in `ANALYSIS_PLAN.md`)
 - [ ] Write the **Methods and limitations** section as you go, including
-      every null result
+      every null result. A full draft is in `site/methods.qmd`
+      (2026-10-12), numbers read from `run1`; open until the owner has
+      edited and approved the wording, the typed numbers have tables and
+      the notices are confirmed.
 
 All functions are in `src/stats.py`, tested on synthetic data with known
 effects.

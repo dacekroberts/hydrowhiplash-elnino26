@@ -264,13 +264,15 @@ def test_add_corrections_refuses_a_missing_or_repeated_test(results):
 
 # --- main: preflight first, pinned readers, guarded writes ---------------------------------
 
-def test_main_runs_nothing_when_preflight_fails(monkeypatch):
+def test_main_runs_nothing_when_preflight_fails(monkeypatch, tmp_path):
     def fail():
         raise AssertionError("an input was opened after a failed preflight")
 
     def refuse(run=None):
         raise RuntimeError("Preflight failed; no hypothesis run")
 
+    # an empty results folder: the committed run1 would stop main before preflight
+    monkeypatch.setattr(rh, "RESULTS", tmp_path)
     monkeypatch.setattr(run_guard, "preflight", refuse)
     monkeypatch.setattr(pin_inputs, "load_input", lambda *a, **k: fail())
     monkeypatch.setattr(pin_inputs, "enso_raw_path", lambda *a, **k: fail())

@@ -75,8 +75,13 @@ is the prompt to paste into a new Claude Code session in the main checkout.
   decide whether the timetable lives there or on its own page.
 - `ACTION_PLAN.md` Headlines 1 to 4 and the "Supporting" item (lag
   test, block bootstrap, Holm/BH) were ticked on 2026-10-12 on the
-  owner's word; all were computed in `run1`. Open in Phase 4: the
-  full-record view and the Methods and limitations section.
+  owner's word; all were computed in `run1`. The full-record view is
+  built (`results/figures/burned_area_anomaly_series_roni.png`). Open in
+  Phase 4: the Methods and limitations section. A full draft is in
+  `site/methods.qmd`, marked as a draft; it waits on the owner's edit
+  and approval, on committed tables for the eight numbers marked with a
+  dagger, and on the notices being confirmed with the read-licence
+  skill (`DECISIONS.md` 2026-10-12 "Full-record burned-area view").
 
 **Next work, in order:**
 

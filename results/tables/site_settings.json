@@ -1,0 +1,84 @@
+{
+  "alpha": 0.05,
+  "block_len": 3,
+  "ca_split_lat": 35.5,
+  "climate_first_year": 1950,
+  "cnfdb_merge_km": 1.0,
+  "el_nino_threshold": 0.5,
+  "enso_index": "RONI",
+  "enso_robustness_index": "ONI",
+  "fire_first_year": 1984,
+  "fire_last_year_by_region": {
+    "AB": 2024,
+    "AK": 2025,
+    "BC": 2024,
+    "NorCal": 2025,
+    "PNW": 2025,
+    "SoCal": 2025,
+    "YT": 2024
+  },
+  "fire_season_months": {
+    "AB": [
+      4,
+      10
+    ],
+    "AK": [
+      4,
+      9
+    ],
+    "BC": [
+      4,
+      10
+    ],
+    "NorCal": [
+      6,
+      1
+    ],
+    "PNW": [
+      6,
+      10
+    ],
+    "SoCal": [
+      6,
+      1
+    ],
+    "YT": [
+      4,
+      9
+    ]
+  },
+  "forecast_year": 2027,
+  "forward_min_train_years": 20,
+  "hac_maxlags": 2,
+  "la_nina_threshold": -0.5,
+  "min_fire_ha": 405,
+  "mtbs_wfigs_cutover": "2024-01-01",
+  "n_bootstrap": 10000,
+  "n_permutations": 10000,
+  "plan_frozen_commit": "acf7a80",
+  "plan_frozen_date": "2026-10-07",
+  "pooled_last_year": 2024,
+  "precip_anom_normal_years": [
+    1991,
+    2020
+  ],
+  "prediction_level_pct": 80,
+  "random_seed": 2026,
+  "regions": [
+    "PNW",
+    "BC",
+    "AB",
+    "AK",
+    "YT",
+    "NorCal",
+    "SoCal"
+  ],
+  "spei_cal_years": [
+    1951,
+    2020
+  ],
+  "spei_scale": 3,
+  "strong_sensitivity_band": 0.06,
+  "strong_threshold": 1.5,
+  "zero_year_pct_limit": 0.1
+}

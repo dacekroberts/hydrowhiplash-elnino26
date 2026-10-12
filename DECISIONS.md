@@ -17,6 +17,46 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Full-record burned-area view; methods and limitations draft
+
+- **Built the full-record view of burned area as each season's departure
+  from the region's mean log burned area, raw and not detrended**
+  (`src/fire_figures.py`, `figures.fire_season_series`;
+  `results/figures/burned_area_anomaly_series_roni.png`). Seven panels,
+  seasons 1984 to each region's last test year, read from the pinned
+  `fire_region_year.csv`; seasons after an El Nino winter highlighted,
+  strong ones labelled; a right-hand axis reads the departure as a
+  multiple of the region's typical (geometric mean) season. Raw values
+  follow the trend rule (detrended in tests, raw in figures). The one
+  zero-fire season (SoCal 2014) is drawn as a marker and left out of the
+  mean: log(1 + 0) sits about 10 log points under any season with a fire
+  and would flatten the panel. Rejected hectares on a log axis: a zero
+  cannot be drawn and bars have no natural baseline. First view to set
+  burned area beside ENSO, made after the registered runs were committed
+  (D62).
+- **Drafted the whole methods and limitations page for the owner to
+  edit; nothing in it is approved** (`site/methods.qmd`, marked as a
+  draft at the top). Every result number is read at render time from
+  `results/tables/run1/`; settings quoted in prose come from a new
+  `results/tables/site_settings.json`, written from `src/config.py` by
+  `src/site_settings.py` with a test that fails if it is stale, because
+  the site cannot import `src`. Eight numbers are still typed from this
+  file and the methods register (marked with a dagger on the page: the
+  127,000 ha overlap, 17 of 76 winters, the MTBS to WFIGS ratio, the NBAC
+  missing share, the Parks Canada years, the defence-land share, the
+  station correlation, the Interior Alaska correlations); each needs a
+  committed table before the page is public. Notices 8 to 12 and the
+  snow-station notices were copied from `DATA_SOURCES.md` and are to be
+  confirmed with the read-licence skill before publication; the ERA5-Land
+  hourly entry, the CanSWE paper citation and notice 13 are not on the
+  page yet. The `ACTION_PLAN.md` Methods item stays open until the owner
+  approves the wording.
+- **Fixed a test, not the runner:**
+  `test_main_runs_nothing_when_preflight_fails` called `main("run1")`
+  and failed once `results/tables/run1/` existed, because `main` refuses
+  a filled run folder before it reaches preflight. The test now points
+  `RESULTS` at an empty folder. No result changed; 341 tests pass.
+
 ### 2026-10-12 - run1: the first registered runs
 
 - **Ran the registered tests once, on the owner's go ("start run1"), and

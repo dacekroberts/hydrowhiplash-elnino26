@@ -193,6 +193,69 @@ def winter_series_columns(table: pd.DataFrame, columns: dict[str, str], ylabel: 
     return _save(fig, out)
 
 
+def season_anomaly(table: pd.DataFrame, value: str = "log_burn",
+                   flag: str = "zero_fire") -> pd.DataFrame:
+    """`table` with `anomaly`: `value` minus the region's mean over its
+    seasons with a counted fire. Raw values, not detrended (trend rule:
+    raw values in figures). Zero-fire seasons get NaN: log(1 + 0) = 0 sits
+    about 10 log points under any season with a fire and is drawn as a
+    marker instead of a bar."""
+    out = table.copy()
+    burned = ~out[flag].astype(bool)
+    means = out[burned].groupby("region")[value].mean()
+    out["anomaly"] = (out[value] - out["region"].map(means)).where(burned)
+    return out
+
+
+def fire_season_series(table: pd.DataFrame, index: str, out: Path) -> Path:
+    """One panel per region, every fire season shown as its departure from
+    the region's mean log burned area, seasons after an El Nino winter
+    highlighted. The right axis gives the same departure as a multiple of
+    the region's typical (geometric mean) burned area."""
+    table = season_anomaly(table)
+    regions = list(dict.fromkeys(table["region"]))
+    fig, axes = plt.subplots(len(regions), 1, figsize=(10, 2.1 * len(regions)), sharex=True)
+    for ax, region in zip(axes, regions):
+        g = table[table["region"] == region].sort_values("year")
+        ax.bar(g["year"], g["anomaly"], width=0.8, color=_bar_colours(g), linewidth=0)
+        ax.axhline(0, color=INK, lw=1, ls=(0, (4, 3)))
+        lim = np.nanmax(np.abs(g["anomaly"])) * 1.25
+        ax.set_ylim(-lim, lim)
+        for _, r in g[g["strong"] & (g["phase"] == "el_nino") & g["anomaly"].notna()].iterrows():
+            below = r["anomaly"] < 0
+            ax.annotate(str(int(r["year"])), (r["year"], r["anomaly"]),
+                        xytext=(0, -2 if below else 2), textcoords="offset points", ha="center",
+                        va="top" if below else "bottom", fontsize=7, color=INK, zorder=4,
+                        path_effects=[patheffects.withStroke(linewidth=1.5, foreground="white")])
+        for _, r in g[g["anomaly"].isna()].iterrows():
+            ax.plot(r["year"], -lim * 0.9, marker="v", color=MUTED, ms=5, zorder=4)
+            ax.annotate("no fire of 405 ha or more", (r["year"], -lim * 0.9), xytext=(6, 0),
+                        textcoords="offset points", va="center", fontsize=7, color=MUTED)
+        typical = np.expm1(g.loc[g["anomaly"].notna(), "log_burn"].mean())
+        ax.set_title(f"{region} · typical season {typical:,.0f} ha", loc="left", fontsize=10,
+                     color=INK, fontweight="bold")
+        ax.set_ylabel("log burned area,\ndeparture from mean", fontsize=8)
+        ax.grid(axis="y", color=GRID, lw=0.6)
+        ax.set_axisbelow(True)
+        ax.tick_params(labelsize=8)
+        right = ax.secondary_yaxis("right", functions=(lambda v: v / np.log(10),
+                                                       lambda v: v * np.log(10)))
+        decades = range(int(np.ceil(-lim / np.log(10))), int(np.floor(lim / np.log(10))) + 1)
+        right.set_yticks(list(decades), [f"×{10.0 ** d:g}" for d in decades])
+        right.tick_params(labelsize=7, colors=MUTED)
+        right.spines["right"].set_visible(False)
+    axes[-1].set_xlabel("Fire season (paired with the winter that ends in the same year; "
+                        "California seasons run June to January)", fontsize=8)
+    handles = [Patch(color=OTHER, label="Other seasons"),
+               Patch(color=NINO, label=f"After an El Niño winter (DJF {index} ≥ {EL_NINO_THRESHOLD})"),
+               Patch(color=STRONG, label=f"After a strong one (≥ {STRONG_THRESHOLD}), labelled"),
+               plt.Line2D([], [], color=INK, lw=1, ls=(0, (4, 3)), label="Region's mean")]
+    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8,
+               bbox_to_anchor=(0.5, 0.995))
+    fig.tight_layout(rect=(0, 0, 1, 0.97))
+    return _save(fig, out)
+
+
 def _save(fig, out: Path) -> Path:
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor="white")

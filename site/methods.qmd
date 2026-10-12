@@ -5,12 +5,173 @@ title: "Methods and limitations"
 <!-- Structure adapted from link-station-commercial: limitations are grouped by
      the claim each one constrains, not listed flat, and each one says what the
      data actually measures versus what a reader might assume, quantified where
-     possible. Numbers come from ../results/ via inline Python, never typed. -->
+     possible. Numbers come from ../results/ via inline Python, never typed.
+
+     DRAFT 2026-10-12 (session 9). The prose below was drafted by Claude for
+     the owner to edit and approve; none of it is approved yet. Every number
+     is read from results/tables/ (run1 and site_settings.json) except the
+     ones marked with a dagger, which are typed from DECISIONS.md and the
+     methods register and need a committed table before this page goes
+     public. Also typed: descriptive constants (the 9 km grid, 1,000
+     acres, the season months, the number of regions). -->
+
+```{python}
+#| echo: false
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+
+T = Path("../results/tables")
+S = json.loads((T / "site_settings.json").read_text("utf-8"))
+RUN = "run1"
+reg = pd.read_csv(T / RUN / "registered_tests.csv")
+bes = pd.read_csv(T / RUN / "reported_beside.csv")
+val = pd.read_csv(T / RUN / "validation.csv")
+fire = pd.read_csv(T / "fire_region_year.csv")
+prov = json.loads((T / RUN / "registered_tests.csv.provenance.json").read_text("utf-8"))
+
+
+def num(x, d=2):
+    """Signed number with a true minus sign."""
+    return f"{'−' if x < 0 else '+' if x > 0 else ''}{abs(x):.{d}f}"
+
+
+def pick(test, region, kind=None):
+    t = reg if kind is None else bes[bes["run_kind"] == kind]
+    r = t[(t["test"] == test) & (t["region"] == region)]
+    assert len(r) == 1, (test, region, kind, len(r))
+    return r.iloc[0]
+
+
+def est(test, region, d=2, kind=None):
+    r = pick(test, region, kind)
+    return f"{num(r['estimate'], d)} (95% CI {num(r['ci_low'], d)} to {num(r['ci_high'], d)})"
+
+
+def pc(test, region, kind=None):
+    r = pick(test, region, kind)
+    return f"{num(r['pct_change'], 0)}% (95% CI {num(r['pct_low'], 0)}% to {num(r['pct_high'], 0)}%)"
+
+
+def pv(test, region, col="p", kind=None):
+    x = pick(test, region, kind)[col]
+    return "<0.001" if x < 0.001 else f"{x:.3f}"
+
+
+def size(test, region):
+    return f"{100 * pick(test, region)['size']:.1f}%"
+
+
+n_tests = len(reg)
+n_families = reg["family"].nunique()
+n_sig = int((reg["significant"] == True).sum())
+n_raw = int((reg["p"] < S["alpha"]).sum())
+n_seasons = len(fire)
+n_winters = int(pick("H1", "PNW")["n"])
+n_nino_winters = int(pick("H1", "PNW")["n_group"])
+n_nino_seasons = int(pick("H2", "PNW")["n_group"])
+pnw = fire[fire["region"] == "PNW"]
+n_strong_seasons = int((pnw["strong"] & (pnw["phase"] == "el_nino")).sum())
+n_zero = int(fire["zero_fire"].sum())
+fwd = val[val["method"] == "expanding window"]
+h3a_skill = fwd[fwd["model"] == "H3a"]["skill"]
+swe_skill = fwd[fwd["model"] == "H6_swe"]["skill"]
+loyo = val[(val["method"] == "leave-one-year-out") & (val["model"] == "H3a")]["coverage"]
+fwd_cov = fwd[fwd["model"] == "H3a"]["coverage"]
+sizes = reg["size"].dropna()
+n_fire_years = int(pick("H3a", "PNW")["n"])
+h2_ab = pick("H2", "AB")
+fam = reg.groupby("family").size()
+zero_rows = fire[fire["zero_fire"]]
+us_last = S["fire_last_year_by_region"]["PNW"]
+ca_last = S["fire_last_year_by_region"]["BC"]
+```
+
+::: {.callout-note}
+## Draft, 12 October 2026
+
+This page is a first draft for the author to edit. The numbers are read from
+the committed results of the registered run (`{python} RUN`, written
+`{python} prov["run_utc"][:10]`); the wording is not final.
+:::
+
+## In short
+
+I asked whether the winter before a fire season tells us anything about how
+much burns, and whether El Niño is the useful part of that winter. I fixed
+`{python} n_tests` tests in writing before opening any fire data, then ran
+them once. After correcting for the number of tests,
+`{python} n_sig` of `{python} n_tests` are significant. None of those
+`{python} n_sig` links El Niño itself to burned area. What does show up is
+the step after it: a wet or snowy winter goes with less burned area that
+year in Alberta and Northern California, and in Northern California a wet
+winter goes with more burned area the year after. These are associations
+over about `{python} n_fire_years` seasons, not causes.
 
 ## Method
 
-<!-- Plain-language summary of the analysis plan: data, years, regions, the
-     four headline methods. Link to ANALYSIS_PLAN.md and its commit date. -->
+### The question, and why it is split in two
+
+One El Niño is thought to reach a fire season by two routes. In the north
+(the Pacific Northwest, British Columbia and Alberta) the winter runs warmer
+and drier, the snowpack is thinner, and the forest dries out earlier. In
+Southern California the winter runs wetter, grass grows, and that grass is
+fuel once it cures. So I test the chain in pieces: El Niño to winter
+weather, winter weather to burned area, and El Niño to burned area directly.
+
+### Regions and years
+
+Seven regions: the Pacific Northwest (Washington, Oregon, Idaho), British
+Columbia, Alberta, Alaska, Yukon, and California split at `{python} S["ca_split_lat"]`°N into
+Northern and Southern California. Alaska and Yukon were added partway
+through and form their own group in the tests. Each region is a whole state,
+province or territory, so wet coasts that rarely burn sit inside the climate
+averages (see the limitations).
+
+Climate runs from `{python} S["climate_first_year"]` to 2026, which gives
+`{python} n_winters` winters. Fire runs from `{python} S["fire_first_year"]`
+to `{python} us_last` in the US regions and to `{python} ca_last` in the
+Canadian ones, where the fire polygons end: `{python} n_seasons`
+region-seasons in all. I analyse every year. El Niño years are compared with
+all the others, never studied alone.
+
+A year label means the same thing everywhere: year Y is the winter from
+December Y−1 to February Y, the snowpack on 1 April Y, and the fire season
+of Y. The 1997-98 El Niño is year 1998.
+
+### What is measured
+
+- **El Niño.** NOAA's relative Oceanic Niño Index (`{python} S["enso_index"]`)
+  for December to February. It is the sea-surface temperature anomaly in the
+  central Pacific minus the warming of the whole tropical belt, so 1950 and
+  2026 are judged on one scale. A winter at or above
+  `{python} S["el_nino_threshold"]` °C is an El Niño winter
+  (`{python} n_nino_winters` of `{python} n_winters`; `{python} n_nino_seasons`
+  in the fire record), and at or above `{python} S["strong_threshold"]` °C a
+  strong one (`{python} n_strong_seasons` in the fire record). Every test
+  that uses the index is repeated with the older
+  `{python} S["enso_robustness_index"]`.
+- **Winter weather and snow.** ERA5-Land, a reanalysis: a land model driven
+  by observation-corrected weather on a grid of about 9 km. It is a model
+  estimate, not a gauge. From it I take December to February precipitation,
+  October to March precipitation as a standard score against
+  `{python} S["precip_anom_normal_years"][0]`-`{python} S["precip_anom_normal_years"][1]`,
+  the snowpack (snow water equivalent) on 1 April as a standard score,
+  June to August temperature, and SPEI-3, a drought index that sets three
+  months of precipitation against how much water the air could draw.
+  Regional means weight each grid cell by its area.
+- **Burned area.** Hectares burned in each region's fire season by fires of
+  `{python} S["min_fire_ha"]` ha or more. US regions use MTBS, satellite-mapped
+  burn boundaries, for ignitions before `{python} S["mtbs_wfigs_cutover"][:4]`,
+  and WFIGS incident perimeters from then on, because MTBS mapping lags by
+  about two years. Canadian regions use the Canadian National Fire Database
+  (CNFDB). I measure area myself in an equal-area projection and do not use
+  the sources' own area fields. The tests use the natural log of burned
+  area, so a slope reads as a percent change.
+
+The flowchart shows how these are joined.
 
 <!-- Methods flowchart (D74): two layouts of one diagram, as on the home page
      (wide from 576 px up, narrow below). Drawn by src/diagrams.py, read from
@@ -37,10 +198,316 @@ SVG(filename="../results/figures/methods_flow_narrow.svg")
 
 *[Draft caption] From sources to the site's charts: what is measured, where it is joined and where it is tested.*
 
+### Tests fixed before the data
+
+I wrote the hypotheses, the test for each, its direction and how the
+p-values would be corrected, and froze that plan on
+`{python} S["plan_frozen_date"]` (commit `{python} S["plan_frozen_commit"]`)
+before downloading any fire data. Pre-registering matters here because a
+record of `{python} n_fire_years` seasons can be made to say almost anything if the tests are
+chosen after looking. Changes after the freeze are logged in the plan with
+what had been seen at the time; four fire-record rules changed that way,
+which is why every burned-area test is also run under the rules as frozen.
+
+| Test | Hypothesis as registered | How it is tested |
+|---|---|---|
+| H1 | Winter precipitation differs in El Niño winters vs the rest | Difference in means after removing each region's trend; permutation test, bootstrap interval |
+| H2 | Fire-season burned area differs after El Niño winters vs the rest | The same, on log burned area |
+| H3a | Total effect: ENSO strength predicts burned area, controlling for the long-term trend only | Regression of log burned area on the winter index and year |
+| H3b | Direct effect: ENSO strength still predicts burned area after also controlling for summer temperature | H3a with June to August temperature added |
+| H4 | El Niño's effect on burned area differs between northern regions and SoCal | One pooled model; the mean northern slope minus Southern California's |
+| H5 | Wet years raise burned area afterwards (whiplash mechanism) | Regression on October to March precipitation of the same year and the year before |
+| H6 | Low April 1 snowpack and a dry winter predict more burned area | Regressions on the snowpack score and on winter SPEI-3 |
+| C1, C2 | Secondary: El Niño's effect on snowpack, and on burned area, changes over time | Regression with an El Niño × year term |
+
+Each test has a registered direction. Where the direction was predicted (for
+example, more burned area in the north after El Niño), the test is
+one-sided: only a result in that direction can count, and a result the other
+way gets a p-value above 0.5. Everything else is two-sided. Confidence
+intervals are always two-sided.
+
+### How the tests work
+
+- **Permutation test (H1, H2).** Shuffle which years carry the El Niño
+  label `{python} f"{S['n_permutations']:,}"` times and count how often the
+  shuffled difference is at least as large as the real one. It assumes
+  nothing about the shape of the data.
+- **Regression with Newey-West errors (H3, H5, H6, C1, C2).** Ordinary least
+  squares, with standard errors that allow a season to resemble the
+  `{python} S["hac_maxlags"]` before it. A year term takes out the long-term
+  trend, so a region that simply burns more each decade does not pass for an
+  El Niño effect.
+- **Pooled contrast (H4).** Five regions in one model with errors that allow
+  regions to move together within a year (Driscoll-Kraay), tested as one
+  number.
+- **Correction for many tests.** Within each hypothesis I use the Holm
+  correction, which holds the chance of even one false positive in that
+  family of tests to `{python} f"{100 * S['alpha']:.0f}"`%. There are
+  `{python} n_families` families. I also show the more lenient
+  Benjamini-Hochberg figure; a result that passes it but not Holm is
+  suggestive at most.
+- **Prediction checks.** Each model predicts every season it has not seen,
+  two ways: leaving one year out, and fitting only on earlier seasons
+  (from `{python} S["forward_min_train_years"]` seasons on). I report how
+  often the `{python} S["prediction_level_pct"]`% prediction interval held
+  the real value, and whether the model beat a model with the year trend
+  alone.
+
+### What the run did
+
+The run checked that the working tree was clean, that every input file
+matched its recorded checksum, and that the frozen plan text was
+unchanged. It then computed all `{python} n_tests` tests and the runs
+reported beside them in one pass and wrote the tables once. The result
+files are never edited. If a bug is found, the fix is logged as decided
+after results were seen, the rerun goes in a new folder, and both sets of
+numbers are shown.
+
+## What the tests found
+
+Effect sizes first. Slopes on burned area are in log points; the percent is
+the same slope read as a change in burned area.
+
+- **El Niño and winter precipitation (H1).** Southern California is wetter
+  in El Niño winters by `{python} est("H1", "SoCal", 0)` mm, and that
+  survives correction (Holm p `{python} pv("H1", "SoCal", "p_holm")`). This
+  one is a check, not a finding: I had seen these values before the freeze.
+  In the north only Alberta is clearly drier,
+  `{python} est("H1", "AB", 0)` mm, and that does not survive correction
+  (Holm p `{python} pv("H1", "AB", "p_holm")`).
+- **El Niño and burned area (H2, H3a, H3b, H4).** No test is significant in
+  any region, before or after correction. The H3a slope per 1 °C of the index
+  is `{python} est("H3a", "PNW")` in the Pacific Northwest,
+  `{python} est("H3a", "BC")` in British Columbia,
+  `{python} est("H3a", "AB")` in Alberta and
+  `{python} est("H3a", "SoCal")` in Southern California. The north minus
+  Southern California contrast is
+  `{python} est("H4", "PNW/BC/AB minus SoCal")`.
+- **Wet winters (H5).** In Alberta a winter one standard deviation wetter
+  goes with `{python} pc("H5_lag0", "AB")` burned area that year (Holm p
+  `{python} pv("H5_lag0", "AB", "p_holm")`). In Northern California it goes
+  with `{python} pc("H5_lag1", "NorCal")` the following year (Holm p
+  `{python} pv("H5_lag1", "NorCal", "p_holm")`). In Southern California,
+  where I expected the next-year effect to be strongest, the slope is
+  `{python} est("H5_lag1", "SoCal")` and not significant.
+- **Snowpack and winter drought (H6).** All eight slopes outside Southern
+  California are negative, the predicted direction. One survives correction:
+  Northern California, `{python} pc("H6_swe", "NorCal")` per standard
+  deviation of snowpack (Holm p `{python} pv("H6_swe", "NorCal", "p_holm")`).
+  Alberta's snowpack slope, `{python} est("H6_swe", "AB")`, passes the
+  lenient correction but not Holm (p `{python} pv("H6_swe", "AB", "p_holm")`).
+- **Change over time (C1, C2).** None of the `{python} int(fam["C1"] + fam["C2"])` tests is significant.
+
+Before any correction, `{python} n_raw` of `{python} n_tests` tests fall
+under p `{python} S["alpha"]`. They are not `{python} n_raw` separate
+signals: Alberta accounts for several of them, and snowpack and winter SPEI
+measure much the same thing.
+
+## Every test, including nulls
+
+```{python}
+#| echo: false
+#| output: asis
+ALT = {"greater": "> 0", "less": "< 0", "two-sided": "≠ 0"}
+lines = ["| Test | Region | Predicted | Estimate | 95% CI | Change | p | Holm p | After Holm |",
+         "|---|---|---|---:|---|---:|---:|---:|---|"]
+for _, r in reg.iterrows():
+    d = 1 if r["test"] == "H1" else 4 if r["test"] in ("C1", "C2") else 2
+    change = "" if pd.isna(r["pct_change"]) else f"{num(r['pct_change'], 0)}%"
+    p = "<0.001" if r["p"] < 0.001 else f"{r['p']:.3f}"
+    ph = "<0.001" if r["p_holm"] < 0.001 else f"{r['p_holm']:.3f}"
+    verdict = "**significant**" if r["significant"] == True else "not significant"
+    lines.append(f"| {r['test'].replace('_', ' ')} | {r['region']} | {ALT[r['alternative']]} | "
+                 f"{num(r['estimate'], d)} | {num(r['ci_low'], d)} to {num(r['ci_high'], d)} | "
+                 f"{change} | {p} | {ph} | {verdict} |")
+print("\n".join(lines))
+```
+
+Units: H1 in mm of December to February precipitation, El Niño winters minus
+the rest. H2 in log points of burned area, El Niño seasons minus the rest.
+H3 and H4 in log points per 1 °C of the winter index. H5 and H6 in log
+points per standard deviation of the predictor. C1 and C2 per year. The
+p-value is in the registered direction.
+
+## What was filtered out
+
+- **Small fires.** Only fires of `{python} S["min_fire_ha"]` ha (1,000
+  acres) or more count, in every region, because that is the size MTBS maps
+  in the West. The floor applies to the whole fire before it is cut to a
+  region. Regions where burned area comes mostly from smaller fires are
+  undercounted.
+- **Prescribed fire.** Dropped from all three sources.
+- **Fires outside the season.** A fire counts by its ignition date:
+  June to October in the Pacific Northwest, April to October in British
+  Columbia and Alberta, April to September in Alaska and Yukon, and June to
+  the following January in California.
+- **Overlapping perimeters.** Counted once. Summing them had counted
+  127,000 ha† twice.
+- **Glacier and permanent-snow cells.** Left out of the snowpack and SPEI
+  means, where they would swamp the seasonal signal.
+- **Snow stations.** Back-estimated and suspect values dropped; a site filed
+  under two IDs counted once.
+- **Seasons with no counted fire.** Kept as zero. There is
+  `{python} n_zero`: `{python} zero_rows["region"].iloc[0]` in `{python} int(zero_rows["year"].iloc[0])`. The tests were repeated
+  with it handled the other way.
+
+## Limitations
+
+### "El Niño years differ from the rest" (H1, H2)
+
+**The sample is small.** The fire record holds `{python} n_nino_seasons` El
+Niño seasons and `{python} n_strong_seasons` strong ones. A reader might
+take "no difference found" as "no difference". The interval says otherwise:
+for Alberta the H2 difference is `{python} est("H2", "AB")` log points, which
+covers anything from `{python} f"{np.exp(h2_ab['ci_low']):.1f}"` to `{python} f"{np.exp(h2_ab['ci_high']):.1f}"` times the
+area of other years. The strong-only comparisons
+rest on `{python} n_strong_seasons` seasons and are exploratory.
+
+**The answer depends on the index in one region.** In the Pacific Northwest
+the H2 difference is `{python} est("H2", "PNW")` under
+`{python} S["enso_index"]` and `{python} est("H2", "PNW", kind="oni_robustness")`
+under `{python} S["enso_robustness_index"]`. The two indices class 17 of 76
+winters† differently. Neither result is significant, but the sign is not
+settled.
+
+**Winter precipitation was seen before the freeze.** H1 is a check that the
+data behave as the literature says, not a discovery.
+
+### "El Niño strength drives burned area" (H3)
+
+**A null result here is weak evidence.** British Columbia's H3a interval
+runs from `{python} f"{num(pick('H3a', 'BC')['pct_low'], 0)}%"` to
+`{python} f"{num(pick('H3a', 'BC')['pct_high'], 0)}%"` burned area per 1 °C.
+That is compatible with no effect and with a large one. What the test rules
+out is a strong, reliable link, not any link.
+
+**The index adds nothing to prediction.** Against a model with the year
+trend alone, adding the index changes out-of-sample skill by
+`{python} num(h3a_skill.min(), 3)` to `{python} num(h3a_skill.max(), 3)`
+across the seven regions. Zero means no better than the trend.
+
+**The trend term stands in for everything that changed.** Warming, fuel
+build-up, suppression policy, land use and how fires are mapped are all
+folded into one straight line per region. If any of them moved in step with
+El Niño winters by chance, the model cannot tell.
+
+**The robust tests run slightly hot.** On simulated data with no effect,
+these tests reject between `{python} f"{100 * sizes.min():.1f}"`% and
+`{python} f"{100 * sizes.max():.1f}"`% of the time where 5% would be exact.
+The measured rate is printed beside each result in the results tables. It
+makes a borderline p-value a little less convincing; it does not touch the
+nulls.
+
+### "The north responds differently from California" (H4)
+
+**The two sides are measured differently.** US burned area comes from
+satellite mapping and incident perimeters, Canadian burned area from agency
+polygons. Where MTBS and WFIGS both hold a fire, WFIGS area is a median 0.96
+to 0.98† of MTBS's. For Canada I compared CNFDB with a second national
+product (NBAC): 2.0% to 3.1%† of NBAC's burned area sits in fires CNFDB does
+not hold at all. I did not rerun the tests on NBAC; I report the gap.
+
+**Known holes in the Canadian record.** CNFDB holds no national-park fire
+of counted size in these regions for 2016 to 2021†, which matters for
+Alberta in 2016 to 2019 (Wood Buffalo).
+The tests were repeated with the park area added from NBAC: Alberta's H3a
+slope is `{python} est("H3a", "AB", kind="parks_nbac")` against
+`{python} est("H3a", "AB")`. Fires on two military bases in Alberta are in
+no year of the record: about 1%† of the province's counted burned area.
+
+**Different end years.** The pooled model stops at
+`{python} S["pooled_last_year"]` for all five regions so that the Canadian
+and US series cover the same seasons.
+
+### "Wet years set up later fires" (H5, H6)
+
+**A lagged association is evidence for the mechanism, not proof of it.** A
+wet winter is followed by more burned area in Northern California a year on.
+Grass growth is one explanation. I measured the rain and the burned area,
+not the grass.
+
+**The effect appeared where I did not predict it.** I registered the
+next-year effect as strongest in Southern California. It is
+`{python} est("H5_lag1", "SoCal")` there and
+`{python} est("H5_lag1", "NorCal")` in Northern California. A result in an
+unpredicted place deserves more caution, not less.
+
+**Large families cost power.** H5 holds `{python} int(fam["H5"])` tests and H6 `{python} int(fam["H6"])`, so the Holm
+bar is high. Northern California's same-year slope
+(p `{python} pv("H5_lag0", "NorCal")`) and Alberta's snowpack slope
+(p `{python} pv("H6_swe", "AB")`) fail it. That was the registered price of
+testing every region; I am not revisiting it.
+
+**The snowpack is a model's.** ERA5-Land snow is not measured snow. Against
+snow stations the regional series correlate at 0.78 to 0.95†. Repeating H6
+on the station index gives
+`{python} est("H6_swe", "PNW", kind="station_z")` in the Pacific Northwest
+against `{python} est("H6_swe", "PNW")` from ERA5-Land. Stations sit high,
+and in the Pacific Northwest the El Niño snow loss is at low elevations.
+
+**Alberta's snowpack slope moves with the fire rules.** Under the fire
+rules as first frozen it is `{python} est("H6_swe", "AB", kind="frozen_rules")`
+against `{python} est("H6_swe", "AB")` in the main run. The sign holds; the
+size does not.
+
+**Region averages include places that rarely burn.** Alaska's winter
+precipitation averages in a wet coast far from the interior fires. In the
+interior alone, winter precipitation tracks the statewide series at a
+correlation of 0.79†, and temperature at 0.98†.
+
+### "The 2027 forecast"
+
+**The registered forecast model has shown no skill.** The plan says the
+2027 forecast comes from the H3a model. On past seasons that model did no
+better than the trend alone (above). Its
+`{python} S["prediction_level_pct"]`% intervals held the real value in
+`{python} f"{100 * loyo.min():.0f}"`% to
+`{python} f"{100 * loyo.max():.0f}"`% of seasons when one year was left out,
+and in `{python} f"{100 * fwd_cov.min():.0f}"`% to
+`{python} f"{100 * fwd_cov.max():.0f}"`% when fitted only on earlier
+seasons. So the intervals hold up when one year is left out, can be too
+narrow when the model only sees the past, and are wide either way: they
+say little more than "a typical season, give or take".
+
+**The snowpack model does slightly better.** Its skill against the trend
+ranges from `{python} num(swe_skill.min(), 3)` to
+`{python} num(swe_skill.max(), 3)`. That is small, and I saw it after the
+results, so anything built on it would be exploratory.
+
+**What would make the forecast wrong.** A winter outside the range of the
+record; a summer that overrides the winter, as heat domes and lightning
+outbreaks do; ignitions, which no winter variable carries. The drought
+index is also sensitive to warmth in a way that may overstate dryness in a
+warm, wet Southern California winter.
+
+### What the whole analysis cannot say
+
+- Burned area is not fire risk to people. It says nothing about where fires
+  burn, how severe they are, or what they destroy.
+- Seven large regions hide what happens within them.
+- Everything here is association over about 42 seasons. Nothing shows that
+  El Niño, or a dry winter, causes a given fire season.
+
 ## Data sources and attribution
 
 <!-- One line per source from DATA_SOURCES.md, plus every required notice,
-     verbatim. -->
+     verbatim. DRAFT: notices 4 to 12 below were copied from DATA_SOURCES.md
+     on 2026-10-12 because this page now shows fire values and station
+     checks. Before publication: confirm each against the publisher with
+     the read-licence skill, fill the MTBS access line if the file came from
+     Direct Download, and add the access dates. -->
+
+| Source | Used for | Terms |
+|---|---|---|
+| NOAA CPC, ONI and RONI | El Niño index per winter | US Government work |
+| ERA5-Land monthly and hourly (Copernicus, ECMWF) | Precipitation, temperature, snowpack, SPEI | CC-BY 4.0 |
+| MTBS (USGS and USDA Forest Service) | US burned area, ignitions to 2023 | Public domain |
+| WFIGS Interagency Fire Perimeters (NIFC) | US burned area from 2024 | Public domain |
+| Canadian National Fire Database (NRCan) | Canadian burned area | Open Government Licence – Canada; BC polygons Open Government Licence – British Columbia |
+| National Burned Area Composite (NRCan) | Park area for one sensitivity run; coverage comparison | Open Government Licence – Canada |
+| NRCS SNOTEL and snow courses (USDA) | Snow station check | Public domain |
+| BC snow surveys; Yukon snow surveys; CanSWE (ECCC) | Snow station check | Open Government Licences of BC, Yukon and Canada |
+| Natural Earth | Region boundaries | Public domain |
 
 ### Required notices
 
@@ -67,49 +534,86 @@ equivalent) were subset to the study domains, converted to millimetres and
 degrees Celsius, averaged over each study region with cos(latitude) area
 weights, and aggregated into seasonal totals, means and anomalies.
 
+<!-- ERA5-Land hourly (1 April snowpack): its catalogue entry and attribution
+     (DATA_SOURCES.md notice 2, second half) still to be added here. -->
+
 <!-- ONI/RONI (NOAA CPC): no credit line required. Add the 17 U.S.C. 403
      statement (DATA_SOURCES.md, notice 1) once a published table or figure
      consists predominantly of CPC index values. -->
 
-## What was filtered out
+**MTBS burned-area boundaries**
 
-<!-- Fires under 405 ha, months outside each fire window, and why. -->
+U.S. Geological Survey, USDA Forest Service, and Nelson, K., 2021,
+Monitoring Trends in Burn Severity (ver. 12.0, April 2025): U.S. Geological
+Survey data release, <https://doi.org/10.5066/P9IED7RZ>. Credit: Monitoring
+Trends in Burn Severity Project (U.S. Geological Survey and USDA Forest
+Service). Represented features may not be in an accurate geographic
+location.
 
-## Limitations
+**WFIGS Interagency Fire Perimeters**
 
-<!-- One group per claim. For each: what the data measures, what a reader
-     might assume, the size of the gap, and what was done about it. -->
+> The National Interagency Fire Center shall not be held liable for improper
+> or incorrect use of the data described and/or contained herein. [...] The
+> National Fire Center gives no warranty, expressed or implied, as to the
+> accuracy, reliability, or completeness of these data. [...] This
+> disclaimer applies both to individual use of the data and aggregate use
+> with other data.
 
-### "El Niño years differ from the rest" (H1, H2)
+WFIGS Interagency Fire Perimeters, Wildland Fire Interagency Geospatial
+Services, National Interagency Fire Center
+(data-nifc.opendata.arcgis.com), accessed 2026-10-07.
 
-<!-- Small sample: about 10 El Niño years in the fire record. -->
+**Canadian National Fire Database and National Burned Area Composite**
 
-### "El Niño strength drives burned area" (H3)
+Canadian Forest Service. Canadian National Fire Database – Agency Fire Data.
+Natural Resources Canada, Canadian Forest Service, Northern Forestry Centre,
+Edmonton, Alberta. <https://cwfis.cfs.nrcan.gc.ca>.
 
-<!-- Total vs direct effect; trend control; fire suppression and land-use
-     change are not modelled. -->
+Canadian Forest Service. National Burned Area Composite (NBAC). Natural
+Resources Canada, Canadian Forest Service, Northern Forestry Centre,
+Edmonton, Alberta. <https://cwfis.cfs.nrcan.gc.ca>. Release v20260513.
 
-### "The north responds differently from California" (H4)
+Contains information licensed under the
+[Open Government Licence – Canada](https://open.canada.ca/en/open-government-licence-canada).
 
-<!-- US and Canadian fire records come from different agencies. -->
+Contains information licensed under the
+[Open Government Licence – British Columbia](https://www2.gov.bc.ca/gov/content/data/policy-standards/open-data/open-government-licence-bc).
 
-### "Wet years set up later fires" (H5)
+**Snow stations**
 
-<!-- A lagged association is evidence for the mechanism, not proof of it. -->
+Snow station data: U.S. Department of Agriculture, Natural Resources
+Conservation Service. Contains information licensed under the
+[Open Government Licence – British Columbia](https://www2.gov.bc.ca/gov/content?id=A519A56BC2BF44E4A008B33FCF527F61),
+the
+[Open Government Licence – Yukon](https://yukon.ca/en/your-government/open-government/open-government-licence-yukon)
+and the
+[Open Government Licence – Canada](https://open.canada.ca/en/open-government-licence-canada).
 
-### "The 2027 forecast"
-
-<!-- Prediction intervals and their past coverage; what would make the
-     forecast wrong. -->
-
-## Every test, including nulls
-
-<!-- Table of all pre-registered tests: effect, CI, raw p, corrected p. -->
+<!-- CanSWE paper citation (ledger row) and the Alaska climate divisions
+     citation (notice 13, needed because the Interior Alaska numbers appear
+     above) still to be added. -->
 
 ## What a fuller version would add
 
-<!-- La Niña, a prediction model, more regions. -->
+- **La Niña.** The labels exist in every table; the tests here look only at
+  El Niño.
+- **A prediction model** trained on every year and checked on years it has
+  not seen, which is a different thing from the tests on this page.
+- **Finer regions**, starting with Interior Alaska and the dry interior of
+  British Columbia, so that the climate average matches where fires burn.
+- **Climate projections** for whether the winter signal is changing; the
+  historical tests for that (C1, C2) were too short to say.
+- **The check that matters:** the 2027 season itself, compared with what
+  this page said in advance.
 
 ## AI use
 
-<!-- How AI tools were used, and what was verified by hand. -->
+<!-- DRAFT for the owner to write. Facts on record: the code, tests and
+     figures were written with Claude Code under the owner's direction and
+     decisions (DECISIONS.md); read-only audits were run in separate cold
+     sessions before any result; one read-only review of the run code used
+     DeepSeek on copies holding no data (2026-10-12). What the owner
+     verified by hand is the owner's to state. -->
+
+† Typed from the project's decision log and methods register, not yet read
+from a committed table. To be replaced before this page is published.
