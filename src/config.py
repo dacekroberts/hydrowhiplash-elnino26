@@ -590,4 +590,4 @@ PRED_NO_SNOW_REGIONS = ("SoCal",)
 PRED_GROUPS = {"all seven": tuple(REGIONS),
                "AK and YT": tuple(r for r, role in REGIONS.items() if role == "north"),
                "other five": tuple(r for r, role in REGIONS.items() if role != "north")}
-PRED_RUN = "prediction_v1"    # results/tables/<PRED_RUN>[_<label>]/
+PRED_RUN = "prediction_v1"    # results/tables/<PRED_RUN>/<label>/

@@ -222,7 +222,7 @@ def test_runs_are_labelled_and_the_forecast_run_has_no_summer_predictor():
     frame = prediction.prediction_frame(*_tables())
     frame.loc[0, "zero_fire"] = True
     runs = prediction.runs(frame)
-    assert set(runs) == {"", "hindsight", "no_zero_fire"}
-    assert "temp_jja" not in runs[""][1] and "temp_jja" not in runs["no_zero_fire"][1]
+    assert set(runs) == {"forecast", "hindsight", "no_zero_fire"}
+    assert "temp_jja" not in runs["forecast"][1] and "temp_jja" not in runs["no_zero_fire"][1]
     assert "temp_jja" in runs["hindsight"][1]
     assert len(runs["no_zero_fire"][0]) == len(frame) - 1

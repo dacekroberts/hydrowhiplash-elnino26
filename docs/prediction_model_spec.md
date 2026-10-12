@@ -111,8 +111,8 @@ fit"; D\?a). Values live in `src/config.py` (`PRED_*`).
 
 ## Outputs
 
-`results/tables/prediction_v1/` (the forecast run),
-`prediction_v1_hindsight/` and `prediction_v1_no_zero_fire/`, each with
+`results/tables/prediction_v1/`, with a sub-folder per run (`forecast/`,
+`hindsight/`, `no_zero_fire/`), each with
 `predictions.csv`, `skill.csv` and `coefficients.csv`, written by
 `python -m src.prediction` through `src.run_guard.write_result` with a
 provenance record beside each table.

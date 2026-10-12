@@ -39,7 +39,7 @@ additions stay distinguishable from the original plan.
   2014 is kept and a third run without it is added; the 80% interval and
   the interval on skill each needed a method (a shrunken model has no
   textbook formula); the trend is one per region, not one shared. The
-  hindsight run and this third run make three output folders, not two.
+  hindsight run and this third run make three labelled runs, not two.
 - **Why:** the scope was written from `run1`'s tables without checking
   each predictor's coverage per region.
 - **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model: settings

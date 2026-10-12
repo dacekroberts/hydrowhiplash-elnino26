@@ -12,7 +12,7 @@ penalty the model is the trend-only baseline exactly, so skill against that
 baseline measures what the predictors add and nothing else.
 
 Reads only committed tables in results/tables/ (through
-pin_inputs.load_input) and writes to results/tables/<PRED_RUN>[_<label>]/
+pin_inputs.load_input) and writes to results/tables/<PRED_RUN>/<label>/
 through run_guard.write_result, which never overwrites.
 
 Usage:
@@ -313,11 +313,11 @@ def beats_trend(skill: pd.DataFrame, scope: str = "all seven") -> bool:
 # --- runs ---------------------------------------------------------------------
 
 def runs(frame: pd.DataFrame) -> dict[str, tuple[pd.DataFrame, tuple[str, ...]]]:
-    """Folder suffix -> (frame, predictors). "" is the forecast run;
+    """Label -> (frame, predictors). "forecast" is the forecast run;
     "hindsight" adds June to August temperature and cannot forecast;
     "no_zero_fire" is the forecast run without the zero-fire seasons, in
     training and in scoring (SoCal 2014)."""
-    return {"": (frame, PRED_PREDICTORS),
+    return {"forecast": (frame, PRED_PREDICTORS),
             "hindsight": (frame, PRED_HINDSIGHT_PREDICTORS),
             "no_zero_fire": (frame[~frame["zero_fire"].astype(bool)], PRED_PREDICTORS)}
 
@@ -325,17 +325,18 @@ def runs(frame: pd.DataFrame) -> dict[str, tuple[pd.DataFrame, tuple[str, ...]]]
 def main() -> None:
     names = [INPUTS[k] for k in TABLES]
     frame = prediction_frame(*(load_input(name) for name in names))
-    for suffix, (data, predictors) in runs(frame).items():
-        run = f"{PRED_RUN}_{suffix}" if suffix else PRED_RUN
+    # one run folder with a sub-folder per label, so run_guard reads the
+    # labels as one run and none marks the next as written from a dirty tree
+    for label, (data, predictors) in runs(frame).items():
         pred, coefs = expanding_forecast(data, predictors)
         skill = skill_table(pred)
         for name, table in zip(OUTPUTS, (pred, skill, coefs)):
-            table.insert(0, "run", suffix or "forecast")
-            run_guard.write_result(table, name, run, inputs=names)
-        print(f"\n{run}: predictors {', '.join(predictors)}")
+            table.insert(0, "run", label)
+            run_guard.write_result(table, f"{label}/{name}", PRED_RUN, inputs=names)
+        print(f"\n{PRED_RUN}/{label}: predictors {', '.join(predictors)}")
         print(skill[["scope", "years", "n", "skill", "skill_low", "skill_high", "coverage",
                      "bss_base", "bss_trend"]].round(3).to_string(index=False))
-        if not suffix:
+        if label == "forecast":
             print(f"Version 2 rule (interval on pooled skill above zero): {beats_trend(skill)}")
 
 
