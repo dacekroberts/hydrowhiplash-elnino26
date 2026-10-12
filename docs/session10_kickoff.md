@@ -78,7 +78,8 @@ is the prompt to paste into a new Claude Code session in the main checkout.
   owner's word; all were computed in `run1`. The full-record view is
   built (`results/figures/burned_area_anomaly_series_roni.png`). Open in
   Phase 4: the Methods and limitations section. A full draft is in
-  `site/methods.qmd`, marked as a draft; it waits on the owner's edit
+  `site/methods.qmd`, marked as a draft (private reading copy:
+  https://claude.ai/artifact/1eLGjcTZLfa6seLUq4xJqf); it waits on the owner's edit
   and approval, on committed tables for the eight numbers marked with a
   dagger, and on the notices being confirmed with the read-licence
   skill (`DECISIONS.md` 2026-10-12 "Full-record burned-area view").
