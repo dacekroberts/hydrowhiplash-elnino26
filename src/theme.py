@@ -105,6 +105,28 @@ ol.timetable .chip { font-family: var(--font-sans); font-size: 0.72rem; font-wei
 ol.timetable li:not(.next) .chip { display: none; }
 @media (max-width: 575px) { ol.timetable > li { grid-template-columns: 18px minmax(0, 1fr); }
   ol.timetable .what, ol.timetable .then { grid-column: 2; } }
+div.overview { display: grid; grid-template-columns: repeat(auto-fit, minmax(13.5rem, 1fr));
+  gap: var(--space-4) var(--space-6); margin-top: var(--space-4); margin-bottom: var(--space-6);
+  padding: var(--space-4) 0 var(--space-2); border-top: var(--stroke-mark) solid var(--evergreen);
+  border-bottom: 1px solid var(--rule); }
+div.overview > div { min-width: 0; }
+div.overview p.ov { font-family: var(--font-display); font-weight: 700; font-size: 1rem;
+  margin: 0 0 var(--space-2); padding-bottom: var(--space-1); border-bottom: 1px solid var(--rule); }
+div.overview ul { margin: 0; padding-left: 1.1rem; font-size: 0.92rem; }
+div.overview li { margin-bottom: var(--space-2); max-width: none; }
+div.overview i.sw { display: inline-block; width: 9px; height: 9px; border-radius: 50%;
+  margin-right: 6px; background: var(--rule-strong); }
+div.overview i.sw.fire { background: var(--fire); }
+div.overview i.sw.water { background: var(--water); }
+div.overview i.sw.snow { background: var(--snow); }
+div.overview i.sw.temp { background: var(--temp-warm-2); }
+div.overview i.sw.enso { background: var(--enso); }
+div.waiting { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: var(--space-3);
+  align-items: baseline; padding: var(--space-3) var(--space-4); background: var(--surface);
+  border: 1px dashed var(--rule-strong); border-radius: var(--radius-md); }
+div.waiting p { margin: 0; max-width: none; }
+div.waiting .num { font-family: var(--font-mono); font-size: 0.8125rem; }
+@media (max-width: 575px) { div.waiting { grid-template-columns: 1fr; gap: 2px; } }
 """
 
 

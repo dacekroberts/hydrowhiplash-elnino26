@@ -3,7 +3,82 @@ title: "What past El Niños suggest for the 2027 fire season"
 ---
 
 <!-- Skeleton for the explainer page. Fill each section as its phase finishes;
-     figures come from ../results/. Preview with: quarto preview site -->
+     figures come from ../results/. Preview with: quarto preview site
+
+     DRAFT 2026-10-12 (session 11). The overview panel, the winter rain
+     caption and the two waiting notes were drafted by Claude for the owner
+     to edit and approve. Every number and date is read from results/tables/
+     (run1, site_settings.json, rollout_calendar.json); none is typed. -->
+
+```{python}
+#| echo: false
+import json
+from pathlib import Path
+
+import pandas as pd
+
+T = Path("../results/tables")
+S = json.loads((T / "site_settings.json").read_text("utf-8"))
+CAL = {row["id"]: row for row in json.loads((T / "rollout_calendar.json").read_text("utf-8"))["items"]}
+reg = pd.read_csv(T / "run1" / "registered_tests.csv")
+n_tests = len(reg)
+n_sig = int((reg["significant"] == True).sum())
+n_regions = len(S["regions"])
+n_fire_years = int(reg[(reg["test"] == "H3a") & (reg["region"] == "PNW")]["n"].iloc[0])
+NEXT = next(row for row in CAL.values() if row["reader"] and not row["done"])
+```
+
+## Overview
+
+I asked whether the winter before a fire season says how much will burn, and
+whether El Niño is the useful part of that winter. I fixed
+`{python} n_tests` tests in writing on `{python} CAL["plan_frozen"]["when"]`,
+before opening any fire data, and ran them once. `{python} n_sig` are
+significant after correcting for the number of tests, and none of those links
+El Niño itself to burned area. A forecast for `{python} S["forecast_year"]`
+goes up before the season and is checked against it afterwards.
+
+::::: {.overview .column-body-outset}
+:::: {}
+<p class="ov">Data areas</p>
+
+- <i class="sw fire"></i>**Burned area.** Hectares burned each fire season by
+  fires of `{python} S["min_fire_ha"]` ha or more, from `{python} S["fire_first_year"]`.
+- <i class="sw water"></i>**Winter rain.** December to February and October
+  to March precipitation, from `{python} S["climate_first_year"] + 1`.
+- <i class="sw snow"></i>**Snowpack.** Snow on the ground on 1 April, with
+  snow stations as a check.
+- <i class="sw temp"></i>**Temperature.** Summer and spring means, and a
+  drought index built from them.
+- <i class="sw enso"></i>**El Niño.** NOAA's `{python} S["enso_index"]` for
+  each winter.
+::::
+
+:::: {}
+<p class="ov">Regions covered</p>
+
+- **North:** Pacific Northwest (Washington, Oregon, Idaho), British Columbia,
+  Alberta.
+- **Far north:** Alaska, Yukon.
+- **California:** split at `{python} S["ca_split_lat"]`°N into Northern and
+  Southern.
+- `{python} n_regions` regions in all, each a whole state, province or
+  territory.
+::::
+
+:::: {}
+<p class="ov">Hypotheses and why</p>
+
+- **Two routes.** In the north an El Niño winter runs warm and dry, so less
+  snow and an earlier fire season. In Southern California it runs wet, so
+  more grass to burn.
+- **Tested in pieces.** El Niño to winter weather, winter weather to burned
+  area, and El Niño to burned area directly.
+- **Fixed first.** With about `{python} n_fire_years` seasons a record can be
+  made to say almost anything, so the tests were written down before the
+  fire data was opened.
+::::
+:::::
 
 ## Two pathways from one El Niño
 
@@ -30,7 +105,21 @@ SVG(filename="../results/figures/mechanism_narrow.svg")
 
 ## What El Niño does to winter rain
 
-<!-- Winter rainfall map (El Niño precipitation dipole). After Phase 1. -->
+<!-- Winter rainfall map (El Niño precipitation dipole). After Phase 1.
+     Until the map is redrawn in the site's design (it reads polygons), the
+     section shows the regional series, which exists. Caption and alt text
+     are DRAFTS for the owner. -->
+
+```{python}
+#| echo: false
+#| fig-alt: "One panel per region. Bars show December to February precipitation for every winter since 1951 as a departure from the region's average. Winters with an El Niño are shaded, and strong ones carry a darker tick."
+from IPython.display import Image
+Image(filename="../results/figures/djf_precip_series_roni.png")
+```
+
+*[Draft caption] December to February precipitation in every winter since
+`{python} S["climate_first_year"] + 1`, by region. Shaded winters had an El
+Niño.*
 
 ## What happened after past El Niño winters
 
@@ -54,8 +143,27 @@ tick marks a strong one. Hover for the hectares. The dotted slot is 2027.*
 ## Tracking the 2026–27 winter
 
 <!-- Live tracker: this winter's precipitation and snowpack vs past El Niño
-     winters, updated monthly. Nov 2026 → spring 2027. -->
+     winters, updated monthly. Nov 2026 → spring 2027. Until the first month
+     arrives this is a waiting note; its date is the first reader item of the
+     rollout calendar not yet done. DRAFT wording. -->
+
+::: {.waiting}
+<p class="num">`{python} NEXT["when"]`</p>
+
+Nothing to show yet: the winter has not happened. Next to arrive:
+`{python} NEXT["title"]`. The [tracker page](tracker.qmd) lists every date
+this site is waiting for.
+:::
 
 ## How the prediction held up
 
-<!-- Verification panel. Fall 2027. -->
+<!-- Verification panel. Fall 2027. A waiting note until then; both dates
+     are read from the rollout calendar. DRAFT wording. -->
+
+::: {.waiting}
+<p class="num">`{python} CAL["verify_north"]["when"]`</p>
+
+Nothing to show yet. The forecast is published first, at the winter's index
+value (`{python} CAL["djf_index"]["when"]`), and is set against what burned
+once the northern fire seasons close.
+:::
