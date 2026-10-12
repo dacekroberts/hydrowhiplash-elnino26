@@ -17,6 +17,33 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - The sibling repository is split from this project
+
+- **Recorded the split: from its commit 371ed60 (pushed, 2026-10-12)
+  `climate-whiplash-prediction` reads no file of this project without
+  the owner's yes in its own session.** Reported by the sibling's
+  session after the owner told it to proceed: 23 files copied
+  byte-identical from the tag `prediction-handoff` (a669813), listed in
+  its `results/tables/parent_handoff.json`; the seven pinned tables match
+  `input_pins.csv`; 52 tests pass with no import from this project;
+  `spring_inputs` reproduced at 0.0122 (95% interval -0.0012 to 0.0323,
+  n 151), largest difference from `prediction_v1c/variants.csv` 2.22e-16
+  over 78 values. Checked from here, read-only: the commit is the tip of
+  its `main` and level with its remote, the record lists 23 files, and
+  its Python holds this project's name once, as a label
+  (`PARENT_REPO`), not a path. The hashes were not recomputed here.
+- **Not byte copies there, by its own record:** settings copied as
+  values into its `src/config.py`; `src/pin_inputs.py` and
+  `src/run_guard.py` cut down; two names of `src/run_hypotheses.py`.
+- **Still open, for the owner there:** two possible later reads of this
+  project (the download scripts as a pattern; the `read-licence` skill),
+  each to be asked first; whether the held-back outcome table is built
+  there from fire polygons or taken from this project's region x season
+  numbers; the DeepSeek rules passed on as a proposal, of which only
+  "no DeepSeek call without Dace's yes" is adopted there so far.
+- **Kept here:** the tag `prediction-handoff` is never moved or deleted;
+  the sibling's record depends on it.
+
 ### 2026-10-12 - Sibling repository: its own downloads, and a split point
 
 - **Decided (owner: "have it download copies for full independence"):

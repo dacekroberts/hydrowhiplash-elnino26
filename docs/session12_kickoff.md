@@ -40,13 +40,15 @@ checkout.
 - **Stamped rebuilds** can name the index retrieval they read
   (`--index-stamp YYYY-MM-DD`); without it the latest closed one is
   taken.
-- **Sibling repository (D94).** `climate-whiplash-prediction`, private,
-  at `..\climate-whiplash-prediction` and on GitHub; it holds licence
-  files, a README and `docs/kickoff.md` only. It reads this project at
-  the tag `prediction-handoff` (a669813). Its first session is its own
-  stage 0; its roadmap is https://claude.ai/artifact/1HcVPoH7YdwFBFUxwLGtcg.
-  Its `docs/kickoff.md` has one uncommitted line removed (the settled
-  "create the repository" question); commit it there.
+- **Sibling repository (D94): split on 2026-10-12.**
+  `climate-whiplash-prediction` (private, `..\climate-whiplash-prediction`
+  and on GitHub) finished its stage 0 and, from its commit 371ed60, reads
+  no file of this project without the owner's yes in its own session. It
+  downloads its own data (owner: "have it download copies for full
+  independence"). The tag `prediction-handoff` (a669813) is never moved
+  or deleted. Its roadmap is
+  https://claude.ai/artifact/1HcVPoH7YdwFBFUxwLGtcg; its sessions keep it
+  current from here on.
 - **Three methods-page items (D96).** Drafts sit in `site/methods.qmd`
   as HTML comments, shown to no reader: "Why regression, not a trained
   model" (after "How the tests work"), "Who this forecast is for" (top
