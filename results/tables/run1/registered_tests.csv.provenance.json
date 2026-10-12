@@ -1,0 +1,28 @@
+{
+  "commit": "777eafde6f10fe6910fa1627c15d639a723287fa",
+  "dirty": false,
+  "input_pins_sha256": "2b6e4e6862e67ba67b62a7899ced5d822c8d0fc00bf5b587f6519fbb62e16b81",
+  "test_size_sha256": "dbe7d0519c41c7211fd3b6d85782331d4ec5a9d3710738a094b5288b5cb2fd43",
+  "run_utc": "2026-10-12T09:44:33Z",
+  "seed": 2026,
+  "python": "3.12.14",
+  "packages": {
+    "statsmodels": "0.15.0",
+    "scipy": "1.18.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3"
+  },
+  "inputs": [
+    "data/raw/oni.ascii.txt",
+    "data/raw/roni.ascii.txt",
+    "results/tables/climate_controls_region_year.csv",
+    "results/tables/fire_region_year.csv",
+    "results/tables/fire_region_year_frozen_rules.csv",
+    "results/tables/fire_region_year_parks_nbac.csv",
+    "results/tables/station_swe_region_year.csv",
+    "results/tables/whiplash_swe_region_year.csv"
+  ],
+  "result": "registered_tests.csv",
+  "result_sha256": "801769058437a56fcbbf399fd68f95fbc640dc90314e169062c3380c0c903e75"
+}
