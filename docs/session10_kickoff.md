@@ -73,10 +73,10 @@ is the prompt to paste into a new Claude Code session in the main checkout.
   pings, so the public timetable and the reminders cannot disagree. The
   tracker page already has three states and a countdown (PRs #18, #19);
   decide whether the timetable lives there or on its own page.
-- `ACTION_PLAN.md` Headlines 1 to 4 were ticked on 2026-10-12 (owner:
-  "tick the headline boxes now"). Still open: whether the "Supporting"
-  item (lag test, block bootstrap, Holm/BH), also computed in `run1`,
-  is ticked too.
+- `ACTION_PLAN.md` Headlines 1 to 4 and the "Supporting" item (lag
+  test, block bootstrap, Holm/BH) were ticked on 2026-10-12 on the
+  owner's word; all were computed in `run1`. Open in Phase 4: the
+  full-record view and the Methods and limitations section.
 
 **Next work, in order:**
 
