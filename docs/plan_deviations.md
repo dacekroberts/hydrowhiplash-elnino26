@@ -27,6 +27,31 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D\?b · Prediction model version 1b: changes made after version 1 was seen
+- **Plan:** `docs/prediction_model_spec.md` sections 2 to 7 (agreed
+  before any fit): one shared coefficient per predictor, four spring
+  predictors, the yes or no bar from the training seasons' own values,
+  intervals from the training spread, and "Version 2, only if version 1
+  beats the trend".
+- **Actual:** version 1 did not beat the trend, and the rule for version
+  2 was not met. Owner, 2026-10-12: "i agree with 1-5 before machine
+  learning. we can start version 1b now". Version 1b changes all five
+  points above and is run as six variants fixed before any was run
+  (spec section 8). Version 1's tables are kept as written; 1b goes to
+  `results/tables/prediction_v1b/`.
+- **Why:** version 1's outputs showed where it went flat (one coefficient
+  across regions that respond in opposite directions; one season
+  carrying 28% of the pooled score; missing spring inputs).
+- **Constraint:** every choice in 1b was made after version 1's results
+  and all of `run1` were seen. Exploratory, uncorrected, reported apart
+  from the registered tests; the registered 2027 forecast stays the H3a
+  model.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model version 1b:
+  five changes before machine learning".
+- **Substantial:** no (no registered test, input or result changes).
+- **Plan doc:** `docs/prediction_model_spec.md` section 8 added; sections
+  1 to 7 left as written.
+
 ### D\?a · Prediction model: four settings the agreed scope did not cover
 - **Plan:** `docs/session10_kickoff.md` Part 3 (the agreed scope): "1
   April snowpack" as a predictor for "the seven regions"; "region terms"

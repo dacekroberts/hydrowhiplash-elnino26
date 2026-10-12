@@ -591,3 +591,22 @@ PRED_GROUPS = {"all seven": tuple(REGIONS),
                "AK and YT": tuple(r for r, role in REGIONS.items() if role == "north"),
                "other five": tuple(r for r, role in REGIONS.items() if role != "north")}
 PRED_RUN = "prediction_v1"    # results/tables/<PRED_RUN>/<label>/
+
+# Version 1b (agreed 2026-10-12, after version 1 was seen; spec section 8;
+# D\?b). The variants are fixed before any is run and all are reported.
+PRED_1B_SPRING = (*PRED_PREDICTORS, "precip_anom_lag1", "snowfall_frac")
+# temp_mam is known by 1 June: before the season in PNW, NorCal and SoCal,
+# two months into it in BC, AB, AK and YT (FIRE_SEASON_MONTHS)
+PRED_1B_JUNE = (*PRED_1B_SPRING, "temp_mam")
+# variant -> (predictors, regional coefficients, per-region scale)
+PRED_1B_VARIANTS = {
+    "regions": (PRED_PREDICTORS, True, False),
+    "scaled": (PRED_PREDICTORS, False, True),
+    "regions_scaled": (PRED_PREDICTORS, True, True),
+    "spring_inputs": (PRED_1B_SPRING, True, True),
+    "june_update": (PRED_1B_JUNE, True, True),
+    "hindsight": ((*PRED_1B_JUNE, "temp_jja"), True, True),  # cannot forecast
+}
+PRED_1B_GRID = PRED_RIDGE_GRID[::2]  # 7 values, 0.01 to 1000, for each penalty
+PRED_1B_MIN_PAST_ERRORS = 8          # unseen-year errors needed before they set the interval
+PRED_1B_RUN = "prediction_v1b"

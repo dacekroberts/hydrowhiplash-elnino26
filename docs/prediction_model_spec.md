@@ -116,3 +116,54 @@ fit"; D\?a). Values live in `src/config.py` (`PRED_*`).
 `predictions.csv`, `skill.csv` and `coefficients.csv`, written by
 `python -m src.prediction` through `src.run_guard.write_result` with a
 provenance record beside each table.
+
+## 8. Version 1b (agreed 2026-10-12, after version 1 was seen)
+
+Version 1 did not beat the trend (pooled skill 0.002, 95% interval -0.007
+to 0.015). The owner agreed five changes before any machine learning ("i
+agree with 1-5 before machine learning"), and that the rules are looser
+here because the analysis is exploratory. Every choice below was made
+after version 1's results were seen. The list of variants was written
+before any of them was run; all of them are reported, not only the best.
+The 2027 season is the only clean test.
+
+**The five changes**
+
+1. *Each region responds in its own way.* Each region has its own
+   coefficient per predictor, shrunk toward a shared one (partial
+   pooling). Two penalties, one on the shared coefficients and one on the
+   regional departures, both chosen at each step by leaving out one
+   training year at a time, from 7 values each (0.01 to 1000); the
+   regional one may also be "no departures", which is version 1.
+2. *Each region on its own scale.* A region's errors are divided by its
+   own training spread around its trend, when the penalties are chosen
+   and in a second pooled skill figure. The unscaled figure stays beside
+   it.
+3. *More spring inputs,* all in the committed tables: last winter's
+   precipitation (`precip_anom_lag1`), the snowfall share of winter
+   precipitation (`snowfall_frac`), and March to May temperature
+   (`temp_mam`). March to May temperature is known by 1 June: before the
+   season in PNW, NorCal and SoCal, two months into it in BC, AB, AK and
+   YT. It is kept to its own variant, labelled a June update.
+4. *The yes or no bar is measured against the trend.* "Yes" is a season
+   whose distance above the region's trend is in the top third of the
+   training seasons' distances. Not comparable with version 1's yes or no.
+5. *Intervals from past misses.* The 80% interval uses the spread of the
+   region's own earlier unseen-year errors once 8 exist; before that, the
+   training spread as in version 1.
+
+**Variants, fixed before running** (`results/tables/prediction_v1b/`)
+
+| Variant | Inputs | Change 1 | Change 2 |
+|---|---|---|---|
+| `regions` | the four of version 1 | yes | no |
+| `scaled` | the four of version 1 | no | yes |
+| `regions_scaled` | the four of version 1 | yes | yes |
+| `spring_inputs` | plus last winter's rain, snowfall share | yes | yes |
+| `june_update` | plus March to May temperature | yes | yes |
+| `hindsight` | plus June to August temperature; cannot forecast | yes | yes |
+
+Changes 4 and 5 apply to every variant. Version 1's two runs are scored
+the same way beside them, in `variants.csv`. Summer weather stays out of
+every forecasting variant (owner, 2026-10-12: predicting weather events
+is out of scope).

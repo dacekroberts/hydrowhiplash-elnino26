@@ -17,6 +17,44 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model version 1b: five changes before machine learning
+
+- **Decided (owner, after version 1 was seen; D\?b): five changes are
+  tried before any machine learning, on the same branch, merged with
+  version 1 as one PR.** Owner: "i agree with 1-5 before machine
+  learning. we can start version 1b now and merge all at once unless
+  harmful", "i also agree on why it went flat, make sure we address in
+  1b", and that the model is "no longer limited to strict rules since it
+  is exploratory". The changes
+  (`docs/prediction_model_spec.md` section 8): regional coefficients
+  shrunk toward a shared one; each region scored and tuned on its own
+  scale; three more spring inputs (`precip_anom_lag1`, `snowfall_frac`,
+  `temp_mam`); the yes or no bar measured against the trend; intervals
+  from the region's own earlier unseen-year errors. What version 1's
+  outputs showed, with no new fit: forecasts moved 0.03 to 0.13 log
+  points off the trend while seasons missed it by 0.96 to 2.67; `run1`'s
+  estimates have opposite signs across regions (winter precipitation
+  -0.69 in AB, +0.26 in SoCal); SoCal 2014 alone is 28% of the pooled
+  squared error and SoCal 35%; 83 of 151 unseen seasons cleared the yes
+  or no bar; BC ran about 0.9 log points above its trend in both halves.
+  Owner's note: "erratic weathering in recent years makes predictions
+  harder. especially predicting actual weather events which is out of
+  scope here"; summer weather stays out of every forecasting variant.
+  The trend-only miss was larger in 2015 to 2025 than in 2004 to 2014 in
+  AB (2.18 against 1.34) and BC (2.03 against 1.78), smaller in AK, YT
+  and PNW, and equal pooled without SoCal 2014 (1.45 and 1.45).
+- **Decided (Claude, flagged to the owner): March to May temperature is
+  kept to its own variant, `june_update`.** It is known by 1 June, two
+  months into the season in BC, AB, AK and YT; the owner had not yet
+  answered whether a June update is wanted. Six variants were fixed in
+  the spec before any was run, and all are reported: looser rules still
+  reuse the same 22 unseen years, so the best of several flatters
+  itself. Rejected adding last year's burned area: detrended lag-1
+  autocorrelation is -0.13 to 0.12 across regions in `run1`. Settings
+  chosen without the owner's line-by-line yes, all in `src/config.py`
+  (`PRED_1B_*`): 7 penalty values per penalty, and 8 earlier errors
+  before they set an interval.
+
 ### 2026-10-12 - Prediction model version 1: no gain over the trend
 
 - **Found (exploratory, after `run1`; D83): the pooled model with the
