@@ -916,6 +916,30 @@ fragments in `results/figures/`, each included by a site page as is:
 - `burned_area_season_history_roni.html`: unchanged in its numbers; since
   session 11 drawn by the same builder, with year labels on every panel.
 
+**Sea-surface temperature for the map (session 11; D99; display only).**
+NOAA ERSST v6: a reconstruction of monthly sea-surface temperature from
+ship, buoy and float measurements, filled in statistically so every ocean
+cell has a value; 2° grid (about 220 km at the equator), cell centres at
+even latitudes and longitudes, longitude in degrees east from 0 to 358.
+`sst` is in °C; land and ice-covered cells are missing. No calculation in
+this project reads it: it colours the map's ocean panels and nothing else.
+
+- `src.ocean.winter_anomalies` returns two fields per winter (year Y is
+  December Y-1 to February Y). `anomaly`: each month's value minus that
+  cell's 1991-2020 mean for the month, averaged over the three months.
+  `relative`: the same with the area-weighted mean anomaly of 20°S to
+  20°N removed, which is what the relative index (RONI) does. The map
+  shows `relative`.
+- `results/tables/sst_nino34_check.csv`: per winter, the Niño 3.4 box
+  mean (5°S to 5°N, 170°W to 120°W) of both fields beside the project's
+  `enso_djf`. Trap: `sst_relative_nino34` is not RONI. RONI is rescaled
+  at the end to the variance of the plain index, so it runs about a
+  quarter larger in strong winters (1.69 against 2.13 in 1997-98).
+- Traps: NOAA's own `ssta` variable in the files is not used; the last
+  two months of the record are rewritten on each NOAA update, so a later
+  download can differ for the latest winter; longitudes are east-positive,
+  so 170°W is 190.
+
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 
 Written by `python -m src.prediction` on 2026-10-12, after `run1` was

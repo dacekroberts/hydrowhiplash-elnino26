@@ -27,6 +27,28 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D99 · Sea-surface temperature for the map page (new source, display only)
+- **Plan:** `ACTION_PLAN.md` "Second goal", Map page (D85): "a toggle per
+  dataset (fire, snowpack, rainfall, temperature)". No ocean data anywhere
+  in the plans; `DATA_SOURCES.md` listed no sea-surface temperature source.
+- **Actual:** owner, 2026-10-12 (session 11): "can we include a pacific
+  ocean render with a representative el nino effect per year?"; then "go
+  ahead to download. ensure it's clear that none of this new downloaded
+  data was used in calcs, just for visualization". NOAA ERSST v6,
+  December to February files of 76 winters (228 files, 38 MB), downloaded
+  after its terms were read. `src/ocean.py` makes each winter's anomaly
+  against 1991-2020 with the tropical mean (20°S to 20°N) removed.
+  Settings added: `ERSST_*`, `SST_*`, `NINO34_BOX`. The panels themselves
+  are not yet on the page: the owner chooses between two sample renders
+  first.
+- **Why:** to show the ocean each winter beside what followed on land.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Sea-surface temperature for
+  the map: ERSST v6, display only".
+- **Substantial:** yes (scope addition, new source; `ACTION_PLAN.md`
+  marked `[mid-project: D99]`). No test, pinned input, registered number
+  or forecast input touched.
+- **Plan doc:** updated with the marker.
+
 ### D98 · Map page started ahead of the hard-line item; display settings added
 - **Plan:** `ACTION_PLAN.md` "Second goal", Map page (D85): "all seven
   regions with a toggle per dataset (fire, snowpack, rainfall,

@@ -17,6 +17,53 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Sea-surface temperature for the map: ERSST v6, display only
+
+- **Added (owner: "go ahead to download") NOAA ERSST v6 as a source for
+  the map page's ocean panels, and nothing else (D99).** No registered
+  test, reported run, prediction or forecast reads it; it is not a pinned
+  input; `results/tables/run1/` is untouched. Owner: "ensure it's clear
+  that none of this new downloaded data was used in calcs, just for
+  visualization": said in the downloader, in `src/ocean.py`, in the
+  ledger row, in notice 14 and, when the panels are built, on the page.
+- **Chose version 6, not version 5 as first proposed.** CPC's RONI page,
+  read 2026-10-12, describes the index as the "3 month running mean of
+  ERSST.v6 SST anomalies in the Niño 3.4 region (5°N-5°S, 120°-170°W)"
+  "with average tropical mean (20°N-20°S) SST anomalies subtracted",
+  "using the 1991-2020 base period", the difference "then adjusted so the
+  variance equals the original Niño 3.4 index". The map uses the same
+  product, box, belt and base period. Rejected OISST (starts 1981) and
+  PSL's mirror of version 5 (an older version, with its own
+  acknowledgement request).
+- **Terms read with the `read-licence` skill: PERMITTED.** The files' own
+  attribute reads "license: No constraints on data access or use"; the
+  product page and the folder's two readme files state no terms. An
+  acknowledgment and two papers are asked for (notice 14).
+- **Downloaded only what the panels need:** December, January and
+  February of winters 1950-51 to 2025-26, 228 files of 168,286 bytes, 38
+  MB, to `data/raw/ersst_v6/` with a manifest (`src/download_ersst.py`).
+- **Decided: the map shows the anomaly with the tropical mean removed,
+  not NOAA's own `ssta`** (owner: "yes should do same"). Each month's
+  anomaly against the cell's 1991-2020 mean for that month, averaged over
+  the three months, less the area-weighted mean anomaly of 20°S to 20°N
+  at every longitude (`geo.regional_mean`). The variance adjustment RONI
+  applies last is not applied to the map: it is one number for the index,
+  not a field.
+- **Checked against the project's index: the Niño 3.4 mean of these maps
+  correlates with the pinned DJF RONI at r = 1.000 over 76 winters, RMSE
+  0.20 °C, largest gap 0.49 °C** (`results/tables/sst_nino34_check.csv`).
+  The gap is the variance adjustment: 1997-98 reads 1.69 here and 2.13
+  as RONI; the plain anomaly reads 2.16. So the maps are the index's own
+  field, a little smaller in size.
+- **Classes: five, cut at -1.0, -0.4, 0.4 and 1.0 °C, on the temperature
+  ramp** (owner: "yes to colors"); by eye, as the map's other layers.
+  Panels: the tropical Pacific (30°S to 30°N, 120°E to 70°W) and the
+  ocean beside the regions (24°N to 62°N, 170°E to 114°W).
+- **Open, the owner's: blocky cells or smoothed bands.** A sample of
+  winter 1997-98 in both was sent; the panels are built after the choice.
+  A hide toggle is agreed.
+- Tests: 3 new in `tests/test_ocean.py`, on made-up grids.
+
 ### 2026-10-12 - Map: every winter's El Niño class under the year slider
 
 - **Replaced the El Niño ticks under the map's slider with a strip of

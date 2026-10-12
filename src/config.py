@@ -693,3 +693,21 @@ MAP_DISPLAY_CRS = "+proj=aea +lat_1=38 +lat_2=64 +lat_0=50 +lon_0=-132 +datum=WG
 MAP_SIMPLIFY_KM = 6
 MAP_MIN_PART_KM2 = 800
 MAP_WIDTH = 640
+
+# Sea-surface temperature for the map page's ocean panels (D99). Display
+# only: no test, reported run or forecast reads it, and the files are not
+# pinned inputs. ERSST v6 is the version NOAA CPC builds ONI and RONI from.
+ERSST_URL = "https://www.ncei.noaa.gov/data/sea-surface-temperature-extended-reconstructed/v6/access/"
+ERSST_RAW = DATA_RAW / "ersst_v6"
+ERSST_LAST_WINTER = 2026           # winter 2025-26, the last one in the climate tables
+SST_MONTHS = (12, 1, 2)            # December of Y-1 with January and February of Y
+SST_NORMAL_YEARS = (1991, 2020)    # winters; the base period of ONI and RONI
+SST_TROPICS_LAT = (-20, 20)        # the tropical mean RONI subtracts, every longitude
+NINO34_BOX = ((-5, 5), (190, 240))  # 5S-5N, 170W-120W, as (lat, lon east) ranges
+# The two panels, as (lat, lon east) ranges of cell centres: the whole tropical
+# Pacific, and the ocean beside the seven regions.
+SST_PANELS = {"tropics": ((-30, 30), (120, 290)), "coast": ((24, 62), (170, 246))}
+# Five classes of the relative anomaly in degrees Celsius, cut at these edges
+# (by eye, as MAP_LAYERS), coloured with the temperature ramp.
+SST_EDGES = (-1.0, -0.4, 0.4, 1.0)
+SST_TOKENS = ("temp-cold-2", "temp-cold-1", "temp-mid", "temp-warm-1", "temp-warm-2")

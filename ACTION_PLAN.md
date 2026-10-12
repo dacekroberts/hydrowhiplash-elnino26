@@ -327,6 +327,10 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       `src/map_page.py`, `site/map.qmd`; four datasets, a year slider
       with El Niño winters marked, light and dark. Wording is a draft;
       this winter's months join it with the hard-line item.
+      [mid-project: D99] Ocean panels (the tropical Pacific and the
+      ocean beside the regions, each winter's sea-surface temperature
+      from NOAA ERSST v6) are being added: display only, read by no
+      test.
 - [ ] **Three methods-page items** [mid-project: D96]: why regression
       and not a trained model; who the forecast is for (a responsibility
       statement); where coverage is thin. Each is the owner's to word;
