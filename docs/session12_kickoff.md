@@ -97,8 +97,11 @@ checkout.
 
 **Next work, in order:**
 
-1. Look at the built site in a browser (the four charts, the Plotly
-   history, light and dark) and put what is found to the owner.
+1. Done on 2026-10-12 (the site was looked at in a browser, dark,
+   light and phone width; `.claude/launch.json` serves `site/_site/`).
+   Open from it: the two-panel charts (H1 and H2; H3a and H3b) have
+   small type at the page's column width; the Plotly chart's hover box
+   was not checked; figures keep a light ground in dark mode.
 2. The owner's wording on the list above; make approved drafts visible.
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
