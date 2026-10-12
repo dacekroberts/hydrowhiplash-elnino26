@@ -17,6 +17,38 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Prediction model: settings agreed before the fit
+
+- **Decided (owner, after `run1` was seen, before any model was fitted;
+  D83, D\?a): the seven settings the agreed scope left open or did not
+  cover**, written into `docs/prediction_model_spec.md` section 7 and
+  `src/config.py` (`PRED_*`). (A) Shrinkage: only the four climate
+  predictors are shrunk; each region's level and year trend are unshrunk,
+  so a very large penalty gives the trend-only baseline exactly; the
+  penalty is picked at each step from 13 values (0.01 to 1000, per
+  training row) by leaving out one training year at a time; predictors
+  are standardised per region from training seasons only. Rejected an
+  inner expanding window: only a handful of inner years at the first
+  steps. (B) The yes or no outcome is scored by Brier skill against both
+  the one-in-three base rate and the trend-only model's probability, the
+  probability read off the one model; hits and false alarms at 0.5
+  beside it. Rejected the base rate alone (burned area trends up, so it
+  credits the model for the trend) and a separate logistic model (a
+  second fit on few events). (C) Version 2 is tried only if pooled skill
+  on log burned area in the forecast run has a 95% interval wholly above
+  zero; owner: "interval above zero, if lands below have follow-up
+  dialogue". Rejected a point-skill bar of 0.05: within what chance
+  produces from about 22 unseen years. (D) `swe_z` is set to 0 for SoCal,
+  where it is empty for all 42 seasons. (E) SoCal's zero-fire season
+  2014 is kept, as in `run1`, with a third run without it shown beside.
+  (F) The 80% interval is the forecast plus or minus 1.28 times the
+  region's training residual spread; the interval on skill resamples the
+  unseen years 10,000 times, whole years together, seed 2026. (G) One
+  level and one trend per region, as `run1`'s baseline. Found while
+  reading the tables, with no fit run: 291 region-seasons, no other
+  missing predictor. Affected: `src/prediction.py`,
+  `tests/test_prediction.py`, `src/config.py`.
+
 ### 2026-10-12 - Prediction model scope agreed
 
 - **Decided (owner, after `run1` was seen, before any model is fitted;

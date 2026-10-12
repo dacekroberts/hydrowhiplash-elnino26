@@ -27,6 +27,27 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-12
 
+### D\?a · Prediction model: four settings the agreed scope did not cover
+- **Plan:** `docs/session10_kickoff.md` Part 3 (the agreed scope): "1
+  April snowpack" as a predictor for "the seven regions"; "region terms"
+  and "a year trend"; "how often its 80% interval held the real value";
+  three points "still to fix in the spec".
+- **Actual:** reading the committed tables before any fit showed four
+  more points to settle, each agreed by the owner on 2026-10-12, after
+  `run1` was seen: SoCal has no snowpack value (`era5_swe_z` empty for
+  all 42 seasons), so it is set to 0 there; SoCal's zero-fire season
+  2014 is kept and a third run without it is added; the 80% interval and
+  the interval on skill each needed a method (a shrunken model has no
+  textbook formula); the trend is one per region, not one shared. The
+  hindsight run and this third run make three output folders, not two.
+- **Why:** the scope was written from `run1`'s tables without checking
+  each predictor's coverage per region.
+- **Recorded:** `DECISIONS.md` 2026-10-12 "Prediction model: settings
+  agreed before the fit"; `docs/prediction_model_spec.md` section 7.
+- **Substantial:** no (exploratory analysis; no registered test, input or
+  result changes).
+- **Plan doc:** left as written.
+
 ### D83 · Prediction model moved up: next after the registered runs
 - **Plan:** `ACTION_PLAN.md` "Later extensions": "Prediction model. ...
   Builds on Phases 2-4, so start it once the historical analysis is
