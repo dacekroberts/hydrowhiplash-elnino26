@@ -24,7 +24,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   the download in "Sibling repository: its own downloads, and a split
   point" for these files; the download stays the sibling's fallback for
   months after July 2026. Copied to
-  `..\climate-whiplash-prediction\dataaw\`: `era5_land`,
+  `..\climate-whiplash-prediction\data\raw\`: `era5_land`,
   `era5_land_north`, `era5_land_snow_soil`, `era5_land_north_snow_soil`
   (77 files each, monthly means January 1950 to July 2026),
   `era5_land_april1` and `era5_land_north_april1` (one file each): 310
