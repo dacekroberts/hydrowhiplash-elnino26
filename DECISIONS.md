@@ -17,6 +17,38 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Ocean panels: their own colours, land behind them, strip colours
+
+- **Gave the ocean its own ramp, purple to amber (owner, from a sample of
+  three: "i think replace with A").** Five new tokens, `sea-cold-2` to
+  `sea-warm-2`; the warm end is the El Niño amber. The 62% fade is gone:
+  the ocean is drawn at full strength and no longer reads as a region's
+  value on the burned-area, rain or temperature layers. Rejected: the
+  temperature ramp with a fade (the earlier state), and green to plum
+  (separates as well, but one more pair of colours to learn). The page
+  now states that the ocean's colours are a separate scale from the
+  regions' (owner: "if we note the difference between ocean values and
+  map values (stated) we should be okay").
+- **Changed two colours on the strip of winters (owner: "we can adjust
+  the la nina winter, and also pick a color besides black (maybe white
+  instead) for neutral").** La Niña: `enso-cold` from purple (#6b5aa6
+  light, #a99be0 dark) to steel blue (#3f6f8c, #86b6d1), since purple now
+  means cooler water. This reading of "adjust" as "recolour" is Claude's;
+  the value is one token if the owner meant otherwise. Neutral: a new
+  token `enso-neutral`, white, with a thin outline on every cell.
+  `enso-cold` was used nowhere else. The private Design System page does
+  not have the seven new or changed tokens yet.
+- **Added land outside the regions from Natural Earth 1:50m land (owner:
+  "if download is small though fetch yourself").** 457,183 bytes,
+  `src/download_natural_earth_land.py`, public domain, display only.
+  Asked two other project sessions first, on the owner's word: both hold
+  only the full 446 MB vector package, so the single layer was fetched
+  fresh and nothing was read from another project's folder. With land
+  drawn over the pictures, the smoothed ocean is drawn wherever any of a
+  pixel's four cells is ocean (was: at least half the weight), so it
+  reaches the coast; the cell view is unchanged. The fragment is 420 KB.
+- Checked in the browser, 1998, both pictures. Full suite: 432 passed.
+
 ### 2026-10-12 - Ocean panels on the map page: smoothed by default, cells on a switch
 
 - **Built the ocean panels (D99) with smoothed bands as the default and a

@@ -23,6 +23,7 @@ cells or as the cells themselves.
   layer_cells(spec, table)  per region and year: (class index, text)
   shapes(regions)           SVG path and label point per region
   sea(fields, frame, ...)   the ocean panels' cells and lookups
+  land(world, frame, ...)   land outside the regions, for both pictures
   build()                   the page's whole payload
   fragment(payload)         the HTML
 
@@ -41,7 +42,8 @@ import pandas as pd
 from src import geo
 from src.config import (ENSO_INDEX, FIRE_FIRST_YEAR, MAP_DISPLAY_CRS, MAP_LAYERS,
                         MAP_MIN_PART_KM2, MAP_NORMAL_YEARS, MAP_SIMPLIFY_KM, MAP_START_LAYER,
-                        MAP_WIDTH, MIN_FIRE_HA, NINO34_BOX, REGIONS, RESULTS, SST_EDGES,
+                        MAP_WIDTH, MIN_FIRE_HA, NATURAL_EARTH_LAND_RAW, NINO34_BOX, REGIONS,
+                        RESULTS, SST_EDGES, SST_LAND_MIN_DEG2, SST_LAND_SIMPLIFY_DEG,
                         SST_LATTICE_PX, SST_LIMIT_C, SST_NORMAL_YEARS, SST_PANELS, SST_STEP_C,
                         SST_TOKENS, SST_TROPICS_WIDTH)
 
@@ -80,7 +82,8 @@ SEA_TEXT = {
                "over 1 °C warmer"),
     "what": f"Sea-surface temperature, December to February, against the {S0}-{S1} winter "
             "average, with the mean of the whole tropics removed. The same colours are used "
-            "for the ocean on the map above.",
+            "for the ocean on the map above. They are a separate scale from the regions' "
+            "colours: purple to amber is sea temperature only.",
     "smooth": "Bands are drawn between the 2° cells the temperature was reconstructed on, so "
               "their edges look finer than the data is.",
     "cells": "Each square is one 2° cell, about 200 km across, the grid the temperature was "
@@ -238,10 +241,61 @@ def winters(table: pd.DataFrame) -> dict[int, tuple[str, str, bool, float]]:
             for y, ph, s, e in zip(g["year"], g["phase"], g["strong"], g["enso_djf"])}
 
 
-def build(tables: dict[str, pd.DataFrame], regions, fields=None) -> dict:
+def _rings(shape, point) -> str:
+    """An SVG path of a polygon or multipolygon, `point` turning (x, y) into text."""
+    def ring(coords):
+        return "M" + "L".join(point(x, y) for x, y in list(coords)[:-1]) + "Z"
+
+    polygons = [] if shape.is_empty else getattr(shape, "geoms", [shape])
+    return "".join(ring(p.exterior.coords) + "".join(ring(i.coords) for i in p.interiors)
+                   for p in polygons if p.geom_type == "Polygon")
+
+
+def land(world, frame: tuple[float, float, float], width: int, height: float,
+         tropics: dict | None = None) -> dict:
+    """Land for the page's two pictures from Natural Earth's land polygons
+    (`world`, EPSG:4326, split at the 180th meridian): a backdrop, so that
+    the ocean stops at a coast and not at the edge of a 2 degree cell. Display
+    only. `coast`: a path in the map's own units, cut to its frame. `tropics`:
+    a path in the tropical panel's canvas units, when that panel is given."""
+    import geopandas as gpd
+    from shapely.affinity import translate
+    from shapely.geometry import box
+    from shapely.ops import unary_union
+
+    whole = unary_union(list(world.geometry))
+    left, top, scale = frame
+    view = box(left, top - height / scale, left + width / scale, top)
+    # the two sides of the 180th meridian that the map's frame can reach
+    sides = gpd.GeoSeries([whole.intersection(box(-180, 5, -80, 89)),
+                           whole.intersection(box(120, 5, 180, 89))], crs="EPSG:4326")
+    flat = unary_union(list(sides.to_crs(MAP_DISPLAY_CRS))).intersection(view)
+    flat = flat.simplify(MAP_SIMPLIFY_KM * 1000, preserve_topology=True)
+    parts = [p for p in getattr(flat, "geoms", [flat])
+             if p.geom_type == "Polygon" and p.area / 1e6 >= MAP_MIN_PART_KM2]
+    out = {"coast": _rings(unary_union(parts), lambda x, y: (
+        f"{(x - left) * scale:.1f} {(top - y) * scale:.1f}"))}
+    if tropics:
+        cell = tropics["cell"]
+        west, south = tropics["lon0"] - cell / 2, tropics["lat0"] - cell / 2
+        east, north = west + cell * tropics["nlon"], south + cell * tropics["nlat"]
+        tw, th = tropics["canvas"]
+        strip = unary_union([whole.intersection(box(west, south, 180, north)),
+                             translate(whole.intersection(box(-180, south, east - 360, north)),
+                                       xoff=360)])
+        strip = strip.simplify(SST_LAND_SIMPLIFY_DEG, preserve_topology=True)
+        parts = [p for p in getattr(strip, "geoms", [strip])
+                 if p.geom_type == "Polygon" and p.area >= SST_LAND_MIN_DEG2]
+        out["tropics"] = _rings(unary_union(parts), lambda x, y: (
+            f"{(x - west) / (east - west) * tw:.1f} {(north - y) / (north - south) * th:.1f}"))
+    return out
+
+
+def build(tables: dict[str, pd.DataFrame], regions, fields=None, world=None) -> dict:
     """The page's payload. `tables` maps each table name in MAP_LAYERS (and
     ENSO_TABLE) to its frame; `fields` is src.ocean.winter_anomalies' result,
-    or None for a page without the ocean panels."""
+    or None for a page without the ocean panels; `world` is Natural Earth's
+    land, or None for a page without land outside the regions."""
     layers = {}
     for key, (name, _, _, _, tokens, _) in MAP_LAYERS.items():
         label, what, classes = LAYER_TEXT[key]
@@ -256,12 +310,15 @@ def build(tables: dict[str, pd.DataFrame], regions, fields=None) -> dict:
                  and all(str(y) in layers["fire"]["cells"][r] for r in REGIONS)]
     shape = shapes(regions)
     frame = shape.pop("frame")
+    ocean = None if fields is None else sea(fields, frame, shape["width"], shape["height"])
+    backdrop = None if world is None else land(world, frame, shape["width"], shape["height"],
+                                               ocean and ocean["tropics"])
     return {"index": ENSO_INDEX, "layers": layers, "names": REGION_NAMES,
             "years": {str(y): list(v) for y, v in sorted(years.items())},
             "start": {"layer": MAP_START_LAYER, "year": max(with_fire) if with_fire
                       else max(years)},
-            "fire_first_year": FIRE_FIRST_YEAR, "shapes": shape,
-            "sea": None if fields is None else sea(fields, frame, shape["width"], shape["height"])}
+            "fire_first_year": FIRE_FIRST_YEAR, "shapes": shape, "sea": ocean,
+            "land": backdrop}
 
 
 SCRIPT = """
@@ -280,6 +337,7 @@ SCRIPT = """
   // The ocean panels (D99), a picture only. Each panel: a canvas, the
   // winter's cells as one character each, and a lookup from pixel to cell.
   var S = D.sea, seaOn = !!S, seaSmooth = true, MISSING = -999, panels = [];
+  var reach = D.land ? 0.02 : 0.5;
   function panel(canvas, G) {
     var W = canvas.width, H = canvas.height, T = G.lattice, n = W * H;
     var FI = new Float32Array(n), FJ = new Float32Array(n);
@@ -312,7 +370,8 @@ SCRIPT = """
         var fi = FI[p], fj = FJ[p], c = -1, ii, jj, val;
         if (seaSmooth) {
           // a pixel between cells: the mean of the up to four around it, by
-          // distance; drawn where at least half that weight is ocean
+          // distance; drawn where at least half that weight is ocean, or, when
+          // land is drawn over the picture, wherever any of it is
           var i0 = Math.floor(fi), j0 = Math.floor(fj), di = fi - i0, dj = fj - j0;
           var sum = 0, wsum = 0;
           for (var q4 = 0; q4 < 4; q4++) {
@@ -323,7 +382,7 @@ SCRIPT = """
             var wt = ((q4 >> 1) ? di : 1 - di) * ((q4 & 1) ? dj : 1 - dj);
             sum += wt * (val + 0.5); wsum += wt;   // + 0.5: the middle of the floored step
           }
-          if (wsum >= 0.5) c = klass(sum / wsum);
+          if (wsum >= reach) c = klass(sum / wsum);
         } else {
           // the cell the pixel lies in, with a thin gap at each cell's edge
           ii = Math.round(fi); jj = Math.round(fj);
@@ -471,6 +530,9 @@ def fragment(payload: dict) -> str:
     shape = payload["shapes"]
     esc = html.escape
     ocean = payload.get("sea")
+    backdrop = payload.pop("land", None) or {}
+    payload["land"] = bool(backdrop)       # the script needs to know only that it is there
+    land_path = f'<path class="land" d="{backdrop["coast"]}"/>' if backdrop else ""
     sea_controls = sea_canvas = sea_block = ""
     if ocean:
         cw, ch = ocean["coast"]["canvas"]
@@ -486,11 +548,14 @@ def fragment(payload: dict) -> str:
             '<label><input type="radio" name="rmap-sea-style" value="cells">'
             '<span>2° cells, as measured</span></label></fieldset>')
         sea_canvas = f'<canvas class="rmap-sea" width="{cw}" height="{ch}" aria-hidden="true"></canvas>'
+        tropics_land = (f'<svg class="rmap-land" viewBox="0 0 {tw} {th}" preserveAspectRatio="none" '
+                        f'aria-hidden="true"><path class="land" d="{backdrop["tropics"]}"/></svg>'
+                        if backdrop.get("tropics") else "")
         sea_block = f"""<div class="rmap-ocean">
 <p class="rmap-title rmap-sea-title"></p>
-<div class="rmap-tropics"><canvas width="{tw}" height="{th}" role="img"></canvas><div class="rmap-box" style="left:{left}%;top:{top}%;width:{wide}%;height:{tall}%"><span>Niño 3.4</span></div></div>
+<div class="rmap-tropics"><canvas width="{tw}" height="{th}" role="img"></canvas>{tropics_land}<div class="rmap-box" style="left:{left}%;top:{top}%;width:{wide}%;height:{tall}%"><span>Niño 3.4</span></div></div>
 <p class="rmap-what">{esc(SEA_TEXT["what"])}</p>
-<ul class="rmap-legend rmap-sea-legend">{swatches}<li><i class="none"></i>land or sea ice</li></ul>
+<ul class="rmap-legend rmap-sea-legend">{swatches}<li><i class="land"></i>land or sea ice</li></ul>
 <p class="rmap-what rmap-sea-note"></p>
 <p class="rmap-caution"><strong>A picture only.</strong> {esc(SEA_TEXT["caution"])}</p>
 </div>
@@ -526,7 +591,7 @@ def fragment(payload: dict) -> str:
 <p class="rmap-when"><span class="rmap-chip"></span><span class="rmap-winter"></span></p>
 </div>
 <div class="rmap-body">
-<div class="rmap-map">{sea_canvas}<svg viewBox="0 0 {shape["width"]} {shape["height"]}" role="group" aria-label="Map of the seven regions">{paths}{labels}</svg></div>
+<div class="rmap-map">{sea_canvas}<svg viewBox="0 0 {shape["width"]} {shape["height"]}" role="group" aria-label="Map of the seven regions">{land_path}{paths}{labels}</svg></div>
 <div class="rmap-side">
 <p class="rmap-title"></p>
 <p class="rmap-what"></p>
@@ -546,12 +611,15 @@ def write(payload: dict, out: Path = OUT) -> Path:
 
 
 def main() -> None:
+    import geopandas as gpd
+
     from src import ocean, pin_inputs
     from src.regions import load_regions
 
     names = {spec[0] for spec in MAP_LAYERS.values()} | {ENSO_TABLE}
     tables = {name: pin_inputs.load_input(name) for name in names}
-    out = write(build(tables, load_regions(), ocean.winter_anomalies()))
+    world = gpd.read_file(NATURAL_EARTH_LAND_RAW)
+    out = write(build(tables, load_regions(), ocean.winter_anomalies(), world))
     print(f"wrote {out}: {out.stat().st_size:,} bytes")
 
 

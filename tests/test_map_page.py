@@ -164,3 +164,22 @@ def test_ocean_panels_carry_cells_a_lookup_and_the_caution(regions):
     assert 'value="cells"' in page and "No test, no reported number and no forecast" in page
     plain = map_page.fragment(map_page.build(tables(), regions))
     assert "<canvas" not in plain and 'class="rmap-ocean"' not in plain and '"sea":null' in plain
+
+
+def test_land_backdrop_is_cut_to_each_picture(regions):
+    # land over the east end of the made-up regions, land far outside both pictures, land in the tropics
+    world = gpd.GeoDataFrame(geometry=[box(-118, 38, -100, 46), box(0, 40, 10, 50),
+                                       box(-80, -10, -70, 10)], crs="EPSG:4326")
+    payload = map_page.build(tables(), regions, sea_fields(), world)
+    backdrop = payload["land"]
+    assert backdrop["coast"].count("M") == 1 and backdrop["tropics"].count("M") == 1
+    width, height = payload["shapes"]["width"], payload["shapes"]["height"]
+    xs = [float(pair.split()[0]) for pair in backdrop["coast"][1:-1].split("L")]
+    assert min(xs) > width / 2 and max(xs) <= width + 0.1     # the east side, inside the frame
+    tw, th = payload["sea"]["tropics"]["canvas"]
+    pts = [tuple(map(float, pair.split())) for pair in backdrop["tropics"][1:-1].split("L")]
+    assert all(0 <= x <= tw and 0 <= y <= th for x, y in pts)
+    assert min(x for x, _ in pts) > 0.9 * tw                  # 80W-70W, the strip's east end
+    page = map_page.fragment(payload)
+    assert page.count('<path class="land"') == 2 and '"land":true' in page
+    assert '<path class="land"' not in map_page.fragment(map_page.build(tables(), regions))

@@ -184,6 +184,9 @@ ERA5_HOURLY_LAG_DAYS = 7
 # Regions
 NATURAL_EARTH_ADMIN1_URL = ("https://naciscdn.org/naturalearth/10m/cultural/"
                             "ne_10m_admin_1_states_provinces.zip")
+# Land outside the regions, the map page's backdrop (display only, D99).
+NATURAL_EARTH_LAND_URL = "https://naciscdn.org/naturalearth/50m/physical/ne_50m_land.zip"
+NATURAL_EARTH_LAND_RAW = DATA_RAW / "natural_earth" / "ne_50m_land.zip"
 PNW_STATES = ["Washington", "Oregon", "Idaho"]
 CA_SPLIT_LAT = 35.5
 # Roles: primary = the dry-winter whiplash regions; north = Alaska and Yukon
@@ -714,8 +717,14 @@ SST_STEP_C = 0.1                   # values on the page are floored to this step
                                    # a cell's class (edges are multiples of it) is exact
 SST_LIMIT_C = 3.0                  # and clipped to this size either side of zero
 SST_LATTICE_PX = 16                # spacing of the pixel-to-cell lookup, in map units
+# The tropical panel's land backdrop: outlines simplified to this many
+# degrees, parts under this many square degrees left out.
+SST_LAND_SIMPLIFY_DEG = 0.25
+SST_LAND_MIN_DEG2 = 0.5
 SST_TROPICS_WIDTH = 688            # the tropical panel's canvas width, 4 px per degree
 # Five classes of the relative anomaly in degrees Celsius, cut at these edges
-# (by eye, as MAP_LAYERS), coloured with the temperature ramp.
+# (by eye, as MAP_LAYERS), coloured with a ramp of their own, purple to amber
+# (owner, 2026-10-12): the temperature ramp made warm water beside a region
+# read as that region's value.
 SST_EDGES = (-1.0, -0.4, 0.4, 1.0)
-SST_TOKENS = ("temp-cold-2", "temp-cold-1", "temp-mid", "temp-warm-1", "temp-warm-2")
+SST_TOKENS = ("sea-cold-2", "sea-cold-1", "sea-mid", "sea-warm-1", "sea-warm-2")

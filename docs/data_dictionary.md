@@ -936,6 +936,10 @@ this project reads it: it colours the map's ocean panels and nothing else.
   0.1). "Smoothed" draws each pixel from the up to four cells around it;
   "2° cells, as measured" draws the cell itself and is the closer reading
   of the numbers. Neither adds information to the 2° grid.
+- Colours and land (2026-10-12): the ocean has its own ramp, purple
+  (cooler) to amber (warmer), a separate scale from every region layer.
+  Land outside the regions is Natural Earth 1:50m land, a backdrop only:
+  nothing is measured from it.
 - `results/tables/sst_nino34_check.csv`: per winter, the Niño 3.4 box
   mean (5°S to 5°N, 170°W to 120°W) of both fields beside the project's
   `enso_djf`. Trap: `sst_relative_nino34` is not RONI. RONI is rescaled

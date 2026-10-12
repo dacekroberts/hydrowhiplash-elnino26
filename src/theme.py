@@ -151,8 +151,8 @@ div.rmap .rmap-slide { position: relative; margin-top: var(--space-2); padding-b
 div.rmap .rmap-slide input { width: 100%; accent-color: var(--evergreen); margin: 0; }
 div.rmap .rmap-marks { position: absolute; left: 8px; right: 8px; bottom: 0; height: 14px; }
 div.rmap .rmap-marks i { position: absolute; bottom: 0; height: 14px; transform: translateX(-50%);
-  cursor: pointer; box-shadow: inset -1px 0 0 var(--surface); }
-div.rmap .rmap-marks i.neutral, div.rmap .rmap-key i.neutral { background: var(--surface-sunk); }
+  cursor: pointer; box-shadow: inset 0 0 0 1px var(--rule); }
+div.rmap .rmap-marks i.neutral, div.rmap .rmap-key i.neutral { background: var(--enso-neutral); }
 div.rmap .rmap-marks i.nino, div.rmap .rmap-key i.nino { background: var(--enso); }
 div.rmap .rmap-marks i.strong, div.rmap .rmap-key i.strong { background: var(--enso-strong); }
 div.rmap .rmap-marks i.nina, div.rmap .rmap-key i.nina { background: var(--enso-cold); }
@@ -178,7 +178,7 @@ div.rmap [hidden] { display: none !important; }
 div.rmap .rmap-map { position: relative; background: var(--surface); overflow: hidden;
   border: 1px solid var(--rule); border-radius: var(--radius-md); }
 div.rmap canvas { display: block; width: 100%; height: auto; }
-div.rmap canvas.rmap-sea { position: absolute; inset: 0; height: 100%; opacity: 0.62; }
+div.rmap canvas.rmap-sea { position: absolute; inset: 0; height: 100%; }
 div.rmap svg { width: 100%; height: auto; display: block; position: relative; }
 div.rmap .rmap-ocean { margin: var(--space-4) 0; }
 div.rmap .rmap-tropics { position: relative; margin: var(--space-2) 0; overflow: hidden;
@@ -195,6 +195,10 @@ div.rmap p.rmap-caution { margin: var(--space-3) 0 0; max-width: none; font-size
 div.rmap svg path { fill: var(--surface-sunk); stroke: var(--page); stroke-width: 1.2;
   stroke-linejoin: round; fill-rule: evenodd; outline: none; }
 div.rmap svg path.none { stroke: var(--rule-strong); stroke-dasharray: 3 3; }
+div.rmap svg path.land { fill: var(--surface-sunk); stroke: var(--rule-strong); stroke-width: 0.6;
+  pointer-events: none; }
+div.rmap .rmap-tropics svg.rmap-land { position: absolute; inset: 0; height: 100%; }
+div.rmap ul.rmap-legend i.land { background: var(--surface-sunk); }
 div.rmap svg path.on, div.rmap svg path:focus-visible { stroke: var(--ink); stroke-width: 2.4; }
 div.rmap svg text { font-family: var(--font-sans); font-size: 17px; font-weight: 600;
   fill: var(--ink); text-anchor: middle; dominant-baseline: middle; pointer-events: none;

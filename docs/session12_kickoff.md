@@ -121,11 +121,13 @@ checkout.
    (D99): built 2026-10-12 from NOAA ERSST v6, display only: the
    ocean under the regions and a tropical Pacific strip on the same
    slider, smoothed by default with a switch to the 2° cells, a hide
-   switch, and a note that the data entered no calculation. Open for
-   the owner: the wording (`SEA_TEXT`), whether the ocean should have
-   its own colour ramp (it shares the temperature layer's), and
-   whether to draw other land from Natural Earth (a new polygon read,
-   so it needs a yes).
+   switch, and a note that the data entered no calculation. The ocean
+   has its own ramp (purple to amber, the owner's choice), land
+   outside the regions comes from Natural Earth 1:50m land, La Niña
+   winters on the strip are steel blue and neutral ones white. Open
+   for the owner: the wording (`SEA_TEXT`); whether steel blue is what
+   was meant for La Niña; the private Design System page lacks the new
+   tokens (`sea-*`, `enso-neutral`, the new `enso-cold`).
 
 **Open, low:** pins walk one folder level (review F3); two tests need
 the tag `analysis-plan-frozen` in the clone; `scripts/methods_numbers.py`
