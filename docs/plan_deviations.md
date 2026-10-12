@@ -50,6 +50,10 @@ additions stay distinguishable from the original plan.
 - **Plan doc:** frozen text unchanged; no row in the frozen plan's log
   (no registered or reported test changes). Whether the numbers are
   reported beside the AK results is the owner's call, still open.
+- **Settled (owner, 2026-10-11, same session, before any test):**
+  reported beside the Alaska results as a descriptive limitation;
+  `ANALYSIS_PLAN.md` deviations log, row 17 (added, reported, not
+  registered).
 
 ### D78 · Claude Code Project not used for the registered runs
 - **Plan:** `ACTION_PLAN.md` Phase 4 "Before starting": "Then set up the

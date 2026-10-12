@@ -17,6 +17,59 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-11 - Session 8: owner decisions before the first test
+
+- **Decided (owner, 2026-10-11, before any test): the Interior Alaska
+  numbers are reported beside the Alaska results as a descriptive
+  limitation** (D79; frozen plan's deviations log, row 17). Alaska stays
+  one region in every test. Measured the same day, climate only, no fire
+  table read (`scripts/interior_alaska_check.py`): the Interior (NOAA NCEI
+  climate divisions 3, 4, 5, Central, Northeast and Southeast Interior,
+  clipped to the AK polygon) is 41.8% of the polygon's area, 11,772 of
+  27,711 ERA5-Land cells. Interior against whole-AK series, 1951-2026:
+  correlation 0.982 (`temp_jja`), 0.976 (`temp_mam`), 0.793
+  (`precip_djf_mm`), 0.823 (`precip_octmar_mm`); mean DJF precipitation
+  88.9 against 182.7 mm. El Nino minus other winters (26 of 76), in SD of
+  each series: DJF precipitation -0.366 against -0.183, Oct-Mar -0.250
+  against -0.035, `temp_mam` +0.452 against +0.373, `temp_jja` +0.107
+  against +0.171. Descriptive differences, no test. The plan's stated
+  limitation (climate means include wet coasts) holds for precipitation
+  and is small for temperature; AK's registered tests (H2, H3a, H3b) use
+  the ENSO index and `temp_jja`, not precipitation. Rejected leaving the
+  limitation unmeasured; rejected deciding after results (it would look
+  chosen to fit them).
+- **Read the terms of the NOAA NCEI Alaska climate divisions**
+  (`DATA_SOURCES.md` row and notice 13): no licence named; the dataset
+  record asks for a citation and carries warranty disclaimers, with no
+  restriction on use. Verdict PERMITTED WITH CONDITIONS. The "public
+  domain" sentence the 2026-10-05 probe quoted was not found again; the
+  in-zip metadata was not read. Downloaded 2026-10-11 (391,385 bytes;
+  `src/download_ak_divisions.py`).
+- **Decided (owner): the Claude Code Project is not used for the
+  registered runs or the runs reported beside them** (D78; settles D63).
+  One runner in the main checkout makes them in one commit. Each run is
+  seconds of compute, the preflight verifies 30 pinned inputs of which 23
+  sit under `data/`, and the protocol wants one run folder written once.
+  The Project is taken up again for site pages after the runs.
+- **Approved (owner): `docs/post_results_protocol.md`**, including the
+  run folder `results/tables/run1/` and the tag `registered-run1`.
+- **Added (owner): `python scripts/check_plan_frozen.py` to `CLAUDE.md`'s
+  "Checks".**
+- **Housekeeping:** `side/nbac-probe` (c4981de, patch-identical to main)
+  and `side/fire-licence-reads` (31c7cc0; PR #21 squash-merged 2026-10-07,
+  its `D?a` now D56, its three ledger rows revised in main since) deleted
+  after the comparison was reported. PR #23 (site methods flowchart, D74)
+  merged with the owner's yes, squash commit 2fb0e37.
+- **Added to `scripts/nbac_coverage.py`: a per-fire output and split**
+  (`NBAC_MISSING_SHARE` 0.5; audit round 5 L6), run with the owner's yes
+  for a polygon read. Its numbers and the NBAC re-run decision follow in
+  their own entry.
+- **Fixed:** `phase2.main` read `data/processed/` before its guard after
+  the cold-check fix moved the guard into `write_tables`, so
+  `test_real_builders_refuse_to_overwrite_their_pinned_tables` failed in a
+  worktree without `data/` (found by the flowchart side session); the
+  guard runs first again, and in `write_tables` too.
+
 ### 2026-10-11 - Site methods flowchart built (side session)
 
 - **Built the methods flowchart decided on 2026-10-08 ("Site methods
