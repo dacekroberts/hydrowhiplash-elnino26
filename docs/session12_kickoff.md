@@ -16,6 +16,8 @@ site has had eight uploads (the last from commit 4a0dc39). What is left:
 the sample visuals, the small things list, the hard-line item on its
 date, and the Motion bundle when the owner starts it.
 
+**Superseded by `docs/session13_kickoff.md` (2026-10-13).**
+
 **Session 12, 2026-10-13.** The sample visuals are built (D100): a
 private dashboard (https://claude.ai/artifact/HmzF6jWNnpLdSa38k9vVR2,
 `scripts/build_dashboard.py`), three banners (`python -m src.banner`,
