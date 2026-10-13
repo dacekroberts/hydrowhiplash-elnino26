@@ -115,6 +115,9 @@ checkout.
    Pages, created with `--force`). Open: the owner's wording, the
    first upload, then the custom domain in the dashboard. plotly.js
    is bundled with the site.
+   After the site is live: a full V1 retrospective (owner, 2026-10-12:
+   "after site is live: do a full V1 Retrospective"). Its scope and
+   format are the owner's to set when it starts.
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
    4).
