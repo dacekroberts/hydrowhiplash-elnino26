@@ -6,14 +6,10 @@ page-layout: full
 
 <!-- The whole project on one chart (owner, 2026-10-13: its own page, grouped by
      stage, the four most important turns). Drawn by src/diagrams.py
-     (project_flowchart) and read from results/figures/. The sentences here
-     were written by Claude for the owner to edit: they are marked WIP. -->
+     (project_flowchart) and read from results/figures/. The sentence here
+     and the alt text were approved by the owner on 2026-10-13. -->
 
-::: {.callout-note title="Work in progress"}
-This page is new. Its wording is still to be settled.
-:::
-
-[WIP] How the project runs from its sources to these pages, and four places where the plan met the data and changed. The shorter chart of the method is on the [Methods and Limitations](methods.qmd) page.
+How the project runs from its sources to these pages, and four places where the plan met the data and changed. The shorter chart of the method is on the [Methods and Limitations](methods.qmd) page.
 
 :::: {.fig-wide}
 ::: {.fig-light}

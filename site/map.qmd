@@ -13,7 +13,7 @@ title: "Seven regions, year by year"
      for the owner to edit and approve. -->
 
 ::: {.callout-note title="Work in progress"}
-A first version. Fixes to this page will follow shortly.
+A first version. This winter's months join the map in early November.
 :::
 
 Pick a dataset and a year. Each region is coloured by how that year compares

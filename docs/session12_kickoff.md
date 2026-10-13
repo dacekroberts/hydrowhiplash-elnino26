@@ -96,10 +96,10 @@ checkout.
   2026-10-13).
 - `ACTION_PLAN.md` "Historical charts" is ticked (owner, 2026-10-13).
 - Wording, 2026-10-13: the five captions, the three D96 items and the
-  prediction bullet are approved and shown. Open: "Notebooks and code"
-  (no word yet), "AI use" (a draft sits in the page's comment, waiting on
-  the owner's "checked by hand" sentence), the page notes, the
-  retrospective. When the repository goes public (owner: "soon"), link
+  prediction bullet, "Notebooks and code", "AI use" and the page notes
+  are approved and shown; no "[WIP]" mark is left on the site (the
+  tracker keeps its note until November). Open: the owner to confirm the
+  two agency links in "Who this forecast is for"; the retrospective. When the repository goes public (owner: "soon"), link
   "logged" in the AI use section to `DECISIONS.md`; the tone-guide pass
   follows the text blocks.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
