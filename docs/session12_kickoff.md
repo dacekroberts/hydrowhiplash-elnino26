@@ -95,6 +95,13 @@ checkout.
   efficiency review is written (`docs/deepseek-efficiency-review.html`,
   2026-10-13).
 - `ACTION_PLAN.md` "Historical charts" is ticked (owner, 2026-10-13).
+- Wording, 2026-10-13: the five captions, the three D96 items and the
+  prediction bullet are approved and shown. Open: "Notebooks and code"
+  (no word yet), "AI use" (a draft sits in the page's comment, waiting on
+  the owner's "checked by hand" sentence), the page notes, the
+  retrospective. When the repository goes public (owner: "soon"), link
+  "logged" in the AI use section to `DECISIONS.md`; the tone-guide pass
+  follows the text blocks.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams

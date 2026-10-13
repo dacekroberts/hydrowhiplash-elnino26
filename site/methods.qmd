@@ -913,11 +913,12 @@ calculation.
 
 - **La Niña.** The labels exist in every table; the tests here look only at
   El Niño.
-- **A prediction model, which is the next step.** Trained on every past
-  year and scored only on years it has not seen, against a model with the
-  year trend alone. It is planned after these results were seen, so it is
-  exploratory and sits apart from the registered tests on this page; the
-  2027 season is its first real test.
+- **A prediction model.** A first version exists: trained on every past
+  year and scored only on years it has not seen, it beat a model with the
+  year trend alone by a small margin. It was built after these results
+  were seen, so it is exploratory and sits apart from the registered tests
+  on this page. That work continues separately; the 2027 season is its
+  first real test.
 - **Finer regions**, starting with Interior Alaska and the dry interior of
   British Columbia, so that the climate average matches where fires burn.
 - **Climate projections** for whether the winter signal is changing; the
@@ -936,7 +937,24 @@ calculation.
      DeepSeek on copies holding no data (2026-10-12). The owner's line
      for it (D77): "DeepSeek helper agents contributed here"; suggested
      place, this section, naming the review. What the owner verified by
-     hand is the owner's to state. -->
+     hand is the owner's to state.
+
+     Draft offered 2026-10-13, waiting on the owner's "checked by hand"
+     sentence and approval:
+
+     I directed this project and made its decisions; an AI assistant,
+     Claude Code, wrote most of the code, tests and figures under that
+     direction. Each judgment call is logged with its reasoning. Before any
+     result was computed, the code was audited in separate sessions that
+     had not seen the work, and the audit closed only when a fresh round
+     found nothing serious. DeepSeek helper agents contributed here in two
+     places: one read-only review of the code that runs the tests, and one
+     small change that prints a report after a data file is rebuilt.
+     Neither saw any data, and neither touched a result. [What the owner
+     checked by hand.] The findings, the wording and the errors are mine.
+
+     TO DO when the repository is public (owner, 2026-10-13): link "logged"
+     to DECISIONS.md in the repository. -->
 
 <!-- Sections that fold (owner, 2026-10-12): each second-level section gets
      a button in its heading; all start open, and a link to a place inside a
