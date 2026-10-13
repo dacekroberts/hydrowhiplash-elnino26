@@ -115,16 +115,19 @@ ca_last = S["fire_last_year_by_region"]["BC"]
 
 ## In short
 
-I asked whether the winter before a fire season tells us anything about how
-much burns, and whether El Niño is the useful part of that winter. I fixed
-`{python} n_tests` tests in writing before opening any fire data, then ran
-them once. After correcting for the number of tests,
-`{python} n_sig` of `{python} n_tests` are significant. None of those
-`{python} n_sig` links El Niño itself to burned area. What does show up is
-the step after it: a wet or snowy winter goes with less burned area that
-year in Alberta and Northern California, and in Northern California a wet
-winter goes with more burned area the year after. These are associations
-over about `{python} n_fire_years` seasons, not causes.
+<!-- Tone-guide pass, 2026-10-13, applied on the owner's word: the result
+     moved to the first sentence; the long sentence split in three. -->
+
+Of `{python} n_tests` tests fixed in advance, `{python} n_sig` are
+significant after correcting for the number of tests, and none of those
+links El Niño itself to burned area. I asked whether the winter before a
+fire season tells us anything about how much burns, and whether El Niño is
+the useful part of that winter. I fixed the tests in writing before opening
+any fire data, then ran them once. What does show up is the step after
+El Niño. A wet or snowy winter goes with less burned area that year in
+Alberta and Northern California. In Northern California, a wet winter also
+goes with more burned area the year after. These are associations over
+about `{python} n_fire_years` seasons, not causes.
 
 ## Method
 
@@ -171,12 +174,16 @@ of Y. The 1997-98 El Niño is year 1998.
   `{python} S["enso_robustness_index"]`.
 - **Winter weather and snow.** ERA5-Land, a reanalysis: a land model driven
   by observation-corrected weather on a grid of about 9 km. It is a model
-  estimate, not a gauge. From it I take December to February precipitation,
-  October to March precipitation as a standard score against
-  `{python} S["precip_anom_normal_years"][0]`-`{python} S["precip_anom_normal_years"][1]`,
-  the snowpack (snow water equivalent) on 1 April as a standard score,
-  June to August temperature, and SPEI-3, a drought index that sets three
-  months of precipitation against how much water the air could draw.
+  estimate, not a gauge. From it I take:
+
+    - December to February precipitation;
+    - October to March precipitation, as a standard score against
+      `{python} S["precip_anom_normal_years"][0]`-`{python} S["precip_anom_normal_years"][1]`;
+    - the snowpack (snow water equivalent) on 1 April, as a standard score;
+    - June to August temperature;
+    - SPEI-3, a drought index that sets three months of precipitation
+      against how much water the air could draw.
+
   Regional means weight each grid cell by its area.
 - **Burned area.** Hectares burned in each region's fire season by fires of
   `{python} S["min_fire_ha"]` ha or more. US regions use MTBS, satellite-mapped
@@ -273,7 +280,7 @@ intervals are always two-sided.
 - **Regression with Newey-West errors (H3, H5, H6, C1, C2).** Ordinary least
   squares, with standard errors that allow a season to resemble the
   `{python} S["hac_maxlags"]` before it. A year term takes out the long-term
-  trend, so a region that simply burns more each decade does not pass for an
+  trend, so a region that burns more each decade does not pass for an
   El Niño effect.
 - **Pooled contrast (H4).** Five regions in one model with errors that allow
   regions to move together within a year (Driscoll-Kraay), tested as one
@@ -343,7 +350,7 @@ the same slope read as a change in burned area.
   in El Niño winters by `{python} est("H1", "SoCal", 0)` mm, and that
   survives correction (Holm p `{python} pv("H1", "SoCal", "p_holm")`). This
   one is a check, not a finding: I had seen these values before the freeze.
-  In the north only Alberta is clearly drier,
+  In the north only Alberta is drier,
   `{python} est("H1", "AB", 0)` mm, and that does not survive correction
   (Holm p `{python} pv("H1", "AB", "p_holm")`).
 - **El Niño and burned area (H2, H3a, H3b, H4).** No test is significant in

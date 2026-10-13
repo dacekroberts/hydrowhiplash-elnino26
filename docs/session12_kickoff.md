@@ -101,7 +101,7 @@ checkout.
   tracker keeps its note until November). Open: the owner to confirm the
   two agency links in "Who this forecast is for"; the retrospective. When the repository goes public (owner: "soon"), link
   "logged" in the AI use section to `DECISIONS.md`; the tone-guide pass
-  follows the text blocks.
+  was done on 2026-10-13 (code comments clean; five prose edits applied).
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams
