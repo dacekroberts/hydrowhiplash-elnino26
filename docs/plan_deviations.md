@@ -25,6 +25,28 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-13
+
+### D100 · Sample visuals and a Motion handoff folder (scope additions, owner's request)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists the site's pieces and
+  nothing else: "Each piece reuses a figure the analysis already makes".
+  No dashboard, banner or film material is planned anywhere.
+- **Actual:** session 12 built a private sample dashboard
+  (`scripts/build_dashboard.py`), three GitHub banner images
+  (`src/banner.py`, `results/figures/banner_*.png`, the README header) and
+  a folder of reference material for a Claude Motion film
+  (`scripts/build_motion_handoff.py`, `motion_handoff/`, not committed).
+  All read committed tables only; no test, pinned input or registered
+  number is touched, and nothing in `results/tables/run1/` changed.
+- **Why:** owner, 2026-10-13: "add generating some sample visuals to next
+  session kickoff"; during the session, "for anything the dashboard can't
+  scaffold for a proper motion, let's add into a handoff folder for the
+  other account" and "maybe incorporate the flowchart as well in the
+  opening graphic".
+- **Recorded:** `DECISIONS.md` 2026-10-13 "Sample visuals: a dashboard,
+  three banners and a Motion handoff folder".
+- **Plan doc:** left as written.
+
 ## 2026-10-12
 
 ### D99 · Sea-surface temperature for the map page (new source, display only)

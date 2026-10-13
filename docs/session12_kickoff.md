@@ -16,6 +16,15 @@ site has had eight uploads (the last from commit 4a0dc39). What is left:
 the sample visuals, the small things list, the hard-line item on its
 date, and the Motion bundle when the owner starts it.
 
+**Session 12, 2026-10-13.** The sample visuals are built (D100): a
+private dashboard (https://claude.ai/artifact/HmzF6jWNnpLdSa38k9vVR2,
+`scripts/build_dashboard.py`), three banners (`python -m src.banner`,
+the README header) and a Motion reference folder (`motion_handoff/`,
+ignored; `scripts/build_motion_handoff.py --capture`). Open: the owner's
+wording of the dashboard's drafts, a credit line for the banner in the
+README, the social preview upload (the owner, in GitHub's settings), and
+the four small things.
+
 **Where things stand.**
 
 - **Nothing in `results/tables/run1/` is edited, renamed or deleted.**
@@ -317,7 +326,7 @@ into that copy (seen in the staged copy only; worth a look).
 DeepSeek plan; ask before any run that reads polygons; ask before every
 DeepSeek call; the going-public question is a leaning, not a decision.
 
-**Next free deviation number: D100.** The frozen plan's deviations log
+**Next free deviation number: D101** (D100, 2026-10-13: the sample visuals). The frozen plan's deviations log
 is at row 19.
 
 ## Part 2 · Prompt for session 12

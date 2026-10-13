@@ -1,0 +1,310 @@
+<title>Whiplash Storyboard</title>
+<link rel="stylesheet" href="__FONT_URL__">
+<style>
+/* Layout: five scenes down one column; the record is a grid of region tiles placed roughly where the regions sit.
+   Colours, fonts and radii are the design tokens (theme/tokens.json), written in by scripts/build_dashboard.py. */
+__THEME__
+
+* { box-sizing: border-box; }
+body { background: var(--page); color: var(--ink); font: 16px/1.6 var(--font-sans); }
+.page { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 36px 64px; display: flex; flex-direction: column; gap: var(--space-12); }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(1.9rem, 5vw, 2.5rem); font-weight: 800; letter-spacing: -0.01em; line-height: 1.1; max-width: 22ch; }
+h2 { font-size: 1.625rem; font-weight: 700; line-height: 1.2; }
+h3 { font-size: 1rem; font-weight: 700; line-height: 1.25; }
+p { margin: 0; max-width: 68ch; }
+.caps { font: 600 0.72rem/1.3 var(--font-sans); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; font-size: 0.8125rem; }
+.muted { color: var(--ink-muted); }
+
+header.top { position: relative; display: flex; flex-direction: column; gap: var(--space-4); overflow: hidden; }
+header.top svg.contour { position: absolute; right: -40px; top: -30px; width: 360px; height: 240px; pointer-events: none; }
+header.top svg.contour path { fill: none; stroke: var(--rule); stroke-width: 1; }
+header.top > :not(svg) { position: relative; }
+.lede { font-size: 1.125rem; line-height: 1.55; }
+
+section.scene { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+.scene-head { display: flex; flex-direction: column; gap: var(--space-2); padding-top: var(--space-4); border-top: var(--stroke-mark) solid var(--evergreen); }
+
+/* Scene 1: headline counts */
+ul.stats { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 var(--space-6); }
+ul.stats li { display: flex; flex-direction: column; gap: 2px; padding: var(--space-3) 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+ul.stats .big { font: 700 2.125rem/1.05 var(--font-display); font-variant-numeric: tabular-nums; }
+ul.stats .what { font-size: 0.9rem; color: var(--ink-muted); }
+@media (max-width: 720px) { ul.stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+/* Scene 1: the project flow, sources down to the live site */
+.flow { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.flow .srcs { align-self: stretch; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-3); }
+.flow .node { width: 100%; max-width: 30rem; text-align: center; padding: var(--space-2) var(--space-3); background: var(--surface); border: 1px solid var(--rule-strong); border-radius: var(--radius-md); font-size: 0.9rem; line-height: 1.35; min-width: 0; }
+.flow .srcs .node { max-width: none; }
+.flow .node strong { font-weight: 600; }
+.flow .node.enso { background: var(--enso-soft); border-color: var(--enso); }
+.flow .node.water { background: var(--water-soft); border-color: var(--water); }
+.flow .node.fire { background: var(--fire-soft); border-color: var(--fire); }
+.flow .node.store { max-width: none; align-self: stretch; background: var(--surface-sunk); }
+.flow .arrow { width: 0; height: 18px; border-left: var(--stroke-mark) solid var(--rule-strong); position: relative; margin-bottom: 5px; }
+.flow .arrow::after { content: ""; position: absolute; left: -6px; bottom: -5px; border: 5px solid transparent; border-top-color: var(--rule-strong); border-bottom: 0; }
+.flow .fan { align-self: stretch; height: 14px; margin: 0 12.5%; border: var(--stroke-mark) solid var(--rule-strong); border-top: 0; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+.flow .withplan { align-self: stretch; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 30rem) minmax(0, 1fr); align-items: center; gap: var(--space-3); }
+.flow .withplan .node { grid-column: 2; }
+.flow .plan { grid-column: 3; font-size: 0.84rem; color: var(--ink-muted); padding-left: var(--space-3); border-left: 1px dashed var(--rule-strong); }
+.flow a.site { width: 100%; max-width: 30rem; display: flex; flex-direction: column; gap: 2px; text-align: center; padding: var(--space-3) var(--space-4); background: var(--evergreen); color: var(--on-evergreen); border-radius: var(--radius-md); text-decoration: none; }
+.flow a.site strong { font: 700 1.125rem/1.2 var(--font-display); text-decoration: underline; text-underline-offset: 3px; }
+.flow a.site span { font-size: 0.84rem; }
+@media (max-width: 720px) { .flow .srcs { grid-template-columns: repeat(2, minmax(0, 1fr)); } .flow .fan { margin: 0 25%; } .flow .withplan { grid-template-columns: minmax(0, 1fr); } .flow .withplan .node, .flow .plan { grid-column: 1; } .flow .plan { border-left: 0; padding-left: 0; text-align: center; } }
+
+/* Scene 2: region tiles, north at the top */
+.tiles { display: grid; gap: var(--space-4); grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-areas: "AK YT" "BC AB" "PNW key" "NorCal key" "SoCal key"; }
+.tile { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius-md); padding: var(--space-3) var(--space-3) var(--space-2); display: flex; flex-direction: column; gap: var(--space-1); min-width: 0; }
+.tile-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0 var(--space-3); }
+.tile-head .num { color: var(--ink-muted); font-size: 0.75rem; }
+.tile svg { display: block; width: 100%; height: 132px; }
+.tile svg text { font-family: var(--font-mono); font-size: 10px; fill: var(--ink-muted); }
+.tile svg text.strong { fill: var(--ink); }
+.tile svg rect.hit { fill: transparent; }
+.tile svg rect.bar.on, .tile svg path.zero.on { stroke: var(--ink); stroke-width: 1.5; }
+.key { grid-area: key; align-self: start; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-2) 0 0 var(--space-2); }
+.key ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); font-size: 0.9rem; }
+.key li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: var(--space-2); align-items: center; }
+.key i { justify-self: center; display: block; }
+.key i.bar { width: 8px; height: 18px; background: var(--fire); border-radius: var(--radius-sm); }
+.key i.band { width: 12px; height: 18px; background: var(--enso-soft); border-bottom: 4px solid var(--enso); }
+.key i.band.strong { border-bottom-color: var(--enso-strong); }
+.key i.slot { width: 10px; height: 18px; border: 1px dashed var(--rule-strong); }
+.key i.zero { width: 8px; height: 8px; border: 1.5px solid var(--ghost); transform: rotate(45deg); }
+@media (max-width: 720px) { .tiles { grid-template-columns: minmax(0, 1fr); grid-template-areas: "key" "AK" "YT" "BC" "AB" "PNW" "NorCal" "SoCal"; } .key { padding: 0; } }
+
+/* Scene 3: interval ledger on one shared scale */
+.ledger { background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius-md); padding: var(--space-2) var(--space-4) var(--space-3); }
+.lrow { display: grid; grid-template-columns: 10.5rem minmax(0, 1fr) 19rem; gap: var(--space-1) var(--space-4); align-items: center; padding: var(--space-2) 0; border-bottom: 1px solid var(--rule); }
+.lrow.axis { border-bottom: 0; padding-bottom: 0; align-items: start; }
+.lrow .who { font-weight: 600; }
+.lrow .fig { display: flex; flex-direction: column; }
+.track { position: relative; height: 22px; }
+.track .zero { position: absolute; top: -9px; bottom: -9px; width: 0; border-left: var(--stroke-hair) solid var(--rule-strong); }
+.track .ci { position: absolute; top: 9px; height: var(--stroke-interval); background: var(--ink-muted); border-radius: var(--radius-sm); }
+.track .dot { position: absolute; top: 5px; width: 12px; height: 12px; margin-left: -6px; border-radius: 50%; border: var(--stroke-mark) solid var(--ink); background: var(--surface); }
+.track .dot.sig { border-color: var(--evergreen); background: var(--evergreen); }
+.track.ticks { height: 20px; }
+.track.ticks span { position: absolute; top: 4px; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted); white-space: nowrap; }
+@media (max-width: 720px) { .lrow { grid-template-columns: minmax(0, 1fr); } .lrow.axis > :not(.track) { display: none; } }
+
+/* Scene 4: what survived */
+.passed { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-4); }
+.pass { display: flex; flex-direction: column; gap: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--rule-strong); min-width: 0; }
+.pass .verdict { display: flex; align-items: center; gap: var(--space-2); }
+.pass .verdict i { width: 12px; height: 12px; border-radius: 50%; background: var(--evergreen); flex: none; }
+.pass .big { font: 700 2.125rem/1.05 var(--font-display); font-variant-numeric: tabular-nums; }
+.pass .what { font-size: 0.9rem; }
+.pass .note { font-size: 0.84rem; color: var(--ink-muted); }
+@media (max-width: 860px) { .passed { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .passed { grid-template-columns: minmax(0, 1fr); } }
+
+/* Scene 5: what comes next */
+ol.next { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius-md); }
+ol.next li { display: grid; grid-template-columns: 18px 9.5rem minmax(0, 1fr); gap: 2px var(--space-3); align-items: baseline; padding: 10px var(--space-4); border-bottom: 1px solid var(--rule); }
+ol.next li:last-child { border-bottom: 0; }
+ol.next .st { width: 10px; height: 10px; border-radius: 50%; border: var(--stroke-mark) solid var(--rule-strong); align-self: center; }
+ol.next li:first-child .st { border-color: var(--evergreen); box-shadow: 0 0 0 3px var(--lichen); }
+ol.next .what { font-weight: 600; }
+@media (max-width: 560px) { ol.next li { grid-template-columns: 18px minmax(0, 1fr); } ol.next .what { grid-column: 2; } }
+
+#tip { position: fixed; z-index: 10; max-width: 16rem; padding: 6px 10px; display: flex; flex-direction: column; gap: 1px; font-size: 0.84rem; line-height: 1.4; background: var(--surface); color: var(--ink); border: 1px solid var(--rule-strong); border-radius: var(--radius-md); pointer-events: none; }
+footer { display: flex; flex-direction: column; gap: var(--space-1); font-size: 0.84rem; color: var(--ink-muted); border-top: 1px solid var(--rule); padding-top: var(--space-4); }
+footer p { max-width: 90ch; }
+:focus-visible { outline: 2px solid var(--evergreen); outline-offset: 2px; }
+</style>
+
+<div class="page">
+  <header class="top">
+    <svg class="contour" viewBox="0 0 360 240" aria-hidden="true">
+      <path d="M40 250 C60 150 150 70 380 60"/><path d="M80 250 C100 170 180 100 380 92"/>
+      <path d="M122 250 C140 190 210 130 380 124"/><path d="M166 250 C184 208 240 160 380 156"/>
+      <path d="M214 250 C232 224 280 190 380 188"/><path d="M268 250 C284 238 320 220 380 220"/>
+    </svg>
+    <span class="caps">Hydrowhiplash · sample storyboard · private</span>
+    <h1 id="title"></h1>
+  </header>
+
+  <section class="scene" aria-labelledby="s1">
+    <div class="scene-head"><span class="caps">Scene 1</span><h2 id="s1">The question</h2><p class="lede" data-text="scene1"></p></div>
+    <ul class="stats" id="stats"></ul>
+    <span class="caps" data-text="flow"></span>
+    <div class="flow" id="flow"></div>
+  </section>
+
+  <section class="scene" aria-labelledby="s2">
+    <div class="scene-head"><span class="caps">Scene 2</span><h2 id="s2">The record</h2><p data-text="scene2"></p></div>
+    <div class="tiles" id="tiles">
+      <div class="key">
+        <span class="caps">How to read a tile</span>
+        <ul>
+          <li><i class="bar"></i><span>One fire season. Up is more burned area than the region's typical season, down is less.</span></li>
+          <li><i class="band"></i><span>A season after an El Niño winter.</span></li>
+          <li><i class="band strong"></i><span>A season after a strong El Niño winter, with its year.</span></li>
+          <li><i class="zero"></i><span>No fire of counted size.</span></li>
+          <li><i class="slot"></i><span id="slot-key"></span></li>
+        </ul>
+        <p class="muted" style="font-size:0.84rem" id="scale-note"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene" aria-labelledby="s3">
+    <div class="scene-head"><span class="caps">Scene 3</span><h2 id="s3">El Niño and burned area</h2><p data-text="scene3"></p></div>
+    <div class="ledger" id="ledger"></div>
+  </section>
+
+  <section class="scene" aria-labelledby="s4">
+    <div class="scene-head"><span class="caps">Scene 4</span><h2 id="s4">What survived</h2><p data-text="scene4"></p></div>
+    <div class="passed" id="passed"></div>
+  </section>
+
+  <section class="scene" aria-labelledby="s5">
+    <div class="scene-head"><span class="caps">Scene 5</span><h2 id="s5">What comes next</h2><p data-text="scene5"></p></div>
+    <ol class="next" id="next"></ol>
+  </section>
+
+  <footer>
+    <p id="stamp" class="num"></p>
+    <p>Burned area: Monitoring Trends in Burn Severity (U.S. Geological Survey and USDA Forest Service); WFIGS Interagency Fire Perimeters (National Interagency Fire Center); Canadian National Fire Database (Natural Resources Canada, Canadian Forest Service). Contains information licensed under the Open Government Licence – Canada and the Open Government Licence – British Columbia. El Niño index: NOAA Climate Prediction Center.</p>
+    <p>© Dace Roberts. Analysis and errors are mine; the agencies whose data I used did not review it.</p>
+  </footer>
+</div>
+<div id="tip" hidden></div>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var M = D.meta, C = D.counts;
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function sgn(x, d) { return (x < 0 ? "−" : x > 0 ? "+" : "") + Math.abs(x).toFixed(d); }
+  function ha(x) { return Math.round(x).toLocaleString("en-US"); }
+  function pval(p) { return p < 0.001 ? "<0.001" : p.toFixed(3); }
+  function $(id) { return document.getElementById(id); }
+
+  $("title").textContent = D.text.title;
+  document.querySelectorAll("[data-text]").forEach(function (p) { p.textContent = D.text[p.dataset.text]; });
+
+  // Scene 1
+  $("stats").innerHTML = [
+    [C.tests, "tests fixed in writing on " + M.plan_frozen],
+    [C.significant, "significant after the Holm correction for the number of tests"],
+    [C.enso_burn, "of the " + C.enso_burn_tests + " that set El Niño itself against burned area"],
+    [C.fire_years, "fire seasons a region, in " + C.regions + " regions"]
+  ].map(function (s) { return '<li><span class="big">' + s[0] + '</span><span class="what">' + esc(s[1]) + "</span></li>"; }).join("");
+
+  function two(t) { return "<strong>" + esc(t[0]) + "</strong>" + (t[1] ? "<br>" + esc(t[1]) : ""); }
+  var F = D.flow, arrow = '<i class="arrow"></i>';
+  $("flow").innerHTML = '<div class="srcs">' + F.sources.map(function (s) { return '<div class="node ' + (s.token || "") + '">' + two(s.text) + "</div>"; }).join("") +
+    '</div><i class="fan"></i>' + arrow + '<div class="node store">' + two(F.table) + "</div>" +
+    F.spine.map(function (t, i) { return arrow + (i === 0 ? '<div class="withplan"><div class="node">' + two(t) + '</div><span class="plan">' + esc(F.plan.join(" ")) + "</span></div>" : '<div class="node">' + two(t) + "</div>"); }).join("") +
+    arrow + '<a class="site" href="' + esc(F.site) + '"><strong>' + esc(F.site.replace("https://", "")) + "</strong><span>" + esc(F.pages) + "</span></a>";
+
+  // Scene 2: one scale for every tile
+  var LIM = 0;
+  D.regions.forEach(function (r) { r.seasons.forEach(function (s) { if (s.anomaly !== null) LIM = Math.max(LIM, Math.abs(s.anomaly)); }); });
+  LIM *= 1.06;
+  var N = M.forecast_year - M.first_year + 1, LN10 = Math.log(10);
+  function winter(s) { return s.phase === "el_nino" ? (s.strong ? "a strong El Niño winter" : "an El Niño winter") : s.phase === "la_nina" ? "a La Niña winter" : "a neutral winter"; }
+  function times(a) { return String(Number(Math.exp(a).toPrecision(2))); }
+
+  function drawTile(tile, r) {
+    var svg = tile.querySelector("svg"), W = Math.max(240, Math.floor(svg.clientWidth)), H = 132;
+    var m = { l: 34, r: 2, t: 6, b: 20 }, ph = H - m.t - m.b, mid = m.t + ph / 2, slot = (W - m.l - m.r) / N;
+    var bw = Math.max(1.5, slot - 2);
+    function x(year) { return m.l + (year - M.first_year) * slot; }
+    function y(v) { return mid - v / LIM * (ph / 2); }
+    var out = [];
+    r.seasons.forEach(function (s) {
+      if (s.phase === "el_nino") out.push('<rect x="' + x(s.year) + '" y="' + m.t + '" width="' + slot + '" height="' + ph + '" fill="var(--enso-soft)"/>');
+    });
+    [[LN10, "×10"], [-LN10, "×0.1"]].forEach(function (g) {
+      if (Math.abs(g[0]) < LIM) out.push('<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + y(g[0]) + '" y2="' + y(g[0]) + '" stroke="var(--rule)" stroke-width="1"/><text x="' + (m.l - 5) + '" y="' + (y(g[0]) + 3.5) + '" text-anchor="end">' + g[1] + "</text>");
+    });
+    out.push('<line x1="' + m.l + '" x2="' + (W - m.r) + '" y1="' + mid + '" y2="' + mid + '" stroke="var(--rule-strong)" stroke-width="1"/><text x="' + (m.l - 5) + '" y="' + (mid + 3.5) + '" text-anchor="end">×1</text>');
+    r.seasons.forEach(function (s, i) {
+      var x0 = x(s.year) + (slot - bw) / 2;
+      if (s.anomaly === null) {
+        var cx = x(s.year) + slot / 2;
+        out.push('<path class="zero" data-i="' + i + '" d="M' + cx + " " + (mid - 4) + "L" + (cx + 4) + " " + mid + "L" + cx + " " + (mid + 4) + "L" + (cx - 4) + " " + mid + 'Z" fill="var(--surface)" stroke="var(--ghost)" stroke-width="1.5"/>');
+      } else {
+        var top = Math.min(mid, y(s.anomaly)), h = Math.max(1, Math.abs(y(s.anomaly) - mid));
+        out.push('<rect class="bar" data-i="' + i + '" x="' + x0 + '" y="' + top + '" width="' + bw + '" height="' + h + '" rx="1" fill="var(--fire)"/>');
+      }
+      if (s.phase === "el_nino") {
+        out.push('<rect x="' + x0 + '" y="' + (m.t + ph + 2) + '" width="' + bw + '" height="4" fill="var(--enso' + (s.strong ? "-strong" : "") + ')"/>');
+        if (s.strong) out.push('<text class="strong" x="' + (x(s.year) + slot / 2) + '" y="' + (H - 3) + '" text-anchor="middle">' + s.year + "</text>");
+      }
+    });
+    out.push('<text x="' + m.l + '" y="' + (H - 3) + '">' + M.first_year + "</text>");
+    out.push('<rect x="' + (x(M.forecast_year) + 1) + '" y="' + (m.t + 1) + '" width="' + (slot - 2) + '" height="' + (ph - 2) + '" fill="none" stroke="var(--rule-strong)" stroke-width="1" stroke-dasharray="2 2"/>');
+    r.seasons.forEach(function (s, i) {
+      out.push('<rect class="hit" data-i="' + i + '" x="' + x(s.year) + '" y="' + m.t + '" width="' + slot + '" height="' + (ph + 6) + '"/>');
+    });
+    svg.setAttribute("viewBox", "0 0 " + W + " " + H);
+    svg.innerHTML = out.join("");
+  }
+
+  var tiles = $("tiles"), tip = $("tip");
+  D.regions.forEach(function (r) {
+    var tile = document.createElement("div");
+    tile.className = "tile";
+    tile.style.gridArea = r.region;
+    tile.innerHTML = '<div class="tile-head"><h3>' + esc(r.name) + '</h3><span class="num">typical season ' + ha(r.typical) + " ha · to " + r.last + '</span></div><svg role="img" aria-label="' +
+      esc(r.name + ": every fire season from " + M.first_year + " to " + r.last + " as a multiple of the typical season, " + ha(r.typical) + " hectares. Seasons after El Niño winters are shaded.") + '"></svg>';
+    tiles.appendChild(tile);
+    tile.r = r;
+    function show(e) {
+      var hit = e.target.closest("rect.hit");
+      tile.querySelectorAll(".on").forEach(function (b) { b.classList.remove("on"); });
+      if (!hit) { tip.hidden = true; return; }
+      var s = r.seasons[+hit.dataset.i], mark = tile.querySelector('.bar[data-i="' + hit.dataset.i + '"], .zero[data-i="' + hit.dataset.i + '"]');
+      if (mark) mark.classList.add("on");
+      tip.innerHTML = "<strong>" + esc(r.name) + ", " + s.year + "</strong><span>" +
+        (s.anomaly === null ? "No fire of " + M.min_fire_ha + " ha or more" : ha(s.burn_ha) + " ha, " + times(s.anomaly) + " times the typical season") +
+        '</span><span class="muted">after ' + winter(s) + " (" + M.enso_index + " " + sgn(s.enso_djf, 2) + ")</span>";
+      tip.hidden = false;
+      var w = tip.offsetWidth, hgt = tip.offsetHeight, px = Math.min(window.innerWidth - w - 8, Math.max(8, e.clientX + 12));
+      var py = e.clientY - hgt - 12; if (py < 8) py = e.clientY + 16;
+      tip.style.left = px + "px"; tip.style.top = py + "px";
+    }
+    tile.addEventListener("pointermove", show);
+    tile.addEventListener("pointerdown", show);
+    tile.addEventListener("pointerleave", function () { tip.hidden = true; tile.querySelectorAll(".on").forEach(function (b) { b.classList.remove("on"); }); });
+  });
+  function drawAll() { tiles.querySelectorAll(".tile").forEach(function (t) { drawTile(t, t.r); }); }
+  drawAll();
+  var timer; window.addEventListener("resize", function () { clearTimeout(timer); timer = setTimeout(drawAll, 120); });
+  window.addEventListener("scroll", function () { tip.hidden = true; }, { passive: true });
+  $("slot-key").textContent = M.forecast_year + ": not yet happened.";
+  $("scale-note").textContent = "Every tile uses one scale, in multiples of ten. Only fires of " + M.min_fire_ha + " ha or more count. Hover or tap a season for its hectares.";
+
+  // Scene 3
+  var lo = Math.min.apply(null, D.ledger.map(function (r) { return r.ci_low; })), hi = Math.max.apply(null, D.ledger.map(function (r) { return r.ci_high; }));
+  lo = Math.floor(lo * 2) / 2; hi = Math.ceil(hi * 2) / 2;
+  function pos(v) { return (v - lo) / (hi - lo) * 100; }
+  var rows = D.ledger.map(function (r) {
+    return '<div class="lrow"><span class="who">' + esc(r.name) + '</span><div class="track"><i class="zero" style="left:' + pos(0) + '%"></i><i class="ci" style="left:' + pos(r.ci_low) + "%;width:" + (pos(r.ci_high) - pos(r.ci_low)) + '%"></i><i class="dot' + (r.significant ? " sig" : "") + '" style="left:' + pos(r.estimate) + '%"></i></div><span class="fig"><span class="num">' +
+      sgn(r.estimate, 2) + " (" + sgn(r.ci_low, 2) + " to " + sgn(r.ci_high, 2) + ')</span><span class="num muted">' + sgn(r.pct_change, 0) + "% · Holm p " + pval(r.p_holm) + " · " + (r.significant ? "significant" : "not significant") + "</span></span></div>";
+  });
+  var ticks = []; for (var v = lo; v <= hi + 1e-9; v += 0.5) ticks.push('<span style="left:' + pos(v) + '%">' + (v === 0 ? "0" : sgn(v, 1)) + "</span>");
+  rows.push('<div class="lrow axis"><span></span><div class="track ticks">' + ticks.join("") + '</div><span></span></div>');
+  $("ledger").innerHTML = '<p class="caps" style="padding:var(--space-2) 0">H3a (El Niño strength on burned area, year trend only) · log points per 1 °C · dot is the estimate, bar the 95% interval, line no effect</p>' + rows.join("");
+
+  // Scene 4
+  $("passed").innerHTML = D.survived.map(function (r) {
+    var big = r.pct_change === null ? sgn(r.estimate, 0) + " mm" : sgn(r.pct_change, 0) + "%";
+    var ci = r.pct_change === null ? sgn(r.ci_low, 0) + " to " + sgn(r.ci_high, 0) + " mm" : sgn(r.pct_low, 0) + "% to " + sgn(r.pct_high, 0) + "%";
+    return '<div class="pass"><span class="verdict"><i></i><span class="caps">Significant after Holm</span></span><h3>' + esc(r.name) + '</h3><span class="big">' + big + '</span><span class="what">' + esc(r.what) + '</span><span class="num muted">95% CI ' + ci + "<br>Holm p " + pval(r.p_holm) + '</span><span class="note">' + esc(r.label) + (r.note ? ". " + esc(r.note) : "") + "</span></div>";
+  }).join("");
+
+  // Scene 5
+  $("next").innerHTML = D.next.map(function (n) { return '<li><i class="st"></i><span class="num">' + esc(n.when) + '</span><span class="what">' + esc(n.title) + "</span></li>"; }).join("");
+
+  $("stamp").textContent = "Read from " + M.run + " (commit " + M.commit.slice(0, 7) + ", run " + M.run_utc.slice(0, 10) + ") · built " + M.built_utc;
+})();
+</script>

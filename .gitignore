@@ -37,3 +37,5 @@ pinned_inputs_copy/
 /docs/retrospective_v1.md
 # wrangler's local cache (holds the Cloudflare account ID)
 .wrangler/
+# the Motion handoff folder, rebuilt by scripts/build_motion_handoff.py
+/motion_handoff/

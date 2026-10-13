@@ -964,6 +964,25 @@ their `_dark` copies: the whole project from sources to pages, with
 four turns, drawn by `src.diagrams.project_flowchart`. Structure only;
 it reads no table. Shown on `site/flowchart.qmd`.
 
+**Banners (2026-10-13).** `banner_social_dark.png` (1280 x 640, the
+repository's social preview) and `banner_readme_light.png` /
+`banner_readme_dark.png` (1280 x 320, the README header), drawn by
+`python -m src.banner`. Each row is one region's fire seasons as the
+log departure from the region's mean (`figures.season_anomaly`), all
+seven rows on one scale, north to south; a band is a season after an
+El Niño winter. A motif, not a chart: no axis, no values. Trap: the
+design typefaces are drawn from fixed-weight copies made in a temporary
+folder, so the module needs fontTools and the files in `site/fonts/`.
+
+**Sample dashboard (2026-10-13).** Not a file in `results/`: a private
+page built by `python scripts/build_dashboard.py --out <file>` from
+`run1`, `fire_region_year.csv`, `site_settings.json` and
+`rollout_calendar.json`. "Typical season" there is
+`expm1(mean log_burn)` over the region's seasons with a counted fire,
+as on the site's season chart. `scripts/build_motion_handoff.py` cuts
+the same numbers into `numbers.json`, `seasons.csv` and `timetable.csv`
+in `motion_handoff/` (not committed).
+
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 
 Written by `python -m src.prediction` on 2026-10-12, after `run1` was

@@ -17,6 +17,61 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Sample visuals: a dashboard, three banners and a Motion handoff folder
+
+- **Built a private sample dashboard as a five-scene storyboard (D100).**
+  The owner's answers set it: a Motion storyboard draft that "is supposed
+  to appeal to a portfolio visitor as well"; four panels (headline
+  counts, season strips, the H3a interval ledger, what survived); a tile
+  grid with no region shapes; both themes; one line of text per scene;
+  El Niño seasons marked as the design system says. `scripts/
+  build_dashboard.py` reads `run1`, the fire table through the pinned
+  loader, `site_settings.json` and `rollout_calendar.json`, and fills
+  `scripts/dashboard/template.html`. Every tile uses one scale. Rejected:
+  a locator map (a polygon read for a sample); amber bars for El Niño
+  seasons (amber would become a data colour). The seasons are
+  `fire_figures.test_seasons`, so 2026, 2027 and the Canadian 2025
+  cannot appear. Counted by the script: 0 of the 25 registered tests
+  that set El Niño itself against burned area (H2, H3a, H3b, H4, C2) are
+  significant after Holm.
+- **The opening scene carries the project flowchart cut to its spine
+  (owner: "flowchart arrows down to or 'plugs in' to live site").** Four
+  sources, the region x year table, the tests with the frozen plan
+  beside them, the result tables, the figures, and a green block that
+  links to the live site. Every label is read from `src.diagrams`, so
+  the dashboard and the site's flowchart cannot drift apart. The four
+  turns are left out: they are the flowchart page's subject.
+- **Wording.** Most sentences repeat lines the owner approved for the
+  site. Drafts for the owner: the page title, the label over the flow,
+  and three "what it measures" lines in Scene 4 (`TEXT`, `SURVIVED`).
+- **Three banner images, drawn by `python -m src.banner`:** the social
+  preview (1280 x 640, dark) and the README header (1280 x 320, light
+  and dark, switched by a `picture` element). Owner's answers: all seven
+  regions stacked, the design typefaces at fixed weights, a dark
+  preview, and the question as the wording ("Does the winter before a
+  fire season say how much will burn?", a draft from the Overview page's
+  first sentence). It is a motif with no axis and no values.
+- **The typeface limit of 2026-10-12 has a way round.** matplotlib draws
+  a variable font at one weight, so `banner.static_fonts` makes
+  fixed-weight copies with fontTools in a temporary folder at draw time;
+  none is committed. Checked first: none of the three licence texts in
+  `site/fonts/` declares a reserved font name, so a modified copy may
+  keep its name. The site's charts were not changed to use it.
+- **A Motion handoff folder, `motion_handoff/`, ignored by git** (owner:
+  "reference images of the site maps, site visuals, the timetable").
+  `scripts/build_motion_handoff.py` writes 35 files, flat: a numbers
+  file, the seasons and the timetable as CSV, the tokens, the typefaces
+  with their licences, 17 figures, the dashboard as a storyboard draft,
+  a manifest saying why each file may leave, and with `--capture` four
+  pictures of the live site taken by headless Edge. Not in it: a brief
+  and an approved storyboard (the owner's), map shapes as vector data (a
+  polygon read, not asked for yet), and the decisions the
+  `claude-motion-handoff` skill asks for before any scene.
+- **Not done:** the social preview is not uploaded (GitHub takes it in
+  the repository's settings page only); the dashboard was looked at in
+  the light theme at desktop width only; the README has no credit line
+  for the banner's sources yet (the owner's to word).
+
 ### 2026-10-13 - The repository made public
 
 - **Made `dacekroberts/hydrowhiplash-elnino26` public on the owner's
