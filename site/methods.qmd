@@ -114,11 +114,11 @@ ca_last = S["fire_last_year_by_region"]["BC"]
 ```
 
 ::: {.callout-note}
-## Draft, 12 October 2026
+## Work in progress, 12 October 2026
 
-This page is a first draft for the author to edit. The numbers are read from
-the committed results of the registered run (`{python} RUN`, written
-`{python} prov["run_utc"][:10]`); the wording is not final.
+This page is a work in progress. The numbers are read from the committed
+results of the registered run (`{python} RUN`, written
+`{python} prov["run_utc"][:10]`); fixes to the wording will follow shortly.
 :::
 
 ## In short
@@ -220,7 +220,7 @@ SVG(filename="../results/figures/methods_flow_narrow.svg")
 ```
 :::
 
-*[Draft caption] From sources to the site's charts: what is measured, where it is joined and where it is tested.*
+*[WIP] From sources to the site's charts: what is measured, where it is joined and where it is tested.*
 
 ### Tests fixed before the data
 
@@ -371,7 +371,7 @@ from IPython.display import Image
 Image(filename="../results/figures/headline1_el_nino_vs_rest.png")
 ```
 
-*[Draft caption] H1 and H2: El Niño years against all other years. Dots are estimates, bars 95% intervals; a filled green dot is significant after Holm.*
+*[WIP] H1 and H2: El Niño years against all other years. Dots are estimates, bars 95% intervals; a filled green dot is significant after Holm.*
 
 ```{python}
 #| echo: false
@@ -380,7 +380,7 @@ from IPython.display import Image
 Image(filename="../results/figures/headline2_enso_strength.png")
 ```
 
-*[Draft caption] H3a and H3b: burned area per 1 °C of the winter index, without and with summer temperature.*
+*[WIP] H3a and H3b: burned area per 1 °C of the winter index, without and with summer temperature.*
 
 ```{python}
 #| echo: false
@@ -389,7 +389,7 @@ from IPython.display import Image
 Image(filename="../results/figures/headline3_north_vs_socal.png")
 ```
 
-*[Draft caption] H4: the north minus Southern California, from one pooled model, under the four regional slopes for context.*
+*[WIP] H4: the north minus Southern California, from one pooled model, under the four regional slopes for context.*
 
 ```{python}
 #| echo: false
@@ -398,7 +398,7 @@ from IPython.display import Image
 Image(filename="../results/figures/headline4_interval_coverage.png")
 ```
 
-*[Draft caption] How often the H3a model's 80% prediction intervals held the real season.*
+*[WIP] How often the H3a model's 80% prediction intervals held the real season.*
 
 ## Every test, including nulls
 
@@ -776,7 +776,7 @@ Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
 - The same authors, 2025: Part II. Upgrades on Quality Control and
   Large-scale Filter. J. Climate, <https://doi.org/10.1175/JCLI-D-24-0185.1>.
 
-*[Draft]* This data is shown for context on the map page and entered no
+*[WIP]* This data is shown for context on the map page and entered no
 calculation.
 
 ## What a fuller version would add
@@ -796,6 +796,8 @@ calculation.
   this page said in advance.
 
 ## AI use
+
+*[WIP] This section is still to be written.*
 
 <!-- DRAFT for the owner to write. Facts on record: the code, tests and
      figures were written with Claude Code under the owner's direction and

@@ -25,9 +25,9 @@ CAL = json.loads((T / "rollout_calendar.json").read_text("utf-8"))
 ROWS = [row for row in CAL["items"] if row["reader"]]
 ```
 
-::: {.callout-note title="Draft"}
-This page is a draft. Only the timetable is built; the month-by-month tiles
-arrive with the first month of winter data.
+::: {.callout-note title="Work in progress"}
+This page is a work in progress. Only the timetable is built; the
+month-by-month tiles arrive with the first month of winter data.
 :::
 
 ## What this page is waiting for

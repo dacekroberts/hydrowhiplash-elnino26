@@ -12,8 +12,8 @@ title: "Seven regions, year by year"
      (src/map_page.py: LAYER_TEXT, REGION_NAMES), were drafted by Claude
      for the owner to edit and approve. -->
 
-::: {.callout-note title="Draft"}
-A first version. The wording is not final.
+::: {.callout-note title="Work in progress"}
+A first version. Fixes to this page will follow shortly.
 :::
 
 Pick a dataset and a year. Each region is coloured by how that year compares

@@ -17,6 +17,24 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Wording: home page approved; the other pages go out marked as work in progress
+
+- **Home page wording approved item by item.** Six draft items; three
+  changed on the owner's word (the drought index "combines temperature
+  with precipitation"; "a darker tick" in both captions; the tracking
+  note reads "this winter's data has not arrived"), three approved as
+  drafted ("1 3 and 6 sound good"). Its draft labels are gone.
+- **The map, tracker and methods pages keep their drafted wording and
+  carry "work in progress" markers in place of "draft" ones (owner:
+  "draft labels can be replaced with WIP markers, that we will roll out
+  fixes to shortly").** Banners read "Work in progress"; the six labelled
+  captions and sentences on the methods page read "[WIP]". The empty "AI
+  use" section got one line, "[WIP] This section is still to be written.",
+  so the heading is not left bare; that line is Claude's addition. The
+  three hidden D96 drafts stay hidden. The deploy step still refuses the
+  word "draft" in a page's visible text; "work in progress" passes, as
+  the owner intends.
+
 ### 2026-10-12 - Cloudflare Pages project created: hydrowhiplash (empty)
 
 - **Created the Pages project `hydrowhiplash` with the owner's yes, as a
