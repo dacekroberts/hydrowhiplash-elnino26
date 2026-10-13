@@ -4,6 +4,7 @@ project:
   resources:
     - "fonts/*"
     - "libs/*"
+    - "robots.txt"
 
 website:
   title: "El Niño and the 2027 fire season"

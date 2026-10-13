@@ -26,6 +26,8 @@ asked for every time: an earlier yes does not carry over.
 3. **Rights and outside requests:**
    - the footer's copyright line is on every page and the rights tags of
      `site/_rights.html` are in every page's head;
+   - `robots.txt` in the build is the project's own (`site/robots.txt`:
+     AI-training crawlers asked to stay out, search engines allowed);
    - the built site asks no other host for anything: fonts and plotly.js
      are served from the site. Check a page's network requests in the
      browser, or search the built HTML for `src="http`.

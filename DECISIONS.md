@@ -17,6 +17,23 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Crawlers limited; the footer's code line kept; when the repository goes public
+
+- **`site/robots.txt` asks crawlers that collect pages for AI training to
+  stay out, and leaves search engines in (owner: "limit, if we decide we
+  should do something in cloudflare we can").** Thirteen user agents
+  named from what was known when it was written; compliance is voluntary
+  and the list needs upkeep. Not done: any Cloudflare setting. Cloudflare
+  can refuse such crawlers at its edge, which does not depend on their
+  good behaviour; the owner asked for that option to be noted in the V1
+  retrospective, under the final product and where to go from here.
+- **The footer keeps "Code: MIT licence" (owner: "keep since it still has
+  relevance").**
+- **The repository goes public once two things are done (owner):** the
+  work-in-progress wording is resolved, and code comments and site prose
+  have been audited against the tone guide. Until then it stays private;
+  this replaces the earlier "a leaning, not a decision".
+
 ### 2026-10-12 - A credit inside every figure file
 
 - **Every figure the code saves now carries a credit in its lower right

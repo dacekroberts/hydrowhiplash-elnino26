@@ -117,7 +117,14 @@ checkout.
    is bundled with the site.
    After the site is live: a full V1 retrospective (owner, 2026-10-12:
    "after site is live: do a full V1 Retrospective"). Its scope and
-   format are the owner's to set when it starts.
+   format are the owner's to set when it starts. To include, in its
+   sections on the final product and where to go from here: AI-training
+   crawlers are limited by `site/robots.txt` only, which they may
+   ignore; Cloudflare can refuse them at its edge if the owner decides
+   to (owner, 2026-10-12).
+   The repository goes public once the work-in-progress wording is
+   resolved and code comments and site prose have been audited against
+   the tone guide (owner, 2026-10-12).
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
    4).
