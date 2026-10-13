@@ -928,7 +928,24 @@ calculation.
 
 ## AI use
 
-*[WIP] This section is still to be written.*
+<!-- Approved by the owner 2026-10-13; the "checked" sentences are worded
+     from the owner's answer ("yes, i checked all. also made sure to
+     implement safeguards, summary artifacts, code audits, and made all key
+     decisions"). -->
+
+I directed this project and made its key decisions; an AI assistant, Claude
+Code, wrote most of the code, tests and figures under that direction. Each
+judgment call is logged with its reasoning. Before any result was computed,
+the code was audited in separate sessions that had not seen the work, and
+the audit closed only when a fresh round found nothing serious. DeepSeek
+helper agents contributed here in two places: one read-only review of the
+code that runs the tests, and one small change that prints a report after a
+data file is rebuilt. Neither saw any data, and neither touched a result.
+
+I checked the results tables against the charts, read the licence of each
+data source, and reviewed the analysis plan before it was frozen. The
+safeguards on the test run, the summary pages and the code audits were my
+requirements. The findings, the wording and the errors are mine.
 
 <!-- DRAFT for the owner to write. Facts on record: the code, tests and
      figures were written with Claude Code under the owner's direction and
@@ -938,20 +955,6 @@ calculation.
      for it (D77): "DeepSeek helper agents contributed here"; suggested
      place, this section, naming the review. What the owner verified by
      hand is the owner's to state.
-
-     Draft offered 2026-10-13, waiting on the owner's "checked by hand"
-     sentence and approval:
-
-     I directed this project and made its decisions; an AI assistant,
-     Claude Code, wrote most of the code, tests and figures under that
-     direction. Each judgment call is logged with its reasoning. Before any
-     result was computed, the code was audited in separate sessions that
-     had not seen the work, and the audit closed only when a fresh round
-     found nothing serious. DeepSeek helper agents contributed here in two
-     places: one read-only review of the code that runs the tests, and one
-     small change that prints a report after a data file is rebuilt.
-     Neither saw any data, and neither touched a result. [What the owner
-     checked by hand.] The findings, the wording and the errors are mine.
 
      TO DO when the repository is public (owner, 2026-10-13): link "logged"
      to DECISIONS.md in the repository. -->
