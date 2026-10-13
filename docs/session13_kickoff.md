@@ -79,11 +79,15 @@ closed the small things list.
   polygons. Session 12's suggestion: the map page, as a gridded layer
   for winter rain only, since that page already says one shade covers a
   whole region.
-- **For a Motion film, before any scene is built:** an approved
-  storyboard and the brief (the owner's wording), map shapes as vector
-  data (a polygon read), and the decisions the `claude-motion-handoff`
-  skill lists: every aspect ratio, one pace constant, light or dark,
-  export sizes in pixels, what the Motion session returns.
+- **For a Motion film:** the owner set its frame on 2026-10-13: one
+  film, 16:9 (1920 x 1080), light and dark, 150 s at most, the regions
+  on a real map; shorter or longer cuts are decided after it is seen.
+  `motion_handoff/brief_draft.md` holds these, the rules and an
+  eight-scene skeleton; the folder also has the winters, the 52 tests,
+  the credit lines and the map shapes (cut from the committed map page,
+  no polygon read). Still missing before any scene is built: the
+  owner's approval of the scene skeleton, the card wording of each
+  scene, and the prompt to paste.
 
 **Next work, in order.**
 

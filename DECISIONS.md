@@ -17,6 +17,45 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The Motion film's settings decided; the handoff folder filled out
+
+- **The owner set the film's frame before any scene: one film, 16:9,
+  light and dark, 150 s at most, the regions on a real map.** Owner's
+  answers: "16:9 landscape", "Both" themes, a map ("Yes, export the
+  outlines"), and on length "up to 300s video", then "medium film max
+  210s", "goal is probably within 150s", "210 to 150", and "then adjust
+  and decide on the short cuts/long extensions", "saves usage upfront".
+  So one film is built first and a shorter or longer cut is decided after
+  it is seen. `scripts/build_motion_handoff.py` holds these as `FILM`
+  (1920 x 1080, 30 fps, 150 s; the pixel size and frame rate are this
+  session's reading of "16:9", not the owner's words). Rejected for now:
+  a vertical or square film (each is a second build); a full film plus a
+  short cut from the start.
+- **Added five files to the handoff folder, all from committed files
+  (D100, same scope).** `winters.csv`: December to February
+  precipitation per region and winter, in mm and as a percent of the
+  region's average, with the winter's ENSO class (532 rows, 1951 to
+  2026). `tests.csv`: `results/tables/run1/registered_tests.csv` as
+  committed, 52 tests. `credits.md`: the methods page's "Required
+  notices" as published. `map_shapes.json`: the seven outlines and the
+  coast as SVG paths. `brief_draft.md`: the decisions above, ten rules
+  a film keeps, an eight-scene skeleton that sums to 150 s, and what the
+  Motion session returns; no card wording, which is the owner's.
+  `numbers.json` gained the project flow's labels and the film's
+  settings. The folder now has 39 files.
+- **The map shapes were cut from the committed map page, so no polygon
+  was opened.** The owner said yes to a run that reads the region
+  polygons. `results/figures/region_map.html` already holds the seven
+  outlines and the coast as paths in the map's projection
+  (`MAP_DISPLAY_CRS`, simplified to 6 km), which is what a film draws, so
+  the script reads them from there (37,096 bytes). Rejected: a new
+  GeoJSON in longitude and latitude (a second set of shapes to keep in
+  step with the map page, and the film would have to project it).
+- **Checked one claim of the skeleton against the run.** Scene 6 says
+  every interval of the El Niño against burned area tests crosses zero:
+  of the 25 rows of H2, H3a, H3b, H4 and C2 in `tests.csv`, 25 have
+  `ci_low` below zero and `ci_high` above it, and none is significant.
+
 ### 2026-10-13 - The phone's year slider: a larger thumb, a strip of winters, a fold
 
 - **Reworked the year slider's controls after the owner tried it with a

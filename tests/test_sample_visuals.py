@@ -58,3 +58,16 @@ def test_banner_draws_only_the_seasons_the_tests_use():
     assert set(table["region"]) == set(banner.ROWS)
     for region, g in table.groupby("region"):
         assert g["year"].max() == FIRE_LAST_YEAR_BY_REGION[region]
+
+
+def test_motion_brief_fits_the_film_and_the_map_has_every_region():
+    import build_motion_handoff as handoff
+    from src.config import REGIONS
+
+    lengths = [round(share * handoff.FILM["max_seconds"]) for share, _, _ in handoff.SCENES]
+    assert sum(lengths) == handoff.FILM["max_seconds"] == 150
+    page = handoff.brief(build_dashboard.payload())
+    assert f"Total {sum(lengths)} s." in page and "4 of 52 tests" in page
+    shapes = handoff.map_shapes()
+    assert list(shapes["regions"]) == list(REGIONS) and shapes["coast"].startswith("M")
+    assert handoff.notices().startswith(handoff.NOTICES_HEADING)

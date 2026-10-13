@@ -68,6 +68,11 @@ additions stay distinguishable from the original plan.
   (`scripts/build_motion_handoff.py`, `motion_handoff/`, not committed).
   All read committed tables only; no test, pinned input or registered
   number is touched, and nothing in `results/tables/run1/` changed.
+- **Later the same day:** the owner set the film's frame (16:9, both
+  themes, 150 s at most, a map scene) and the folder gained the winters,
+  the 52 tests, the credit lines, the map shapes and a draft brief;
+  `DECISIONS.md` 2026-10-13 "The Motion film's settings decided; the
+  handoff folder filled out".
 - **Why:** owner, 2026-10-13: "add generating some sample visuals to next
   session kickoff"; during the session, "for anything the dashboard can't
   scaffold for a proper motion, let's add into a handoff folder for the
