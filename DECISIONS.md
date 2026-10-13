@@ -17,6 +17,28 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Cloudflare Pages project created: hydrowhiplash (empty)
+
+- **Created the Pages project `hydrowhiplash` with the owner's yes, as a
+  classic Pages project.** wrangler 4.149.0 no longer creates one by
+  default: `wrangler pages project create` handed the request to the
+  Workers-based hosting and failed, creating nothing. Put to the owner:
+  the classic project with `--force`, or the Workers-based hosting (a new
+  token permission, a rewritten upload step, a config file). Owner:
+  "option 1, run with --force". Rejected for now: the Workers route, more
+  work before the first publication; Cloudflare labels Pages the previous
+  version, so a move may come later, and it would be confined to the
+  upload step of `scripts/deploy_site.py`.
+- State: the project exists, production branch `main`, no deployment, no
+  Git provider, address `hydrowhiplash.pages.dev` once something is
+  uploaded. The token was checked with a read-only listing before the
+  create. Nothing was uploaded and no DNS record was touched. wrangler
+  states that `--force` is not needed on later commands, so the upload
+  command in the script is unchanged.
+- Left: the owner's wording; the first upload (asked for first); the
+  custom domain `hydrowhiplash.dacekroberts.dev`, added by the owner in
+  the dashboard after that upload, since the token cannot touch DNS.
+
 ### 2026-10-12 - plotly.js served by the site itself
 
 - **Bundled plotly.js with the site (owner: "bundle the plotly library").**

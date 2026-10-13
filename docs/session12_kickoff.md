@@ -111,9 +111,10 @@ checkout.
    the repository root). The address is hydrowhiplash.dacekroberts.dev (owner).
    The upload uses wrangler and a scoped token the owner sets
    as environment variables (`CLOUDFLARE_API_TOKEN`,
-   `CLOUDFLARE_ACCOUNT_ID`); ask before every upload. Open: the
-   Pages project and its custom domain, and plotly.js from a CDN on
-   the home page.
+   `CLOUDFLARE_ACCOUNT_ID`); ask before every upload. The Pages project `hydrowhiplash` exists, empty (classic
+   Pages, created with `--force`). Open: the owner's wording, the
+   first upload, then the custom domain in the dashboard. plotly.js
+   is bundled with the site.
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
    4).
