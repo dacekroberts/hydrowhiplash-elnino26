@@ -81,6 +81,18 @@ ROLE_NOTES = {
               "its hypotheses are", "their hypotheses are"),
 }
 
+# The diagram's labels, also handed to a film (scripts/build_motion_handoff.py).
+# "often drier": the Phase 1 DJF precipitation signal is small in PNW and BC
+# and clearer in AB (docs/plan_deviations.md D19).
+MECHANISM_TOP = ("El Ni\u00f1o: warm water in the central-eastern tropical Pacific",
+                 "Pacific jet stream extends east and shifts south")
+MECHANISM_STEPS = {
+    "North": ("Milder winter, often drier", "Less snow, earlier melt",
+              "Earlier or longer fire season"),
+    "South": ("Wetter winter", "More grass growth",
+              "More fine fuel once grass cures, larger grass fires"),
+}
+
 # Two layouts of the same diagram. Positions are in diagram units: 0-100
 # across, and 100 units per `unit_h` inches up, with the diagram drawn above
 # y_cut. The footnote area below grows with its number of lines. The narrow
@@ -235,23 +247,19 @@ def _draw_mechanism(lay: dict) -> Figure:
     # Shared cause
     cause_y, jet_y = lay["top_ys"]
     _box(ax, 50, cause_y, lay["top_w"], lay["top_h"],
-         _wrap("El Niño: warm water in the central-eastern tropical Pacific", lay["wrap_top"]),
+         _wrap(MECHANISM_TOP[0], lay["wrap_top"]),
          lay["font"], NEUTRAL_EDGE, NEUTRAL_FILL, weight="bold")
     _arrow(ax, (50, cause_y - lay["top_h"] / 2), (50, jet_y + lay["top_h"] / 2), NEUTRAL_EDGE)
     _box(ax, 50, jet_y, lay["top_w"], lay["top_h"],
-         _wrap("Pacific jet stream extends east and shifts south", lay["wrap_top"]),
+         _wrap(MECHANISM_TOP[1], lay["wrap_top"]),
          lay["font"], NEUTRAL_EDGE, NEUTRAL_FILL)
 
     north_x, south_x = lay["cols"]
     columns = [
-        # "often drier": the Phase 1 DJF precipitation signal is small in PNW
-        # and BC and clearer in AB (docs/plan_deviations.md D19).
         (north_x, NORTH_COLOUR, "North" + lay["head_sep"] + " · ".join(NORTH_REGIONS),
-         ["Milder winter, often drier", "Less snow, earlier melt",
-          "Earlier or longer fire season"]),
+         list(MECHANISM_STEPS["North"])),
         (south_x, SOUTH_COLOUR, "South" + lay["head_sep"] + " · ".join(SOUTH_REGIONS),
-         ["Wetter winter", "More grass growth",
-          "More fine fuel once grass cures, larger grass fires"]),
+         list(MECHANISM_STEPS["South"])),
     ]
     box_w, box_h, box_ys = lay["box_w"], lay["box_h"], lay["box_ys"]
     split_top, split_bottom = lay["split"]

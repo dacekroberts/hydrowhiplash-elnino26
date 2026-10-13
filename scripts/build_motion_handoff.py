@@ -9,10 +9,11 @@ banners, the sample dashboard as a storyboard draft and, with --capture,
 pictures of the live site's pages (in the theme the machine is set to). The folder is flat (subfolders were
 dropped on upload) and its names hold no @ or brackets.
 
-It writes a brief as a draft (the owner's decisions of 2026-10-13, the
-rules a film keeps, a scene skeleton with no card wording) and no
-storyboard: the scene list and its wording are the owner's, and the
-storyboard is approved before a film is built. No polygon is opened: the
+It writes a brief (the owner's decisions of 2026-10-13, the rules a film
+keeps, the scene skeleton the owner approved, a suggested card line per
+scene that the owner has not approved) and a draft of the prompt to
+paste; the card wording is the owner's and is settled before a film is
+built. No polygon is opened: the
 map shapes are cut from the committed map page, which already holds the
 region outlines and the coast as paths in the map's own projection.
 Nothing under data/ is read except through the pinned loader's check of
@@ -37,7 +38,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_dashboard  # noqa: E402  (needs scripts/ on the path)
-from src import theme  # noqa: E402
+from src import diagrams, theme  # noqa: E402
 
 FIGURES = ROOT / "results" / "figures"
 TABLES = ROOT / "results" / "tables"
@@ -51,9 +52,11 @@ REFERENCE_FIGURES = (
     "headline4_interval_coverage.png", "headline4_interval_coverage_dark.png",
     "banner_social_dark.png", "banner_readme_light.png", "banner_readme_dark.png",
 )
-# Live pages pictured with --capture: (page, window width, window height).
+# Live pages pictured with --capture: (page, window width, window height),
+# once per theme. Edge's preferredColorScheme setting: 0 dark, 1 light.
 SITE_PAGES = (("index", 1280, 4200), ("map", 1280, 3000), ("tracker", 1280, 2200),
               ("flowchart", 1500, 2400))
+SITE_THEMES = (("dark", 0), ("light", 1))
 EDGE = Path("C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe")
 SEASON_COLUMNS = ["region", "year", "burn_ha", "anomaly", "phase", "strong", "enso_djf"]
 WINTER_TABLE = "climate_controls_region_year.csv"
@@ -65,16 +68,17 @@ NOTICES_HEADING = "### Required notices"
 # The owner's decisions before any scene (2026-10-13). One film first; a
 # shorter cut or a longer one is decided after it is seen.
 FILM = {"ratio": "16:9", "width": 1920, "height": 1080, "fps": 30, "max_seconds": 150,
-        "themes": ["dark", "light"]}
-# Scene skeleton: (share of the film, what is on screen, the files it draws
-# from). Shares sum to 1. No card wording: that is the owner's.
+        "themes": ["dark", "light"], "first_theme": "dark"}
+# Scene skeleton, approved by the owner 2026-10-13: (share of the film, what
+# is on screen, the files it draws from). Shares sum to 1.
 SCENES = (
     (0.10, "The question, over the season strips of all seven regions.",
      "seasons.csv, ref_banner_social_dark.png"),
     (0.12, "Where: the seven regions on the map, north to south, named once.",
      "map_shapes.json"),
-    (0.14, "The idea being tested: the two pathways, north and south, built step by step.",
-     "ref_mechanism.png"),
+    (0.14, "The idea being tested: the two pathways, north and south, built step by step. "
+           "Only the diagram's two top boxes and three steps a side; no footnotes.",
+     "numbers.json (mechanism), ref_mechanism.png for the look"),
     (0.10, "How it was tested: four sources into one table, the plan frozen before any fire "
            "data was read, the tests run once.", "numbers.json (flow), ref_project_flow.png"),
     (0.18, "The record: winters, then the fire seasons that followed, El Ni\u00f1o years "
@@ -86,8 +90,52 @@ SCENES = (
     (0.08, "What comes next: the dates up to the 2027 season, and the site's address.",
      "timetable.csv, numbers.json (next)"),
 )
+# One suggested card line per scene, in SCENES' order: drafts for the owner,
+# cut from wording the site already carries where there is some. Filled
+# from the run's counts, so no figure is typed here.
+CARDS = (
+    "{title}",
+    "Seven regions, from Alaska to Southern California.",
+    "The idea: after an El Ni\u00f1o winter the north runs milder and often drier, the "
+    "south wetter.",
+    "I fixed {tests} tests in writing before opening any fire data, then ran them once.",
+    "Every fire season since {first_year}. A shaded year follows an El Ni\u00f1o winter.",
+    "{enso_burn} of the {enso_burn_tests} tests that set El Ni\u00f1o against burned area "
+    "are significant. Every interval crosses zero.",
+    "{significant} of {tests} tests are significant after correcting for the number of "
+    "tests. These are associations, not causes.",
+    "A forecast for {forecast_year} goes up before the season and is checked against it "
+    "afterwards.",
+)
+# The prompt to paste into the Motion session with the folder: a draft.
+PROMPT = (
+    "I have uploaded one flat folder. Read 00_MANIFEST.md and brief_draft.md first, then "
+    "tell me in a few lines what you will build and anything in the brief you cannot do.",
+    "Before building, tell me your current limits: film length, pixel size, frame rates, "
+    "the number and size of code and data modules, the number of uploaded assets. If any "
+    "file here breaks one, say which.",
+    "Build one film: {ratio}, {width} x {height} px, {fps} fps, {max_seconds} s at most, "
+    "eight scenes at the starts and lengths in the brief's table.",
+    "Build the dark theme only for now. Order of work: first one theme module that reads "
+    "tokens.json, written so a light set can be switched in later, and one pace constant for every cut and camera move. Then the map from "
+    "map_shapes.json with its region labels. Then the scenes, each as its own module so "
+    "one can be dropped or stretched later.",
+    "Take every number from numbers.json, tests.csv, seasons.csv or winters.csv. Do not "
+    "type, estimate or re-round a figure. If a scene needs a number that is not in those "
+    "files, stop and ask.",
+    "Keep every rule under 'Rules the film keeps'. Where a rule and a nicer picture "
+    "disagree, the rule wins.",
+    "On-screen wording: use the brief's card lines exactly. Do not add a headline, a "
+    "caption or an adjective of your own; if a scene seems to need more words, ask.",
+    "Use the typefaces in the folder. The ref_ pictures show how the site draws the same "
+    "data: match their colours and marks, not their layout.",
+    "Credits: a scene that shows burned area or climate values carries its sources' "
+    "short credit, and the closing card carries every notice in credits.md.",
+    "When the film is built, send back what the brief lists under 'What comes back'. I "
+    "export the MP4s myself from the film's page.",
+)
 RETURNS = (
-    "One MP4 per theme at the size above, exported from the film's page.",
+    "The dark film at the size above, exported from the film's page; light follows later.",
     "A scene table with each scene's start time and length.",
     "Every figure and every credit on screen, per scene.",
     "Any on-screen wording added or changed since this brief.",
@@ -115,16 +163,13 @@ SAFE = {
            "results/figures/region_map.html (public on the site's map page); made from "
            "Natural Earth, public domain, no credit required; display only",
     "credits": "the 'Required notices' of site/methods.qmd, as published",
-    "brief": "a draft: the owner's decisions of 2026-10-13, the rules, a scene skeleton; "
-             "no card wording",
+    "brief": "the owner's decisions of 2026-10-13, the rules, the approved scene skeleton, "
+             "and a suggested card line per scene that is not approved",
+    "prompt": "a draft of the prompt to paste into the Motion session; not approved",
 }
 MISSING = (
-    "An approved storyboard and the card wording of every scene. The owner words these; "
-    "brief_draft.md holds a skeleton only.",
-    "The prompt to paste into the Motion session.",
-    "The mechanism diagram as data: ref_mechanism.png is a picture; its labels can be read "
-    "from it.",
-    "Pictures of the site in the light theme and at phone width.",
+    "The owner's approval of the card lines in brief_draft.md and of prompt_draft.md.",
+    "Pictures of the site at phone width.",
 )
 
 
@@ -173,15 +218,17 @@ def brief(data: dict) -> str:
     """The brief as a draft: the decisions, the rules and a scene skeleton
     with times cut from FILM. Counts come from the run, not from here."""
     counts, meta = data["counts"], data["meta"]
-    lines = ["# Brief, a draft", "",
-             "Not approved. The card wording of every scene is the owner's and is not here.",
+    fill = {**counts, **meta, "title": data["text"]["title"]}
+    lines = ["# Brief", "",
+             "The decisions and the scene skeleton are approved (owner, 2026-10-13). The "
+             "card lines are suggestions and are not approved.",
              "", "## Decided by the owner, 2026-10-13", "",
              f"- One film, {FILM['ratio']}, {FILM['width']} x {FILM['height']} px, "
              f"{FILM['fps']} fps, {FILM['max_seconds']} s at most.",
              "- A shorter cut or a longer one is decided after this film is seen. Build "
              "each scene as its own module so one can be dropped or stretched.",
-             "- Light and dark: every colour in one theme module, read from tokens.json; "
-             "one export per theme.",
+             "- Dark first. The light film waits until the dark one is refined: keep every "
+             "colour in one theme module, read from tokens.json, so light is a switch.",
              "- The seven regions are shown on a real map in one scene (map_shapes.json).",
              "- One pace constant for every cut and camera move, set in one place. Start "
              "slow: the last film's cuts were judged too fast.",
@@ -208,14 +255,18 @@ def brief(data: dict) -> str:
              "- A scene that shows burned area or climate values carries its sources' "
              "credit (credits.md). The closing card carries all of them.",
              "- Nothing flashes more than three times a second.",
-             "", "## Scene skeleton", "",
+             "", "## Scene skeleton (approved 2026-10-13)", "",
              "| # | Start | Length | On screen | Draws from |", "|---|---|---|---|---|"]
     start = 0
     for number, (share, what, source) in enumerate(SCENES, start=1):
         length = round(share * FILM["max_seconds"])
         lines.append(f"| {number} | {start} s | {length} s | {what} | {source} |")
         start += length
-    lines += ["", f"Total {start} s.", "", "## What comes back", ""]
+    lines += ["", f"Total {start} s.", "", "## Card lines (suggestions, not approved)", "",
+              "One line per scene. The site's address closes scene 8: "
+              f"{build_dashboard.SITE_URL.split('//')[1]}", ""]
+    lines += [f"{number}. {card.format(**fill)}" for number, card in enumerate(CARDS, start=1)]
+    lines += ["", "## What comes back", ""]
     lines += [f"- {item}" for item in RETURNS]
     return "\n".join(lines) + "\n"
 
@@ -229,15 +280,17 @@ def capture(out: Path) -> list[tuple[str, str]]:
     """Pictures of the live site's pages by headless Edge, in the machine's theme."""
     made = []
     for page, width, height in SITE_PAGES:
-        name = f"ref_site_{page}.png"
-        url = f"{build_dashboard.SITE_URL}/{'' if page == 'index' else page + '.html'}"
-        subprocess.run([str(EDGE), "--headless=new", "--disable-gpu", "--hide-scrollbars",
-                        f"--window-size={width},{height}", "--virtual-time-budget=8000",
-                        f"--screenshot={out / name}", url], check=True, timeout=120,
-                       capture_output=True)
-        if not (out / name).exists():
-            raise RuntimeError(f"No picture was written for {url}.")
-        made.append((name, SAFE["page"]))
+        for scheme, setting in SITE_THEMES:
+            name = f"ref_site_{page}_{scheme}.png"
+            url = f"{build_dashboard.SITE_URL}/{'' if page == 'index' else page + '.html'}"
+            subprocess.run([str(EDGE), "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                            f"--blink-settings=preferredColorScheme={setting}",
+                            f"--window-size={width},{height}", "--virtual-time-budget=8000",
+                            f"--screenshot={out / name}", url], check=True, timeout=120,
+                           capture_output=True)
+            if not (out / name).exists():
+                raise RuntimeError(f"No picture was written for {url}.")
+            made.append((name, SAFE["page"]))
     return made
 
 
@@ -255,6 +308,11 @@ def build(out: Path, with_capture: bool) -> list[tuple[str, str]]:
     numbers = {key: data[key] for key in ("meta", "counts", "flow", "ledger", "survived",
                                           "next")}
     numbers["film"] = FILM
+    numbers["mechanism"] = {"top": list(diagrams.MECHANISM_TOP),
+                            "north": {"regions": list(diagrams.NORTH_REGIONS),
+                                      "steps": list(diagrams.MECHANISM_STEPS["North"])},
+                            "south": {"regions": list(diagrams.SOUTH_REGIONS),
+                                      "steps": list(diagrams.MECHANISM_STEPS["South"])}}
     write("numbers.json", json.dumps(numbers, ensure_ascii=False, indent=1), SAFE["numbers"])
     seasons = [{"region": r["region"], **s} for r in data["regions"] for s in r["seasons"]]
     write("seasons.csv", _csv(seasons, SEASON_COLUMNS), SAFE["seasons"])
@@ -268,6 +326,8 @@ def build(out: Path, with_capture: bool) -> list[tuple[str, str]]:
           SAFE["map"])
     write("credits.md", notices(), SAFE["credits"])
     write("brief_draft.md", brief(data), SAFE["brief"])
+    write("prompt_draft.md", "# Prompt to paste, a draft\n\n" + "\n\n".join(
+        line.format(**FILM) for line in PROMPT) + "\n", SAFE["prompt"])
     write("tokens.json", theme.TOKENS.read_text("utf-8"), SAFE["tokens"])
     write("storyboard_draft.html", build_dashboard.build(), SAFE["storyboard"])
     for path in sorted(theme.SITE_FONTS_DIR.iterdir()):

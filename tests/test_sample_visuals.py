@@ -68,6 +68,9 @@ def test_motion_brief_fits_the_film_and_the_map_has_every_region():
     assert sum(lengths) == handoff.FILM["max_seconds"] == 150
     page = handoff.brief(build_dashboard.payload())
     assert f"Total {sum(lengths)} s." in page and "4 of 52 tests" in page
+    assert len(handoff.CARDS) == len(handoff.SCENES)
+    assert "0 of the 25 tests that set El Ni\u00f1o against burned area are significant" in page
+    assert all("{" not in line.format(**handoff.FILM) for line in handoff.PROMPT)
     shapes = handoff.map_shapes()
     assert list(shapes["regions"]) == list(REGIONS) and shapes["coast"].startswith("M")
     assert handoff.notices().startswith(handoff.NOTICES_HEADING)

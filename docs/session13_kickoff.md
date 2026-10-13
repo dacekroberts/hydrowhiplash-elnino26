@@ -85,9 +85,10 @@ closed the small things list.
   `motion_handoff/brief_draft.md` holds these, the rules and an
   eight-scene skeleton; the folder also has the winters, the 52 tests,
   the credit lines and the map shapes (cut from the committed map page,
-  no polygon read). Still missing before any scene is built: the
-  owner's approval of the scene skeleton, the card wording of each
-  scene, and the prompt to paste.
+  no polygon read). The owner approved the skeleton and
+  chose dark first (light waits until the first film is refined). Still
+  missing before any scene is built: the owner's approval of the eight
+  suggested card lines in `brief_draft.md` and of `prompt_draft.md`.
 
 **Next work, in order.**
 

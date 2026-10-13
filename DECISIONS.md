@@ -17,6 +17,32 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Motion: the scene skeleton approved; dark first; card lines and a prompt drafted
+
+- **The owner approved the eight-scene skeleton and asked for card
+  lines and a prompt as drafts.** Owner: "1 and 2 approved, 3 draft
+  prompt". `scripts/build_motion_handoff.py`: `CARDS`, one suggested
+  line per scene, cut from wording the site already carries where there
+  is some and filled from the run's counts; `PROMPT`, ten paragraphs to
+  paste into the Motion session, written to `prompt_draft.md`. Neither
+  is approved.
+- **The film is built dark first; light waits.** Owner: "we will wait to
+  create the light mode until first video is refined". The brief and the
+  prompt ask for one theme module so that light is a switch later.
+  Supersedes "one export per theme" in the entry below.
+- **Site pictures in both themes.** Owner: "can you take light captures
+  of site to add in?". Headless Edge takes each of the four pages twice,
+  with `--blink-settings=preferredColorScheme` 0 and 1; mean brightness
+  of the eight pictures is 27 to 44 (dark) and 228 to 238 (light) out of
+  255. The earlier pictures followed the machine's theme only.
+- **Scene 3 uses the diagram's eight labels, not the whole diagram.**
+  Owner: "do we need the full mechanism diagram?". No: the scene builds
+  the two top boxes and three steps a side, and leaves out the footnotes.
+  The labels moved from inside `_draw_mechanism` to `MECHANISM_TOP` and
+  `MECHANISM_STEPS` in `src/diagrams.py`, so `numbers.json` carries them
+  and a film does not retype them from a picture. The four mechanism
+  drawings came out byte for byte the same. The folder has 44 files.
+
 ### 2026-10-13 - The Motion film's settings decided; the handoff folder filled out
 
 - **The owner set the film's frame before any scene: one film, 16:9,
