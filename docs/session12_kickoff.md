@@ -195,6 +195,14 @@ moving the tags.
   `README.draft.md` (untracked) for the owner to edit; once approved it
   replaces `README.md`, then ask for the switch, set the GitHub
   description and homepage, link "logged" and upload.
+- Later on 2026-10-13: the owner approved the README ("readme approved,
+  do the ripple effect work"); it replaced `README.md` (commit e7618d2).
+  The GitHub description and homepage are set. "logged" in the AI use
+  section links to `DECISIONS.md` in the repository, committed but not
+  uploaded: the link opens for no one until the repository is public.
+  The visibility switch was refused by Claude Code's permission check
+  ("Create Public Surface") and was not worked around: the owner makes
+  the switch. After it, check the link and upload (ask first).
 - Also exposed, judged fine to publish unless the owner says otherwise:
   the daily logs, kickoff notes, audits and the two logs (they name other
   projects' sessions in places); the DeepSeek handoff and efficiency

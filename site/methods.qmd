@@ -940,7 +940,9 @@ calculation.
 
 I directed this project and made its key decisions; an AI assistant, Claude
 Code, wrote most of the code, tests and figures under that direction. Each
-judgment call is logged with its reasoning. Before any result was computed,
+judgment call is
+[logged](https://github.com/dacekroberts/hydrowhiplash-elnino26/blob/main/DECISIONS.md)
+with its reasoning. Before any result was computed,
 the code was audited in separate sessions that had not seen the work, and
 the audit closed only when a fresh round found nothing serious. DeepSeek
 helper agents contributed here in two places: one read-only review of the
@@ -961,8 +963,8 @@ requirements. The findings, the wording and the errors are mine.
      place, this section, naming the review. What the owner verified by
      hand is the owner's to state.
 
-     TO DO when the repository is public (owner, 2026-10-13): link "logged"
-     to DECISIONS.md in the repository. -->
+     "logged" links to DECISIONS.md in the repository (owner, 2026-10-13:
+     once the repository is public). -->
 
 <!-- Sections that fold (owner, 2026-10-12): each second-level section gets
      a button in its heading; all start open, and a link to a place inside a
