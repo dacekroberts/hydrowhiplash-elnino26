@@ -14,6 +14,7 @@ percent-of-normal map runs from dry earth to wet blue (`precip-dry-2` to
 from __future__ import annotations
 
 from contextlib import contextmanager
+import textwrap
 from pathlib import Path
 
 import geopandas as gpd
@@ -352,7 +353,20 @@ def fire_season_series(table: pd.DataFrame, index: str, out: Path) -> Path:
     return _save(fig, out)
 
 
-def interval_ledger(panels: list[dict], out: Path, note: str | None = None) -> Path:
+# A phone's drawing of a ledger: panels stacked, on a canvas this wide, so
+# that at a phone's column (about 300 px) its 8 pt type is near 11 px. The
+# wide drawing's two panels side by side come out near 3 px there (owner,
+# 2026-10-13: "stack the panels", for a phone only).
+NARROW_WIDTH_IN = 3.4
+NARROW_WRAP = {"title": 36, "xlabel": 46, "note": 60}
+
+
+def _wrap(text: str, width: int) -> str:
+    return "\n".join(textwrap.wrap(text, width))
+
+
+def interval_ledger(panels: list[dict], out: Path, note: str | None = None,
+                    narrow: bool = False) -> Path:
     """A hypothesis as a ledger: one row per region, the estimate and its 95%
     interval on a scale shared within the panel, a line at no effect.
 
@@ -360,10 +374,23 @@ def interval_ledger(panels: list[dict], out: Path, note: str | None = None) -> P
     measures) and `rows`, a table with `region`, `estimate`, `ci_low`,
     `ci_high` and `significant` (the Holm verdict). The verdict is carried
     by form as well as colour: a filled dot for significant after Holm, a
-    hollow one for not. Null results are drawn at the same size."""
+    hollow one for not. Null results are drawn at the same size.
+
+    `narrow` draws the phone's version to `<stem>_narrow`: the panels one
+    above the other on a canvas NARROW_WIDTH_IN wide, long text wrapped."""
     n_rows = max(len(p["rows"]) for p in panels)
-    fig, axes = plt.subplots(1, len(panels), figsize=(4.9 * len(panels), 0.42 * n_rows + 1.7),
-                             squeeze=False)
+    if narrow:
+        out = out.with_name(f"{out.stem}_narrow{out.suffix}")
+        note = note and _wrap(note, NARROW_WRAP["note"])
+        heights = [0.42 * len(p["rows"]) + 1.25 for p in panels]
+        head, foot = 0.95, 0.2 + 0.16 * (note.count("\n") + 1 if note else 0)
+        tall = sum(heights) + head + foot
+        fig, axes = plt.subplots(len(panels), 1, figsize=(NARROW_WIDTH_IN, tall), squeeze=False,
+                                 gridspec_kw={"height_ratios": heights})
+        axes = axes.T
+    else:
+        fig, axes = plt.subplots(1, len(panels),
+                                 figsize=(4.9 * len(panels), 0.42 * n_rows + 1.7), squeeze=False)
     for ax, panel in zip(axes[0], panels):
         rows = panel["rows"].reset_index(drop=True)
         colour = _family(panel["family"])
@@ -381,19 +408,23 @@ def interval_ledger(panels: list[dict], out: Path, note: str | None = None) -> P
         ax.spines["left"].set_visible(False)
         ax.grid(axis="x", color=GRID, lw=0.6)
         ax.set_axisbelow(True)
-        ax.set_xlabel(panel["xlabel"], fontsize=8)
-        _title(ax, panel["title"])
+        ax.set_xlabel(_wrap(panel["xlabel"], NARROW_WRAP["xlabel"]) if narrow
+                      else panel["xlabel"], fontsize=8)
+        _title(ax, _wrap(panel["title"], NARROW_WRAP["title"]) if narrow else panel["title"])
     handles = [plt.Line2D([], [], color=MUTED, lw=4, label="95% interval"),
                plt.Line2D([], [], ls="", marker="o", ms=7.5, mew=1.6, mfc=VERDICT, mec=VERDICT,
                           label="Estimate, significant after Holm"),
                plt.Line2D([], [], ls="", marker="o", ms=7.5, mew=1.6, mfc=GROUND, mec=INK,
                           label="Estimate, not significant"),
                plt.Line2D([], [], color=AXIS, lw=1.2, label="No effect")]
-    fig.legend(handles=handles, loc="upper center", ncol=4, frameon=False, fontsize=8,
-               bbox_to_anchor=(0.5, 1.0))
+    fig.legend(handles=handles, loc="upper center", ncol=1 if narrow else 4, frameon=False,
+               fontsize=8, bbox_to_anchor=(0.5, 1.0))
     if note:
         fig.text(0.01, 0.0, note, fontsize=7.5, color=MUTED, va="bottom", ha="left")
-    fig.tight_layout(rect=(0, 0.04 if note else 0, 1, 0.92))
+    if narrow:
+        fig.tight_layout(rect=(0, foot / tall, 1, 1 - head / tall), h_pad=1.6)
+    else:
+        fig.tight_layout(rect=(0, 0.04 if note else 0, 1, 0.92))
     return _save(fig, out)
 
 

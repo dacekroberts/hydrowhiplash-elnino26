@@ -44,7 +44,7 @@ def _rows(reg: pd.DataFrame, test: str) -> pd.DataFrame:
                             kind="stable").reset_index(drop=True)
 
 
-def headline1(reg: pd.DataFrame, out_dir: Path, run: str) -> Path:
+def headline1(reg: pd.DataFrame, out_dir: Path, run: str, narrow: bool = False) -> Path:
     panels = [
         {"title": "H1 · Winter precipitation, El Niño winters minus the rest",
          "xlabel": "mm of December to February precipitation", "family": "water",
@@ -52,20 +52,22 @@ def headline1(reg: pd.DataFrame, out_dir: Path, run: str) -> Path:
         {"title": "H2 · Burned area, seasons after El Niño minus the rest",
          "xlabel": LOG_POINTS, "family": "fire", "rows": _rows(reg, "H2")},
     ]
-    return figures.interval_ledger(panels, out_dir / "headline1_el_nino_vs_rest.png", _note(run))
+    return figures.interval_ledger(panels, out_dir / "headline1_el_nino_vs_rest.png", _note(run),
+                                   narrow)
 
 
-def headline2(reg: pd.DataFrame, out_dir: Path, run: str) -> Path:
+def headline2(reg: pd.DataFrame, out_dir: Path, run: str, narrow: bool = False) -> Path:
     panels = [
         {"title": "H3a · Burned area per 1 °C of the winter index, trend only",
          "xlabel": f"{LOG_POINTS} per 1 °C", "family": "fire", "rows": _rows(reg, "H3a")},
         {"title": "H3b · The same with summer temperature held fixed",
          "xlabel": f"{LOG_POINTS} per 1 °C", "family": "fire", "rows": _rows(reg, "H3b")},
     ]
-    return figures.interval_ledger(panels, out_dir / "headline2_enso_strength.png", _note(run))
+    return figures.interval_ledger(panels, out_dir / "headline2_enso_strength.png", _note(run),
+                                   narrow)
 
 
-def headline3(reg: pd.DataFrame, out_dir: Path, run: str) -> Path:
+def headline3(reg: pd.DataFrame, out_dir: Path, run: str, narrow: bool = False) -> Path:
     """The H4 contrast under the H3a slopes of the regions it pools, on one
     scale. The H3a rows are per-region fits; the contrast comes from one
     pooled model, so it is not their arithmetic difference."""
@@ -79,7 +81,8 @@ def headline3(reg: pd.DataFrame, out_dir: Path, run: str) -> Path:
     panels = [{"title": "H4 · Does the north respond differently from Southern California?",
                "xlabel": f"{LOG_POINTS} per 1 °C of the winter index", "family": "fire",
                "rows": rows}]
-    return figures.interval_ledger(panels, out_dir / "headline3_north_vs_socal.png", _note(run))
+    return figures.interval_ledger(panels, out_dir / "headline3_north_vs_socal.png", _note(run),
+                                   narrow)
 
 
 def headline4(val: pd.DataFrame, out_dir: Path) -> Path:
@@ -103,6 +106,9 @@ def make_figures(run: str = RUN, out_dir: Path = figures.FIGURES) -> list[Path]:
         with figures.themed(name):
             paths += [headline1(reg, out_dir, run), headline2(reg, out_dir, run),
                       headline3(reg, out_dir, run), headline4(val, out_dir)]
+            # the phone's drawings of the three ledgers, panels stacked
+            paths += [draw(reg, out_dir, run, narrow=True)
+                      for draw in (headline1, headline2, headline3)]
     return paths
 
 

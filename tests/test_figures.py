@@ -116,3 +116,18 @@ def test_themed_switches_every_colour_and_returns(tmp_path):
     assert figures.FAMILIES["fire"] == light["fire"]
     assert figures.themed_path(out) == out and not out.exists()
     assert (tmp_path / "c_dark.png").stat().st_size > 0
+
+
+def test_narrow_ledger_stacks_its_panels_on_a_phone_wide_canvas(tmp_path):
+    from matplotlib.image import imread
+
+    rows = pd.DataFrame({"region": ["PNW", "BC"], "estimate": [0.1, -0.2], "ci_low": [-0.3, -0.6],
+                         "ci_high": [0.5, 0.2], "significant": [True, False]})
+    panels = [{"title": "A long title that has to wrap on a phone", "xlabel": "x", "family": f,
+               "rows": rows} for f in ("water", "fire")]
+    wide = figures.interval_ledger(panels, tmp_path / "t.png", "note")
+    thin = figures.interval_ledger(panels, tmp_path / "t.png", "note", narrow=True)
+    assert thin.name == "t_narrow.png" and wide.name == "t.png"
+    (wh, ww), (th, tw) = imread(wide).shape[:2], imread(thin).shape[:2]
+    assert tw < 0.45 * ww and th > wh           # under half the width, and taller: stacked
+    assert tw <= figures.NARROW_WIDTH_IN * 200 * 1.15

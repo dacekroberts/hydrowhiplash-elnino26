@@ -105,9 +105,9 @@ checkout.
   Limitations" (owner).
 - Built 2026-10-13: a tap or click on a chart's bar keeps its details in a
   readout at the bottom left; on the map, regions, the key and a readout
-  under the map are linked. **The map file is not yet redrawn**
-  (`python -m src.map_page` reads the region polygons: ask the owner),
-  and neither is uploaded. Not tried on a real phone. Found in the
+  under the map are linked (map redrawn on the owner's yes). The three
+  ledger charts have a stacked drawing for a phone (`_narrow`); the
+  coverage chart does not. Not tried on a real phone. Found in the
   dark-theme check, not fixed: the navy title band of the "Work in
   progress" notes; the headline charts' small type (about 7 px on a
   desktop, 3 px on a phone). `ACTION_PLAN.md`: four site items ticked;

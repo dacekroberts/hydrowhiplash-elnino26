@@ -17,6 +17,30 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The map redrawn; stacked drawings of the ledger charts for a phone
+
+- **Redrew `results/figures/region_map.html` on the owner's yes** (the
+  run reads the region polygons): 423,599 bytes, with the region, key
+  and readout link of the entry below. This supersedes that entry's
+  "The committed map file is not yet redrawn."
+- **A phone's drawing of the three interval-ledger charts (owner: "stack
+  the panels (can it be done for mobile only?)").** Yes: `figures.
+  interval_ledger(..., narrow=True)` writes `<stem>_narrow.png`, the
+  panels one above the other on a canvas 3.4 inches wide
+  (`NARROW_WIDTH_IN`), titles, axis labels and the note wrapped, the key
+  in one column; one per theme, six new files. `site/methods.qmd` shows
+  the wide drawing from 576 px up and the narrow one below it, as the
+  two diagrams already do. On a phone's 301 px column the 8 pt labels
+  come out at about 9.4 px (3.4 px before; measured in the preview).
+  The desktop drawings are unchanged, so their labels stay near 7 px
+  at the page's column.
+- **Included: the one-panel H4 chart** (`headline3`), the same code and
+  the same gain. **Not included: the coverage chart** (`headline4`),
+  which is drawn by another function; its labels are about 4.7 px on a
+  phone.
+- The narrow cells' alt text says "First" and "Second" where the wide
+  ones say "Left" and "Right"; both are drafts for the owner.
+
 ### 2026-10-13 - Tap and hover readouts; the pilot's efficiency review; ticks
 
 Owner, 2026-10-13: "effort save check for deepseek: run. right four

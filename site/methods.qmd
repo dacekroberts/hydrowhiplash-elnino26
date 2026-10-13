@@ -386,6 +386,7 @@ measure much the same thing.
      contrast under the four H3a slopes, the caption saying it comes from one
      pooled model) was approved by the owner on 2026-10-12. -->
 
+:::: {.d-none .d-sm-block}
 ::: {.fig-light}
 ```{python}
 #| echo: false
@@ -403,9 +404,31 @@ from IPython.display import Image
 Image(filename="../results/figures/headline1_el_nino_vs_rest_dark.png")
 ```
 :::
+::::
+
+:::: {.d-sm-none}
+::: {.fig-light}
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars, one row per region. First, winter precipitation in El Niño winters minus the rest, in millimetres: only Southern California's interval lies wholly above zero and it is the only filled dot. Second, burned area after El Niño winters minus the rest, in log points, seven regions: every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline1_el_nino_vs_rest_narrow.png")
+```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars, one row per region. First, winter precipitation in El Niño winters minus the rest, in millimetres: only Southern California's interval lies wholly above zero and it is the only filled dot. Second, burned area after El Niño winters minus the rest, in log points, seven regions: every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline1_el_nino_vs_rest_narrow_dark.png")
+```
+:::
+::::
 
 *[WIP] H1 and H2: El Niño years against all other years. Dots are estimates, bars 95% intervals; a filled green dot is significant after Holm.*
 
+:::: {.d-none .d-sm-block}
 ::: {.fig-light}
 ```{python}
 #| echo: false
@@ -423,9 +446,31 @@ from IPython.display import Image
 Image(filename="../results/figures/headline2_enso_strength_dark.png")
 ```
 :::
+::::
+
+:::: {.d-sm-none}
+::: {.fig-light}
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars for seven regions, in log points of burned area per degree of the winter index. Every interval crosses zero in both panels."
+from IPython.display import Image
+Image(filename="../results/figures/headline2_enso_strength_narrow.png")
+```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars for seven regions, in log points of burned area per degree of the winter index. Every interval crosses zero in both panels."
+from IPython.display import Image
+Image(filename="../results/figures/headline2_enso_strength_narrow_dark.png")
+```
+:::
+::::
 
 *[WIP] H3a and H3b: burned area per 1 °C of the winter index, without and with summer temperature.*
 
+:::: {.d-none .d-sm-block}
 ::: {.fig-light}
 ```{python}
 #| echo: false
@@ -443,6 +488,27 @@ from IPython.display import Image
 Image(filename="../results/figures/headline3_north_vs_socal_dark.png")
 ```
 :::
+::::
+
+:::: {.d-sm-none}
+::: {.fig-light}
+```{python}
+#| echo: false
+#| fig-alt: "Five rows of dots with interval bars: the H3a slopes of the Pacific Northwest, British Columbia, Alberta and Southern California, then the H4 contrast, north minus Southern California. Every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline3_north_vs_socal_narrow.png")
+```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Five rows of dots with interval bars: the H3a slopes of the Pacific Northwest, British Columbia, Alberta and Southern California, then the H4 contrast, north minus Southern California. Every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline3_north_vs_socal_narrow_dark.png")
+```
+:::
+::::
 
 *[WIP] H4: the north minus Southern California, from one pooled model, under the four regional slopes for context.*
 
