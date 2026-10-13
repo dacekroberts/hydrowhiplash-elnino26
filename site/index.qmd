@@ -5,10 +5,11 @@ title: "What past El Niños suggest for the 2027 fire season"
 <!-- Skeleton for the explainer page. Fill each section as its phase finishes;
      figures come from ../results/. Preview with: quarto preview site
 
-     DRAFT 2026-10-12 (session 11). The overview panel, the winter rain
-     caption and the two waiting notes were drafted by Claude for the owner
-     to edit and approve. Every number and date is read from results/tables/
-     (run1, site_settings.json, rollout_calendar.json); none is typed. -->
+     Wording approved by the owner 2026-10-12 (session 11): the overview
+     paragraph and panel, the two chart captions and the two waiting notes,
+     drafted by Claude and gone through item by item, three with changes.
+     Every number and date is read from results/tables/ (run1,
+     site_settings.json, rollout_calendar.json); none is typed. -->
 
 ```{python}
 #| echo: false
@@ -49,7 +50,7 @@ goes up before the season and is checked against it afterwards.
 - <i class="sw snow"></i>**Snowpack.** Snow on the ground on 1 April, with
   snow stations as a check.
 - <i class="sw temp"></i>**Temperature.** Summer and spring means, and a
-  drought index built from them.
+  drought index that combines temperature with precipitation.
 - <i class="sw enso"></i>**El Niño.** NOAA's `{python} S["enso_index"]` for
   each winter.
 ::::
@@ -114,8 +115,8 @@ SVG(filename="../results/figures/mechanism_narrow.svg")
 
 <!-- Winter rainfall map (El Niño precipitation dipole). After Phase 1.
      Until the map is redrawn in the site's design (it reads polygons), the
-     section shows the regional series, which exists. Caption and alt text
-     are DRAFTS for the owner. -->
+     section shows the regional series, which exists. Caption approved by
+     the owner 2026-10-12. -->
 
 ```{python}
 #| echo: false
@@ -123,7 +124,7 @@ SVG(filename="../results/figures/mechanism_narrow.svg")
 print("```{=html}\n" + Path("../results/figures/djf_precip_history_roni.html").read_text("utf-8") + "\n```")
 ```
 
-*[Draft caption] December to February precipitation in every winter since
+*December to February precipitation in every winter since
 `{python} S["climate_first_year"] + 1`, by region, against the region's
 average winter. Shaded winters had an El Niño; a darker tick marks a strong
 one. Hover for the millimetres.*
@@ -133,8 +134,8 @@ one. Hover for the millimetres.*
 <!-- Per region: every fire season since 1984, El Niño years highlighted,
      with an empty 2027 slot. Built 2026-10-12 (session 11) by
      python -m src.fire_figures: an HTML fragment read from results/ at
-     render time (plotly.js from site/libs/). The caption is a DRAFT for the
-     owner to word; the section's prose is still to be written. -->
+     render time (plotly.js from site/libs/). Caption approved by the owner
+     2026-10-12. -->
 
 ```{python}
 #| echo: false
@@ -143,9 +144,9 @@ from pathlib import Path
 print("```{=html}\n" + Path("../results/figures/burned_area_season_history_roni.html").read_text("utf-8") + "\n```")
 ```
 
-*[Draft caption] Every fire season since 1984, as a multiple of the region's
-typical season. A shaded year follows an El Niño winter; a taller, darker
-tick marks a strong one. Hover for the hectares. The dotted slot is 2027.
+*Every fire season since 1984, as a multiple of the region's
+typical season. A shaded year follows an El Niño winter; a darker tick
+marks a strong one. Hover for the hectares. The dotted slot is 2027.
 The [map](map.qmd) shows the same seasons region by region.*
 
 ## Tracking the 2026–27 winter
@@ -153,12 +154,12 @@ The [map](map.qmd) shows the same seasons region by region.*
 <!-- Live tracker: this winter's precipitation and snowpack vs past El Niño
      winters, updated monthly. Nov 2026 → spring 2027. Until the first month
      arrives this is a waiting note; its date is the first reader item of the
-     rollout calendar not yet done. DRAFT wording. -->
+     rollout calendar not yet done. Wording approved 2026-10-12. -->
 
 ::: {.waiting}
 <p class="num">`{python} NEXT["when"]`</p>
 
-Nothing to show yet: the winter has not happened. Next to arrive:
+Nothing to show yet: this winter's data has not arrived. Next to arrive:
 `{python} NEXT["title"]`. The [tracker page](tracker.qmd) lists every date
 this site is waiting for.
 :::
@@ -166,7 +167,7 @@ this site is waiting for.
 ## How the prediction held up
 
 <!-- Verification panel. Fall 2027. A waiting note until then; both dates
-     are read from the rollout calendar. DRAFT wording. -->
+     are read from the rollout calendar. Wording approved 2026-10-12. -->
 
 ::: {.waiting}
 <p class="num">`{python} CAL["verify_north"]["when"]`</p>
