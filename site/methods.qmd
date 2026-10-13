@@ -242,7 +242,7 @@ SVG(filename="../results/figures/methods_flow_narrow_dark.svg")
 :::
 ::::
 
-*[WIP] From sources to the site's charts: what is measured, where it is joined and where it is tested.*
+*From sources to the site's charts: what is measured, where it is joined and where it is tested.*
 
 ### Tests fixed before the data
 
@@ -426,7 +426,7 @@ Image(filename="../results/figures/headline1_el_nino_vs_rest_narrow_dark.png")
 :::
 ::::
 
-*[WIP] H1 and H2: El Niño years against all other years. Dots are estimates, bars 95% intervals; a filled green dot is significant after Holm.*
+*H1 and H2: El Niño years against all other years. Dots are estimates and bars are 95% intervals. A filled green dot is significant after the Holm correction for the number of tests.*
 
 :::: {.d-none .d-sm-block}
 ::: {.fig-light}
@@ -468,7 +468,7 @@ Image(filename="../results/figures/headline2_enso_strength_narrow_dark.png")
 :::
 ::::
 
-*[WIP] H3a and H3b: burned area per 1 °C of the winter index, without and with summer temperature.*
+*H3a and H3b: the change in burned area per 1 °C of the winter index, first with a year trend only, then with summer temperature held fixed.*
 
 :::: {.d-none .d-sm-block}
 ::: {.fig-light}
@@ -510,7 +510,7 @@ Image(filename="../results/figures/headline3_north_vs_socal_narrow_dark.png")
 :::
 ::::
 
-*[WIP] H4: the north minus Southern California, from one pooled model, under the four regional slopes for context.*
+*H4: the north minus Southern California, from one pooled model. The four regional slopes above it are for context; the contrast is not their difference.*
 
 ::: {.fig-light}
 ```{python}
@@ -530,7 +530,7 @@ Image(filename="../results/figures/headline4_interval_coverage_dark.png")
 ```
 :::
 
-*[WIP] How often the H3a model's 80% prediction intervals held the real season.*
+*How often the H3a model's 80% prediction intervals held the real season. The line marks the 80% target.*
 
 ## Every test, including nulls
 
