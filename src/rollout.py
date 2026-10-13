@@ -273,8 +273,11 @@ def items() -> list[dict]:
               "the provisional NBAC ones, and the difference is reported.",
               "Check the CNFDB release folder for 2027. If released: download to a "
               "stamped path, measure BC, AB and YT, and report beside the NBAC figures "
-              "already published; neither replaces the other without a note. Reads "
-              "polygons: ask the owner first.",
+              "already published; neither replaces the other without a note. For the "
+              "sibling, the start-month split of BC, AB and YT 2027 is built from these "
+              "CNFDB pieces and handed over with this outcome, as for CNFDB 2025; no "
+              "split is built from NBAC, which has no ignition date (DECISIONS "
+              "2026-10-13). Reads polygons: ask the owner first.",
               "ROLLOUT_WINDOWS; CNFDB release record (D56); D93"),
     ]
     lead = timedelta(days=config.ROLLOUT_REMINDER_LEAD_DAYS)

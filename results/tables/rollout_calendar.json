@@ -388,7 +388,7 @@
       "precision": "window",
       "title": "CNFDB 2027 fire polygons (no fixed date)",
       "site_change": "The registered source's 2027 figures for BC, AB and YT are set beside the provisional NBAC ones, and the difference is reported.",
-      "prepare": "Check the CNFDB release folder for 2027. If released: download to a stamped path, measure BC, AB and YT, and report beside the NBAC figures already published; neither replaces the other without a note. Reads polygons: ask the owner first.",
+      "prepare": "Check the CNFDB release folder for 2027. If released: download to a stamped path, measure BC, AB and YT, and report beside the NBAC figures already published; neither replaces the other without a note. For the sibling, the start-month split of BC, AB and YT 2027 is built from these CNFDB pieces and handed over with this outcome, as for CNFDB 2025; no split is built from NBAC, which has no ignition date (DECISIONS 2026-10-13). Reads polygons: ask the owner first.",
       "basis": "ROLLOUT_WINDOWS; CNFDB release record (D56); D93",
       "reader": true,
       "own_reminder": true,

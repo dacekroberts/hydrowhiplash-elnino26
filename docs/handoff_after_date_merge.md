@@ -7,14 +7,15 @@ done from the worktree.
 
 ## What the branch holds
 
-Four commits on top of main at `4e68d63`, local only:
+Commits on top of main at `4e68d63`, local only, and one local tag,
+`after-date-split-frozen` at `3285b23` (annotated, not pushed):
 
 | Commit | Holds |
 |---|---|
 | `05c4622` | `src/fire_after_date.py`, its tests, three settings in `src/config.py` |
 | `3285b23` | the split as one function over named region-seasons; **the version frozen for scoring**, and the commit the table was built at |
 | `c9f2708` | the table, its provenance record, and the records |
-| the commit after it | the rollout calendar's open item and this note |
+| `c33459d` and the commit after it | the rollout calendar's open item, the tag and NBAC decisions, and this note |
 
 Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
 873 rows, sha256
@@ -27,15 +28,14 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
    delete a branch, but `git branch -D` would. After any worktree clean-up,
    confirm with `git branch --contains 3285b23`.
 
-2. **Owner's decision before any merge: how `3285b23` stays reachable.**
-   `merge-side-pr` step 6 squashes, and a squash leaves `3285b23` and
-   `c9f2708` off main: once the branch is deleted they would be collected,
-   while the sibling and the table's provenance record both name `3285b23`.
-   Two ways, either needing the owner's yes:
-   - a tag at `3285b23` (as `prediction-handoff` marks the earlier
-     handover), then the usual squash; or
-   - a merge commit and no squash for this branch, a departure from step 6
-     to be logged.
+2. **`3285b23` stays reachable through the tag `after-date-split-frozen`**
+   (owner, 2026-10-13: tag locally, then the usual squash). `merge-side-pr`
+   step 6 squashes, which leaves `3285b23` and `c9f2708` off main; the
+   sibling and the table's provenance record both name `3285b23`, so the
+   tag must not be deleted. It is local: pushing it (`git push origin
+   after-date-split-frozen`) needs the owner's yes, and until it is pushed
+   it exists on this machine only. Check with `git rev-parse
+   after-date-split-frozen^{}`.
 
 3. **Merge, when the owner says so.** `CLAUDE.md` prescribes
    `merge-side-pr`, which works on a pull request, so it needs the push the
@@ -54,8 +54,11 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
    **Note for the sibling:** the renumbering edits one token in the
    docstring of `src/fire_after_date.py`, after the frozen commit. The
    decision entry says a change to that module after `3285b23` is logged
-   and told to the sibling before the next scoring day. Log it as a
-   comment-only change (no line of code differs) and tell the sibling.
+   and told to the sibling before the next scoring day. The owner agreed
+   (2026-10-13) that this is fine as a logged change: log it as a
+   comment-only change (no line of code differs), and **report to the
+   owner the commit on main that holds it** (the squash commit, or the
+   renumbering commit if separate), so the sibling can record it.
 
 5. **Checks after the merge**, from the main checkout: `python -m pytest`
    (472 passed on the branch), `python scripts/check_no_em_dashes.py`,
@@ -86,18 +89,19 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
   `src.fire` reads the pinned downloads only; on a scoring day the
   outcome rebuild has to turn a stamped retrieval into pieces and pass
   them to `split_table(pieces, seasons, scoring_day_seasons=seasons)`.
-  Tracked in the `prepare` text of `cnfdb_2025`, `season_2026_closes` and
-  `verify_north` on the rollout calendar.
-- **NBAC has no ignition date.** A 2027 season of BC, AB or YT measured
-  from NBAC (`nbac_2027`) cannot be split by start month until CNFDB 2027.
-  Not settled; raise it with the sibling before that scoring day.
+  Tracked in the `prepare` text of `cnfdb_2025`, `season_2026_closes`,
+  `verify_north` and `cnfdb_2027` on the rollout calendar.
+- **NBAC: settled, nothing to build** (owner, 2026-10-13). NBAC has no
+  ignition date; the sibling's rule names CNFDB polygons as the outcome
+  source for BC, AB and YT, so a season's split arrives with its CNFDB
+  outcome (2027 with CNFDB 2027, stated in the `cnfdb_2027` item).
 - **Held-back seasons.** No figure for one was produced, printed or
   written. `scoring_day_seasons` has been used on made-up pieces only.
 
 ## Session block
 
 ```
-### 13:30-15:05 · Claude Code (worktree: claude/sharp-jemison-a79067)
+### 13:30-15:20 · Claude Code (worktree: claude/sharp-jemison-a79067)
 - Built results/tables/after_issue_date/fire_after_issue_date_region_year.csv
   for the sibling (D?a): 873 rows, five checks passed, sha256
   2978e316...9b137d, built at 3285b23 on a clean tree.
@@ -107,7 +111,8 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
 - Read the main checkout's pinned fire downloads read-only through
   --data-root (D?b); nothing under data/ written.
 - Records: DECISIONS.md, plan_deviations (D?a, D?b), methods register, data
-  dictionary; open item added to three rollout calendar items; hand-off
+  dictionary; open item added to four rollout calendar items; hand-off
   note docs/handoff_after_date_merge.md.
-- Nothing pushed, tagged or merged. No held-back figure produced.
+- Tagged 3285b23 locally as after-date-split-frozen (owner's yes); nothing
+  pushed or merged. No held-back figure produced.
 ```

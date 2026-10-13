@@ -99,9 +99,23 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   `verify_north`; `src/rollout.py`, `rollout_calendar.json` rewritten)
   now says the split is built from the same pieces and handed over with
   the outcome, and that this reading is still to build. `cnfdb_2026` and
-  `verify_california` point back to those items. Not settled: NBAC has
-  no ignition date, so a 2027 season of BC, AB or YT measured from NBAC
-  (`nbac_2027`) has no start month to split by until CNFDB 2027.
+  `verify_california` point back to those items.
+- **Settled (owner, 2026-10-13): no split is built from NBAC.** NBAC has
+  no ignition date, so a season measured from it has no start month. The
+  sibling's rule names CNFDB polygons as the outcome source for BC, AB
+  and YT, so a season's split arrives with its CNFDB outcome: 2027 with
+  CNFDB 2027 (about January 2029), stated in the `cnfdb_2027` item.
+- **Tagged the frozen commit locally: `after-date-split-frozen` at
+  3285b23 (owner, 2026-10-13), annotated like the repository's other
+  tags, not pushed.** The main session's merge squashes the branch, which
+  would leave 3285b23 off main; the tag keeps it reachable for the
+  sibling and for the table's provenance record. Rejected a merge
+  commit without the squash: a departure from `merge-side-pr` step 6 for
+  one branch.
+- **Agreed (owner, 2026-10-13): the merge's numbering of D\?a edits one
+  token in the docstring of `src/fire_after_date.py` after the frozen
+  commit, and counts as a logged change.** No line of code differs. The
+  main session reports the commit that holds it, for the sibling.
 - Tests: 472 passed (10 new in `tests/test_fire_after_date.py`).
 
 ### 2026-10-13 - Motion: the card lines, the prompt and the dashboard's remaining lines approved
