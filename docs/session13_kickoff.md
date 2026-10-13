@@ -11,8 +11,8 @@ note wins.
 **Status at the end of 13 October 2026.** V1 is complete and the
 repository is public (github.com/dacekroberts/hydrowhiplash-elnino26,
 code MIT, writing and figures all rights reserved). The site has had
-nine uploads; the ninth is from commit 940de8f (deployment b0e09d94,
-61 files, 10,476,791 bytes). Session 12 built the sample visuals and
+ten uploads; the tenth is from commit 4d89fee (deployment f95a2d88,
+61 files, 10,482,245 bytes). Session 12 built the sample visuals and
 closed the small things list.
 
 **Where things stand.**
@@ -51,6 +51,17 @@ closed the small things list.
   same day: a larger thumb, one coloured box per winter with a key, a
   fold button, live since the tenth upload (commit 4d89fee, deployment
   f95a2d88). The owner okayed the reworked one the same day.
+- **A table for the sibling (D103, D104), merged as PR 25 on
+  2026-10-13 (squash commit 47b0602).**
+  `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`:
+  burned area split by fire start month at 1 June, 1 July and 1 August,
+  873 rows, built by a side session at commit 3285b23 (tag
+  `after-date-split-frozen`, on origin; do not delete it). Written once:
+  `python -m src.fire_after_date` refuses to run again. No split value,
+  share or list of zero seasons goes into a message, a log or the data
+  guide until the sibling has counted its zero and undated seasons.
+  Reading a later retrieval's fire files into pieces for a scoring day
+  is not built (`docs/handoff_after_date_merge.md`, "Open items").
 - **Private pages:** roadmap
   https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT, data guide
   https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P, methods reading copy
@@ -128,7 +139,7 @@ DeepSeek call and before every upload; nothing private goes into a
 commit (no keys, nothing under `data/`, not the retrospective, not the
 other project's name).
 
-**Next free deviation number: D103.** The frozen plan's deviations log
+**Next free deviation number: D105.** The frozen plan's deviations log
 is at row 19.
 
 ## Part 2 · Prompt for session 13
@@ -146,7 +157,7 @@ has come, otherwise the Motion bundle and the open wording.
    Read with the Artifact tool (action "read"):
    the roadmap, https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
    Tell me in 3-4 lines what this session covers. Main numbers its own
-   deviations from D103.
+   deviations from D105.
 
 2. Explain each concept as it comes up, give a short summary beside every
    hypothesis ID, and quote the actual wording beside every item ID
@@ -169,8 +180,9 @@ has come, otherwise the Motion bundle and the open wording.
    suggest, don't rewrite.
 
 7. The Motion bundle only if I say so: the claude-motion-handoff skill,
-   motion_handoff/00_MANIFEST.md for what is missing, and the storyboard
-   approved by me before any brief is written.
+   motion_handoff/00_MANIFEST.md for what is missing; the brief, the
+   card lines and the prompt are approved (2026-10-13), so the work is
+   checking what the Motion session sends back.
 
 8. Ask me before any run that reads polygons, before every DeepSeek
    call, and before every upload of the site. Flag scope additions
