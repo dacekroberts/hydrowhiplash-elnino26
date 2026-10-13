@@ -27,6 +27,48 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-13
 
+### D106 · A ranked copy of the registered tests and a "close" tier, for the visuals (scope addition, after results)
+- **Plan:** `ANALYSIS_PLAN.md` reports each registered test with its
+  Holm verdict and names no ranking and no tier between passing and not
+  passing. `motion_handoff/brief.md` (approved 2026-10-13), Scene 7:
+  "What did pass: the four results, each with its estimate and
+  interval."
+- **Actual:** `results/tables/registered_tests_ranked.csv` orders the 52
+  rows of `run1/registered_tests.csv` by Holm-adjusted p and labels
+  each with a tier read from columns the run already holds: passes Holm
+  (4), interval excludes zero but did not pass Holm (4), interval spans
+  zero (44). An addendum to the Motion bundle,
+  `motion_handoff_addendum1/`, asks for one supporting beat in Scene 7
+  showing the middle four. Decided after the results were seen: the
+  owner had the full ranking in front of them. No test was rerun, no
+  registered number or verdict changed, nothing in `run1/` was written.
+- **Why:** owner, 2026-10-13: "could we pull any tests who were close to
+  being significant? maybe you can audit all 52 and rank them", "save
+  the rankings", "provide a addendum handoff for the 'close' category
+  visually and text so the motion can feature".
+- **Recorded:** `DECISIONS.md` 2026-10-13 "The 52 tests ranked; a beat
+  for the four that came close".
+- **Plan doc:** left as written. `docs/post_results_protocol.md` section
+  2, fourth row ("Wording, figures or layout that read the same result
+  tables": no rerun, the usual records).
+
+### D105 · The pattern inside a region, approved for the map page and put after the hard-line item (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal", Map page: "each year's
+  values read from the committed region x year tables and the region
+  polygons", so one shade per region. Winter rainfall map (D101): "The
+  gridded map was not built; the pattern inside a region is noted as a
+  possible later piece."
+- **Actual:** approved as a piece, not built. A gridded layer for winter
+  rain on the map page, each ERA5-Land cell shaded on its own, display
+  only and read by no test. It is built with the map page's other
+  planned work after the hard-line item (4 November reminder), not
+  before.
+- **Why:** owner, 2026-10-13, on the recommendation put in session 13:
+  "yes delay with the other planned work".
+- **Recorded:** `DECISIONS.md` 2026-10-13 "The pattern inside a region:
+  approved for the map page, after the hard-line item".
+- **Plan doc:** updated (`ACTION_PLAN.md`, marked `[mid-project: D105]`).
+
 ### D104 · A worktree session read the main checkout's fire files
 - **Plan:** `CLAUDE.md`, daily log exception: "Data lives only in the
   main checkout (`data/` is never committed), so worktree sessions take

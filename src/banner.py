@@ -34,7 +34,7 @@ from fontTools.ttLib import TTFont  # noqa: E402
 from fontTools.varLib import instancer  # noqa: E402
 from matplotlib.figure import Figure  # noqa: E402
 from matplotlib.font_manager import FontProperties  # noqa: E402
-from matplotlib.patches import Arc, Rectangle  # noqa: E402
+from matplotlib.patches import Rectangle  # noqa: E402
 
 from src import figures, fire_figures, pin_inputs, theme  # noqa: E402
 from src.config import FIRE_FIRST_YEAR, FORECAST_YEAR  # noqa: E402
@@ -53,9 +53,9 @@ FACES = {"title": ("NationalPark-wght.ttf", 800), "label": ("JetBrainsMono-wght.
 # number of lines the question is wrapped to; strip: left, top, right, bottom.
 LAYOUTS = {
     "social": {"size": (1280, 640), "title": (64, 64, 58, 68, 2), "address": (64, 222, 20),
-               "strip": (64, 290, 1216, 584), "label": 13, "arcs": (1250, -40)},
+               "strip": (64, 290, 1216, 584), "label": 13},
     "readme": {"size": (1280, 320), "title": (48, 48, 38, 46, 3), "address": (48, 216, 16),
-               "strip": (560, 40, 1240, 284), "label": 11, "arcs": None},
+               "strip": (560, 40, 1240, 284), "label": 11},
 }
 BANNERS = (("social", "dark"), ("readme", "light"), ("readme", "dark"))
 
@@ -105,10 +105,6 @@ def draw(table: pd.DataFrame, kind: str, theme_name: str, fonts: dict[str, FontP
     def px(size: float) -> float:
         return size * 72 / DPI
 
-    if lay["arcs"]:  # the contour motif, clear of the strip
-        for radius in range(100, 320, 44):
-            ax.add_patch(Arc(lay["arcs"], 2 * radius, 2 * radius, theta1=80, theta2=200,
-                             edgecolor=c["rule"], linewidth=1))
     x, y, size, step, lines = lay["title"]
     for i, line in enumerate(wrap(QUESTION, lines)):
         ax.text(x, y + i * step, line, fontproperties=fonts["title"], fontsize=px(size),

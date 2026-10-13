@@ -17,6 +17,89 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The 52 tests ranked; a beat for the four that came close
+
+- **Ranked the 52 registered tests by Holm-adjusted p and saved the
+  order as a table (D106; owner: "save the rankings").**
+  `scripts/rank_registered_tests.py` writes
+  `results/tables/registered_tests_ranked.csv` from
+  `run1/registered_tests.csv`: the same rows and values, a `rank`, and a
+  `tier`. Found: 8 of 52 tests have a two-sided 95% interval that
+  excludes zero; 4 pass Holm and 4 do not (Holm p 0.067 to 0.097: AB
+  winter SPEI on burned area, NorCal same-year winter rain on burned
+  area, AB winter precipitation in El Niño winters, AB 1 April snowpack
+  on burned area); rank 9 is at Holm p 0.220. None of the 4 sets El Niño
+  against burned area; the smallest registered p among those 25 tests is
+  0.126 (H2, NorCal, rank 22). Decided after the results were seen, so
+  the tier is a presentation label only: post-results protocol section
+  2, fourth row; nothing rerun, nothing in `run1/` written. Rejected: a
+  cut-off on the p-value for "close" (a number chosen by eye after the
+  fact; the interval rule needs none and falls at the same four);
+  ranking by the registered p (the registered decision is Holm's);
+  writing the table into `run1/` (that folder is never added to).
+- **One supporting beat for the Motion film, sent as an addendum, not
+  four more cards.** Owner: "provide a addendum handoff for the 'close'
+  category visually and text so the motion can feature", after the
+  recommendation "add them as one supporting beat, not four cards", and
+  "folder already gone to session". `scripts/build_motion_addendum.py`
+  writes `motion_handoff_addendum1/`: `addendum1.md` (what the beat
+  shows, a suggested line, seven rules, what comes back, a prompt),
+  `addendum1_close_tests.json` (the four rows with their wording) and
+  `addendum1_ref_passed_and_close_dark.png` (both tiers as the site's
+  interval ledger, filled marks for the four that pass, hollow for the
+  four that do not). The rules keep "significant" for the 4 of 52, name
+  the tier by its rule, hold the film at 150 s with the pace constant
+  unchanged, and ask for Scene 7 as approved if the beat does not fit.
+  Not approved wording: the beat's line, and the label and description
+  of H6 winter SPEI (no passing result uses that test, so no approved
+  wording existed); both are marked as drafts in the files. The first
+  bundle in `motion_handoff/` was not rebuilt. Tests: 3 new in
+  `tests/test_rank_registered_tests.py`, 9 passed with
+  `tests/test_sample_visuals.py`.
+
+### 2026-10-13 - The pattern inside a region: approved for the map page, after the hard-line item
+
+- **The owner approved the pattern inside a region as a piece of the
+  site and put it after the hard-line item (D105).** Owner: "yes delay
+  with the other planned work". The recommendation put to the owner in
+  session 13 was: the map page, a gridded layer for winter rain only,
+  display only and read by no test, built after 4 November. Read here as
+  approving that recommendation whole; the owner's words name the delay
+  only. Reason for the delay: the map page is reopened then anyway
+  ("this winter's months after item 1" in `docs/session13_kickoff.md`),
+  and the hard-line item downloads the 2026 months the layer would show
+  for this winter. Rejected: building it now, ahead of the hard-line
+  item (a second pass over the same page within weeks); the Overview
+  page (the map page already says one shade covers a whole region, so
+  the layer answers that page's own limit). Nothing was built or run.
+  The build reads the region polygons, so it still needs the owner's yes
+  at the time. Supersedes "noted as a scope addition, not started" in
+  the entry "A year slider on a phone; the rainfall map ticked; the
+  dashboard's wording" below.
+- **The owner confirmed the two agency links in "Who this forecast is
+  for" (`site/methods.qmd`).** Owner: "oh then yes i confirm", after
+  asking whether the agencies were the target audience (no: they are
+  where readers who need an operational outlook are sent). Both pages
+  were opened on 2026-10-13: the National Interagency Fire Center page
+  is titled "Outlooks" and holds the 7-day maps and the four-month
+  national outlook; the Natural Resources Canada page is titled
+  "Forecast conditions" and holds daily and seasonal forecasts. No file
+  changed; the links have been live since the sixth upload.
+- **The contour arcs came off the social preview banner.** Owner:
+  "what's with rings in top left?", then "yes remove rings". The five
+  arcs were decoration with no data behind them, and the outer one ran
+  behind the last word of the title's first line. `src/banner.py`: the
+  arcs and their layout key removed; `python -m src.banner` rewrote
+  `results/figures/banner_social_dark.png` and left the two README
+  banners byte for byte the same (`git status`). Rejected, on the
+  owner's question "should we map rainfall data on top?": a rain layer
+  over the fire strip (the banner's line asks about fire; seven rows by
+  42 seasons is already dense at thumbnail size; red and blue bars
+  overlaid would need a key, and a banner has none). A second banner in
+  blue for winter rain was named as the workable form and not built.
+  The copy `motion_handoff/ref_banner_social_dark.png` keeps the arcs until a new
+  bundle is sent. 6 passed in `tests/test_sample_visuals.py`.
+
 ### 2026-10-13 - The Motion handoff folder committed, without the storyboard
 
 - **`motion_handoff/` is committed, 43 of its 44 files; `storyboard.html`

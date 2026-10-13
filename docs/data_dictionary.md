@@ -1019,6 +1019,25 @@ as on the site's season chart. `scripts/build_motion_handoff.py` cuts
 the same numbers into `numbers.json`, `seasons.csv` and `timetable.csv`
 in `motion_handoff/` (not committed).
 
+**Ranked copy of the registered tests (2026-10-13, D106).**
+`results/tables/registered_tests_ranked.csv`, written by
+`python scripts/rank_registered_tests.py` from
+`run1/registered_tests.csv`: the same 52 rows and values in a new order,
+nothing computed again. `rank`: 1 is the smallest Holm-adjusted p-value
+(ties by the registered p, then test and region). `interval_excludes_zero`:
+true where the stored two-sided 95% interval lies wholly on one side of
+zero. `tier`: "passes Holm" where `significant` is true (4 rows);
+"interval excludes zero, did not pass Holm" (4 rows); "interval spans
+zero" (44 rows). A presentation table made after the results were seen;
+no test reads it and no verdict changes. Traps: the tier is a label, not
+a second significance level, and the middle tier is never called
+significant; the interval is two-sided even beside a one-sided test, so
+a one-sided p below 0.05 can sit in "interval spans zero" (BC, H6 winter
+SPEI: p 0.037, interval −0.857 to 0.041); a Holm p is comparable within
+its own family only, so the order across families is a reading aid, not
+a test. `scripts/build_motion_addendum.py` cuts the middle tier into
+`motion_handoff_addendum1/` for one beat of the Motion film.
+
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 
 Written by `python -m src.prediction` on 2026-10-12, after `run1` was

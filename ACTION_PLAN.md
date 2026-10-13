@@ -345,6 +345,11 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       ocean beside the regions, each winter's sea-surface temperature
       from NOAA ERSST v6) are being added: display only, read by no
       test.
+- [ ] **The pattern inside a region** [mid-project: D105]: a gridded
+      layer for winter rain on the map page, each ERA5-Land cell shaded
+      on its own; display only, read by no test. Approved by the owner
+      on 2026-10-13 and put with the map page's other work after the
+      hard-line item. Reads the region polygons: ask the owner first.
       Ticked on the owner's word, 2026-10-13 ("tick all"). Its wording is still a draft, and this
       winter's months still join it with the hard-line item.
 - [x] **Three methods-page items** [mid-project: D96]: why regression
