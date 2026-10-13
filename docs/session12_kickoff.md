@@ -108,8 +108,11 @@ checkout.
   rainfall map (not built); a phone drawing of the coverage chart; the
   navy title band of the two remaining notes in the dark theme; a finger
   on a real phone. The owner has put the project forward to the Seattle
-  Visual Session as a candidate for "a claude motion"; nothing is built
-  for it here, and it is a scope addition to shape with the owner.
+  Visual Session as a candidate for "a claude motion" (owner: "beta
+  feature in teams plans that animates your dataset"); nothing is built
+  for it here, and it is a scope addition to shape with the owner. Only
+  committed tables under `results/tables/` could be offered to it, never
+  `data/` or the held-back seasons, and only on the owner's word.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams
