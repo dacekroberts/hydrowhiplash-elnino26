@@ -1,0 +1,15 @@
+when,title,site_change,done
+7 Oct 2026,Analysis plan frozen,Every page states this date: the tests were fixed before any fire data was opened.,True
+12 Oct 2026,Registered tests run once and committed,The results and the methods pages read run1.,True
+by 7 Nov 2026,October's ERA5-Land monthly data,The tracker moves from its before-winter state to tracking: October's tile fills in for each region.,False
+by 7 Dec 2026,November's ERA5-Land monthly data,November's tile fills in on the tracker for each region.,False
+by 7 Jan 2027,December's ERA5-Land monthly data,December's tile fills in on the tracker for each region.,False
+by 7 Feb 2027,January's ERA5-Land monthly data,January's tile fills in on the tracker for each region.,False
+1 to 14 Mar 2027,"The December to February El Niño index (RONI), first release","The winter is classed as El Niño, strong El Niño or neither, and the first forecast stage is published from the registered model.",False
+by 7 Mar 2027,February's ERA5-Land monthly data,"February's tile fills in, so the December to February winter the tests use is complete.",False
+by 7 Apr 2027,March's ERA5-Land monthly data,"March's tile fills in, so the October to March precipitation total is complete.",False
+about 8 Apr 2027,Snowpack on 1 April (ERA5-Land),"The final forecast stage is published, with the two snowpack and winter moisture forecasts beside it, and the tracker becomes the record of what arrived when.",False
+after 31 Oct 2027,"The 2027 fire season ends in PNW, BC, AB, AK and YT","The verification panel sets what burned against the forecast for PNW and AK, from WFIGS and marked provisional. BC, AB and YT follow when NBAC holds 2027.",False
+after 31 Jan 2028,The 2027 fire season ends in NorCal and SoCal,The verification panel is completed for California.,False
+May to Jun 2028,NBAC burned-area polygons for 2027 (no fixed date),"The verification panel gains BC, AB and YT, measured from NBAC and marked provisional.",False
+Jan to Feb 2029,CNFDB 2027 fire polygons (no fixed date),"The registered source's 2027 figures for BC, AB and YT are set beside the provisional NBAC ones, and the difference is reported.",False

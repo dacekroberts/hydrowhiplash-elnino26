@@ -1,0 +1,298 @@
+{
+ "meta": {
+  "run": "run1",
+  "commit": "777eafde6f10fe6910fa1627c15d639a723287fa",
+  "run_utc": "2026-10-12T09:44:33Z",
+  "built_utc": "2026-10-13 19:56 UTC",
+  "enso_index": "RONI",
+  "min_fire_ha": 405,
+  "first_year": 1984,
+  "forecast_year": 2027,
+  "plan_frozen": "7 Oct 2026"
+ },
+ "counts": {
+  "tests": 52,
+  "significant": 4,
+  "enso_burn": 0,
+  "enso_burn_tests": 25,
+  "regions": 7,
+  "fire_years": 42
+ },
+ "flow": {
+  "sources": [
+   {
+    "token": "enso",
+    "text": [
+     "ENSO index",
+     "NOAA, monthly"
+    ]
+   },
+   {
+    "token": "water",
+    "text": [
+     "ERA5-Land",
+     "and snow stations"
+    ]
+   },
+   {
+    "token": null,
+    "text": [
+     "Region boundaries",
+     "states and provinces"
+    ]
+   },
+   {
+    "token": "fire",
+    "text": [
+     "Fire perimeters",
+     "MTBS, WFIGS, CNFDB"
+    ]
+   }
+  ],
+  "table": [
+   "Region × year table",
+   "one row per region and season"
+  ],
+  "plan": [
+   "Analysis plan, frozen",
+   "before any fire data was read"
+  ],
+  "spine": [
+   [
+    "Pre-registered tests,",
+    "run once"
+   ],
+   [
+    "Result tables",
+    "never edited after the run"
+   ],
+   [
+    "Figures and tables",
+    "written by code to results/"
+   ],
+   [
+    "The site reads only results/",
+    ""
+   ]
+  ],
+  "pages": "Overview · Map · Tracker · Methods and Limitations · Flowchart",
+  "site": "https://hydrowhiplash.dacekroberts.dev"
+ },
+ "ledger": [
+  {
+   "test": "H3a",
+   "region": "PNW",
+   "estimate": -0.0464338,
+   "ci_low": -0.268806,
+   "ci_high": 0.175939,
+   "pct_change": -4.53723,
+   "pct_low": -23.5709,
+   "pct_high": 19.2365,
+   "p_holm": 1.0,
+   "significant": false,
+   "name": "Pacific Northwest"
+  },
+  {
+   "test": "H3a",
+   "region": "BC",
+   "estimate": 0.233407,
+   "ci_low": -0.300441,
+   "ci_high": 0.767255,
+   "pct_change": 26.2895,
+   "pct_low": -25.9509,
+   "pct_high": 115.385,
+   "p_holm": 0.954177,
+   "significant": false,
+   "name": "British Columbia"
+  },
+  {
+   "test": "H3a",
+   "region": "AB",
+   "estimate": 0.255955,
+   "ci_low": -0.331016,
+   "ci_high": 0.842926,
+   "pct_change": 29.1694,
+   "pct_low": -28.1806,
+   "pct_high": 132.315,
+   "p_holm": 0.954177,
+   "significant": false,
+   "name": "Alberta"
+  },
+  {
+   "test": "H3a",
+   "region": "NorCal",
+   "estimate": -0.121834,
+   "ci_low": -0.411149,
+   "ci_high": 0.167482,
+   "pct_change": -11.4705,
+   "pct_low": -33.7112,
+   "pct_high": 18.2323,
+   "p_holm": 1.0,
+   "significant": false,
+   "name": "Northern California"
+  },
+  {
+   "test": "H3a",
+   "region": "SoCal",
+   "estimate": -0.0325135,
+   "ci_low": -0.369351,
+   "ci_high": 0.304324,
+   "pct_change": -3.19907,
+   "pct_low": -30.8817,
+   "pct_high": 35.5708,
+   "p_holm": 1.0,
+   "significant": false,
+   "name": "Southern California"
+  },
+  {
+   "test": "H3a",
+   "region": "AK",
+   "estimate": 0.0763929,
+   "ci_low": -0.281169,
+   "ci_high": 0.433955,
+   "pct_change": 7.93866,
+   "pct_low": -24.5099,
+   "pct_high": 54.3349,
+   "p_holm": 0.783868,
+   "significant": false,
+   "name": "Alaska"
+  },
+  {
+   "test": "H3a",
+   "region": "YT",
+   "estimate": 0.161862,
+   "ci_low": -0.21652,
+   "ci_high": 0.540244,
+   "pct_change": 17.5698,
+   "pct_low": -19.4683,
+   "pct_high": 71.6425,
+   "p_holm": 0.783868,
+   "significant": false,
+   "name": "Yukon"
+  }
+ ],
+ "survived": [
+  {
+   "test": "H1",
+   "region": "SoCal",
+   "estimate": 64.4338,
+   "ci_low": 31.0412,
+   "ci_high": 99.625,
+   "pct_change": null,
+   "pct_low": null,
+   "pct_high": null,
+   "p_holm": 0.00049995,
+   "significant": true,
+   "label": "H1 (winter precipitation, El Niño winters against the rest)",
+   "what": "December to February precipitation in El Niño winters, minus the rest",
+   "note": "A check, not a finding: I had seen these values before the freeze.",
+   "name": "Southern California"
+  },
+  {
+   "test": "H5_lag0",
+   "region": "AB",
+   "estimate": -0.687375,
+   "ci_low": -1.09905,
+   "ci_high": -0.275697,
+   "pct_change": -49.7106,
+   "pct_low": -66.6813,
+   "pct_high": -24.0957,
+   "p_holm": 0.00767794,
+   "significant": true,
+   "label": "H5 (wet winters and burned area, same year)",
+   "what": "burned area that year, when the winter is wetter by one standard deviation (a typical year-to-year swing)",
+   "note": "",
+   "name": "Alberta"
+  },
+  {
+   "test": "H5_lag1",
+   "region": "NorCal",
+   "estimate": 0.38827,
+   "ci_low": 0.187862,
+   "ci_high": 0.588677,
+   "pct_change": 47.4427,
+   "pct_low": 20.6667,
+   "pct_high": 80.1604,
+   "p_holm": 0.00355602,
+   "significant": true,
+   "label": "H5 (wet winters and burned area, the year after)",
+   "what": "burned area the year after a winter that much wetter",
+   "note": "",
+   "name": "Northern California"
+  },
+  {
+   "test": "H6_swe",
+   "region": "NorCal",
+   "estimate": -0.377199,
+   "ci_low": -0.616242,
+   "ci_high": -0.138157,
+   "pct_change": -31.4221,
+   "pct_low": -46.003,
+   "pct_high": -12.9038,
+   "p_holm": 0.0251415,
+   "significant": true,
+   "label": "H6 (1 April snowpack and burned area)",
+   "what": "burned area that year, when the 1 April snowpack is deeper by the same kind of swing",
+   "note": "",
+   "name": "Northern California"
+  }
+ ],
+ "next": [
+  {
+   "when": "by 7 Nov 2026",
+   "title": "October's ERA5-Land monthly data"
+  },
+  {
+   "when": "1 to 14 Mar 2027",
+   "title": "The December to February El Niño index (RONI), first release"
+  },
+  {
+   "when": "about 8 Apr 2027",
+   "title": "Snowpack on 1 April (ERA5-Land)"
+  },
+  {
+   "when": "after 31 Oct 2027",
+   "title": "The 2027 fire season ends in PNW, BC, AB, AK and YT"
+  }
+ ],
+ "film": {
+  "ratio": "16:9",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "max_seconds": 150,
+  "themes": [
+   "dark",
+   "light"
+  ],
+  "first_theme": "dark"
+ },
+ "mechanism": {
+  "top": [
+   "El Niño: warm water in the central-eastern tropical Pacific",
+   "Pacific jet stream extends east and shifts south"
+  ],
+  "north": {
+   "regions": [
+    "PNW",
+    "BC",
+    "AB"
+   ],
+   "steps": [
+    "Milder winter, often drier",
+    "Less snow, earlier melt",
+    "Earlier or longer fire season"
+   ]
+  },
+  "south": {
+   "regions": [
+    "SoCal"
+   ],
+   "steps": [
+    "Wetter winter",
+    "More grass growth",
+    "More fine fuel once grass cures, larger grass fires"
+   ]
+  }
+ }
+}

@@ -34,7 +34,9 @@ closed the small things list.
     fixed-weight copies made in a temporary folder (no licence in
     `site/fonts/` declares a reserved font name). The site's charts
     still use the system sans; the same way round would work for them.
-  - A Motion reference folder, `motion_handoff/` (ignored by git),
+  - A Motion reference folder, `motion_handoff/` (committed since
+    2026-10-13 as sent, except `storyboard.html`; recommit only when a
+    new bundle is sent),
     rebuilt by `python scripts/build_motion_handoff.py --capture`: a
     numbers file, the seasons and the timetable as CSV, the tokens, the
     typefaces with their licences, 17 figures, the dashboard as a

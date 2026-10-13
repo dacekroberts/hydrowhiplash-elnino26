@@ -17,6 +17,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The Motion handoff folder committed, without the storyboard
+
+- **`motion_handoff/` is committed, 43 of its 44 files; `storyboard.html`
+  stays out.** Owner: "can we commit motion folder", then "leave out
+  storyboard.html". Supersedes "ignored by git" in the entry "Sample
+  visuals: a dashboard, three banners and a Motion handoff folder"
+  below. The folder was left out as a build product, not for a rights
+  reason. Checked before the commit: every data file is cut from a
+  committed table and holds no held-back season; the 17 reference
+  figures are copies of `results/figures/`; the typefaces travel with
+  their licence texts, as in `site/fonts/`; the eight site pictures show
+  the public site; no key, no private page address and not the other
+  project's name in any text file. `storyboard.html` is the sample
+  dashboard, which exists only as a private page, so it is the one file
+  ignored; `00_MANIFEST.md` still lists it, since the manifest describes
+  the folder as uploaded. The commit is the folder as built at 4e68d63
+  with `--capture`, 5.9 MB. Rejected: recommitting on every rebuild (the
+  site pictures change at each upload); the folder is recommitted only
+  when a new bundle is sent.
+
 ### 2026-10-13 - A table of burned area by fire start month, built for the sibling
 
 - **Built (owner, in the sibling's session: "parent route") one table
