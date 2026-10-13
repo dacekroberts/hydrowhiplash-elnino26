@@ -53,6 +53,9 @@ h1.title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.01em; line-he
 main h2 { font-size: 1.625rem; font-weight: 700; line-height: 1.2; margin-top: 3rem;
   padding: 1rem 0 0; border-bottom: 0; border-top: var(--stroke-mark) solid var(--evergreen); }
 main h3 { font-size: 1.375rem; font-weight: 700; line-height: 1.3; margin-top: 1.9rem; }
+main div.table-scroll { overflow-x: auto; max-width: 100%; margin-bottom: 1rem; }
+main div.table-scroll > table { margin-bottom: 0; }
+main div.table-scroll:focus-visible { outline: 2px solid var(--evergreen); outline-offset: 2px; }
 body.fold-sections main h2 { cursor: pointer; display: flex; align-items: baseline;
   gap: 0.6rem; }
 body.fold-sections main h2 .fold-toggle { flex: none; width: 1.5rem; height: 1.5rem; padding: 0;

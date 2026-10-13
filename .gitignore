@@ -27,6 +27,9 @@ logs/export/
 
 # quarto build output
 site/_site/
+# the built site staged for upload (scripts/deploy_site.py)
+dist/
 site/.quarto/
 # offline copy of the pinned inputs (src.pin_inputs --copy)
 pinned_inputs_copy/
+/handoff_cloudflare-setup_reference.md

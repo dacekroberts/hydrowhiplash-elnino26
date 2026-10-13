@@ -103,6 +103,13 @@ checkout.
    small type at the page's column width; the Plotly chart's hover box
    was not checked; figures keep a light ground in dark mode.
 2. The owner's wording on the list above; make approved drafts visible.
+   Going live (owner, 2026-10-12): the first public piece is all four
+   pages once the wording is approved, the tracker with its timetable
+   only. `scripts/deploy_site.py` stages a checked build; its upload
+   is empty until the Cloudflare Pages project and subdomain exist
+   (reference: `handoff_cloudflare-setup_reference.md`, untracked, in
+   the repository root). Open: the subdomain, how the upload is
+   authorised, and plotly.js from a CDN on the home page.
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
    4).

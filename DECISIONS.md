@@ -17,6 +17,50 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Toward going live: a deploy step, the readiness check, the Cloudflare reference
+
+- **Built the deploy step now, without the upload (owner: "deploy step
+  can be built now").** `scripts/deploy_site.py`: refuses an uncommitted
+  or unpushed checkout, renders and checks the site, refuses a page whose
+  visible text holds the word "draft", checks file size and count against
+  the host's limits, stages the build in `dist/site/` (ignored by git) and
+  writes a manifest with the commit and a sha256 per file. `--upload` stops
+  with a message: the upload command is empty until the Pages project
+  exists. A trial staging run: 39 files, 3.7 MB; draft wording found on
+  all four pages.
+- **Owner's decisions for the first public piece:** it holds all pages,
+  once the wording is approved ("first public piece will hold all pages
+  once i approve wording"); the tracker goes live with its timetable only
+  ("timetable on tracker page ... to go live").
+- **Ran the readiness check of the rolling-publication rule (owner:
+  "required check now").** Registered runs: committed (tag
+  `registered-run1`). Licence verdicts: every source in the ledger has
+  one. Credits on the methods page: one gap found and closed, NOAA ERSST
+  v6 (a table row, the acknowledgment the files ask for and the two
+  papers, from ledger notice 14); the Natural Earth row now names the
+  map's land. Found and not changed: the two hover charts on the home
+  page load plotly.js from Plotly's CDN, so a visitor's browser contacts
+  a third party; the Cloudflare reference's privacy wording does not
+  cover that. Options for the owner: bundle plotly.js with the site
+  (about 4 MB more, no third-party request) or name the CDN on the page.
+- **Read the owner's Cloudflare reference** (`handoff_cloudflare-setup_reference.md`
+  in the repository root, written for all projects; it holds no secrets).
+  Kept out of git (`.gitignore`): it describes the owner's account and
+  sign-in arrangements, and this repository may go public. What it sets
+  for this site: the domain is dacekroberts.dev, HTTPS only; a project
+  gets a subdomain; the Email Routing MX and TXT records on the bare
+  domain are never edited; no analytics, no monetisation, no implied
+  Cloudflare affiliation; GitHub is connected only for the portfolio
+  page's own Pages project, so this site is a direct upload, as D84
+  expected. Not settled by it: the subdomain's name, and how the upload
+  is authorised (the owner creates any token; none is ever pasted into a
+  chat).
+- **Methods page tables scroll in their own box (owner: "on this page
+  needs a shift to the right, it clips some of the text").** Measured at
+  a pane 847 px wide: the table of every test was 727 px in a 546 px
+  column and ran under the "On this page" list. The list was not moved;
+  the table now scrolls sideways inside the column.
+
 ### 2026-10-12 - Subsection headings raised to 22 px site-wide
 
 - **Raised subsection headings from 18 px (13.5 pt) to 22 px (16.5 pt) on

@@ -82,11 +82,13 @@ def _quarto_env() -> dict:
     return env
 
 
-def main() -> int:
+def render_copy() -> tuple[Path, Path, list[str]]:
+    """Render a temporary copy of the site. Returns the temporary folder,
+    the built site inside it and the problems found (empty when the build
+    is whole). The caller removes the folder."""
     quarto = shutil.which("quarto")
     if quarto is None:
-        print("quarto not found; run inside the whiplash env")
-        return 1
+        return Path(), Path(), ["quarto not found; run inside the whiplash env"]
     work = Path(tempfile.mkdtemp(prefix="site-"))
     for name in COPIED:
         shutil.copytree(ROOT / name, work / name,
@@ -101,9 +103,15 @@ def main() -> int:
     problems += [f"page not rendered: {p}" for p in missing_pages(site, out)]
     if out.exists():
         problems += [f"broken link: {b}" for b in broken_links(out)]
+    return work, out, problems
+
+
+def main() -> int:
+    work, out, problems = render_copy()
     if problems:
         print("\n".join(problems))
-        print(f"site check failed; rendered copy kept at {work}")
+        if work != Path():
+            print(f"site check failed; rendered copy kept at {work}")
         return 1
     n_pages = len(list(out.rglob("*.html")))
     shutil.rmtree(work, ignore_errors=True)

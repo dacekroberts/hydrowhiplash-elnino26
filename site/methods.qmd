@@ -640,7 +640,8 @@ warm, wet Southern California winter.
 | National Burned Area Composite (NRCan) | Park area for one sensitivity run; coverage comparison | Open Government Licence – Canada |
 | NRCS SNOTEL and snow courses (USDA) | Snow station check | Public domain |
 | BC snow surveys; Yukon snow surveys; CanSWE (ECCC) | Snow station check | Open Government Licences of BC, Yukon and Canada |
-| Natural Earth | Region boundaries | Public domain |
+| Natural Earth | Region boundaries; land on the map page | Public domain |
+| NOAA ERSST v6 (NCEI) | Sea-surface temperature pictures on the map page only; no test, reported number or forecast reads it | No constraints on access or use |
 
 ### Required notices
 
@@ -759,6 +760,25 @@ Arndt, Derek (2014): NOAA Monthly U.S. Climate Divisional Database
 (NClimDiv). Alaska climate division boundaries. NOAA National Climatic Data
 Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
 
+**NOAA ERSST v6 (the map page's ocean pictures)**
+
+<!-- Added 2026-10-12 from DATA_SOURCES.md notice 14: the acknowledgment the
+     files ask for, verbatim, and the two papers. The sentence after them is
+     a DRAFT for the owner. -->
+
+> The NOAA Extended Reconstructed Sea Surface Temperature (ERSST) data are
+> provided by the NOAA National Centers for Environmental Information(NCEI).
+
+- Huang, B., X. Yin, T. Boyer, C. Liu, M. Menne, Y. D. Rao, T. Smith, R.
+  Vose, H.-M. Zhang, 2025: Extended Reconstructed Sea Surface Temperature
+  Version 6 (ERSSTv6): Part I. An Artificial Neural Network Approach. J.
+  Climate, <https://doi.org/10.1175/JCLI-D-23-0707.1>.
+- The same authors, 2025: Part II. Upgrades on Quality Control and
+  Large-scale Filter. J. Climate, <https://doi.org/10.1175/JCLI-D-24-0185.1>.
+
+*[Draft]* This data is shown for context on the map page and entered no
+calculation.
+
 ## What a fuller version would add
 
 - **La Niña.** The labels exist in every table; the tests here look only at
@@ -789,11 +809,24 @@ Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
 <!-- Sections that fold (owner, 2026-10-12): each second-level section gets
      a button in its heading; all start open, and a link to a place inside a
      folded section opens it. Without scripts the page is simply all open.
-     Styles: src/theme.py, body.fold-sections. -->
+     Styles: src/theme.py, body.fold-sections.
+
+     The same script puts each table in its own scroll box (owner,
+     2026-10-12): the table of every test is wider than the text column on
+     a mid-width screen and ran under the "On this page" list. -->
 
 ```{=html}
 <script>
 (function () {
+  document.querySelectorAll("main table").forEach(function (table) {
+    var box = document.createElement("div");
+    box.className = "table-scroll";
+    box.tabIndex = 0;
+    box.setAttribute("role", "region");
+    box.setAttribute("aria-label", "Table; scroll sideways if it is cut off");
+    table.parentNode.insertBefore(box, table);
+    box.appendChild(table);
+  });
   var sections = Array.prototype.slice.call(document.querySelectorAll("main section.level2"));
   if (!sections.length) return;
   function set(section, open) {
