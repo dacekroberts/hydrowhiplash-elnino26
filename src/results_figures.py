@@ -85,12 +85,12 @@ def headline3(reg: pd.DataFrame, out_dir: Path, run: str, narrow: bool = False) 
                                    narrow)
 
 
-def headline4(val: pd.DataFrame, out_dir: Path) -> Path:
+def headline4(val: pd.DataFrame, out_dir: Path, narrow: bool = False) -> Path:
     table = val[val["model"] == "H3a"]
     order = {region: i for i, region in enumerate(REGIONS)}
     table = table.sort_values("region", key=lambda s: s.map(order), kind="stable")
     return figures.coverage_dots(table, 1 - PREDICTION_ALPHA,
-                                 out_dir / "headline4_interval_coverage.png")
+                                 out_dir / "headline4_interval_coverage.png", narrow)
 
 
 def _note(run: str) -> str:
@@ -106,9 +106,11 @@ def make_figures(run: str = RUN, out_dir: Path = figures.FIGURES) -> list[Path]:
         with figures.themed(name):
             paths += [headline1(reg, out_dir, run), headline2(reg, out_dir, run),
                       headline3(reg, out_dir, run), headline4(val, out_dir)]
-            # the phone's drawings of the three ledgers, panels stacked
+            # the phone's drawings: the three ledgers with panels stacked,
+            # the coverage chart on a narrow canvas
             paths += [draw(reg, out_dir, run, narrow=True)
                       for draw in (headline1, headline2, headline3)]
+            paths.append(headline4(val, out_dir, narrow=True))
     return paths
 
 

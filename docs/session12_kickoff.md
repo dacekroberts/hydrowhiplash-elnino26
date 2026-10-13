@@ -165,7 +165,11 @@ the four small things.
 - Done 2026-10-13: the repository is public and "logged" in the AI use
   section links to the decisions log.
 - The winter rainfall map in the action plan was never built.
-- The coverage chart (`headline4`) has no phone drawing.
+- Done 2026-10-13 (session 12), not uploaded: the coverage chart has a
+  phone drawing and the notes' title band is no longer navy.
+- Tried on a real phone by the owner, 2026-10-13: the map works; the
+  Overview bars are too small to tap. A phone year slider is proposed,
+  not built.
 - The two remaining "Work in progress" notes (map, tracker) have a navy
   title band in dark mode, the page framework's default.
 - Tapping has not been tried with a finger on a real phone.

@@ -515,6 +515,7 @@ Image(filename="../results/figures/headline3_north_vs_socal_narrow_dark.png")
 
 *H4: the north minus Southern California, from one pooled model. The four regional slopes above it are for context; the contrast is not their difference.*
 
+:::: {.d-none .d-sm-block}
 ::: {.fig-light}
 ```{python}
 #| echo: false
@@ -532,6 +533,27 @@ from IPython.display import Image
 Image(filename="../results/figures/headline4_interval_coverage_dark.png")
 ```
 :::
+::::
+
+:::: {.d-sm-none}
+::: {.fig-light}
+```{python}
+#| echo: false
+#| fig-alt: "One row per region with two markers: the share of seasons inside the 80 percent prediction interval when one year is left out, and when the model is fitted only on earlier seasons. Most markers sit between 77 and 91 percent; British Columbia's earlier-seasons marker is at 57 percent and Southern California's leave-one-out marker at 95."
+from IPython.display import Image
+Image(filename="../results/figures/headline4_interval_coverage_narrow.png")
+```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "One row per region with two markers: the share of seasons inside the 80 percent prediction interval when one year is left out, and when the model is fitted only on earlier seasons. Most markers sit between 77 and 91 percent; British Columbia's earlier-seasons marker is at 57 percent and Southern California's leave-one-out marker at 95."
+from IPython.display import Image
+Image(filename="../results/figures/headline4_interval_coverage_narrow_dark.png")
+```
+:::
+::::
 
 *How often the H3a model's 80% prediction intervals held the real season. The line marks the 80% target.*
 

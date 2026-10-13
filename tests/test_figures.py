@@ -131,3 +131,16 @@ def test_narrow_ledger_stacks_its_panels_on_a_phone_wide_canvas(tmp_path):
     (wh, ww), (th, tw) = imread(wide).shape[:2], imread(thin).shape[:2]
     assert tw < 0.45 * ww and th > wh           # under half the width, and taller: stacked
     assert tw <= figures.NARROW_WIDTH_IN * 200 * 1.15
+
+
+def test_narrow_coverage_chart_is_drawn_on_a_phone_wide_canvas(tmp_path):
+    from PIL import Image
+    table = pd.DataFrame({"region": ["A", "B", "A", "B"], "coverage": [0.8, 0.7, 0.9, 0.6],
+                          "method": ["leave-one-year-out"] * 2 + ["expanding window"] * 2,
+                          "n": [40, 40, 20, 20]})
+    wide = figures.coverage_dots(table, 0.8, tmp_path / "c.png")
+    thin = figures.coverage_dots(table, 0.8, tmp_path / "c.png", narrow=True)
+    assert thin.name == "c_narrow.png" and wide.name == "c.png"
+    with Image.open(thin) as a, Image.open(wide) as b:
+        assert a.width < 0.6 * b.width
+

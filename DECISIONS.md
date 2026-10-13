@@ -17,6 +17,32 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Two small things closed: the coverage chart on a phone, the notes' title band
+
+- **A phone's drawing of the coverage chart (owner: "2. yes").**
+  `figures.coverage_dots(..., narrow=True)` writes
+  `headline4_interval_coverage_narrow.png` on the 3.4 inch canvas of the
+  other narrow drawings (`NARROW_WIDTH_IN`), the key and the axis label
+  wrapped at 34 characters; one per theme, two new files.
+  `site/methods.qmd` shows the wide drawing from 576 px up and the narrow
+  one below it. Measured in the local preview at 375 px: the narrow file
+  is 681 px wide and shown at 300 px, so its 8 pt labels come out near
+  9.8 px (about 4.7 px before). This closes "Not included: the coverage
+  chart" in "The map redrawn; stacked drawings of the ledger charts for
+  a phone". The wide drawing is unchanged.
+- **The "Work in progress" notes' title band is no longer navy in the
+  dark theme (owner: "3. yes").** One rule in `src/theme.py`
+  (`div.callout.callout-style-default.callout-note > .callout-header`,
+  a transparent ground), written to both theme files. The page
+  framework's own rule was more specific than the site's
+  `background: none`. Read back in the local preview, dark theme, on the
+  tracker page: `rgba(0, 0, 0, 0)` where it was `rgb(4, 33, 76)`.
+- **Tapping on a real phone (owner, 2026-10-13):** "on mobile map works
+  great, but the bars on overview are far too small to tap reliably".
+  The owner proposed a year slider for a phone; not built, a scope
+  addition waiting for the owner's word.
+- Neither change is uploaded.
+
 ### 2026-10-13 - Sample visuals: a dashboard, three banners and a Motion handoff folder
 
 - **Built a private sample dashboard as a five-scene storyboard (D100).**

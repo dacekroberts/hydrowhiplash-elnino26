@@ -428,21 +428,28 @@ def interval_ledger(panels: list[dict], out: Path, note: str | None = None,
     return _save(fig, out)
 
 
-def coverage_dots(table: pd.DataFrame, target: float, out: Path) -> Path:
+def coverage_dots(table: pd.DataFrame, target: float, out: Path, narrow: bool = False) -> Path:
     """How often past prediction intervals held the real season. One row per
     region, one marker per `method` in `table` (columns `region`, `method`,
-    `coverage`, `n`), a line at the `target` share."""
+    `coverage`, `n`), a line at the `target` share. `narrow` draws the
+    phone's version to `<stem>_narrow`: a canvas NARROW_WIDTH_IN wide, the
+    key and the axis label wrapped."""
+    if narrow:
+        out = out.with_name(f"{out.stem}_narrow{out.suffix}")
+    fit = (lambda text: _wrap(text, 34)) if narrow else (lambda text: text)
     regions = list(dict.fromkeys(table["region"]))
     methods = list(dict.fromkeys(table["method"]))
     markers = ["o", "D", "s"]
-    fig, ax = plt.subplots(figsize=(7.2, 0.42 * len(regions) + 1.7))
+    size = ((NARROW_WIDTH_IN, 0.36 * len(regions) + 2.3) if narrow
+            else (7.2, 0.42 * len(regions) + 1.7))
+    fig, ax = plt.subplots(figsize=size)
     ax.axvline(100 * target, color=AXIS, lw=1.2, zorder=1)
     for j, method in enumerate(methods):
         g = table[table["method"] == method].set_index("region").reindex(regions)
         ax.plot(100 * g["coverage"], range(len(regions)), ls="", marker=markers[j], ms=7.5,
                 mew=1.6, mfc=_family("fire") if j == 0 else GROUND, mec=_family("fire"),
-                zorder=3, label=f"{method.capitalize()} ({int(g['n'].min())} to "
-                                f"{int(g['n'].max())} seasons predicted)")
+                zorder=3, label=fit(f"{method.capitalize()} ({int(g['n'].min())} to "
+                                    f"{int(g['n'].max())} seasons predicted)"))
     ax.plot([], [], color=AXIS, lw=1.2, label=f"Target: {100 * target:.0f}%")
     ax.set_yticks(range(len(regions)), regions, fontsize=9, color=INK)
     ax.set_ylim(len(regions) - 0.4, -0.6)
@@ -452,10 +459,10 @@ def coverage_dots(table: pd.DataFrame, target: float, out: Path) -> Path:
     ax.spines["left"].set_visible(False)
     ax.grid(axis="x", color=GRID, lw=0.6)
     ax.set_axisbelow(True)
-    ax.set_xlabel(f"Seasons whose burned area fell inside the {100 * target:.0f}% prediction "
-                  "interval (%)", fontsize=8)
+    ax.set_xlabel(fit(f"Seasons whose burned area fell inside the {100 * target:.0f}% "
+                      "prediction interval (%)"), fontsize=8)
     fig.legend(loc="upper center", ncol=1, frameon=False, fontsize=8, bbox_to_anchor=(0.5, 1.0))
-    fig.tight_layout(rect=(0, 0, 1, 0.84))
+    fig.tight_layout(rect=(0, 0, 1, 0.83 if narrow else 0.84))
     return _save(fig, out)
 
 
