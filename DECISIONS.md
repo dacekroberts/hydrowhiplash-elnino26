@@ -17,6 +17,16 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Methods page: section headings back to the site's size
+
+- **Put the methods page's section headings back to 26 px (19.5 pt), the
+  site's section size (owner, asked whether 32 px should go site-wide:
+  "no 19.5 site wide works", then "methods can go to same size").**
+  Supersedes the 32 px of the entry below, "Methods page: larger section
+  headings, sections that fold"; the folding is unchanged. Every page's
+  section headings are one size again, the design system's `section`
+  style.
+
 ### 2026-10-12 - Methods page: larger section headings, sections that fold
 
 - **Set the methods page's section headings to 24 pt (32 px) and made

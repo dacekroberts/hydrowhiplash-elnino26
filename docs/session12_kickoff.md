@@ -127,8 +127,8 @@ checkout.
    winters on the strip are steel blue and neutral ones white. Open
    for the owner: the wording (`SEA_TEXT`). Steel blue is confirmed and
    the private Design System page has the new tokens. The methods
-   page's sections fold and its section headings are 32 px, on that
-   page only; open: whether 32 px becomes the site's section size.
+   page's sections fold; its section headings were set to 32 px and
+   then put back to the site's 26 px on the owner's word.
 
 **Open, low:** pins walk one folder level (review F3); two tests need
 the tag `analysis-plan-frozen` in the clone; `scripts/methods_numbers.py`

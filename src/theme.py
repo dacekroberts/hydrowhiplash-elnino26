@@ -53,7 +53,7 @@ h1.title { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.01em; line-he
 main h2 { font-size: 1.625rem; font-weight: 700; line-height: 1.2; margin-top: 3rem;
   padding: 1rem 0 0; border-bottom: 0; border-top: var(--stroke-mark) solid var(--evergreen); }
 main h3 { font-size: 1.125rem; font-weight: 700; line-height: 1.3; margin-top: 1.9rem; }
-body.fold-sections main h2 { font-size: 2rem; cursor: pointer; display: flex; align-items: baseline;
+body.fold-sections main h2 { cursor: pointer; display: flex; align-items: baseline;
   gap: 0.6rem; }
 body.fold-sections main h2 .fold-toggle { flex: none; width: 1.5rem; height: 1.5rem; padding: 0;
   border: 1px solid var(--rule-strong); border-radius: var(--radius-md); background: var(--surface);
