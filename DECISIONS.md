@@ -17,6 +17,29 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Methods page: larger section headings, sections that fold
+
+- **Set the methods page's section headings to 24 pt (32 px) and made
+  each section fold (owner: "can we make all section headers 24pt font
+  and also allow each section to be collapsible").** Read "section
+  headers" as the nine second-level headings, the ones that fold; the
+  subsection headings stay at 18 px. The page title is 40 px, so the
+  order of sizes holds. This page only (`body-classes: fold-sections`):
+  the design system's `section` style stays 26 px for the other pages.
+  Left for the owner: whether 32 px should become the site's section
+  size.
+- **Every section starts open.** A button in each heading, and the
+  heading itself, folds it; two buttons above the first section fold or
+  open all nine; a link to a place inside a folded section opens it, so
+  the contents list keeps working. Without scripts the page is all open.
+  Rejected: HTML `details` elements written into the page, which would
+  take the headings out of the contents list. Rejected: starting folded,
+  which would hide the limitations until asked for.
+- **Owner confirmed steel blue for La Niña on the map's strip** ("steel
+  blue is fine") and asked for the private Design System page to be
+  updated: it now holds the five `sea-*` tokens, `enso-neutral` and the
+  new `enso-cold`, 52 colour tokens, the same as `theme/tokens.json`.
+
 ### 2026-10-12 - Ocean panels: their own colours, land behind them, strip colours
 
 - **Gave the ocean its own ramp, purple to amber (owner, from a sample of

@@ -1,5 +1,6 @@
 ---
 title: "Methods and limitations"
+body-classes: fold-sections
 ---
 
 <!-- Structure adapted from link-station-commercial: limitations are grouped by
@@ -784,3 +785,63 @@ Center. doi:10.7289/V5M32STR [accessed 2026-10-11].
      for it (D77): "DeepSeek helper agents contributed here"; suggested
      place, this section, naming the review. What the owner verified by
      hand is the owner's to state. -->
+
+<!-- Sections that fold (owner, 2026-10-12): each second-level section gets
+     a button in its heading; all start open, and a link to a place inside a
+     folded section opens it. Without scripts the page is simply all open.
+     Styles: src/theme.py, body.fold-sections. -->
+
+```{=html}
+<script>
+(function () {
+  var sections = Array.prototype.slice.call(document.querySelectorAll("main section.level2"));
+  if (!sections.length) return;
+  function set(section, open) {
+    section.classList.toggle("folded", !open);
+    section.querySelector(".fold-toggle").setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  sections.forEach(function (section) {
+    var heading = section.querySelector("h2");
+    var body = document.createElement("div");
+    body.className = "fold-body";
+    while (heading.nextSibling) body.appendChild(heading.nextSibling);
+    section.appendChild(body);
+    var button = document.createElement("button");
+    button.type = "button";
+    button.className = "fold-toggle";
+    button.setAttribute("aria-label", "Show or hide this section: " + heading.textContent.trim());
+    heading.insertBefore(button, heading.firstChild);
+    set(section, true);
+    heading.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return;
+      set(section, section.classList.contains("folded"));
+    });
+  });
+  var bar = document.createElement("p");
+  bar.className = "fold-all";
+  [["Collapse all sections", false], ["Expand all sections", true]].forEach(function (item) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.textContent = item[0];
+    b.addEventListener("click", function () { sections.forEach(function (s) { set(s, item[1]); }); });
+    bar.appendChild(b);
+  });
+  sections[0].parentNode.insertBefore(bar, sections[0]);
+  function reveal(scroll) {
+    var id = decodeURIComponent(location.hash.slice(1));
+    var target = id && document.getElementById(id);
+    var section = target && target.closest("section.level2");
+    if (section && section.classList.contains("folded")) {
+      set(section, true);
+      if (scroll) target.scrollIntoView();
+    }
+  }
+  window.addEventListener("hashchange", function () { reveal(true); });
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest("a[href^='#']");
+    if (a) setTimeout(function () { reveal(true); }, 0);
+  });
+  reveal(true);
+})();
+</script>
+```

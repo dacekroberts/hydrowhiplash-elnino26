@@ -125,9 +125,10 @@ checkout.
    has its own ramp (purple to amber, the owner's choice), land
    outside the regions comes from Natural Earth 1:50m land, La Niña
    winters on the strip are steel blue and neutral ones white. Open
-   for the owner: the wording (`SEA_TEXT`); whether steel blue is what
-   was meant for La Niña; the private Design System page lacks the new
-   tokens (`sea-*`, `enso-neutral`, the new `enso-cold`).
+   for the owner: the wording (`SEA_TEXT`). Steel blue is confirmed and
+   the private Design System page has the new tokens. The methods
+   page's sections fold and its section headings are 32 px, on that
+   page only; open: whether 32 px becomes the site's section size.
 
 **Open, low:** pins walk one folder level (review F3); two tests need
 the tag `analysis-plan-frozen` in the clone; `scripts/methods_numbers.py`
