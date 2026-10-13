@@ -15,7 +15,7 @@
     out.textContent = hint;
     out.classList.remove("on");
   }
-  var series = [{"i": 0, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "PNW"}, {"i": 3, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "name": "BC"}, {"i": 6, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "name": "AB"}, {"i": 9, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "AK"}, {"i": 12, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "name": "YT"}, {"i": 15, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "NorCal"}, {"i": 18, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "SoCal"}, {"i": 21, "bar": false, "x": [2014], "name": "SoCal"}], marks = {"nino": [1987, 1991, 1993, 1995, 2003, 2005, 2007, 2010, 2015, 2019, 2024], "strong": [1992, 1998, 2016]}, years = [], year = null, texts = {};
+  var series = [{"i": 0, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "PNW"}, {"i": 3, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "name": "BC"}, {"i": 6, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "name": "AB"}, {"i": 9, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "AK"}, {"i": 12, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024], "name": "YT"}, {"i": 15, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "NorCal"}, {"i": 18, "bar": true, "x": [1984, 1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025], "name": "SoCal"}, {"i": 21, "bar": false, "x": [2014], "name": "SoCal"}], marks = {"nino": [1987, 1991, 1993, 1995, 2003, 2005, 2007, 2010, 2015, 2019, 2024], "strong": [1992, 1998, 2016], "nina": [1984, 1985, 1989, 1996, 1999, 2000, 2001, 2006, 2008, 2009, 2011, 2012, 2013, 2017, 2018, 2021, 2022, 2023, 2025]}, years = [], year = null, texts = {};
   var touch = window.matchMedia && window.matchMedia("(hover: none)").matches;
   series.forEach(function (s) { s.x.forEach(function (y) { if (years.indexOf(y) < 0) years.push(y); }); });
   years.sort(function (a, b) { return a - b; });
@@ -23,8 +23,13 @@
   yearBox.className = "chart-year";
   yearBox.innerHTML = '<div class="cy-step"><button type="button" aria-label="Earlier year">‹</button>' +
     '<span class="cy-y" aria-live="polite"></span><button type="button" aria-label="Later year">›</button>' +
-    '<button type="button" class="cy-all">All years</button></div><div class="cy-slide">' +
-    '<input type="range" min="0" step="1" aria-label="Year"><div class="cy-marks"></div></div>' +
+    '<button type="button" class="cy-all">All years</button>' +
+    '<button type="button" class="cy-fold" aria-expanded="true" aria-label="Hide the year slider">▾</button>' +
+    '</div><div class="cy-slide">' +
+    '<input type="range" min="0" step="1" aria-label="Year"><div class="cy-marks" aria-hidden="true"></div></div>' +
+    '<p class="cy-key" aria-hidden="true"><span><i class="strong"></i>strong El Niño</span>' +
+    '<span><i class="nino"></i>El Niño</span><span><i class="neutral"></i>neutral</span>' +
+    '<span><i class="nina"></i>La Niña</span></p>' +
     '<p class="cy-when"></p><ul class="cy-list"></ul>';
   el.parentNode.insertBefore(yearBox, out.nextSibling);
   var buttons = yearBox.querySelectorAll("button"), slide = yearBox.querySelector("input");
@@ -32,14 +37,18 @@
   var list = yearBox.querySelector(".cy-list");
   slide.max = years.length - 1;
   slide.value = years.length - 1;
-  [["nino", marks.nino], ["strong", marks.strong]].forEach(function (kind) {
-    kind[1].forEach(function (y) {
-      var k = years.indexOf(y), mark = document.createElement("i");
-      if (k < 0) return;
-      mark.className = kind[0];
-      mark.style.left = (100 * k / Math.max(1, years.length - 1)) + "%";
-      yearBox.querySelector(".cy-marks").appendChild(mark);
-    });
+  function klass(y) {
+    return ["strong", "nino", "nina"].filter(function (kind) {
+      return (marks[kind] || []).indexOf(y) >= 0;
+    })[0] || "neutral";
+  }
+  years.forEach(function (y, k) {
+    var mark = document.createElement("i"), steps = Math.max(1, years.length - 1);
+    mark.className = klass(y);
+    mark.style.left = (100 * k / steps) + "%";
+    mark.style.width = (100 / steps) + "%";
+    mark.addEventListener("click", function () { showYear(y); });
+    yearBox.querySelector(".cy-marks").appendChild(mark);
   });
   function bars() { return series.filter(function (s) { return s.bar; }).map(function (s) { return s.i; }); }
   function allYears() {
@@ -82,6 +91,12 @@
   buttons[0].addEventListener("click", function () { step(-1); });
   buttons[1].addEventListener("click", function () { step(year === null ? 0 : 1); });
   buttons[2].addEventListener("click", allYears);
+  buttons[3].addEventListener("click", function () {
+    var folded = yearBox.classList.toggle("folded");
+    buttons[3].textContent = folded ? "▴" : "▾";
+    buttons[3].setAttribute("aria-expanded", String(!folded));
+    buttons[3].setAttribute("aria-label", folded ? "Show the year slider" : "Hide the year slider");
+  });
   function pick(e) {
     var pt = e.points && e.points[0];
     var text = pt && (pt.hovertext || (pt.data.hovertext && pt.data.hovertext[pt.pointIndex]));

@@ -70,7 +70,8 @@ def history_html(fire: pd.DataFrame, out_dir: Path = figures.FIGURES) -> Path:
         decades = range(int(np.ceil(-lim / np.log(10))), int(np.floor(lim / np.log(10))) + 1)
         groups.append({"title": f"<b>{region}</b> · typical season {typical:,.0f} ha",
                        "years": burned["year"], "values": burned["anomaly"], "hover": hover,
-                       "nino": g[g["phase"] == "el_nino"], "lim": lim,
+                       "nino": g[g["phase"] == "el_nino"],
+                       "nina": g[g["phase"] == "la_nina"]["year"], "lim": lim,
                        "tickvals": [d * np.log(10) for d in decades],
                        "ticktext": [f"×{10.0 ** d:g}" for d in decades],
                        "missing": none["year"],

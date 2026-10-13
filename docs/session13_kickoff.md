@@ -45,8 +45,12 @@ closed the small things list.
   rainfall map is ticked, the map page standing in for it (D101); the
   coverage chart has a phone drawing; the notes' title band follows the
   theme; the owner tried a phone (the map works, the Overview bars were
-  too small to tap), and a year slider was built for phones (D102). A
-  finger has not tried the slider yet.
+  too small to tap), and a year slider was built for phones (D102). The
+  owner tried it with a finger ("looks good") and it was reworked the
+  same day: a larger thumb, one coloured box per winter with a key, a
+  fold button. The reworked slider is committed and not uploaded: the
+  live site has the first one until the next upload, which needs the
+  owner's yes. A finger has not tried the reworked one.
 - **Private pages:** roadmap
   https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT, data guide
   https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P, methods reading copy
@@ -59,11 +63,11 @@ closed the small things list.
 - The dashboard's and banners' line, a draft: "Does an El Niño winter
   say how much the next fire season will burn?". The three Scene 4 lines
   on the dashboard, drafts reworded on 2026-10-13
-  (`scripts/build_dashboard.py`, `SURVIVED`). The slider's hint,
-  a draft: "Slide to a year, or tap a bar, to read every region."
-  (`src/interactive.py`, `YEAR_HINT`).
-- The two Overview captions still say "Hover for the millimetres" and
-  "Hover for the hectares"; on a phone the slider does that job.
+  (`scripts/build_dashboard.py`, `SURVIVED`). The slider's hint is
+  approved (2026-10-13).
+- The two Overview captions gained a phone clause on the owner's word,
+  "; on a phone, slide to a year" (`site/index.qmd`); the clause is a
+  suggestion until the owner words it.
 - The social preview: upload `results/figures/banner_social_dark.png`
   in the repository's Settings, Social preview (GitHub takes it by hand
   only). Owner, 2026-10-13: "i will do soon".

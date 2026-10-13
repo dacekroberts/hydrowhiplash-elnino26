@@ -38,6 +38,10 @@ additions stay distinguishable from the original plan.
   year slider", then "okayed, build".
 - **Recorded:** `DECISIONS.md` 2026-10-13 "A year slider on a phone; the
   rainfall map ticked; the dashboard's wording".
+- **Later the same day:** a larger thumb, one coloured box per winter
+  with a key (as on the map page), and a fold button, on the owner's
+  word; `DECISIONS.md` 2026-10-13 "The phone's year slider: a larger
+  thumb, a strip of winters, a fold".
 - **Plan doc:** left as written.
 
 ### D101 · Winter rainfall map ticked without the gridded map

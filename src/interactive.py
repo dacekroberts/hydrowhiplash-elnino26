@@ -44,8 +44,8 @@ def write_plotly_lib(out: Path = PLOTLY_LIB) -> Path:
     return out
 RAIN_VALUE = "precip_djf_mm"
 READOUT_HINT = "Tap or click a bar to keep its details here."
-# Shown under a chart's year slider on a phone before a year is chosen; a
-# draft for the owner (2026-10-13).
+# Shown under a chart's year slider on a phone before a year is chosen
+# (wording approved by the owner, 2026-10-13).
 YEAR_HINT = "Slide to a year, or tap a bar, to read every region."
 # a picked bar stays as drawn; the panel's other bars fade to this
 UNPICKED_OPACITY = 0.3
@@ -80,6 +80,9 @@ def theme_swaps() -> dict[str, dict[str, str]]:
 # it marks one year in every panel and lists each region's value for it. A
 # tap on a bar moves the slider to that bar's year. Each hover string is
 # read as "<b>label</b> · value<br>comparison<br>winter class".
+# Under the slider, one box per winter in its class's colour with a key, as
+# on the map page, and a tap on a box goes to its year; the last button
+# folds the box down to its year and steppers (owner, 2026-10-13).
 _DRAW = """(function () {
   var el = document.getElementById(__ID__), swaps = __SWAPS__, shown = null;
   var out = document.getElementById(__ID__ + "-readout"), hint = out.textContent, picked = null;
@@ -101,8 +104,13 @@ _DRAW = """(function () {
   yearBox.className = "chart-year";
   yearBox.innerHTML = '<div class="cy-step"><button type="button" aria-label="Earlier year">\u2039</button>' +
     '<span class="cy-y" aria-live="polite"></span><button type="button" aria-label="Later year">\u203a</button>' +
-    '<button type="button" class="cy-all">All years</button></div><div class="cy-slide">' +
-    '<input type="range" min="0" step="1" aria-label="Year"><div class="cy-marks"></div></div>' +
+    '<button type="button" class="cy-all">All years</button>' +
+    '<button type="button" class="cy-fold" aria-expanded="true" aria-label="Hide the year slider">\u25be</button>' +
+    '</div><div class="cy-slide">' +
+    '<input type="range" min="0" step="1" aria-label="Year"><div class="cy-marks" aria-hidden="true"></div></div>' +
+    '<p class="cy-key" aria-hidden="true"><span><i class="strong"></i>strong El Ni\u00f1o</span>' +
+    '<span><i class="nino"></i>El Ni\u00f1o</span><span><i class="neutral"></i>neutral</span>' +
+    '<span><i class="nina"></i>La Ni\u00f1a</span></p>' +
     '<p class="cy-when"></p><ul class="cy-list"></ul>';
   el.parentNode.insertBefore(yearBox, out.nextSibling);
   var buttons = yearBox.querySelectorAll("button"), slide = yearBox.querySelector("input");
@@ -110,14 +118,18 @@ _DRAW = """(function () {
   var list = yearBox.querySelector(".cy-list");
   slide.max = years.length - 1;
   slide.value = years.length - 1;
-  [["nino", marks.nino], ["strong", marks.strong]].forEach(function (kind) {
-    kind[1].forEach(function (y) {
-      var k = years.indexOf(y), mark = document.createElement("i");
-      if (k < 0) return;
-      mark.className = kind[0];
-      mark.style.left = (100 * k / Math.max(1, years.length - 1)) + "%";
-      yearBox.querySelector(".cy-marks").appendChild(mark);
-    });
+  function klass(y) {
+    return ["strong", "nino", "nina"].filter(function (kind) {
+      return (marks[kind] || []).indexOf(y) >= 0;
+    })[0] || "neutral";
+  }
+  years.forEach(function (y, k) {
+    var mark = document.createElement("i"), steps = Math.max(1, years.length - 1);
+    mark.className = klass(y);
+    mark.style.left = (100 * k / steps) + "%";
+    mark.style.width = (100 / steps) + "%";
+    mark.addEventListener("click", function () { showYear(y); });
+    yearBox.querySelector(".cy-marks").appendChild(mark);
   });
   function bars() { return series.filter(function (s) { return s.bar; }).map(function (s) { return s.i; }); }
   function allYears() {
@@ -160,6 +172,12 @@ _DRAW = """(function () {
   buttons[0].addEventListener("click", function () { step(-1); });
   buttons[1].addEventListener("click", function () { step(year === null ? 0 : 1); });
   buttons[2].addEventListener("click", allYears);
+  buttons[3].addEventListener("click", function () {
+    var folded = yearBox.classList.toggle("folded");
+    buttons[3].textContent = folded ? "\u25b4" : "\u25be";
+    buttons[3].setAttribute("aria-expanded", String(!folded));
+    buttons[3].setAttribute("aria-label", folded ? "Show the year slider" : "Hide the year slider");
+  });
   function pick(e) {
     var pt = e.points && e.points[0];
     var text = pt && (pt.hovertext || (pt.data.hovertext && pt.data.hovertext[pt.pointIndex]));
@@ -217,15 +235,16 @@ def year_series(fig) -> list[dict]:
 def fragment(fig, div_id: str, marks: dict | None = None) -> str:
     """The chart as a page fragment: its div, its figure as JSON, and the
     script that draws it in the page's theme. The page loads plotly.js.
-    `marks` holds the years ticked on the phone's year slider: `nino` and
-    `strong`, lists of years."""
+    `marks` holds the winters coloured under the phone's year slider:
+    `nino`, `strong` and `nina`, lists of years; any other year is drawn
+    as neutral."""
     import json
 
     figure = fig.to_json().replace("<", "\\u003c").replace(">", "\\u003e")
     draw = (_DRAW.replace("__ID__", json.dumps(div_id))
             .replace("__SWAPS__", json.dumps(theme_swaps()))
             .replace("__SERIES__", json.dumps(year_series(fig)))
-            .replace("__MARKS__", json.dumps(marks or {"nino": [], "strong": []}))
+            .replace("__MARKS__", json.dumps(marks or {"nino": [], "strong": [], "nina": []}))
             .replace("__YEAR_HINT__", json.dumps(YEAR_HINT))
             .replace("__CONFIG__", json.dumps({"displayModeBar": False, "responsive": True})))
     # one box around the chart and its readout: the readout sticks inside it
@@ -248,7 +267,7 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
            missing_label: str = "") -> Path:
     """Write one chart. Each group is one region's panel:
     title, years, values, hover (one string per year), nino (frame with
-    year and strong), lim (half-height of the y range), tickvals, ticktext,
+    year and strong), optionally nina (the La Nina years), lim (half-height of the y range), tickvals, ticktext,
     and optionally missing (years drawn as a marker, with missing_hover)."""
     import plotly.graph_objects as go
     from plotly.subplots import make_subplots
@@ -320,9 +339,11 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
                       margin={"l": 64, "r": 12, "t": 96, "b": 54})
     fig.update_layout(legend={"y": 0.995, "yanchor": "top"})
     out.parent.mkdir(parents=True, exist_ok=True)
-    nino = groups[0]["nino"]
-    marks = {kind: [int(year) for year in nino[nino["strong"] == strong]["year"]]
+    # every panel's winters: a region can lack a year another one has
+    nino = pd.concat([g["nino"][["year", "strong"]] for g in groups]).drop_duplicates()
+    marks = {kind: sorted(int(year) for year in nino[nino["strong"] == strong]["year"])
              for kind, strong in (("nino", False), ("strong", True))}
+    marks["nina"] = sorted({int(year) for g in groups for year in g.get("nina", [])})
     out.write_bytes(fragment(fig, div_id, marks).encode("utf-8"))  # LF on every platform
     return out
 
@@ -349,7 +370,8 @@ def winter_rain_html(table: pd.DataFrame, out_dir: Path = figures.FIGURES) -> Pa
                                                g["strong"], g["enso_djf"])]
         groups.append({"title": f"<b>{region}</b> · average winter {mean:,.0f} mm",
                        "years": g["year"], "values": pct, "hover": hover,
-                       "nino": g[g["phase"] == "el_nino"], "lim": lim, "tickvals": ticks,
+                       "nino": g[g["phase"] == "el_nino"],
+                       "nina": g[g["phase"] == "la_nina"]["year"], "lim": lim, "tickvals": ticks,
                        "ticktext": [f"{t:+d}%" if t else "average" for t in ticks]})
     years = table["year"]
     return panels(groups, figures.FAMILIES["water"], "December to February precipitation",

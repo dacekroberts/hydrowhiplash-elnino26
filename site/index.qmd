@@ -150,7 +150,7 @@ print("```{=html}\n" + Path("../results/figures/djf_precip_history_roni.html").r
 *December to February precipitation in every winter since
 `{python} S["climate_first_year"] + 1`, by region, against the region's
 average winter. Shaded winters had an El Niño; a darker tick marks a strong
-one. Hover for the millimetres.*
+one. Hover for the millimetres; on a phone, slide to a year.*
 
 ## What happened after past El Niño winters
 
@@ -169,7 +169,8 @@ print("```{=html}\n" + Path("../results/figures/burned_area_season_history_roni.
 
 *Every fire season since 1984, as a multiple of the region's
 typical season. A shaded year follows an El Niño winter; a darker tick
-marks a strong one. Hover for the hectares. The dotted slot is 2027.
+marks a strong one. Hover for the hectares; on a phone, slide to a year.
+The dotted slot is 2027.
 The [map](map.qmd) shows the same seasons region by region.*
 
 ## Tracking the 2026–27 winter

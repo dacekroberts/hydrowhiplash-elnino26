@@ -17,6 +17,36 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The phone's year slider: a larger thumb, a strip of winters, a fold
+
+- **Reworked the year slider's controls after the owner tried it with a
+  finger (D102, same scope).** Owner: "mobile slider looks good, we need to
+  make the slider bubble slightly easier to manipulate and make the legend
+  underneath the slide more robust (like the map's boxes on its slider)",
+  then "we might want to add the option to collapse the slider even while
+  in the middle of the chart sections". `src/theme.py`: the slider is
+  drawn by the site's own rules, with a 32 px thumb on an 8 px track in a
+  44 px touch row (it was the browser's default thumb in a 28 px row).
+  `src/interactive.py`: the two kinds of tick under the track became one
+  box per winter in its class's colour (strong El Niño, El Niño, neutral,
+  La Niña) with a key, the same four classes and tokens as the map page's
+  strip; a tap on a box goes to its year. La Niña years reach the page
+  through a new optional `nina` entry in each panel's group
+  (`src/interactive.py`, `src/fire_figures.py`), and the marks are now the
+  union over panels, not the first panel's. A fold button beside "All
+  years" takes the box down to its year and steppers: 326 px to 58 px at
+  375 px wide, measured in the local preview. Rejected: remembering the
+  fold between visits (browser storage for one button); folding by
+  default (the hint would be hidden from a first visit). Not checked: a
+  real finger, and Firefox's own thumb rule (26 px), which no browser here
+  drew.
+- **The slider's hint was approved and the two Overview captions gained a
+  phone clause.** Owner: "slider hint good, overview captions should
+  update to also include mobile hints". `site/index.qmd`: "Hover for the
+  millimetres; on a phone, slide to a year." and "Hover for the hectares;
+  on a phone, slide to a year." The added clause is a suggestion for the
+  owner to word.
+
 ### 2026-10-13 - A year slider on a phone; the rainfall map ticked; the dashboard's wording
 
 - **Built a year slider for the two Overview charts, shown only where

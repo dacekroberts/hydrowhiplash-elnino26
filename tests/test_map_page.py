@@ -249,5 +249,7 @@ def test_year_slider_reads_every_trace_with_hover_text():
         {"i": 1, "bar": False, "x": [2014], "name": "PNW"}]
     page = interactive.fragment(fig, "t", {"nino": [1998], "strong": []})
     assert '"nino": [1998]' in page and interactive.YEAR_HINT in page
+    for piece in ('class="cy-fold"', 'class="cy-key"', "function klass(y)"):
+        assert piece in page, piece
     assert "__" not in page.split("<script>", 1)[1].split("</script>")[0]
 
