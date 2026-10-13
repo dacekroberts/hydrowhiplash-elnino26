@@ -834,7 +834,8 @@ package versions); `conda_list_explicit.txt` is the full environment.
 - **`results/figures/burned_area_season_history_roni.html`**
   (`python -m src.fire_figures`): the full-record view as an interactive
   chart, an HTML fragment the home page includes (plotly.js comes from
-  its CDN, so the chart needs a network connection). Same values as the
+  the copy bundled with the site, `site/libs/plotly.min.js`, since
+  2026-10-12; before that, from Plotly's CDN). Same values as the
   PNG: each season's `log_burn` minus the region's mean, shown on the
   axis as a multiple of the typical season; hover gives `burn_ha`. The
   dotted slot is `FORECAST_YEAR`, empty until it is verified.

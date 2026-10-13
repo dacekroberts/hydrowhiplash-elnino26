@@ -17,6 +17,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - plotly.js served by the site itself
+
+- **Bundled plotly.js with the site (owner: "bundle the plotly library").**
+  The two hover charts on the home page loaded it from Plotly's CDN, so a
+  reader's browser contacted a third party. `python -m src.interactive`
+  now writes `site/libs/plotly.min.js` from the installed plotly package,
+  the chart fragments carry no library, and the home page loads the one
+  copy. plotly.js is MIT-licensed; the notice is in the file's first
+  lines. Rejected: the library inlined in each fragment (two copies in
+  one page, and in `results/`). After this the built site makes no
+  request to any other host: fonts were already bundled.
+
 ### 2026-10-12 - Upload authorised by a scoped token (owner: "i think C is best")
 
 - **The deploy step uploads with Cloudflare's `wrangler` and a scoped API

@@ -109,6 +109,13 @@ def test_winter_rain_html_labels_every_panel(tmp_path):
     # Plotly writes non-ASCII letters as escapes, so the legend is matched on its ASCII part
     assert "winter (shaded year)" in text and "(darker tick)" in text
     assert text.count('"showticklabels":true') >= len(REGIONS)
+    assert "cdn.plot.ly" not in text and "<script src=" not in text   # the page loads the library
+
+
+def test_plotly_library_is_written_for_the_site_to_serve(tmp_path):
+    out = interactive.write_plotly_lib(tmp_path / "libs" / "plotly.min.js")
+    head = out.read_bytes()[:400].decode("utf-8")
+    assert "plotly.js" in head and "MIT" in head and out.stat().st_size > 1_000_000
 
 
 def sea_fields():

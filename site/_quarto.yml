@@ -3,6 +3,7 @@ project:
   output-dir: _site
   resources:
     - "fonts/*"
+    - "libs/*"
 
 website:
   title: "El Niño and the 2027 fire season"

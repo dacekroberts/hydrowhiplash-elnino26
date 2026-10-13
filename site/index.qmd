@@ -105,6 +105,13 @@ SVG(filename="../results/figures/mechanism_narrow.svg")
 
 ## What El Niño does to winter rain
 
+<!-- plotly.js for the two hover charts below, served by the site itself
+     (written by python -m src.interactive), not from a CDN. -->
+
+```{=html}
+<script src="libs/plotly.min.js"></script>
+```
+
 <!-- Winter rainfall map (El Niño precipitation dipole). After Phase 1.
      Until the map is redrawn in the site's design (it reads polygons), the
      section shows the regional series, which exists. Caption and alt text
@@ -126,7 +133,7 @@ one. Hover for the millimetres.*
 <!-- Per region: every fire season since 1984, El Niño years highlighted,
      with an empty 2027 slot. Built 2026-10-12 (session 11) by
      python -m src.fire_figures: an HTML fragment read from results/ at
-     render time (plotly.js from its CDN). The caption is a DRAFT for the
+     render time (plotly.js from site/libs/). The caption is a DRAFT for the
      owner to word; the section's prose is still to be written. -->
 
 ```{python}

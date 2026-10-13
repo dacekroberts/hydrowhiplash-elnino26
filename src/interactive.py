@@ -2,8 +2,11 @@
 chart of the kind "one panel per region, every year, El Nino winters
 marked".
 
-Each chart is written as an HTML fragment (one div; plotly.js from its CDN)
-that a site page includes as is. Every panel carries its own year labels,
+Each chart is written as an HTML fragment (one div, no library) that a site
+page includes as is. The page loads plotly.js once, from the copy bundled
+with the site (site/libs/plotly.min.js, written here from the installed
+plotly package; MIT licence, stated in the file's first lines), so a
+reader's browser contacts no third party (owner, 2026-10-12). Every panel carries its own year labels,
 the chart has an x-axis title, a y-axis title per panel and one legend
 (owner, 2026-10-12: "we need some sort of static year labelling", "legend
 for each section", "y-axis label should exist, as should x-axis label").
@@ -27,6 +30,17 @@ from src.config import ENSO_INDEX, REGIONS
 
 PANEL_HEIGHT = 200  # px per region panel, tick labels included
 RAIN_TABLE = "climate_controls_region_year.csv"
+PLOTLY_LIB = Path(__file__).resolve().parents[1] / "site" / "libs" / "plotly.min.js"
+
+
+def write_plotly_lib(out: Path = PLOTLY_LIB) -> Path:
+    """The plotly.js that matches the installed plotly package, for the
+    site to serve itself. Rewrite it whenever that package changes."""
+    from plotly.offline import get_plotlyjs
+
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_bytes(get_plotlyjs().encode("utf-8"))
+    return out
 RAIN_VALUE = "precip_djf_mm"
 
 
@@ -110,7 +124,7 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
                               "bgcolor": "rgba(0,0,0,0)"},
                       margin={"l": 64, "r": 12, "t": 96, "b": 54})
     fig.update_layout(legend={"y": 0.995, "yanchor": "top"})
-    html = fig.to_html(full_html=False, include_plotlyjs="cdn", div_id=div_id,
+    html = fig.to_html(full_html=False, include_plotlyjs=False, div_id=div_id,
                        config={"displayModeBar": False, "responsive": True})
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_bytes(html.encode("utf-8"))  # LF on every platform
@@ -153,6 +167,7 @@ def main() -> None:
     from src import pin_inputs
 
     print(f"wrote {winter_rain_html(pin_inputs.load_input(RAIN_TABLE))}")
+    print(f"wrote {write_plotly_lib()}")
 
 
 if __name__ == "__main__":
