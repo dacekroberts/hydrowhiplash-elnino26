@@ -97,7 +97,7 @@ checkout.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams
-  (2026-10-13; not uploaded), and the two Plotly charts on the
+  (2026-10-13; live since the third upload, commit 4615afc), and the two Plotly charts on the
   Overview page redraw in the page's theme. A longer flowchart of the whole project has its own page,
   `site/flowchart.qmd` (wording marked work in progress; one layout,
   small on a phone). The navbar reads "Methods and
