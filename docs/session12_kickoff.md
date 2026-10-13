@@ -40,9 +40,9 @@ checkout.
 - **Stamped rebuilds** can name the index retrieval they read
   (`--index-stamp YYYY-MM-DD`); without it the latest closed one is
   taken.
-- **Sibling repository (D94): split on 2026-10-12.**
-  `climate-whiplash-prediction` (private, `..\climate-whiplash-prediction`
-  and on GitHub) finished its stage 0 and, from its commit 371ed60, reads
+- **Sibling project (D94): split on 2026-10-12.** A separate
+  work-in-progress project (its name and path are in this project's
+  memory, not in the repository) finished its stage 0 and, from its commit 371ed60, reads
   no file of this project without the owner's yes in its own session. It
   downloads its own data (owner: "have it download copies for full
   independence"). The tag `prediction-handoff` (a669813) is never moved
@@ -159,19 +159,32 @@ moving the tags.
 
 - Clean: no secret in any tracked file or in the history; nothing under
   `data/` was ever committed; the Cloudflare reference file is ignored.
-- Settled: the owner accepts the Gmail address in the commit history
-  ("2. yes good call").
+- Owner, 2026-10-13: "i agree with all recommendations mostly. remove
+  retrospective from repo, reword to separate WIP project (may become
+  public eventually but don't say)". Done that day:
+  `docs/retrospective_v1.md` and `.wrangler/` are untracked and ignored
+  (the retrospective stays on disk as the private page's master); the
+  sibling is "a separate work-in-progress project" in `ACTION_PLAN.md`,
+  this note, `docs/handoff_site_shell.md` and the sibling kickoff file.
+- **Still carrying the sibling's name, left as written:** old entries in
+  `DECISIONS.md` (7 lines) and `docs/plan_deviations.md` (2), the log of
+  2026-10-12 (2), and the file name
+  `docs/sibling_kickoff_climate_whiplash_prediction.md`. Old entries and
+  logs are never edited; the owner decides whether this is an exception.
+- **The history keeps everything.** The retrospective, the account ID and
+  the sibling's name stay in past commits and go public with them.
+  Removing them means rewriting history, which moves the tags that prove
+  when the plan was frozen. The owner has not decided this.
+- (The owner's "2. yes good call" of that morning answered the Motion
+  question on region shapes: their sources' terms are checked before any
+  export. It was not about the commit address.)
 - Waiting on the owner:
-  1. `docs/retrospective_v1.md` says "Private": publish it (and drop the
-     line) or take it out of the repository first.
+  1. The Gmail address in 204 commits' author field: accept, and whether
+     later commits use GitHub's no-reply address.
   2. The held-back seasons' tables under `results/tables/` would be
      public, so the sibling's not reading them would rest on instruction
      only.
-  3. `.wrangler/cache/pages.json` is tracked and holds the Cloudflare
-     account ID (an identifier, not a credential; it stays in history):
-     untrack and ignore it.
-  4. The sibling's repository name is in 7 files: keep, or reword.
-  5. `README.md` is stale ("roughly 10 to 13 El Niño years", the
+  3. `README.md` is stale ("roughly 10 to 13 El Niño years", the
      Miniforge Prompt, no link to the site, no result): a draft for the
      owner to edit. The GitHub description and homepage are empty.
 - Also exposed, judged fine to publish unless the owner says otherwise:

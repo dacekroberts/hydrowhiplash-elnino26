@@ -1,17 +1,16 @@
-# Kickoff: climate-whiplash-prediction
+# Kickoff: a separate work-in-progress project
 
 Drafted 2026-10-12 (session 11 of hydrowhiplash-elnino26) with the owner.
-The repository was created the same day on the owner's word (private,
-github.com/dacekroberts/climate-whiplash-prediction, checked out beside
-the parent); it holds this file as `docs/kickoff.md`, a README and the
+The repository was created the same day on the owner's word (checked out
+beside the parent); it holds this file as `docs/kickoff.md`, a README and the
 licence files, and nothing else. Stage 0 is its first session. Source material:
 `docs/prediction_sibling_kickoff.md` (the side session's proposals) and
 `docs/prediction_model_spec.md`.
 
 ## Part 1 · What is settled (owner, 2026-10-12)
 
-- **Name and home:** a private repository, `climate-whiplash-prediction`,
-  a sibling of hydrowhiplash-elnino26 (the parent).
+- **Name and home:** a separate work-in-progress repository, a sibling of
+  hydrowhiplash-elnino26 (the parent).
 - **Inputs from the parent:** the seven tables in `PINNED_RESULT_TABLES`
   and `results/tables/input_pins.csv`, copied at the parent's tag
   `prediction-handoff` (commit a669813, the squash commit of PR #24).
@@ -144,7 +143,7 @@ What to weigh before choosing any:
 ## Part 5 · Prompt for the sibling's first session
 
 ```text
-Session 1 for climate-whiplash-prediction, a private sibling of
+Session 1 for a separate work-in-progress project, a sibling of
 hydrowhiplash-elnino26.
 
 1. Read docs/kickoff.md (this file, copied in), the parent's

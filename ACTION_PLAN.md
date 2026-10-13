@@ -401,7 +401,7 @@ aren't worth building yet:
   forecasts what comes next. Two possible directions, which can be done in
   either order: [mid-project: D94] Decided 2026-10-12: versions 1 to 1c
   are this project's exploratory record (D83, D90 to D92); further work
-  goes to the private sibling repository `climate-whiplash-prediction`,
+  goes to a separate work-in-progress project,
   which reads this project's tables at the tag `prediction-handoff`.
   - *Seasonal outlook:* a statistical model that predicts next season's
     whiplash and fire-season anomaly per region from ENSO strength, winter

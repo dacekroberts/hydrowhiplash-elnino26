@@ -1,7 +1,7 @@
 # Handoff: a neutral site shell for the prediction project
 
-From hydrowhiplash-elnino26 (Session 11, 2026-10-12) to
-climate-whiplash-prediction, for whenever that project publishes. It is
+From hydrowhiplash-elnino26 (Session 11, 2026-10-12) to a separate
+work-in-progress project, for whenever that project publishes. It is
 an offer, not a requirement: that project may decide it needs a different
 shell. It holds no data, no results, no held-back seasons and no secrets.
 

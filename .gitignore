@@ -33,3 +33,7 @@ site/.quarto/
 # offline copy of the pinned inputs (src.pin_inputs --copy)
 pinned_inputs_copy/
 /handoff_cloudflare-setup_reference.md
+# private: the V1 retrospective (master of the owner's private page)
+/docs/retrospective_v1.md
+# wrangler's local cache (holds the Cloudflare account ID)
+.wrangler/
