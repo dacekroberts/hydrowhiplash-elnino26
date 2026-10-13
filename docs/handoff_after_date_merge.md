@@ -44,8 +44,8 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
    frozen plan untouched.
 
 4. **Number the deviations** (`merge-side-pr` step 5,
-   `scripts/merge_append_only.py`). Two placeholders: D\?a (the table, a
-   scope addition) and D\?b (a worktree session read the main checkout's
+   `scripts/merge_append_only.py`). Two placeholders: D?a (the table, a
+   scope addition) and D?b (a worktree session read the main checkout's
    fire files). With main still at D102 they become D103 and D104; take
    the numbers the script prints. References sit in `DECISIONS.md`,
    `docs/plan_deviations.md`, `docs/methods_register.md`,

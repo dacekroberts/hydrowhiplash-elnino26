@@ -21,7 +21,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 - **Built (owner, in the sibling's session: "parent route") one table
   for the sibling: each region-season's burned area split by whether its
-  fires started before or after 1 June, 1 July and 1 August (D\?a).**
+  fires started before or after 1 June, 1 July and 1 August (D?a).**
   `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`:
   the 291 region-seasons of the pinned `fire_region_year.csv` times three
   issue dates, 873 rows, with `after_ha`, `before_ha`, `undated_ha`, their
@@ -112,7 +112,7 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   sibling and for the table's provenance record. Rejected a merge
   commit without the squash: a departure from `merge-side-pr` step 6 for
   one branch.
-- **Agreed (owner, 2026-10-13): the merge's numbering of D\?a edits one
+- **Agreed (owner, 2026-10-13): the merge's numbering of D?a edits one
   token in the docstring of `src/fire_after_date.py` after the frozen
   commit, and counts as a logged change.** No line of code differs. The
   main session reports the commit that holds it, for the sibling.
