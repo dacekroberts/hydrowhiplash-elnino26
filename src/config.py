@@ -184,6 +184,10 @@ ERA5_HOURLY_LAG_DAYS = 7
 # Regions
 NATURAL_EARTH_ADMIN1_URL = ("https://naciscdn.org/naturalearth/10m/cultural/"
                             "ne_10m_admin_1_states_provinces.zip")
+# The credit drawn inside every figure file, so that a saved image carries
+# the owner's name (owner, 2026-10-12). The year is the year of first
+# publication.
+FIGURE_CREDIT = "© 2026 Dace Roberts · hydrowhiplash.dacekroberts.dev"
 # Land outside the regions, the map page's backdrop (display only, D99).
 NATURAL_EARTH_LAND_URL = "https://naciscdn.org/naturalearth/50m/physical/ne_50m_land.zip"
 NATURAL_EARTH_LAND_RAW = DATA_RAW / "natural_earth" / "ne_50m_land.zip"

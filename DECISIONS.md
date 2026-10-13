@@ -17,6 +17,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - A credit inside every figure file
+
+- **Every figure the code saves now carries a credit in its lower right
+  corner (owner: "add the credit line to the images"):**
+  `FIGURE_CREDIT` in `src/config.py`, "(c) 2026 Dace Roberts" with the
+  site's address, drawn by `figures.credit` from both save functions
+  (`src/figures.py`, `src/diagrams.py`). Regenerated: the ten figure
+  files the site shows (two diagrams in two layouts, as SVG and PNG; four
+  headline charts). Not regenerated: the other PNGs in `results/figures/`,
+  which no page shows; they take the credit when next drawn. The hover
+  charts and the map are HTML inside the page, under the page's footer.
+  No number changed.
+- **Asked two other projects for the same rights check, read-only, on the
+  owner's word.** expanded-heatmap (Analytics session) reported: footer
+  line in place on the app's pages, licence scope in place, no claim over
+  third-party data; missing: an owner name inside the standalone map
+  files, machine-readable rights, a crawler policy; cards and exported
+  images are for its Visuals session to report. link-station-commercial:
+  asked of the Seattle Visual Session, no answer yet.
+
 ### 2026-10-12 - Before the first upload: rights statements checked; the deploy check as a skill
 
 - **Checked the copyright statements on the staged site (owner: "have we

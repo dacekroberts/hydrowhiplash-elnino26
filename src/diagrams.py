@@ -22,7 +22,7 @@ import matplotlib as mpl
 from matplotlib.figure import Figure
 from matplotlib.patches import FancyBboxPatch
 
-from src import theme
+from src import figures, theme
 from src.config import REGIONS, RESULTS
 
 FIGURES = RESULTS / "figures"
@@ -163,6 +163,7 @@ def _arrow(ax, start: tuple[float, float], end: tuple[float, float], colour: str
 
 def _save(fig: Figure, out_dir: Path, stem: str) -> list[Path]:
     out_dir.mkdir(parents=True, exist_ok=True)
+    figures.credit(fig, y=0.004, va="bottom")   # the canvas is saved whole, so inside it
     svg, png = out_dir / f"{stem}.svg", out_dir / f"{stem}.png"
     buf = io.StringIO()
     with mpl.rc_context({"svg.hashsalt": _SVG_HASHSALT}):

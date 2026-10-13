@@ -23,7 +23,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
 
 from src import theme
-from src.config import EL_NINO_THRESHOLD, RESULTS, STRONG_THRESHOLD
+from src.config import EL_NINO_THRESHOLD, FIGURE_CREDIT, RESULTS, STRONG_THRESHOLD
 
 FIGURES = RESULTS / "figures"
 INK, MUTED, GRID = theme.colour("ink"), theme.colour("ink-muted"), theme.colour("rule")
@@ -385,8 +385,16 @@ def coverage_dots(table: pd.DataFrame, target: float, out: Path) -> Path:
     return _save(fig, out)
 
 
+def credit(fig, y: float = -0.005, va: str = "top") -> None:
+    """FIGURE_CREDIT in the figure's lower right corner. By default just
+    under the canvas, where a tight bounding box takes it in; a figure saved
+    at its full canvas passes a y inside it."""
+    fig.text(0.995, y, FIGURE_CREDIT, ha="right", va=va, fontsize=6.5, color=MUTED)
+
+
 def _save(fig, out: Path) -> Path:
     out.parent.mkdir(parents=True, exist_ok=True)
+    credit(fig)
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor=GROUND)
     plt.close(fig)
     return out
