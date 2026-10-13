@@ -1,6 +1,7 @@
 """Tests for src/fire_after_date.py on synthetic fires: the start-month
-groups (wrapped windows, undated pieces), held-back seasons dropped, the
-split table's unions, and each of the request's five checks."""
+groups (wrapped windows, undated pieces), held-back seasons dropped and
+refused, the scoring-day path (made-up pieces only, never a real held-back
+season), the split table's unions, and each of the request's five checks."""
 import geopandas as gpd
 import pandas as pd
 import pytest
@@ -68,12 +69,73 @@ def test_start_group_plain_wrapped_and_undated():
     assert list(fad.start_group(pieces, 6))[:4] == ["before", "after", "after", "after"]
 
 
-def test_tested_pieces_drop_held_back_and_out_of_window():
+def test_select_pieces_drop_held_back_and_out_of_window():
     pieces = pd.DataFrame({
         "region": ["PNW", "PNW", "BC", "BC", "NorCal", "PNW"],
         "season": pd.array([2025, 2026, 2024, 2025, FIRE_FIRST_YEAR - 1, pd.NA], dtype="Int64")})
-    kept = fad.tested_pieces(pieces, LAST)
+    kept = fad.select_pieces(pieces, fad.development_seasons(LAST))
     assert list(zip(kept["region"], kept["season"])) == [("PNW", 2025), ("BC", 2024)]
+    assert len(fad.development_seasons(LAST)) == 291
+
+
+def test_guard_seasons_refuses_held_back_unless_named():
+    dev = [("PNW", 2025), ("BC", 2024)]
+    assert fad.guard_seasons(dev, last_year=LAST) == dev
+    for asked in ([("PNW", 2026)], [("BC", 2025)], dev + [("YT", 2025)]):
+        with pytest.raises(fad.HeldBackSeasonError):
+            fad.guard_seasons(asked, last_year=LAST)
+    # named but not asked for, or a different season named
+    with pytest.raises(fad.HeldBackSeasonError):
+        fad.guard_seasons(dev, [("PNW", 2026)], last_year=LAST)
+    with pytest.raises(fad.HeldBackSeasonError):
+        fad.guard_seasons([("PNW", 2026)], [("PNW", 2027)], last_year=LAST)
+    assert fad.guard_seasons([("BC", 2025)], [("BC", 2025)], last_year=LAST) == [("BC", 2025)]
+    with pytest.raises(ValueError):
+        fad.guard_seasons([("PNW", FIRE_FIRST_YEAR - 1)], last_year=LAST)
+    with pytest.raises(ValueError):
+        fad.guard_seasons(dev + dev, last_year=LAST)
+
+
+def scoring_rows():
+    # Made-up fires only: a season past PNW's last test year, and one inside it.
+    return [
+        {"source": "WFIGS", "fire_id": "jun", "ignition": "2026-06-20",
+         "geometry": square(-50 * KM, 20 * KM)},
+        {"source": "WFIGS", "fire_id": "aug", "ignition": "2026-08-03",
+         "geometry": square(-50 * KM, 20 * KM, shift=SIDE / 2)},
+        {"source": "WFIGS", "fire_id": "dev", "ignition": "2025-07-01",
+         "geometry": square(-80 * KM, 60 * KM)},
+    ]
+
+
+def test_scoring_day_path_on_made_up_pieces(regions):
+    pieces = pieces_for(scoring_rows(), regions)
+    scored = [("PNW", 2026)]
+    with pytest.raises(fad.HeldBackSeasonError):  # refused by default
+        fad.split_table(pieces, scored, last_year=LAST)
+    table = fad.split_table(pieces, scored, last_year=LAST, scoring_day_seasons=scored)
+    assert list(zip(table["region"], table["year"])) == [("PNW", 2026)] * 3
+    t = table.set_index("issue_date")
+    assert t.loc["1 August", ["after_ha", "before_ha", "burn_ha"]].tolist() == pytest.approx(
+        [1_000, 1_000, 1_500])
+    assert t.loc["1 June", "before_ha"] == 0
+    # the same function gives the same rows when the season is an ordinary one
+    later = {**LAST, "PNW": 2026}
+    whole = fad.split_table(pieces, last_year=later)
+    same = whole[(whole["region"] == "PNW") & (whole["year"] == 2026)].reset_index(drop=True)
+    pd.testing.assert_frame_equal(same, table)
+    # checked against that day's outcome table
+    kept = fad.select_pieces(pieces, scored)
+    outcome = fire.region_year_table(kept, later, areas=fire.union_areas(kept))
+    assert not any(fad.check_table(table, outcome, scored, last_year=LAST).values())
+    extra = fad.check_table(whole, outcome, scored, last_year=later)
+    assert extra["5 only the region-seasons asked for; one row per region, season and issue date"]
+
+
+def test_default_build_never_holds_a_held_back_row(regions):
+    table = fad.split_table(pieces_for(scoring_rows(), regions), last_year=LAST)
+    assert not fad.held_back(zip(table["region"], table["year"]), LAST)
+    assert table.loc[table["region"] == "PNW", "year"].max() == 2025
 
 
 def test_split_table_unions_each_group(regions):
@@ -116,7 +178,7 @@ def test_split_table_wrapped_window_and_held_back(regions):
 
 def checked(regions):
     pieces = pieces_for(bc_rows(), regions)
-    kept = fad.tested_pieces(pieces, LAST)
+    kept = fad.select_pieces(pieces, fad.development_seasons(LAST))
     pinned = fire.region_year_table(kept, LAST, areas=fire.union_areas(kept))
     return fad.split_table(pieces, last_year=LAST), pinned
 
