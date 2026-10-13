@@ -41,8 +41,9 @@ from src.config import FIRE_FIRST_YEAR, FORECAST_YEAR  # noqa: E402
 
 DPI = 100
 # Wording on the banner: the owner's choice of 2026-10-13 ("The question"),
-# a draft from the Overview page's first sentence for the owner to word.
-QUESTION = "Does the winter before a fire season say how much will burn?"
+# reworded the same day to name El Nino (owner: "we need to include el nino
+# somehow"); a draft for the owner to word.
+QUESTION = "Does an El Niño winter say how much the next fire season will burn?"
 ADDRESS = "hydrowhiplash.dacekroberts.dev"
 # Regions from north to south, the order of the rows.
 ROWS = ("AK", "YT", "BC", "AB", "PNW", "NorCal", "SoCal")

@@ -1,6 +1,6 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="results/figures/banner_readme_dark.png">
-  <img src="results/figures/banner_readme_light.png" alt="Does the winter before a fire season say how much will burn? Seven rows of fire seasons since 1984, one per region, with the seasons after El Niño winters shaded.">
+  <img src="results/figures/banner_readme_light.png" alt="Does an El Niño winter say how much the next fire season will burn? Seven rows of fire seasons since 1984, one per region, with the seasons after El Niño winters shaded.">
 </picture>
 
 # hydrowhiplash-elnino26

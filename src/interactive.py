@@ -44,6 +44,9 @@ def write_plotly_lib(out: Path = PLOTLY_LIB) -> Path:
     return out
 RAIN_VALUE = "precip_djf_mm"
 READOUT_HINT = "Tap or click a bar to keep its details here."
+# Shown under a chart's year slider on a phone before a year is chosen; a
+# draft for the owner (2026-10-13).
+YEAR_HINT = "Slide to a year, or tap a bar, to read every region."
 # a picked bar stays as drawn; the panel's other bars fade to this
 UNPICKED_OPACITY = 0.3
 
@@ -72,6 +75,11 @@ def theme_swaps() -> dict[str, dict[str, str]]:
 # chart, which stays at the bottom left of the screen while the chart is in
 # view, and dims the panel's other bars (owner, 2026-10-13: hover is hard on
 # a phone). The same bar again, or the readout, lets go.
+# Where the device has no hover (a phone) the bars are too narrow to tap
+# reliably (owner, 2026-10-13), so a year slider stands in for the readout:
+# it marks one year in every panel and lists each region's value for it. A
+# tap on a bar moves the slider to that bar's year. Each hover string is
+# read as "<b>label</b> · value<br>comparison<br>winter class".
 _DRAW = """(function () {
   var el = document.getElementById(__ID__), swaps = __SWAPS__, shown = null;
   var out = document.getElementById(__ID__ + "-readout"), hint = out.textContent, picked = null;
@@ -85,10 +93,78 @@ _DRAW = """(function () {
     out.textContent = hint;
     out.classList.remove("on");
   }
+  var series = __SERIES__, marks = __MARKS__, years = [], year = null, texts = {};
+  var touch = window.matchMedia && window.matchMedia("(hover: none)").matches;
+  series.forEach(function (s) { s.x.forEach(function (y) { if (years.indexOf(y) < 0) years.push(y); }); });
+  years.sort(function (a, b) { return a - b; });
+  var yearBox = document.createElement("div");
+  yearBox.className = "chart-year";
+  yearBox.innerHTML = '<div class="cy-step"><button type="button" aria-label="Earlier year">\u2039</button>' +
+    '<span class="cy-y" aria-live="polite"></span><button type="button" aria-label="Later year">\u203a</button>' +
+    '<button type="button" class="cy-all">All years</button></div><div class="cy-slide">' +
+    '<input type="range" min="0" step="1" aria-label="Year"><div class="cy-marks"></div></div>' +
+    '<p class="cy-when"></p><ul class="cy-list"></ul>';
+  el.parentNode.insertBefore(yearBox, out.nextSibling);
+  var buttons = yearBox.querySelectorAll("button"), slide = yearBox.querySelector("input");
+  var shownYear = yearBox.querySelector(".cy-y"), when = yearBox.querySelector(".cy-when");
+  var list = yearBox.querySelector(".cy-list");
+  slide.max = years.length - 1;
+  slide.value = years.length - 1;
+  [["nino", marks.nino], ["strong", marks.strong]].forEach(function (kind) {
+    kind[1].forEach(function (y) {
+      var k = years.indexOf(y), mark = document.createElement("i");
+      if (k < 0) return;
+      mark.className = kind[0];
+      mark.style.left = (100 * k / Math.max(1, years.length - 1)) + "%";
+      yearBox.querySelector(".cy-marks").appendChild(mark);
+    });
+  });
+  function bars() { return series.filter(function (s) { return s.bar; }).map(function (s) { return s.i; }); }
+  function allYears() {
+    year = null;
+    Plotly.restyle(el, {selectedpoints: bars().map(function () { return null; })}, bars());
+    shownYear.textContent = "";
+    when.textContent = __YEAR_HINT__;
+    list.textContent = "";
+  }
+  function showYear(y) {
+    year = y;
+    var chosen = [], label = "", rows = [];
+    series.forEach(function (s) {
+      var k = s.x.indexOf(y), text = k < 0 ? null : texts[s.i] && texts[s.i][k];
+      if (s.bar) chosen.push(k < 0 ? [] : [k]);
+      if (!text) return;
+      var lines = String(text).split("<br>").map(plain), head = lines[0].split(" \u00b7 ");
+      if (!label && lines[2]) label = [head[0] === String(y) ? "" : head[0], lines[2]].filter(Boolean).join(" \u00b7 ");
+      rows.push([s.name, [head.slice(1).join(" \u00b7 "), lines[1] || ""].filter(Boolean).join(", ")]);
+    });
+    Plotly.restyle(el, {selectedpoints: chosen}, bars());
+    slide.value = years.indexOf(y);
+    shownYear.textContent = y;
+    when.textContent = label;
+    list.textContent = "";
+    rows.forEach(function (row) {
+      var item = document.createElement("li"), name = document.createElement("b"), value = document.createElement("span");
+      name.textContent = row[0];
+      value.textContent = row[1];
+      item.appendChild(name);
+      item.appendChild(value);
+      list.appendChild(item);
+    });
+  }
+  function step(by) {
+    var k = year === null ? years.length - 1 : Math.min(years.length - 1, Math.max(0, years.indexOf(year) + by));
+    showYear(years[k]);
+  }
+  slide.addEventListener("input", function () { showYear(years[+slide.value]); });
+  buttons[0].addEventListener("click", function () { step(-1); });
+  buttons[1].addEventListener("click", function () { step(year === null ? 0 : 1); });
+  buttons[2].addEventListener("click", allYears);
   function pick(e) {
     var pt = e.points && e.points[0];
     var text = pt && (pt.hovertext || (pt.data.hovertext && pt.data.hovertext[pt.pointIndex]));
     if (!text) return;
+    if (touch) { showYear(+pt.x); return; }
     var same = picked && picked[0] === pt.curveNumber && picked[1] === pt.pointIndex;
     release();
     if (same) return;
@@ -116,22 +192,41 @@ _DRAW = """(function () {
       return swaps[name][hex.toLowerCase()] || hex;
     });
     var fig = JSON.parse(text);
+    series.forEach(function (s) { texts[s.i] = fig.data[s.i].hovertext; });
     Plotly.react(el, fig.data, fig.layout, __CONFIG__);
-    if (first) el.on("plotly_click", pick); else dim(true);
+    if (first) { el.on("plotly_click", pick); allYears(); }
+    else if (year !== null) showYear(year);
+    else dim(true);
   }
   draw();
   new MutationObserver(draw).observe(document.body, {attributes: true, attributeFilter: ["class"]});
 })();"""
 
 
-def fragment(fig, div_id: str) -> str:
+def year_series(fig) -> list[dict]:
+    """The traces a year can be read from, for the phone's year slider:
+    each trace with hover text, as its index in the figure, whether it is
+    a bar, its years and its region (the trace name up to its first dot)."""
+    return [{"i": i, "bar": trace.type == "bar", "x": [int(year) for year in trace.x],
+             "name": str(trace.name).split(" \u00b7 ")[0]}
+            for i, trace in enumerate(fig.data)
+            if trace.hovertext is not None and trace.x is not None and len(trace.x)
+            and trace.x[0] is not None]
+
+
+def fragment(fig, div_id: str, marks: dict | None = None) -> str:
     """The chart as a page fragment: its div, its figure as JSON, and the
-    script that draws it in the page's theme. The page loads plotly.js."""
+    script that draws it in the page's theme. The page loads plotly.js.
+    `marks` holds the years ticked on the phone's year slider: `nino` and
+    `strong`, lists of years."""
     import json
 
     figure = fig.to_json().replace("<", "\\u003c").replace(">", "\\u003e")
     draw = (_DRAW.replace("__ID__", json.dumps(div_id))
             .replace("__SWAPS__", json.dumps(theme_swaps()))
+            .replace("__SERIES__", json.dumps(year_series(fig)))
+            .replace("__MARKS__", json.dumps(marks or {"nino": [], "strong": []}))
+            .replace("__YEAR_HINT__", json.dumps(YEAR_HINT))
             .replace("__CONFIG__", json.dumps({"displayModeBar": False, "responsive": True})))
     # one box around the chart and its readout: the readout sticks inside it
     return (f'<div class="chart-box">\n<div id="{div_id}" class="plotly-graph-div" '
@@ -225,7 +320,10 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
                       margin={"l": 64, "r": 12, "t": 96, "b": 54})
     fig.update_layout(legend={"y": 0.995, "yanchor": "top"})
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_bytes(fragment(fig, div_id).encode("utf-8"))  # LF on every platform
+    nino = groups[0]["nino"]
+    marks = {kind: [int(year) for year in nino[nino["strong"] == strong]["year"]]
+             for kind, strong in (("nino", False), ("strong", True))}
+    out.write_bytes(fragment(fig, div_id, marks).encode("utf-8"))  # LF on every platform
     return out
 
 

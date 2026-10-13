@@ -55,21 +55,24 @@ SURVIVED = {
            "December to February precipitation in El Niño winters, minus the rest",
            "A check, not a finding: I had seen these values before the freeze."),  # site
     "H5_lag0": ("H5 (wet winters and burned area, same year)",
-                "burned area that year, per standard deviation of a wetter winter", ""),  # draft
+                "burned area that year, when the winter is wetter by one standard deviation "
+                "(a typical year-to-year swing)", ""),  # draft, reworded 2026-10-13
     "H5_lag1": ("H5 (wet winters and burned area, the year after)",
-                "burned area the following year, per standard deviation of a wetter winter",
-                ""),  # draft
+                "burned area the year after a winter that much wetter", ""),  # draft, reworded
     "H6_swe": ("H6 (1 April snowpack and burned area)",
-               "burned area, per standard deviation of more snowpack", ""),  # draft
+               "burned area that year, when the 1 April snowpack is deeper by the same kind "
+               "of swing", ""),  # draft, reworded 2026-10-13
 }
 # The address the opening flow ends at (owner, 2026-10-12; D84).
 SITE_URL = "https://hydrowhiplash.dacekroberts.dev"
 TEXT = {
-    "title": "Does the winter before a fire season say how much will burn?",  # draft
+    # Owner, 2026-10-13: "yes but we need to include el nino somehow"; the
+    # flow's label below: "looks good".
+    "title": "Does an El Niño winter say how much the next fire season will burn?",  # draft
     "scene1": "I asked whether the winter before a fire season says how much will burn, and "
               "whether El Niño is the useful part of that winter. I fixed the tests in writing "
               "before opening any fire data, then ran them once.",  # site
-    "flow": "From four sources to the live site",  # draft
+    "flow": "From four sources to the live site",  # approved 2026-10-13
     "scene2": "Every fire season since {first}, as a multiple of the region's typical season. "
               "A shaded year follows an El Niño winter; a darker tick marks a strong one.",  # site
     "scene3": "The change in burned area per 1 °C of the winter index, with a year trend. "

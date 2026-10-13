@@ -27,6 +27,32 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-13
 
+### D102 · A year slider on the Overview charts, for a phone (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal", Historical charts: "Plotly for
+  hover." Session 11 added a tap readout for phones.
+- **Actual:** where a device has no hover, each Overview chart has a year
+  slider that marks one year in every panel and lists each region's
+  value; a tap on a bar moves it. Desktop hover is unchanged.
+- **Why:** owner, 2026-10-13, after trying a phone: "the bars on overview
+  are far too small to tap reliably. should we instead have a mobile-only
+  year slider", then "okayed, build".
+- **Recorded:** `DECISIONS.md` 2026-10-13 "A year slider on a phone; the
+  rainfall map ticked; the dashboard's wording".
+- **Plan doc:** left as written.
+
+### D101 · Winter rainfall map ticked without the gridded map
+- **Plan:** `ACTION_PLAN.md` "Second goal": "Winter rainfall map: the
+  El Niño precipitation dipole, from Phase 1. Static cartopy is fine."
+- **Actual:** no gridded map is on the site. The item is ticked: the map
+  page's winter rain layer shows any winter as a share of each region's
+  normal, one shade per region. `djf_precip_1997_98_pct_normal.png`
+  stays in `results/figures/`, shown on no page.
+- **Why:** owner, 2026-10-13: "is this not covered by the map page?",
+  then "tick". What the layer does not show is the pattern inside a
+  region; the owner raised that as a possible later piece.
+- **Recorded:** `DECISIONS.md`, the same entry.
+- **Plan doc:** updated (`ACTION_PLAN.md`, marked `[mid-project: D101]`).
+
 ### D100 · Sample visuals and a Motion handoff folder (scope additions, owner's request)
 - **Plan:** `ACTION_PLAN.md` "Second goal" lists the site's pieces and
   nothing else: "Each piece reuses a figure the analysis already makes".

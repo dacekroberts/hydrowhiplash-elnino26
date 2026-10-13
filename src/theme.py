@@ -254,6 +254,34 @@ main p.chart-readout.on { position: sticky; bottom: var(--space-2); color: var(-
   border-color: var(--ink); cursor: pointer; }
 @media (hover: none) { main p.chart-readout { position: sticky; bottom: var(--space-2); }
   main .js-plotly-plot .hoverlayer { display: none; } }
+/* A chart's year slider, for a device with no hover: it takes the readout's
+   place at the bottom of the screen, marks one year in every panel and
+   lists each region's value. */
+main div.chart-year { display: none; }
+@media (hover: none) { main p.chart-readout { display: none; }
+  main div.chart-year { display: block; position: sticky; bottom: var(--space-2); z-index: 5;
+    margin-top: var(--space-2); padding: 8px 10px; background: var(--surface);
+    border: 1px solid var(--rule-strong); border-radius: var(--radius-md); } }
+main div.chart-year .cy-step { display: flex; align-items: center; gap: var(--space-2); }
+main div.chart-year button { min-width: 44px; min-height: 40px; padding: 0 10px; cursor: pointer;
+  font: 600 1.1rem/1 var(--font-sans); color: var(--ink); background: var(--surface-sunk);
+  border: 1px solid var(--rule-strong); border-radius: var(--radius-md); }
+main div.chart-year button.cy-all { font-size: 0.84rem; margin-left: auto; }
+main div.chart-year .cy-y { font: 800 1.375rem/1 var(--font-display);
+  font-variant-numeric: tabular-nums; min-width: 4.5ch; text-align: center; }
+main div.chart-year .cy-slide { position: relative; margin-top: 6px; padding-bottom: 10px; }
+main div.chart-year input { width: 100%; height: 28px; margin: 0; accent-color: var(--evergreen); }
+main div.chart-year .cy-marks { position: absolute; left: 8px; right: 8px; bottom: 0; height: 8px; }
+main div.chart-year .cy-marks i { position: absolute; width: 3px; height: 8px;
+  transform: translateX(-50%); background: var(--enso); }
+main div.chart-year .cy-marks i.strong { background: var(--enso-strong); }
+main div.chart-year p.cy-when { margin: 4px 0 2px; max-width: none; font-size: 0.78rem;
+  color: var(--ink-muted); }
+main div.chart-year ul.cy-list { list-style: none; margin: 0; padding: 0; font-size: 0.8rem;
+  line-height: 1.45; }
+main div.chart-year ul.cy-list li { display: grid; grid-template-columns: 4.2em minmax(0, 1fr);
+  gap: var(--space-2); max-width: none; }
+main div.chart-year ul.cy-list b { font-weight: 600; }
 div.rmap svg text { font-family: var(--font-sans); font-size: 17px; font-weight: 600;
   fill: var(--ink); text-anchor: middle; dominant-baseline: middle; pointer-events: none;
   paint-order: stroke; stroke: var(--surface); stroke-width: 3.5px; stroke-linejoin: round; }

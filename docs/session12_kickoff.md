@@ -164,12 +164,13 @@ the four small things.
 
 - Done 2026-10-13: the repository is public and "logged" in the AI use
   section links to the decisions log.
-- The winter rainfall map in the action plan was never built.
+- Ticked 2026-10-13 (D101): the map page stands in for the winter
+  rainfall map. The pattern inside a region is a possible later piece.
 - Done 2026-10-13 (session 12), not uploaded: the coverage chart has a
   phone drawing and the notes' title band is no longer navy.
 - Tried on a real phone by the owner, 2026-10-13: the map works; the
-  Overview bars are too small to tap. A phone year slider is proposed,
-  not built.
+  Overview bars are too small to tap. A phone year slider was built the
+  same day (D102); a finger has not tried it yet.
 - The two remaining "Work in progress" notes (map, tracker) have a navy
   title band in dark mode, the page framework's default.
 - Tapping has not been tried with a finger on a real phone.
@@ -330,7 +331,7 @@ into that copy (seen in the staged copy only; worth a look).
 DeepSeek plan; ask before any run that reads polygons; ask before every
 DeepSeek call; the going-public question is a leaning, not a decision.
 
-**Next free deviation number: D101** (D100, 2026-10-13: the sample visuals). The frozen plan's deviations log
+**Next free deviation number: D103** (D100 to D102, 2026-10-13: the sample visuals, the rainfall map ticked, the phone year slider). The frozen plan's deviations log
 is at row 19.
 
 ## Part 2 · Prompt for session 12

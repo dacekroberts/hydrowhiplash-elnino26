@@ -964,6 +964,14 @@ their `_dark` copies: the whole project from sources to pages, with
 four turns, drawn by `src.diagrams.project_flowchart`. Structure only;
 it reads no table. Shown on `site/flowchart.qmd`.
 
+**Year slider on the hover charts (2026-10-13).** The two HTML
+fragments carry, beside the figure, each trace's years
+(`interactive.year_series`) and the El Niño years ticked on the slider.
+The slider's rows are cut from the hover strings, so a hover string
+keeps the shape "label · value, line break, comparison, line break,
+winter class". Trap: a chart whose hover text has another shape gets
+wrong rows on a phone.
+
 **Banners (2026-10-13).** `banner_social_dark.png` (1280 x 640, the
 repository's social preview) and `banner_readme_light.png` /
 `banner_readme_dark.png` (1280 x 320, the README header), drawn by

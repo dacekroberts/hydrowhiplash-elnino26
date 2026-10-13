@@ -232,3 +232,22 @@ def test_map_fragment_links_regions_the_key_and_a_readout(regions):
                   '"path[data-region], tr[data-region]"'):
         assert piece in map_page.SCRIPT, piece
     assert "function link(" not in map_page.SCRIPT
+
+
+def test_year_slider_reads_every_trace_with_hover_text():
+    """The phone's year slider gets each region's years and the El Nino marks."""
+    import plotly.graph_objects as go
+
+    from src import interactive
+    fig = go.Figure()
+    fig.add_bar(x=[1998, 1999], y=[1.0, 2.0], hovertext=["a", "b"], name="PNW · typical")
+    fig.add_scatter(x=[2014], y=[0], hovertext=["none"], name="PNW · typical")
+    fig.add_bar(x=[None], y=[None], name="key")
+    fig.update_layout(height=300)
+    assert interactive.year_series(fig) == [
+        {"i": 0, "bar": True, "x": [1998, 1999], "name": "PNW"},
+        {"i": 1, "bar": False, "x": [2014], "name": "PNW"}]
+    page = interactive.fragment(fig, "t", {"nino": [1998], "strong": []})
+    assert '"nino": [1998]' in page and interactive.YEAR_HINT in page
+    assert "__" not in page.split("<script>", 1)[1].split("</script>")[0]
+

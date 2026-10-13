@@ -17,6 +17,51 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - A year slider on a phone; the rainfall map ticked; the dashboard's wording
+
+- **Built a year slider for the two Overview charts, shown only where
+  the device has no hover (D102; owner: "okayed, build").** The owner
+  found on a phone that the map works and the charts' bars are "far too
+  small to tap reliably" (about 7 px wide). `src/interactive.py`: the
+  page script adds a box under each chart with a slider over every
+  year, a step back and forward, and "All years"; El Niño winters are
+  ticked under the track (`fragment(..., marks)`), strong ones darker.
+  Choosing a year keeps that year's bar in every panel and fades the
+  rest, and lists each region's value and the winter's class. A tap on a
+  bar moves the slider to that bar's year. The box takes the readout's
+  place at the bottom of the screen; on a desktop nothing changes.
+  Rejected: wider bars (42 to 76 years do not fit a phone at a tappable
+  width); a sideways-scrolling chart (the seven panels would no longer
+  be read together). Tried in the local preview at 375 px, dark theme,
+  by script: 1998 on the fire chart lists seven regions (Alberta
+  "647,914 ha, 10 times the typical season") under "after a strong
+  El Niño winter (DJF RONI +2.13)"; the rain chart lists the same winter
+  in millimetres; "All years" lets go; no console error and no sideways
+  scroll. With seven rows the box is 266 px tall. Not tried with a
+  finger yet. Left as written: the two captions still say "Hover for"
+  (the owner's wording).
+- **The winter rainfall map is ticked (D101; owner: "tick").** The map
+  page's winter rain layer stands in for it. Not built: the gridded map.
+  The owner asked whether the pattern inside a region could be a piece
+  of its own "with existing data"; noted as a scope addition, not
+  started. It would need the ERA5-Land grid under `data/` and the region
+  outlines, so a run that reads polygons.
+- **Dashboard and banner wording, on the owner's answers.** The title
+  and the banners' line now name El Niño ("yes but we need to include el
+  nino somehow"): "Does an El Niño winter say how much the next fire
+  season will burn?". The flow's label is approved ("looks good"). The
+  three Scene 4 lines were reworded to say what each figure measures,
+  the second following from the first: "burned area that year, when the
+  winter is wetter by one standard deviation (a typical year-to-year
+  swing)"; "burned area the year after a winter that much wetter";
+  "burned area that year, when the 1 April snowpack is deeper by the
+  same kind of swing". All are still drafts until the owner says so.
+  The three banners were redrawn and the dashboard republished
+  (version 2).
+- **A credit line for the header image is in `README.md`** (owner: "3.
+  do"), naming MTBS, WFIGS and the Canadian National Fire Database and
+  linking the site's notices.
+
 ### 2026-10-13 - Two small things closed: the coverage chart on a phone, the notes' title band
 
 - **A phone's drawing of the coverage chart (owner: "2. yes").**

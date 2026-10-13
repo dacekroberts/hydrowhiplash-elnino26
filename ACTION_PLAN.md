@@ -301,8 +301,12 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       worktree session can take it. *Any time.* On the methods page;
       its caption is still marked work in progress.
       Ticked on the owner's word, 2026-10-13 ("tick all").
-- [ ] **Winter rainfall map** — the El Niño precipitation dipole, from
+- [x] **Winter rainfall map** — the El Niño precipitation dipole, from
       Phase 1. Static cartopy is fine. *After Phase 1.*
+      [mid-project: D101] Ticked on the owner's word, 2026-10-13
+      ("tick"): the map page's winter rain layer stands in for it, one
+      shade per region for any winter. The gridded map was not built; the
+      pattern inside a region is noted as a possible later piece.
 - [x] **Historical charts** — per region: every fire season since 1984, El Niño
       years highlighted, with an empty slot for 2027. Plotly for hover. This
       is the key result. *After Phase 4.* Built in session 11; ticked on the
