@@ -100,7 +100,7 @@ checkout.
   (2026-10-13; live since the third upload, commit 4615afc), and the two Plotly charts on the
   Overview page redraw in the page's theme. A longer flowchart of the whole project has its own page,
   `site/flowchart.qmd` (wording marked work in progress; one layout,
-  small on a phone). The navbar reads "Methods and
+  coloured by stream, scrolls sideways on a narrow screen). The navbar reads "Methods and
   Limitations" (owner).
 - Owner's notes of 2026-10-13, not built: an optional hover on the map tied to
   the legend; tap-to-highlight on a phone with the details in a fixed

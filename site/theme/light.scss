@@ -74,6 +74,10 @@ main .cell-output-display { background: #f9faf5; border: 1px solid var(--rule);
    and the page shows the one matching its theme. */
 body.quarto-dark main .fig-light, body:not(.quarto-dark) main .fig-dark { display: none; }
 main .fig-dark .cell-output-display { background: var(--surface); }
+/* A chart too dense to shrink: it keeps a readable width and scrolls
+   sideways inside its own box on a screen narrower than that. */
+main .fig-wide .cell-output-display img, main .fig-wide .cell-output-display svg {
+  max-width: none; width: 100%; min-width: 58rem; }
 main .cell-output-display svg, main .cell-output-display img { display: block; margin: 0 auto;
   max-width: 100%; height: auto; }
 .navbar { border-bottom: 1px solid var(--rule); }

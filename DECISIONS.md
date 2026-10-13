@@ -17,6 +17,34 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The project flowchart made readable and coloured by stream
+
+- **Enlarged the flowchart after the owner found it "hard to read" in
+  the default view ("we may need to widen chart or at least enlarge
+  text").** Measured in the preview: its type was about 7.6 px on the
+  page. Three changes: the page uses the full width (`page-layout:
+  full`); the chart keeps a width of at least 58 rem and scrolls
+  sideways inside its own box on a narrower screen (`.fig-wide`), so it
+  is never shrunk below that; the type went from 7.2 to 7.9 pt. Type on
+  the page is now about 11.6 px at the minimum width and larger on a
+  wide screen. This replaces the limit recorded with the page ("small on
+  a phone"): a phone now scrolls the chart sideways. Rejected: a second,
+  narrow layout (four streams do not stack without crossing arrows);
+  larger type alone (the four columns have no room for it at the old
+  width).
+- **Coloured each stream by what it measures (owner: "if color-coding
+  blue and red for fire/rain/snowpack etc. is good we can do that", "el
+  nino too").** Edges, arrows and a light tint: the `enso` amber for the
+  index stream, the `water` blue for the climate stream (rain and
+  snowpack), the `fire` red for the fire stream; the regions stream and
+  everything below the table stay neutral. The tokens' own light and
+  dark values. Each stream is still named in its source box, now bold,
+  and a line under the chart gives the colours, so colour is a second
+  cue. Rejected: a separate `snow` teal for snowpack (it shares one
+  stream with rain).
+- Checked in the preview at desktop and phone widths: the page itself
+  never scrolls sideways. Not uploaded.
+
 ### 2026-10-13 - A flowchart of the whole project, on its own page
 
 - **Built the longer flowchart the owner asked for, on a new page

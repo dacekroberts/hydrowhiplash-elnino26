@@ -417,6 +417,11 @@ PROJECT_STREAMS = (
      "No. Parks Canada polygons\nare missing for six years.",
      "Four Alberta seasons flagged;\nNBAC run as a check"),
 )
+# One colour token per stream, by what the stream measures (owner,
+# 2026-10-13): the El Nino amber, the precipitation blue for the climate
+# stream (rain and snowpack), none for the regions, the burned-area red.
+# The source box names each stream, so the colour is a second cue.
+PROJECT_STREAM_TOKENS = ("enso", "water", None, "fire")
 PROJECT_TABLE = "Region × year table\none row per region and season"
 PROJECT_PLAN = "Analysis plan, frozen\nbefore any fire data was read"
 PROJECT_SPINE = (("step", "Pre-registered tests,\nrun once"),
@@ -426,10 +431,11 @@ PROJECT_SPINE = (("step", "Pre-registered tests,\nrun once"),
                  ("step", "Overview · Map · Tracker ·\nMethods and Limitations · Flowchart"))
 PROJECT_NOTES = ("Slanted box: a source. Box: a step. Diamond: a turn in the project. "
                  "Cylinder: a stored table.",
+                 "Amber: the El Niño index. Blue: rain and snow. Red: fire.",
                  "Four turns are shown; every departure from the plan is in the "
                  "project's deviations log.")
 PROJECT_LAYOUT = {"width": 8.8, "unit": 0.088, "cols": (13.5, 38, 62, 86.5), "node_w": 22.5,
-                  "font": 7.2, "foot_font": 7.0, "wrap_foot": 110}
+                  "font": 7.9, "foot_font": 7.6, "wrap_foot": 104}
 
 
 def _lines(ax, x: float, y: float, text: str, fontsize: float, weight: str = "normal",
@@ -446,14 +452,17 @@ def _lines(ax, x: float, y: float, text: str, fontsize: float, weight: str = "no
 
 
 def _node(ax, kind: str, x: float, y: float, w: float, h: float, text: str, fontsize: float,
-          weight: str = "normal") -> None:
+          weight: str = "normal", colour: str | None = None) -> None:
     """One flowchart node centred on (x, y). `kind`: "source" (slanted box),
     "step" (box), "turn" (diamond) or "store" (cylinder). The shape carries
-    the kind, so it does not rest on colour."""
+    the kind, so it does not rest on colour. `colour` draws the edge in a
+    stream's colour over a light tint of it; without it the node is neutral."""
     left, right, low, high = x - w / 2, x + w / 2, y - h / 2, y + h / 2
-    style = dict(linewidth=1.5, edgecolor=NEUTRAL_EDGE, facecolor=NEUTRAL_FILL)
+    edge = colour or NEUTRAL_EDGE
+    fill = _tint(colour, 0.12) if colour else NEUTRAL_FILL
+    style = dict(linewidth=1.5, edgecolor=edge, facecolor=fill)
     if kind == "step":
-        _box(ax, x, y, w, h, text, fontsize, NEUTRAL_EDGE, NEUTRAL_FILL, weight=weight)
+        _box(ax, x, y, w, h, text, fontsize, edge, fill, weight=weight)
         return
     if kind == "source":
         skew = 1.6
@@ -466,9 +475,9 @@ def _node(ax, kind: str, x: float, y: float, w: float, h: float, text: str, font
         cap = 1.3  # half-height of the cylinder's top and bottom ellipses
         ax.add_patch(Ellipse((x, low + cap), w, 2 * cap, **style))
         ax.add_patch(Rectangle((left, low + cap), w, h - 2 * cap, linewidth=0,
-                               facecolor=NEUTRAL_FILL))
+                               facecolor=fill))
         for side in (left, right):
-            ax.plot([side, side], [low + cap, high - cap], color=NEUTRAL_EDGE, linewidth=1.5,
+            ax.plot([side, side], [low + cap, high - cap], color=edge, linewidth=1.5,
                     solid_capstyle="butt")
         ax.add_patch(Ellipse((x, high - cap), w, 2 * cap, **style))
         y -= cap / 2
@@ -502,16 +511,22 @@ def _draw_project(lay: dict) -> Figure:
         return total - depth
 
     w, font = lay["node_w"], lay["font"]
-    for x, (source, step, turn, answer, fix) in zip(lay["cols"], PROJECT_STREAMS):
-        _node(ax, "source", x, at(rows["source"]), w - 3, 6.5, source, font)
-        _arrow(ax, (x, at(rows["source"] + 3.25)), (x, at(rows["step"] - 3.5)), NEUTRAL_EDGE)
-        _node(ax, "step", x, at(rows["step"]), w, 7, step, font)
-        _arrow(ax, (x, at(rows["step"] + 3.5)), (x, at(rows["turn"] - 8.5)), NEUTRAL_EDGE)
-        _node(ax, "turn", x, at(rows["turn"]), w - 1, 17, turn, font, weight="bold")
+    values = theme.colours(figures.THEME)
+    for x, token, (source, step, turn, answer, fix) in zip(lay["cols"], PROJECT_STREAM_TOKENS,
+                                                           PROJECT_STREAMS):
+        colour = values[token] if token else None
+        line = colour or NEUTRAL_EDGE
+        _node(ax, "source", x, at(rows["source"]), w - 3, 6.5, source, font, weight="bold",
+              colour=colour)
+        _arrow(ax, (x, at(rows["source"] + 3.25)), (x, at(rows["step"] - 3.5)), line)
+        _node(ax, "step", x, at(rows["step"]), w, 7, step, font, colour=colour)
+        _arrow(ax, (x, at(rows["step"] + 3.5)), (x, at(rows["turn"] - 8.5)), line)
+        _node(ax, "turn", x, at(rows["turn"]), w - 1, 17, turn, font, weight="bold",
+              colour=colour)
         _lines(ax, x, at(rows["answer"]), answer, font, colour=INK_MUTED)
-        _arrow(ax, (x, at(rows["answer"] + 2.6)), (x, at(rows["fix"] - 3.75)), NEUTRAL_EDGE)
-        _node(ax, "step", x, at(rows["fix"]), w, 7.5, fix, font)
-        _arrow(ax, (x, at(rows["fix"] + 3.75)), (x, at(rows["table"] - 4.4)), NEUTRAL_EDGE)
+        _arrow(ax, (x, at(rows["answer"] + 2.6)), (x, at(rows["fix"] - 3.75)), line)
+        _node(ax, "step", x, at(rows["fix"]), w, 7.5, fix, font, colour=colour)
+        _arrow(ax, (x, at(rows["fix"] + 3.75)), (x, at(rows["table"] - 4.4)), line)
     # the table spans the page so that each stream's arrow lands on it
     _node(ax, "store", 50, at(rows["table"]), 96, 9.5, PROJECT_TABLE, font, weight="bold")
     _arrow(ax, (50, at(rows["table"] + 4.75)), (50, at(spine_first - 3.5)), NEUTRAL_EDGE)
