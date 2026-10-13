@@ -113,6 +113,13 @@ checkout.
   for it here, and it is a scope addition to shape with the owner. Only
   committed tables under `results/tables/` could be offered to it, never
   `data/` or the held-back seasons, and only on the owner's word.
+  The Seattle Visual Session reported (2026-10-13, relaying the owner)
+  that a Motion film is built from a bundle: a brief, an approved
+  storyboard, a numbers file written by a script, CSV cut to the columns
+  drawn, map shapes as GeoJSON, fonts, colour tokens and reference
+  images; the global skill `claude-motion-handoff` describes it. So the
+  site's figures and tokens are reference material too. Start by
+  confirming with the owner what may leave the repository.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams
