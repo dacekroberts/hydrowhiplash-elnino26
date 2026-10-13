@@ -93,6 +93,15 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   main checkout's `data/` and asked for a stop if it could not be read
   cleanly. `--data-root` re-roots the four input paths; nothing under
   `data/` was written, copied or moved.
+- **Left open, on the rollout calendar: reading a later retrieval's
+  fire files into pieces for a scoring day.** The `prepare` text of the
+  three outcome items (`cnfdb_2025`, `season_2026_closes`,
+  `verify_north`; `src/rollout.py`, `rollout_calendar.json` rewritten)
+  now says the split is built from the same pieces and handed over with
+  the outcome, and that this reading is still to build. `cnfdb_2026` and
+  `verify_california` point back to those items. Not settled: NBAC has
+  no ignition date, so a 2027 season of BC, AB or YT measured from NBAC
+  (`nbac_2027`) has no start month to split by until CNFDB 2027.
 - Tests: 472 passed (10 new in `tests/test_fire_after_date.py`).
 
 ### 2026-10-13 - Motion: the card lines, the prompt and the dashboard's remaining lines approved
