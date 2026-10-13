@@ -187,11 +187,45 @@ moving the tags.
   3. `README.md` is stale ("roughly 10 to 13 El Niño years", the
      Miniforge Prompt, no link to the site, no result): a draft for the
      owner to edit. The GitHub description and homepage are empty.
+- Owner's answers, 2026-10-13 (after "let's make public"): the switch
+  waits for the README ("After the README"); the commit address stays
+  ("Keep Gmail"); the held-back tables may be public ("1 and message the
+  other project with the hardline rule"). The rule was sent to the
+  Session 6 Prediction session that day. A README draft is in
+  `README.draft.md` (untracked) for the owner to edit; once approved it
+  replaces `README.md`, then ask for the switch, set the GitHub
+  description and homepage, link "logged" and upload.
 - Also exposed, judged fine to publish unless the owner says otherwise:
   the daily logs, kickoff notes, audits and the two logs (they name other
   projects' sessions in places); the DeepSeek handoff and efficiency
   review; private artifact links (they open for no one else); the
   owner's Windows username in file paths in 14 files.
+
+**Sample visuals** (owner, 2026-10-13: "add generating some sample
+visuals to next session kickoff. You can ask me detailed questions about
+styling, because getting a few in-house visuals going is a good ramp up
+to the claude motion animation. we can consider trying a claude dashboard
+for starters and then branch out to things like github banners"). A scope
+addition the owner asked for; nothing is built yet.
+
+- Order: a dashboard first (a private Artifact page), then pieces such as
+  a GitHub banner (the repository's social preview image, 1280 x 640 px,
+  and a README header).
+- Before drawing anything, ask the owner about styling in detail. The
+  Design System artifact and `src/theme.py` are the starting point (green
+  ground, red and blue for fire and rain); ask what should carry over and
+  what may differ. Questions worth asking: who each piece is for and the
+  one thing it should say; which numbers or regions lead; light, dark or
+  both; how much text; type faces and weights; map or no map; how the
+  El Niño years are marked; what a banner must not claim (associations,
+  not causes; no forecast before it exists).
+- Data: only committed tables under `results/tables/`, never `data/`, and
+  not the held-back seasons (2026, 2027; 2025 for BC, AB, YT). Numbers
+  come from the tables through a script, never typed by hand. Region
+  shapes need their sources' terms checked before they leave the repo
+  (owner: "2. yes good call"). ERSST sea temperature is display-only.
+- Each piece that works is reference material for the Motion bundle
+  (storyboard keyframes, colour tokens, reference images).
 
 **Next work, in order:**
 
@@ -309,7 +343,11 @@ Session 12 for hydrowhiplash-elnino26: the owner's wording on session
    reads polygons, and before every DeepSeek call. Flag scope additions
    rather than building them.
 
-8. End of session: daily-log skill, python scripts/log.py list,
+8. Then "Sample visuals" in Part 1: ask me the styling questions first,
+   in detail, then a dashboard, then a GitHub banner. Only committed
+   tables, no held-back seasons, numbers from a script.
+
+9. End of session: daily-log skill, python scripts/log.py list,
    python scripts/check_no_em_dashes.py, python scripts/check_plan_frozen.py,
    python scripts/check_site.py, commit and push; refresh the data guide
    artifact (https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P), rebuild
