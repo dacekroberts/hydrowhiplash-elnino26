@@ -96,9 +96,11 @@ checkout.
 - `ACTION_PLAN.md` "Historical charts" is ticked (owner, 2026-10-13).
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
-- Owner's notes of 2026-10-13, not built: dark-mode swaps for the
-  figures (first visual check to address; four PNG charts, two SVG
-  diagrams, two Plotly charts); an optional hover on the map tied to
+- Dark-mode drawings exist for the four PNG charts and the two diagrams
+  (2026-10-13; not uploaded). Still light in dark mode: the two Plotly
+  charts on the Overview page. The navbar reads "Methods and
+  Limitations" (owner).
+- Owner's notes of 2026-10-13, not built: an optional hover on the map tied to
   the legend; tap-to-highlight on a phone with the details in a fixed
   place. Cloudflare's edge refusal of AI-training crawlers is set
   (owner, 2026-10-13: 15 blocked, search and Claude-User allowed,

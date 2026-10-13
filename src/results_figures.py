@@ -23,7 +23,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src import figures
+from src import figures, theme
 from src.config import PREDICTION_ALPHA, REGIONS, RESULTS
 
 RUN = "run1"
@@ -98,8 +98,12 @@ def _note(run: str) -> str:
 def make_figures(run: str = RUN, out_dir: Path = figures.FIGURES) -> list[Path]:
     reg = pd.read_csv(_run_dir(run) / "registered_tests.csv")
     val = pd.read_csv(_run_dir(run) / "validation.csv")
-    return [headline1(reg, out_dir, run), headline2(reg, out_dir, run),
-            headline3(reg, out_dir, run), headline4(val, out_dir)]
+    paths = []
+    for name in theme.themes():  # one file per theme; the site shows the matching one
+        with figures.themed(name):
+            paths += [headline1(reg, out_dir, run), headline2(reg, out_dir, run),
+                      headline3(reg, out_dir, run), headline4(val, out_dir)]
+    return paths
 
 
 def main() -> None:

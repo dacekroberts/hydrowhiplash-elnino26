@@ -1,7 +1,9 @@
 """Figures written to results/figures/ by code (never by hand).
 
-Colours come from theme/tokens.json through src.theme (D86), light theme,
-drawn on the `surface` ground. A bar takes the colour of what it measures
+Colours come from theme/tokens.json through src.theme (D86), drawn on the
+`surface` ground: the light theme unless a figure is drawn inside
+`themed("dark")`, which writes a second file beside the first for the
+site's dark mode (owner, 2026-10-13). A bar takes the colour of what it measures
 (`fire` burned area, `water` precipitation and winter moisture, `snow`
 snowpack). Every season is drawn; a season after an El Nino winter gets an
 `enso-soft` band and an `enso` tick, a strong one an `enso-strong` tick and
@@ -11,6 +13,7 @@ percent-of-normal map runs from dry earth to wet blue (`precip-dry-2` to
 """
 from __future__ import annotations
 
+from contextlib import contextmanager
 from pathlib import Path
 
 import geopandas as gpd
@@ -26,13 +29,54 @@ from src import theme
 from src.config import EL_NINO_THRESHOLD, FIGURE_CREDIT, RESULTS, STRONG_THRESHOLD
 
 FIGURES = RESULTS / "figures"
-INK, MUTED, GRID = theme.colour("ink"), theme.colour("ink-muted"), theme.colour("rule")
-AXIS, GROUND = theme.colour("rule-strong"), theme.colour("surface")
-ENSO, ENSO_STRONG, ENSO_SOFT = (theme.colour("enso"), theme.colour("enso-strong"),
-                                theme.colour("enso-soft"))
-VERDICT = theme.colour("evergreen")
+# Module constant to colour token. The values are set by _set_theme: the
+# first theme (light) at import, another inside themed().
+COLOUR_TOKENS = {"INK": "ink", "MUTED": "ink-muted", "GRID": "rule", "AXIS": "rule-strong",
+                 "GROUND": "surface", "ENSO": "enso", "ENSO_STRONG": "enso-strong",
+                 "ENSO_SOFT": "enso-soft", "VERDICT": "evergreen"}
 # What a bar or an interval measures; one colour family per kind of data.
-FAMILIES = {name: theme.colour(name) for name in ("fire", "water", "snow")}
+FAMILY_TOKENS = ("fire", "water", "snow")
+THEME = theme.themes()[0]
+FAMILIES: dict[str, str] = {}
+
+
+def _set_theme(name: str) -> None:
+    """Point every colour constant of this module, and matplotlib's
+    defaults, at theme `name`. Drawing code reads the constants when it
+    runs, so this takes effect for every figure drawn afterwards,
+    src.interactive's included."""
+    values = theme.colours(name)
+    globals().update({const: values[token] for const, token in COLOUR_TOKENS.items()})
+    FAMILIES.clear()
+    FAMILIES.update({token: values[token] for token in FAMILY_TOKENS})
+    globals()["THEME"] = name
+    plt.rcParams.update({
+        "axes.edgecolor": AXIS, "axes.labelcolor": INK, "xtick.color": MUTED,
+        "ytick.color": MUTED, "axes.facecolor": GROUND, "figure.facecolor": GROUND,
+        "text.color": INK,
+    })
+
+
+@contextmanager
+def themed(name: str):
+    """Draw in theme `name` inside the block, then return to the theme
+    before it. A figure saved inside a block of any theme but the first is
+    written beside the first's file (themed_path)."""
+    before = THEME
+    _set_theme(name)
+    try:
+        yield
+    finally:
+        _set_theme(before)
+
+
+def themed_path(out: Path) -> Path:
+    """`out` in the first theme; `<stem>_<theme><suffix>` in any other."""
+    if THEME == theme.themes()[0]:
+        return out
+    return out.with_name(f"{out.stem}_{THEME}{out.suffix}")
+
+
 # Diverging, for precipitation as a share of normal: dry earth, neutral at
 # normal, wet blue. Red is kept for burned area.
 DRY_WET = LinearSegmentedColormap.from_list(
@@ -59,10 +103,9 @@ DISPLAY_FONT = _font_stack("display")
 plt.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": _font_stack("sans"),
-    "axes.edgecolor": AXIS, "axes.labelcolor": INK, "xtick.color": MUTED,
-    "ytick.color": MUTED, "axes.spines.top": False, "axes.spines.right": False,
-    "axes.facecolor": GROUND, "figure.facecolor": GROUND, "text.color": INK,
+    "axes.spines.top": False, "axes.spines.right": False,
 })
+_set_theme(THEME)
 
 
 def _family(name: str) -> str:
@@ -393,6 +436,7 @@ def credit(fig, y: float = -0.005, va: str = "top") -> None:
 
 
 def _save(fig, out: Path) -> Path:
+    out = themed_path(out)
     out.parent.mkdir(parents=True, exist_ok=True)
     credit(fig)
     fig.savefig(out, dpi=200, bbox_inches="tight", facecolor=GROUND)

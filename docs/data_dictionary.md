@@ -951,6 +951,14 @@ this project reads it: it colours the map's ocean panels and nothing else.
   download can differ for the latest winter; longitudes are east-positive,
   so 170°W is 190.
 
+**Dark-theme copies (2026-10-13).** Each static figure the site shows
+has a second file drawn in the dark theme, `<name>_dark.png` (and
+`.svg` for the two diagrams): the four `headline*` charts, `mechanism`
+and `methods_flow` in both widths. Same data, same code path
+(`figures.themed("dark")`), only the colours differ. Trap: a new static
+figure for the site needs its dark file and a `.fig-light` /
+`.fig-dark` pair on the page, or it shows a light ground in dark mode.
+
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 
 Written by `python -m src.prediction` on 2026-10-12, after `run1` was

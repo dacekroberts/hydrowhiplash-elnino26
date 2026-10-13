@@ -202,7 +202,8 @@ The flowchart shows how these are joined.
      results/ at render time. Caption and alt text are drafts for the owner
      to word. -->
 
-::: {.d-none .d-sm-block}
+:::: {.d-none .d-sm-block}
+::: {.fig-light}
 ```{python}
 #| echo: false
 #| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check. Note: arrows show groups, not single sources; snow stations are used only to check the ERA5-Land snowpack."
@@ -211,7 +212,18 @@ SVG(filename="../results/figures/methods_flow.svg")
 ```
 :::
 
-::: {.d-sm-none}
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check. Note: arrows show groups, not single sources; snow stations are used only to check the ERA5-Land snowpack."
+from IPython.display import SVG
+SVG(filename="../results/figures/methods_flow_dark.svg")
+```
+:::
+::::
+
+:::: {.d-sm-none}
+::: {.fig-light}
 ```{python}
 #| echo: false
 #| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check. Note: arrows show groups, not single sources; snow stations are used only to check the ERA5-Land snowpack."
@@ -219,6 +231,16 @@ from IPython.display import SVG
 SVG(filename="../results/figures/methods_flow_narrow.svg")
 ```
 :::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Flowchart of the method. Sources: ONI and RONI; ERA5-Land and snow stations; MTBS and WFIGS, and CNFDB. Variables made from them: an ENSO index per winter; winter precipitation, whiplash and snowpack; burned area per region and season. The variables are joined in one region by year table, which feeds the pre-registered tests, which feed the site's charts. NBAC enters at the tests, as a sensitivity check. Note: arrows show groups, not single sources; snow stations are used only to check the ERA5-Land snowpack."
+from IPython.display import SVG
+SVG(filename="../results/figures/methods_flow_narrow_dark.svg")
+```
+:::
+::::
 
 *[WIP] From sources to the site's charts: what is measured, where it is joined and where it is tested.*
 
@@ -364,39 +386,83 @@ measure much the same thing.
      contrast under the four H3a slopes, the caption saying it comes from one
      pooled model) was approved by the owner on 2026-10-12. -->
 
+::: {.fig-light}
 ```{python}
 #| echo: false
 #| fig-alt: "Two panels of dots with interval bars, one row per region. Left, winter precipitation in El Niño winters minus the rest, in millimetres: only Southern California's interval lies wholly above zero and it is the only filled dot. Right, burned area after El Niño winters minus the rest, in log points, seven regions: every interval crosses zero."
 from IPython.display import Image
 Image(filename="../results/figures/headline1_el_nino_vs_rest.png")
 ```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars, one row per region. Left, winter precipitation in El Niño winters minus the rest, in millimetres: only Southern California's interval lies wholly above zero and it is the only filled dot. Right, burned area after El Niño winters minus the rest, in log points, seven regions: every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline1_el_nino_vs_rest_dark.png")
+```
+:::
 
 *[WIP] H1 and H2: El Niño years against all other years. Dots are estimates, bars 95% intervals; a filled green dot is significant after Holm.*
 
+::: {.fig-light}
 ```{python}
 #| echo: false
 #| fig-alt: "Two panels of dots with interval bars for seven regions, in log points of burned area per degree of the winter index. Every interval crosses zero in both panels."
 from IPython.display import Image
 Image(filename="../results/figures/headline2_enso_strength.png")
 ```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Two panels of dots with interval bars for seven regions, in log points of burned area per degree of the winter index. Every interval crosses zero in both panels."
+from IPython.display import Image
+Image(filename="../results/figures/headline2_enso_strength_dark.png")
+```
+:::
 
 *[WIP] H3a and H3b: burned area per 1 °C of the winter index, without and with summer temperature.*
 
+::: {.fig-light}
 ```{python}
 #| echo: false
 #| fig-alt: "Five rows of dots with interval bars: the H3a slopes of the Pacific Northwest, British Columbia, Alberta and Southern California, then the H4 contrast, north minus Southern California. Every interval crosses zero."
 from IPython.display import Image
 Image(filename="../results/figures/headline3_north_vs_socal.png")
 ```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Five rows of dots with interval bars: the H3a slopes of the Pacific Northwest, British Columbia, Alberta and Southern California, then the H4 contrast, north minus Southern California. Every interval crosses zero."
+from IPython.display import Image
+Image(filename="../results/figures/headline3_north_vs_socal_dark.png")
+```
+:::
 
 *[WIP] H4: the north minus Southern California, from one pooled model, under the four regional slopes for context.*
 
+::: {.fig-light}
 ```{python}
 #| echo: false
 #| fig-alt: "One row per region with two markers: the share of seasons inside the 80 percent prediction interval when one year is left out, and when the model is fitted only on earlier seasons. Most markers sit between 77 and 91 percent; British Columbia's earlier-seasons marker is at 57 percent and Southern California's leave-one-out marker at 95."
 from IPython.display import Image
 Image(filename="../results/figures/headline4_interval_coverage.png")
 ```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "One row per region with two markers: the share of seasons inside the 80 percent prediction interval when one year is left out, and when the model is fitted only on earlier seasons. Most markers sit between 77 and 91 percent; British Columbia's earlier-seasons marker is at 57 percent and Southern California's leave-one-out marker at 95."
+from IPython.display import Image
+Image(filename="../results/figures/headline4_interval_coverage_dark.png")
+```
+:::
 
 *[WIP] How often the H3a model's 80% prediction intervals held the real season.*
 

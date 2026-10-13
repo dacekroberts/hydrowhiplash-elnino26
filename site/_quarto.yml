@@ -19,7 +19,7 @@ website:
       - href: tracker.qmd
         text: Tracker
       - href: methods.qmd
-        text: Methods and limitations
+        text: Methods and Limitations
 
 author: "Dace Roberts"
 

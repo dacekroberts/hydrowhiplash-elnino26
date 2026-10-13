@@ -70,6 +70,10 @@ div.callout .callout-header { background: none; padding-bottom: 0; font-family: 
 div.callout .callout-icon-container { display: none; }
 main .cell-output-display { background: #f9faf5; border: 1px solid var(--rule);
   border-radius: var(--radius-md); padding: var(--space-3); overflow-x: auto; }
+/* A figure drawn once per theme: the pair sits in .fig-light and .fig-dark
+   and the page shows the one matching its theme. */
+body.quarto-dark main .fig-light, body:not(.quarto-dark) main .fig-dark { display: none; }
+main .fig-dark .cell-output-display { background: var(--surface); }
 main .cell-output-display svg, main .cell-output-display img { display: block; margin: 0 auto;
   max-width: 100%; height: auto; }
 .navbar { border-bottom: 1px solid var(--rule); }

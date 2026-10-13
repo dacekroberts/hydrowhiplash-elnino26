@@ -7,8 +7,10 @@ from src.config import REGIONS
 
 def test_mechanism_writes_both_layouts(tmp_path):
     paths = diagrams.mechanism_diagram(tmp_path)
-    assert sorted(p.name for p in paths) == [
-        "mechanism.png", "mechanism.svg", "mechanism_narrow.png", "mechanism_narrow.svg"]
+    # each layout once per theme: the first theme keeps the stem
+    assert sorted(p.name for p in paths) == sorted(
+        f"mechanism{layout}{theme}.{ext}" for layout in ("", "_narrow")
+        for theme in ("", "_dark") for ext in ("png", "svg"))
     assert all(p.stat().st_size > 0 for p in paths)
 
 
@@ -41,9 +43,10 @@ def test_committed_svgs_match_the_code(tmp_path):
 
 def test_flowchart_writes_both_layouts(tmp_path):
     paths = diagrams.methods_flowchart(tmp_path)
-    assert sorted(p.name for p in paths) == [
-        "methods_flow.png", "methods_flow.svg",
-        "methods_flow_narrow.png", "methods_flow_narrow.svg"]
+    # each layout once per theme: the first theme keeps the stem
+    assert sorted(p.name for p in paths) == sorted(
+        f"methods_flow{layout}{theme}.{ext}" for layout in ("", "_narrow")
+        for theme in ("", "_dark") for ext in ("png", "svg"))
     assert all(p.stat().st_size > 0 for p in paths)
 
 

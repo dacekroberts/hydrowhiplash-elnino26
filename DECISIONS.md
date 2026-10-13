@@ -17,6 +17,38 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Dark-mode drawings of the static charts and the diagrams; a navbar label
+
+- **Drew each of the six static figures of the site a second time in the
+  dark theme, and the page shows the one matching its theme (owner:
+  "first visual check to address: figures in dark mode. can we create
+  swaps for these?"; then "begin on dark mode visuals").** The four
+  headline charts (`headline1` to `headline4`, PNG) and the two diagrams
+  (`mechanism`, `methods_flow`, each in two widths, SVG and PNG) now have
+  a `_dark` file beside the light one: 12 new files in
+  `results/figures/`. The dark colours are the dark values the design
+  tokens already hold; no colour was chosen for this. `src.figures`
+  gained `themed(name)` and `themed_path`, its colour constants are set
+  by `_set_theme`, and `src.diagrams` draws once per theme. On the pages
+  each pair sits in `.fig-light` and `.fig-dark`, switched by the body
+  class Quarto sets. The light files are byte-identical to before.
+  Rejected: inverting the light image with a CSS filter (it turns the
+  fire red and the precipitation blue into other colours); one image
+  with a transparent ground (the ink and grid colours would still be the
+  light theme's).
+- **Not done yet: the two hover charts on the Overview page** (Plotly),
+  which need their colours changed in the browser when the theme
+  changes. They still show a light ground in dark mode.
+- **The map is left as it is (owner: "i don't think the map needs the
+  changes").** Agreed: it is drawn in the browser from the theme's own
+  colour variables and its ocean canvas repaints when the theme changes,
+  so it already follows dark mode.
+- **Capitalised the navbar label (owner: "limitations in top bar should
+  be capitalized"):** "Methods and Limitations" in `site/_quarto.yml`.
+  The page's own title and the link text on the map page are unchanged.
+- Checked in the local preview on the Overview and methods pages, both
+  themes: one of each pair shown, the other hidden. Not uploaded.
+
 ### 2026-10-13 - The delegated-build pilot ran and was merged (D77)
 
 - **Merged the DeepSeek worker's build on the owner's word ("merge"):

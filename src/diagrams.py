@@ -28,18 +28,40 @@ from src.config import REGIONS, RESULTS
 FIGURES = RESULTS / "figures"
 FONT = "DejaVu Sans"
 
-# Colours come from theme/tokens.json (light theme; D86). The north pathway
+# Colours come from theme/tokens.json (D86): the light theme, and a second
+# drawing per extra theme for the site's dark mode (owner, 2026-10-13; the
+# files take the theme's name as a suffix). The north pathway
 # runs through snowpack and takes the snow colour, the south pathway runs
 # through rain and takes the water colour; the fire colour is kept for burned
 # area. The two differ in lightness as well as hue (contrast 1.9:1), and each
 # column is headed North or South in text. Text stays in ink.
-INK = theme.colour("ink")
-INK_MUTED = theme.colour("ink-muted")
-NEUTRAL_EDGE = theme.colour("rule-strong")
-NEUTRAL_FILL = theme.colour("surface-sunk")
-PAPER = theme.colour("surface")
-NORTH_COLOUR = theme.colour("snow")
-SOUTH_COLOUR = theme.colour("water")
+COLOUR_TOKENS = {"INK": "ink", "INK_MUTED": "ink-muted", "NEUTRAL_EDGE": "rule-strong",
+                 "NEUTRAL_FILL": "surface-sunk", "PAPER": "surface", "NORTH_COLOUR": "snow",
+                 "SOUTH_COLOUR": "water"}
+
+
+def _set_theme(name: str) -> None:
+    """Point this module's colour constants at theme `name`; the drawing
+    code reads them when it runs."""
+    values = theme.colours(name)
+    globals().update({const: values[token] for const, token in COLOUR_TOKENS.items()})
+
+
+_set_theme(theme.themes()[0])
+
+
+def _themes(stem: str):
+    """Yield (theme, file stem) for every theme, with that theme's colours
+    in force here and in src.figures (the credit line) while the caller
+    draws: the first theme keeps `stem`, another gets `<stem>_<theme>`."""
+    first = theme.themes()[0]
+    for name in theme.themes():
+        with figures.themed(name):
+            _set_theme(name)
+            try:
+                yield name, stem if name == first else f"{stem}_{name}"
+            finally:
+                _set_theme(first)
 
 # Pathway membership for the mechanism diagram. North is every primary region;
 # the south pathway is SoCal only. Every other region is named in a footnote
@@ -262,7 +284,8 @@ def mechanism_diagram(out_dir: Path = FIGURES) -> list[Path]:
     """
     paths = []
     for stem, layout in MECHANISM_LAYOUTS.items():
-        paths += _save(_draw_mechanism(layout), out_dir, stem)
+        for _, themed_stem in _themes(stem):
+            paths += _save(_draw_mechanism(layout), out_dir, themed_stem)
     return paths
 
 
@@ -360,7 +383,8 @@ def methods_flowchart(out_dir: Path = FIGURES) -> list[Path]:
     """
     paths = []
     for stem, layout in FLOW_LAYOUTS.items():
-        paths += _save(_draw_flow(layout), out_dir, stem)
+        for _, themed_stem in _themes(stem):
+            paths += _save(_draw_flow(layout), out_dir, themed_stem)
     return paths
 
 

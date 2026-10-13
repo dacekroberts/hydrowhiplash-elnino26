@@ -98,3 +98,21 @@ def test_fire_season_series_writes_png(tmp_path):
     out = figures.fire_season_series(pd.concat([_fire_table(), _fire_table().assign(region="S")]),
                                      "RONI", tmp_path / "f.png")
     assert out.exists() and out.stat().st_size > 0
+
+
+def test_themed_switches_every_colour_and_returns(tmp_path):
+    """Inside themed("dark") the constants, the families and the saved file's
+    name are the dark theme's; afterwards everything is the first theme's."""
+    light, dark = figures.theme.colours("light"), figures.theme.colours("dark")
+    out = tmp_path / "c.png"
+    cov = pd.DataFrame({"region": ["A", "B"], "method": "leave-one-year-out",
+                        "coverage": 0.8, "n": 40})
+    with figures.themed("dark"):
+        assert (figures.INK, figures.GROUND) == (dark["ink"], dark["surface"])
+        assert figures.FAMILIES["fire"] == dark["fire"]
+        assert figures.themed_path(out).name == "c_dark.png"
+        assert figures.coverage_dots(cov, 0.8, out).name == "c_dark.png"
+    assert (figures.INK, figures.GROUND) == (light["ink"], light["surface"])
+    assert figures.FAMILIES["fire"] == light["fire"]
+    assert figures.themed_path(out) == out and not out.exists()
+    assert (tmp_path / "c_dark.png").stat().st_size > 0
