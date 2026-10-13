@@ -17,6 +17,27 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - The analytics script is gone; its cause, and a note sent to the other projects
+
+- **Cause: Cloudflare's "Real User Measurements (RUM)", on by default for
+  a domain on the Free plan.** Not the Web Analytics toggle of the Pages
+  project (already "disabled") and not the account's Web Analytics page
+  (not set up; its wizard would have turned analytics on). The owner
+  switched it off for the whole domain: Domains, dacekroberts.dev, Speed,
+  Real User Measurements, "Disable completely".
+- **Checked in a browser about a minute later:** the home page and the
+  map page on the custom domain load no script from
+  `static.cloudflareinsights.com` and ask no other host. The first check,
+  seconds after the change, still showed it. The script is added only to
+  document loads: `fetch` and `curl` of the same pages never showed it,
+  so those are not a valid check.
+- **Sent as a site-wide note, on the owner's word ("save and note this
+  for other domains created by any other project"; "besides streamlit"):**
+  to the portfolio, transit-globe, link-station-commercial,
+  expanded-heatmap and prediction sessions. The setting is per domain, so
+  a new domain starts with it on. Added to the `deploy-site` skill and to
+  the session's memory.
+
 ### 2026-10-12 - The site answers at hydrowhiplash.dacekroberts.dev; an analytics script found
 
 - **The owner added the custom domain in the Cloudflare dashboard; it is

@@ -113,11 +113,10 @@ checkout.
    as environment variables (`CLOUDFLARE_API_TOKEN`,
    `CLOUDFLARE_ACCOUNT_ID`); ask before every upload. The Pages project `hydrowhiplash` exists, empty (classic
    Pages, created with `--force`). First published 2026-10-12 from commit bf8a9e7 at
-   hydrowhiplash.pages.dev. The custom domain is active (20:22). Open:
-   Cloudflare's Web Analytics script, found injected on the custom
-   domain and being turned off by the owner (confirm in a browser
-   that no page asks `static.cloudflareinsights.com`); then the
-   work-in-progress wording. plotly.js
+   hydrowhiplash.pages.dev. The custom domain is active (20:22). Cloudflare's
+   analytics script (RUM, on by default) was found injected there and
+   switched off by the owner for the whole domain; confirmed gone in a
+   browser. Open: the work-in-progress wording. plotly.js
    is bundled with the site.
    After the site is live: a full V1 retrospective (owner, 2026-10-12:
    "after site is live: do a full V1 Retrospective"). Its scope and

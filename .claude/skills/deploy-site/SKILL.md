@@ -52,7 +52,9 @@ asked for every time: an earlier yes does not carry over.
    app needs a restart, not a new token.
 8. **Check the live address.** Load each page at
    https://hydrowhiplash.dacekroberts.dev and confirm the footer, one
-   chart and the map draw. `.dev` is HTTPS only.
+   chart and the map draw. `.dev` is HTTPS only. In the browser, list the
+   hosts the page asked: none besides the site. `curl` and `fetch` are
+   not a valid check for this (see the traps).
 9. **Record it.** A line in the day's log with the commit and the time,
    and a `DECISIONS.md` entry for the first publication of any new piece.
 
@@ -67,3 +69,13 @@ asked for every time: an earlier yes does not carry over.
   upload step of `scripts/deploy_site.py` and the token change.
 - The preview server stops when the desktop app restarts; start it again
   before step 6.
+- Cloudflare adds an analytics script (`static.cloudflareinsights.com`)
+  to every page of a proxied domain by default on the Free plan: "Real
+  User Measurements (RUM)". Found on the custom domain the day it went
+  live (2026-10-12); the build and the pages.dev address had none. The
+  owner switched it off for dacekroberts.dev (Domains, the domain, Speed,
+  Real User Measurements, "Disable completely"). It is added only to
+  document loads, so only a real browser shows it. A new domain starts
+  with it on.
+- A terminal opened before the token variables were saved does not have
+  them; the upload then stops with "Nothing was sent".
