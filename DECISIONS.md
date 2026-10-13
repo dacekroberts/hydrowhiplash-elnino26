@@ -17,6 +17,24 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Motion: the card lines, the prompt and the dashboard's remaining lines approved
+
+- **The owner approved the eight card lines, the prompt, and the
+  wording Scene 7 shows.** Owner: "i okay all of the three items. can
+  always edit within the motion chat". The three items put to the owner
+  were the card lines, the prompt, and whether Scene 7 shows the four
+  results' descriptions, three of which were drafts. Read here as
+  approving the dashboard's title (card line 1) and its three Scene 4
+  lines as well; the draft marks came off `scripts/build_dashboard.py`
+  and `src/banner.py`. The handoff's files were renamed `brief.md`,
+  `prompt.md` and `storyboard.html`, and the brief says Scene 7 shows
+  each passing result's label and description from `numbers.json`, then
+  its estimate and interval. Later wording changes are made in the
+  Motion session and come back in its return notes, to be checked
+  against the site's wording as the `claude-motion-handoff` skill says.
+  The folder's "Not here yet" list is down to phone-width pictures of
+  the site.
+
 ### 2026-10-13 - Motion: the scene skeleton approved; dark first; card lines and a prompt drafted
 
 - **The owner approved the eight-scene skeleton and asked for card

@@ -38,9 +38,10 @@ closed the small things list.
     rebuilt by `python scripts/build_motion_handoff.py --capture`: a
     numbers file, the seasons and the timetable as CSV, the tokens, the
     typefaces with their licences, 17 figures, the dashboard as a
-    storyboard draft, four pictures of the live site (they come out in
-    the machine's theme, dark here) and `00_MANIFEST.md`, which says why
-    each file may leave and what is missing.
+    storyboard, eight pictures of the live site (four pages, dark and
+    light) and `00_MANIFEST.md`, which says why each file may leave and
+    what is missing. Later the same day it gained the brief, the prompt,
+    the winters, the 52 tests, the credit lines and the map shapes.
 - **Small things, all closed or answered (2026-10-13):** the winter
   rainfall map is ticked, the map page standing in for it (D101); the
   coverage chart has a phone drawing; the notes' title band follows the
@@ -59,11 +60,10 @@ closed the small things list.
 
 **Yours to word or decide.**
 
-- The dashboard's and banners' line, a draft: "Does an El Niño winter
-  say how much the next fire season will burn?". The three Scene 4 lines
-  on the dashboard, drafts reworded on 2026-10-13
-  (`scripts/build_dashboard.py`, `SURVIVED`). The slider's hint is
-  approved (2026-10-13).
+- Approved on 2026-10-13: the dashboard's and banners' line ("Does an
+  El Niño winter say how much the next fire season will burn?"), the
+  three Scene 4 lines on the dashboard (`scripts/build_dashboard.py`,
+  `SURVIVED`) and the slider's hint.
 - The two Overview captions gained a phone clause on the owner's word,
   "; on a phone, slide to a year" (`site/index.qmd`); the clause is a
   suggestion until the owner words it.
@@ -82,13 +82,18 @@ closed the small things list.
 - **For a Motion film:** the owner set its frame on 2026-10-13: one
   film, 16:9 (1920 x 1080), light and dark, 150 s at most, the regions
   on a real map; shorter or longer cuts are decided after it is seen.
-  `motion_handoff/brief_draft.md` holds these, the rules and an
+  `motion_handoff/brief.md` holds these, the rules and an
   eight-scene skeleton; the folder also has the winters, the 52 tests,
   the credit lines and the map shapes (cut from the committed map page,
   no polygon read). The owner approved the skeleton and
-  chose dark first (light waits until the first film is refined). Still
-  missing before any scene is built: the owner's approval of the eight
-  suggested card lines in `brief_draft.md` and of `prompt_draft.md`.
+  chose dark first (light waits until the first film is refined). The
+  owner approved the eight card lines, the prompt and the dashboard's
+  remaining lines the same day ("can always edit within the motion
+  chat"): `motion_handoff/brief.md` and `prompt.md`. The folder is ready
+  to upload; rebuild it first with
+  `python scripts/build_motion_handoff.py --capture`. What comes back is
+  checked as the `claude-motion-handoff` skill says: stills per scene,
+  every figure against `numbers.json`, every credit.
 
 **Next work, in order.**
 

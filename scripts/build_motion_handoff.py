@@ -5,15 +5,14 @@ everything it needs travels in one upload (the global skill
 claude-motion-handoff). This script builds that folder from committed
 files only: a numbers file and two CSVs written from results/tables/, the
 colour tokens, the typefaces with their licences, the site's figures, the
-banners, the sample dashboard as a storyboard draft and, with --capture,
+banners, the sample dashboard as a storyboard and, with --capture,
 pictures of the live site's pages (in the theme the machine is set to). The folder is flat (subfolders were
 dropped on upload) and its names hold no @ or brackets.
 
 It writes a brief (the owner's decisions of 2026-10-13, the rules a film
-keeps, the scene skeleton the owner approved, a suggested card line per
-scene that the owner has not approved) and a draft of the prompt to
-paste; the card wording is the owner's and is settled before a film is
-built. No polygon is opened: the
+keeps, the scene skeleton the owner approved, a card line per scene) and
+the prompt to paste, all approved by the owner on 2026-10-13, who edits
+further in the Motion session itself. No polygon is opened: the
 map shapes are cut from the committed map page, which already holds the
 region outlines and the coast as paths in the map's own projection.
 Nothing under data/ is read except through the pinned loader's check of
@@ -90,7 +89,7 @@ SCENES = (
     (0.08, "What comes next: the dates up to the 2027 season, and the site's address.",
      "timetable.csv, numbers.json (next)"),
 )
-# One suggested card line per scene, in SCENES' order: drafts for the owner,
+# One card line per scene, in SCENES' order, approved by the owner 2026-10-13;
 # cut from wording the site already carries where there is some. Filled
 # from the run's counts, so no figure is typed here.
 CARDS = (
@@ -107,9 +106,9 @@ CARDS = (
     "A forecast for {forecast_year} goes up before the season and is checked against it "
     "afterwards.",
 )
-# The prompt to paste into the Motion session with the folder: a draft.
+# The prompt to paste into the Motion session with the folder (approved 2026-10-13).
 PROMPT = (
-    "I have uploaded one flat folder. Read 00_MANIFEST.md and brief_draft.md first, then "
+    "I have uploaded one flat folder. Read 00_MANIFEST.md and brief.md first, then "
     "tell me in a few lines what you will build and anything in the brief you cannot do.",
     "Before building, tell me your current limits: film length, pixel size, frame rates, "
     "the number and size of code and data modules, the number of uploaded assets. If any "
@@ -153,7 +152,7 @@ SAFE = {
     "figure": "results/figures/, drawn by code from committed tables; public on the site or "
               "in the repository; (c) Dace Roberts",
     "page": "a picture of a public page of the live site",
-    "storyboard": "the private sample dashboard, a draft: its wording is not all approved",
+    "storyboard": "the private sample dashboard; its wording is approved",
     "winters": "December to February precipitation per region and winter with the winter's "
                "ENSO class, from results/tables/climate_controls_region_year.csv; public in "
                "the repository and drawn on the site's Overview page",
@@ -164,11 +163,10 @@ SAFE = {
            "Natural Earth, public domain, no credit required; display only",
     "credits": "the 'Required notices' of site/methods.qmd, as published",
     "brief": "the owner's decisions of 2026-10-13, the rules, the approved scene skeleton, "
-             "and a suggested card line per scene that is not approved",
-    "prompt": "a draft of the prompt to paste into the Motion session; not approved",
+             "and a card line per scene; approved 2026-10-13",
+    "prompt": "the prompt to paste into the Motion session; approved 2026-10-13",
 }
 MISSING = (
-    "The owner's approval of the card lines in brief_draft.md and of prompt_draft.md.",
     "Pictures of the site at phone width.",
 )
 
@@ -215,13 +213,14 @@ def notices() -> str:
 
 
 def brief(data: dict) -> str:
-    """The brief as a draft: the decisions, the rules and a scene skeleton
+    """The brief: the decisions, the rules and a scene skeleton
     with times cut from FILM. Counts come from the run, not from here."""
     counts, meta = data["counts"], data["meta"]
     fill = {**counts, **meta, "title": data["text"]["title"]}
     lines = ["# Brief", "",
-             "The decisions and the scene skeleton are approved (owner, 2026-10-13). The "
-             "card lines are suggestions and are not approved.",
+             "The decisions, the scene skeleton and the card lines are approved (owner, "
+             "2026-10-13). Later changes are made in the Motion session and come back "
+             "in its return notes.",
              "", "## Decided by the owner, 2026-10-13", "",
              f"- One film, {FILM['ratio']}, {FILM['width']} x {FILM['height']} px, "
              f"{FILM['fps']} fps, {FILM['max_seconds']} s at most.",
@@ -262,10 +261,13 @@ def brief(data: dict) -> str:
         length = round(share * FILM["max_seconds"])
         lines.append(f"| {number} | {start} s | {length} s | {what} | {source} |")
         start += length
-    lines += ["", f"Total {start} s.", "", "## Card lines (suggestions, not approved)", "",
+    lines += ["", f"Total {start} s.", "", "## Card lines (approved 2026-10-13)", "",
               "One line per scene. The site's address closes scene 8: "
               f"{build_dashboard.SITE_URL.split('//')[1]}", ""]
     lines += [f"{number}. {card.format(**fill)}" for number, card in enumerate(CARDS, start=1)]
+    lines += ["", "Scene 7 also shows each of the results that pass, with its label and its "
+              "description as written in numbers.json (survived: label, what, note), then "
+              "its estimate and interval."]
     lines += ["", "## What comes back", ""]
     lines += [f"- {item}" for item in RETURNS]
     return "\n".join(lines) + "\n"
@@ -325,11 +327,11 @@ def build(out: Path, with_capture: bool) -> list[tuple[str, str]]:
     write("map_shapes.json", json.dumps(map_shapes(), ensure_ascii=False, separators=(",", ":")),
           SAFE["map"])
     write("credits.md", notices(), SAFE["credits"])
-    write("brief_draft.md", brief(data), SAFE["brief"])
-    write("prompt_draft.md", "# Prompt to paste, a draft\n\n" + "\n\n".join(
+    write("brief.md", brief(data), SAFE["brief"])
+    write("prompt.md", "# Prompt to paste\n\n" + "\n\n".join(
         line.format(**FILM) for line in PROMPT) + "\n", SAFE["prompt"])
     write("tokens.json", theme.TOKENS.read_text("utf-8"), SAFE["tokens"])
-    write("storyboard_draft.html", build_dashboard.build(), SAFE["storyboard"])
+    write("storyboard.html", build_dashboard.build(), SAFE["storyboard"])
     for path in sorted(theme.SITE_FONTS_DIR.iterdir()):
         shutil.copyfile(path, out / path.name)
         files.append((path.name, SAFE["font"]))

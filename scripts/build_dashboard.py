@@ -14,7 +14,7 @@ Usage, from the repo root:
     python scripts/build_dashboard.py --out <path to .html>
 
 TEXT holds every sentence the page shows. Lines marked "site" repeat
-wording the owner approved for the site; lines marked "draft" are drafts
+wording the owner approved for the site; lines once marked "draft" were drafts
 for the owner to word.
 """
 from __future__ import annotations
@@ -56,19 +56,19 @@ SURVIVED = {
            "A check, not a finding: I had seen these values before the freeze."),  # site
     "H5_lag0": ("H5 (wet winters and burned area, same year)",
                 "burned area that year, when the winter is wetter by one standard deviation "
-                "(a typical year-to-year swing)", ""),  # draft, reworded 2026-10-13
+                "(a typical year-to-year swing)", ""),  # approved 2026-10-13
     "H5_lag1": ("H5 (wet winters and burned area, the year after)",
-                "burned area the year after a winter that much wetter", ""),  # draft, reworded
+                "burned area the year after a winter that much wetter", ""),  # approved 2026-10-13
     "H6_swe": ("H6 (1 April snowpack and burned area)",
                "burned area that year, when the 1 April snowpack is deeper by the same kind "
-               "of swing", ""),  # draft, reworded 2026-10-13
+               "of swing", ""),  # approved 2026-10-13
 }
 # The address the opening flow ends at (owner, 2026-10-12; D84).
 SITE_URL = "https://hydrowhiplash.dacekroberts.dev"
 TEXT = {
     # Owner, 2026-10-13: "yes but we need to include el nino somehow"; the
     # flow's label below: "looks good".
-    "title": "Does an El Niño winter say how much the next fire season will burn?",  # draft
+    "title": "Does an El Niño winter say how much the next fire season will burn?",  # approved 2026-10-13
     "scene1": "I asked whether the winter before a fire season says how much will burn, and "
               "whether El Niño is the useful part of that winter. I fixed the tests in writing "
               "before opening any fire data, then ran them once.",  # site
