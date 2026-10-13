@@ -191,3 +191,18 @@ def test_land_backdrop_is_cut_to_each_picture(regions):
     page = map_page.fragment(payload)
     assert page.count('<path class="land"') == 2 and '"land":true' in page
     assert '<path class="land"' not in map_page.fragment(map_page.build(tables(), regions))
+
+
+def test_chart_fragment_carries_the_dark_colours_for_every_token_it_uses(tmp_path):
+    from src import figures
+
+    swaps = interactive.theme_swaps()
+    light, dark = theme.colours("light"), theme.colours("dark")
+    assert swaps["dark"][light["surface"].lower()] == dark["surface"]
+    assert swaps["dark"][light["water"].lower()] == dark["water"]
+    assert len(swaps["dark"]) == len(figures.COLOUR_TOKENS) + len(figures.FAMILY_TOKENS)
+    out = interactive.winter_rain_html(tables()["climate_controls_region_year.csv"], tmp_path)
+    text = out.read_text("utf-8")
+    assert text.count('id="winter-rain-history-figure"') == 1 and "Plotly.react" in text
+    figure = text.split('id="winter-rain-history-figure">')[1].split("</script>")[0]
+    assert "<" not in figure and light["surface"] in figure and dark["surface"] not in figure

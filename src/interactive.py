@@ -44,6 +44,63 @@ def write_plotly_lib(out: Path = PLOTLY_LIB) -> Path:
 RAIN_VALUE = "precip_djf_mm"
 
 
+def theme_swaps() -> dict[str, dict[str, str]]:
+    """For every theme after the first: the first theme's value of each
+    colour token a chart can use, mapped to that theme's value. The page
+    script recolours a chart with it when the reader's theme changes."""
+    names = theme.themes()
+    tokens = [*figures.COLOUR_TOKENS.values(), *figures.FAMILY_TOKENS]
+    first = theme.colours(names[0])
+    swaps = {}
+    for name in names[1:]:
+        other = theme.colours(name)
+        swap = {first[t].lower(): other[t] for t in tokens}
+        if len(swap) != len(tokens):  # two tokens share a first-theme value
+            raise ValueError(f"Chart colours of theme {names[0]} are not distinct.")
+        swaps[name] = swap
+    return swaps
+
+
+# Draws the chart from the JSON beside it, in the page's theme, and again
+# when the theme changes. The JSON holds the first theme's colours; another
+# theme's are put in by replacing each six-digit hex colour in its text.
+_DRAW = """(function () {
+  var el = document.getElementById(__ID__), swaps = __SWAPS__, shown = null;
+  var source = document.getElementById(__ID__ + "-figure").textContent;
+  function scheme() {
+    for (var name in swaps) if (document.body.classList.contains("quarto-" + name)) return name;
+    return "";
+  }
+  function draw() {
+    var name = scheme();
+    if (name === shown) return;
+    shown = name;
+    var text = !name ? source : source.replace(/#[0-9a-fA-F]{6}(?![0-9a-fA-F])/g, function (hex) {
+      return swaps[name][hex.toLowerCase()] || hex;
+    });
+    var fig = JSON.parse(text);
+    Plotly.react(el, fig.data, fig.layout, __CONFIG__);
+  }
+  draw();
+  new MutationObserver(draw).observe(document.body, {attributes: true, attributeFilter: ["class"]});
+})();"""
+
+
+def fragment(fig, div_id: str) -> str:
+    """The chart as a page fragment: its div, its figure as JSON, and the
+    script that draws it in the page's theme. The page loads plotly.js."""
+    import json
+
+    figure = fig.to_json().replace("<", "\\u003c").replace(">", "\\u003e")
+    draw = (_DRAW.replace("__ID__", json.dumps(div_id))
+            .replace("__SWAPS__", json.dumps(theme_swaps()))
+            .replace("__CONFIG__", json.dumps({"displayModeBar": False, "responsive": True})))
+    return (f'<div id="{div_id}" class="plotly-graph-div" '
+            f'style="height:{int(fig.layout.height)}px; width:100%;"></div>\n'
+            f'<script type="application/json" id="{div_id}-figure">{figure}</script>\n'
+            f'<script>{draw}</script>\n')
+
+
 def winter_words(phase: str, strong: bool) -> str:
     if phase == "el_nino":
         return "strong El Niño winter" if strong else "El Niño winter"
@@ -124,10 +181,8 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
                               "bgcolor": "rgba(0,0,0,0)"},
                       margin={"l": 64, "r": 12, "t": 96, "b": 54})
     fig.update_layout(legend={"y": 0.995, "yanchor": "top"})
-    html = fig.to_html(full_html=False, include_plotlyjs=False, div_id=div_id,
-                       config={"displayModeBar": False, "responsive": True})
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_bytes(html.encode("utf-8"))  # LF on every platform
+    out.write_bytes(fragment(fig, div_id).encode("utf-8"))  # LF on every platform
     return out
 
 

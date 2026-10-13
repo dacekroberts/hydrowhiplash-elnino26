@@ -17,6 +17,35 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The two hover charts follow the theme; a longer project flowchart noted
+
+- **The Overview page's two hover charts now draw in the page's theme
+  and redraw when it changes (owner: "finish the two hover charts
+  first, then i will check").** `src.interactive.fragment` writes the
+  chart's div, its figure as JSON and a short script, in place of
+  plotly's own embed: the JSON holds the light colours, and for the dark
+  theme the script replaces each six-digit hex colour in its text from a
+  map of the twelve tokens a chart can use (`theme_swaps`), then draws
+  with `Plotly.react`. One copy of the data, so the files grew by under
+  1 KB each (87,027 to 87,727 and 134,167 to 134,872 bytes). Rejected:
+  embedding a second full figure for the dark theme (double the size);
+  restyling trace by trace (a list of paths to keep in step with the
+  drawing code). Checked in the preview, both themes: ground, bars and
+  text take the theme's values (dark ground #18211b, fire #f2704f, water
+  #7dbff0), no console error. With the six static figures of the entry
+  below, every figure on the site now follows dark mode. Not uploaded.
+- **`burned_area_anomaly_series_roni.png` changed when its module was
+  rerun: it gained the credit line.** It is not shown on the site and
+  was not among the ten figures redrawn when the credit was added
+  (2026-10-12); the image is 21 pixels taller and 61 wider, the size of
+  that line.
+- **Noted, not built (owner: "we might want a longer-form flowchart for
+  the whole project", with a reference image for layout and "no need to
+  copy styling"):** the reference runs from the raw inputs through each
+  script and dataset to the site's pages, and shows two decision points
+  with what went wrong and what replaced it. A scope addition; what it
+  would hold here is to be agreed first.
+
 ### 2026-10-13 - Dark-mode drawings of the static charts and the diagrams; a navbar label
 
 - **Drew each of the six static figures of the site a second time in the

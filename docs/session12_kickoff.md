@@ -97,8 +97,10 @@ checkout.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams
-  (2026-10-13; not uploaded). Still light in dark mode: the two Plotly
-  charts on the Overview page. The navbar reads "Methods and
+  (2026-10-13; not uploaded), and the two Plotly charts on the
+  Overview page redraw in the page's theme. Asked for, not built: a
+  longer-form flowchart of the whole project (owner's reference image
+  is for layout only). The navbar reads "Methods and
   Limitations" (owner).
 - Owner's notes of 2026-10-13, not built: an optional hover on the map tied to
   the legend; tap-to-highlight on a phone with the details in a fixed
