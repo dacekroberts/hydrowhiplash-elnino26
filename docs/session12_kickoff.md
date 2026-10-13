@@ -99,9 +99,9 @@ checkout.
   figures (first visual check to address; four PNG charts, two SVG
   diagrams, two Plotly charts); an optional hover on the map tied to
   the legend; tap-to-highlight on a phone with the details in a fixed
-  place. Cloudflare's edge refusal of AI-training crawlers is approved
-  if it leaves the pipeline alone (it does; it is domain-wide, and its
-  managed robots.txt would touch `site/robots.txt`); the owner sets it.
+  place. Cloudflare's edge refusal of AI-training crawlers is set
+  (owner, 2026-10-13: 15 blocked, search and Claude-User allowed,
+  domain-wide).
 
 **Next work, in order:**
 

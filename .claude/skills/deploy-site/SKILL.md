@@ -77,5 +77,9 @@ asked for every time: an earlier yes does not carry over.
   Real User Measurements, "Disable completely"). It is added only to
   document loads, so only a real browser shows it. A new domain starts
   with it on.
+- Cloudflare refuses 15 AI-training crawlers at its edge for the whole
+  domain (owner, 2026-10-13); search crawlers and Claude-User are
+  allowed. A fetch of the live site by a blocked agent fails by design:
+  check with a real browser.
 - A terminal opened before the token variables were saved does not have
   them; the upload then stops with "Nothing was sent".

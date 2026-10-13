@@ -17,6 +17,27 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - AI-training crawlers refused at Cloudflare's edge
+
+- **The owner blocked 15 crawlers in Cloudflare's AI crawler controls
+  for dacekroberts.dev (owner: "no searches blocked, other 15
+  blocked").** Every crawler Cloudflare classes as "AI Crawler" except
+  Claude-User, which fetches a page on a person's request and was left
+  allowed with the "AI Search" crawlers. This follows `site/robots.txt`
+  (training refused, search welcome) and enforces it. Rejected blocking
+  the whole category: Claude-User is filed in it. The setting is
+  domain-wide, so the owner's other projects under the domain have it
+  too. Supersedes the condition recorded earlier today ("approved on a
+  condition"): it is now set.
+- **Checked afterwards in a browser (00:34):** the Overview page loads
+  with both charts, the page asked no host but the site, and
+  `robots.txt` is still the project's own (642 bytes). Before the block,
+  Cloudflare's page showed ClaudeBot with 12 requests, none successful,
+  and 0 bytes.
+- **Updated `docs/retrospective_v1.md`** in its two places: the edge
+  refusal is described as done, and the open item becomes upkeep of the
+  list.
+
 ### 2026-10-13 - Owner's answers after the second upload; the pilot's start refused again
 
 - **Published the condensed ocean key (owner: "upload the ocean key to

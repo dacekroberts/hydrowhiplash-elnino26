@@ -237,8 +237,11 @@ Cloudflare's default analytics is off.
 
 **Crawlers.** `robots.txt` allows search engines and asks thirteen
 AI-training crawlers to stay out. That is a request they may ignore.
-Cloudflare can refuse them at its edge, which does not depend on their
-good behaviour; I have not switched that on, and can if I decide to.
+So on 13 October I also had Cloudflare refuse them at its edge, which
+does not depend on their good behaviour: 15 crawlers it classes as AI
+crawlers are blocked for the whole domain. Search crawlers are not
+blocked, and neither is Claude-User, which fetches a page when a person
+asks for it.
 
 **What a visitor cannot yet see.** The 2027 forecast, this winter's
 months, the verification, three drafted methods items held in comments,
@@ -268,8 +271,8 @@ guide.
 
 - Whether the DeepSeek build pilot runs; if it does, its results go to
   the sibling project.
-- Whether to refuse AI-training crawlers at Cloudflare's edge, beyond the
-  `robots.txt` request.
+- Cloudflare's list of AI crawlers grows; new ones start unblocked, so
+  the list needs a look now and then, as `robots.txt` does.
 - Whether to move from Cloudflare Pages to its Workers-based hosting
   before Pages is retired, not after. Only the upload step and the token
   would change.
