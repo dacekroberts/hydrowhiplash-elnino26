@@ -17,6 +17,23 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - The site answers at hydrowhiplash.dacekroberts.dev; an analytics script found
+
+- **The owner added the custom domain in the Cloudflare dashboard; it is
+  active.** One CNAME, `hydrowhiplash` to `hydrowhiplash.pages.dev`.
+  Checked from the session at 20:22: the four pages, `robots.txt` and the
+  sitemap answer on the custom domain, the footer is present, both hover
+  charts draw.
+- **Found on the custom domain only: a script from
+  `static.cloudflareinsights.com`, Cloudflare's Web Analytics beacon.** It
+  is not in the build (the pages.dev address had no outside request ten
+  minutes earlier); Cloudflare adds it for a proxied domain. It breaks two
+  of the owner's rules: no analytics on the domain, and no request to any
+  other host. The upload token cannot change it; the owner is turning it
+  off in the dashboard. Open until a browser check shows no such request.
+  Not checked: whether the same script is added on
+  `files.dacekroberts.dev`.
+
 ### 2026-10-12 - First publication: all four pages, at hydrowhiplash.pages.dev
 
 - **Published the site for the first time, on the owner's word, from
