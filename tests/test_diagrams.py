@@ -122,3 +122,26 @@ def test_series_legend_reads_thresholds_from_config(monkeypatch):
     plt.close(fig)
     assert "El Niño (DJF ONI ≥ 0.7): band and tick" in labels
     assert "Strong El Niño (≥ 1.8): darker tick, labelled" in labels
+
+
+def test_project_flowchart_is_one_layout_per_theme_with_four_turns(tmp_path):
+    paths = diagrams.project_flowchart(tmp_path)
+    assert sorted(p.name for p in paths) == ["project_flow.png", "project_flow.svg",
+                                             "project_flow_dark.png", "project_flow_dark.svg"]
+    assert len(diagrams.PROJECT_STREAMS) == 4 and all(len(s) == 5 for s in diagrams.PROJECT_STREAMS)
+    text = " | ".join(diagrams.project_labels())
+    for name in ("RONI", "ONI", "ERA5-Land", "Alaska", "Yukon", "NBAC", "CNFDB",
+                 f"{diagrams.MIN_FIRE_HA} ha", "frozen", "Pre-registered tests", "Flowchart"):
+        assert name in text, name
+    light, dark = (tmp_path / "project_flow.svg").read_text("utf-8"), \
+        (tmp_path / "project_flow_dark.svg").read_text("utf-8")
+    assert diagrams.theme.colour("surface", "dark") in dark and diagrams.theme.colour("surface", "dark") not in light
+    assert "\r\n" not in light
+
+
+def test_node_refuses_an_unknown_shape():
+    from matplotlib.figure import Figure
+
+    ax = Figure().add_axes((0, 0, 1, 1))
+    with pytest.raises(ValueError, match="No flowchart shape"):
+        diagrams._node(ax, "cloud", 50, 50, 10, 5, "x", 7)

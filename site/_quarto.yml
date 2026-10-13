@@ -20,6 +20,8 @@ website:
         text: Tracker
       - href: methods.qmd
         text: Methods and Limitations
+      - href: flowchart.qmd
+        text: Flowchart
 
 author: "Dace Roberts"
 

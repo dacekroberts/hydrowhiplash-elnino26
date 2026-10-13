@@ -959,6 +959,11 @@ and `methods_flow` in both widths. Same data, same code path
 figure for the site needs its dark file and a `.fig-light` /
 `.fig-dark` pair on the page, or it shows a light ground in dark mode.
 
+**Project flowchart (2026-10-13).** `project_flow.svg`, `.png` and
+their `_dark` copies: the whole project from sources to pages, with
+four turns, drawn by `src.diagrams.project_flowchart`. Structure only;
+it reads no table. Shown on `site/flowchart.qmd`.
+
 ### 8c. Prediction model tables (`results/tables/prediction_v1/`; exploratory, D83)
 
 Written by `python -m src.prediction` on 2026-10-12, after `run1` was

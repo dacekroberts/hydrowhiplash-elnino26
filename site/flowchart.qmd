@@ -1,0 +1,33 @@
+---
+title: "Project flowchart"
+toc: false
+---
+
+<!-- The whole project on one chart (owner, 2026-10-13: its own page, grouped by
+     stage, the four most important turns). Drawn by src/diagrams.py
+     (project_flowchart) and read from results/figures/. The sentences here
+     were written by Claude for the owner to edit: they are marked WIP. -->
+
+::: {.callout-note title="Work in progress"}
+This page is new. Its wording is still to be settled.
+:::
+
+[WIP] How the project runs from its sources to these pages, and four places where the plan met the data and changed. The shorter chart of the method is on the [Methods and limitations](methods.qmd) page.
+
+::: {.fig-light}
+```{python}
+#| echo: false
+#| fig-alt: "Flowchart of the whole project, top to bottom. Four streams start from sources. ENSO index from NOAA: every winter since 1950 is classified; the question whether ONI is still the index to use is answered no, NOAA made RONI its official index, so RONI classifies winters and ONI is kept as a check. ERA5-Land and snow stations: regional means weighted by latitude; the question whether El Niño dries the northern winter is answered only faintly in the Pacific Northwest and BC, so snowpack and snowfall share are tested too. Region boundaries: five regions at first; the question whether five cover it is answered no, so Alaska and Yukon were added, making seven. Fire perimeters from MTBS, WFIGS and CNFDB: burned area per season; the question whether one Canadian source holds up is answered no, Parks Canada polygons are missing for six years, so four Alberta seasons are flagged and NBAC is run as a check. The four streams meet in one region by year table. Below it: the pre-registered tests, run once, fed from the side by the analysis plan frozen before any fire data was read; the result tables, never edited after the run; figures and tables written by code; the site, which reads only those; and the site's five pages."
+from IPython.display import SVG
+SVG(filename="../results/figures/project_flow.svg")
+```
+:::
+
+::: {.fig-dark}
+```{python}
+#| echo: false
+#| fig-alt: "Flowchart of the whole project, top to bottom. Four streams start from sources. ENSO index from NOAA: every winter since 1950 is classified; the question whether ONI is still the index to use is answered no, NOAA made RONI its official index, so RONI classifies winters and ONI is kept as a check. ERA5-Land and snow stations: regional means weighted by latitude; the question whether El Niño dries the northern winter is answered only faintly in the Pacific Northwest and BC, so snowpack and snowfall share are tested too. Region boundaries: five regions at first; the question whether five cover it is answered no, so Alaska and Yukon were added, making seven. Fire perimeters from MTBS, WFIGS and CNFDB: burned area per season; the question whether one Canadian source holds up is answered no, Parks Canada polygons are missing for six years, so four Alberta seasons are flagged and NBAC is run as a check. The four streams meet in one region by year table. Below it: the pre-registered tests, run once, fed from the side by the analysis plan frozen before any fire data was read; the result tables, never edited after the run; figures and tables written by code; the site, which reads only those; and the site's five pages."
+from IPython.display import SVG
+SVG(filename="../results/figures/project_flow_dark.svg")
+```
+:::

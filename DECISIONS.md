@@ -17,6 +17,41 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - A flowchart of the whole project, on its own page
+
+- **Built the longer flowchart the owner asked for, on a new page
+  `site/flowchart.qmd`, fifth in the navbar ("Flowchart").** The owner
+  set three things: "the four most important turns", "own page is okay",
+  "grouped by stage okay"; the reference image was for layout only ("no
+  need to copy styling"). Drawn by `src.diagrams.project_flowchart` to
+  `results/figures/project_flow.*` in the light and dark themes, one
+  layout: four streams (index, climate, regions, fire), each a source, a
+  first step, a question, its answer and what replaced the plan; they
+  meet in the region x year table; below it the tests with the frozen
+  plan entering from the side, the result tables, the figures, the site
+  and its pages. Shapes carry the kind of node (slanted box a source,
+  box a step, diamond a turn, cylinder a stored table), with a line under
+  the chart saying so.
+- **The four turns, chosen by the session from the deviations log:**
+  ONI to RONI (D15, D41); the faint northern winter drying, with the
+  snow path tested too (D19); five regions to seven (D20); the Parks
+  Canada gap, four Alberta seasons flagged and NBAC run as a check
+  (D69). Rejected as a fifth or a substitute: California's fire window
+  through January (D43), a rule change with no question a reader would
+  ask first; the audit gate (D51, D64), which is process and not a turn
+  in the data; the move of prediction work to the sibling (D94), which
+  is outside this site.
+- **No result is drawn and no data is read**, as with the methods
+  flowchart: the test count and the significant count are left off; the
+  fire-size floor is read from `MIN_FIRE_HA`. Rejected reading the
+  registered table for "52" and "4": the module is data-free and its
+  tests run anywhere.
+- **Known limit: one layout.** On a phone the chart is scaled to the
+  screen's width and its type is small. A narrow layout, as the other
+  two diagrams have, is not built.
+- The page's two sentences and its alt text are the session's, marked
+  work in progress for the owner to word.
+
 ### 2026-10-13 - The two hover charts follow the theme; a longer project flowchart noted
 
 - **The Overview page's two hover charts now draw in the page's theme
