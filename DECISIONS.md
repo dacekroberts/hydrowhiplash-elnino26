@@ -17,6 +17,29 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Two handoffs to the prediction project: a site shell, and a delayed read of the retrospective
+
+- **Wrote `docs/handoff_site_shell.md` and sent its content to the
+  prediction session (owner's request):** the site shell as three layers
+  (Quarto, Plotly, Cloudflare Pages), a blanked `_quarto.yml`, the rules
+  the shell enforces, the owner's one-time Cloudflare steps and the traps
+  met. An offer: that project decides whether the shell fits, and a page
+  that runs a model on the reader's inputs would need an app host
+  instead. No data, results, held-back seasons or secrets in it. Copying
+  files still needs the owner's yes in that session.
+- **Proposed to the prediction session, on the owner's word, a read-only
+  pass over `docs/retrospective_v1.md` that is deliberately delayed.**
+  The retrospective holds no tables and names the held-back seasons only
+  as owed, so it cannot skew data. The reason for the delay is the
+  forking-paths problem (defined in `docs/data_dictionary.md` 8f): its
+  judgments about what mattered (D19's faint northern drying, for one)
+  could steer that project's choice of predictors if read before its
+  model plan is fixed. Proposed order: the owner edits the draft; the
+  sibling commits its plan; then it reads sections 5, 6, 8, 10 and 11
+  and records the date. Rejected: sharing now (the draft is not yet the
+  owner's position, and the plan is not fixed); never sharing (sections
+  8 and 11 are lessons that project can use).
+
 ### 2026-10-12 - V1 retrospective written; a condensed ocean key beside the map
 
 - **Wrote `docs/retrospective_v1.md` on the owner's word, after an outline

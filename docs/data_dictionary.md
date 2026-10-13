@@ -1062,6 +1062,25 @@ two new variants below them. Columns as in 8d except:
   season is under way. For a real spring forecast, `burn_lag1` needs
   last season's fires already counted, and CNFDB polygons arrive late.
 
+### 8f. Terms for how results are used
+
+- **Forking-paths problem** (Gelman and Loken's "garden of forking
+  paths"): when an analyst's choices (which predictors, which years,
+  which test, which model version) are made after seeing how earlier
+  results came out, the final result looks better on that data than it
+  would on new data, even if each step was reasonable and nothing was
+  tried twice. The bias is in the choices depending on the results, not
+  in any one calculation. No unit; it is a risk, not a measured quantity.
+- **Where it applies here:** the frozen `ANALYSIS_PLAN.md` and the
+  deviations log exist to close the forks for the registered tests (the
+  tests were chosen before any result). The prediction versions 1, 1b and
+  1c (8c to 8e) were each chosen after the last one's results, which is
+  why they are labelled exploratory. The held-back seasons are the check
+  that forks cannot bend.
+- **Trap:** it is a skew in choices, not in data, so a document with no
+  numbers in it can still cause it (a summary of what mattered, read
+  before the next plan is fixed).
+
 ## 9. Time conventions
 
 - **Year label:** the DJF value labelled Y is the winter (Y-1)-Y, paired
