@@ -48,9 +48,8 @@ closed the small things list.
   too small to tap), and a year slider was built for phones (D102). The
   owner tried it with a finger ("looks good") and it was reworked the
   same day: a larger thumb, one coloured box per winter with a key, a
-  fold button. The reworked slider is committed and not uploaded: the
-  live site has the first one until the next upload, which needs the
-  owner's yes. A finger has not tried the reworked one.
+  fold button, live since the tenth upload (commit 4d89fee, deployment
+  f95a2d88). A finger has not tried the reworked one.
 - **Private pages:** roadmap
   https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT, data guide
   https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P, methods reading copy
