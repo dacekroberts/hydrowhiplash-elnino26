@@ -89,11 +89,19 @@ checkout.
 - "What a fuller version would add" still calls a prediction model "the
   next step" and "planned"; versions 1 to 1c are merged and the work
   moved (D94).
-- Whether the DeepSeek pilot runs, and how the worker is started.
-- `ACTION_PLAN.md` "Historical charts" is built but not ticked: the
-  owner has not seen the charts.
-- The Design System artifact carries no font files and the tokens'
-  `type.fonts` list is empty.
+- The DeepSeek pilot has the owner's yes (2026-10-13); the worker's start was
+  refused by the permission check again, so the owner starts it (the
+  command, in `DECISIONS.md` 2026-10-13, or a permission rule).
+- `ACTION_PLAN.md` "Historical charts" is ticked (owner, 2026-10-13).
+- Closed 2026-10-13: the Design System's empty `type.fonts` is right for
+  faces hosted by Google Fonts.
+- Owner's notes of 2026-10-13, not built: dark-mode swaps for the
+  figures (first visual check to address; four PNG charts, two SVG
+  diagrams, two Plotly charts); an optional hover on the map tied to
+  the legend; tap-to-highlight on a phone with the details in a fixed
+  place. Cloudflare's edge refusal of AI-training crawlers is approved
+  if it leaves the pipeline alone (it does; it is domain-wide, and its
+  managed robots.txt would touch `site/robots.txt`); the owner sets it.
 
 **Next work, in order:**
 

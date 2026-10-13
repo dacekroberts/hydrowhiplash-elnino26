@@ -294,9 +294,10 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       worktree session can take it. *Any time.*
 - [ ] **Winter rainfall map** — the El Niño precipitation dipole, from
       Phase 1. Static cartopy is fine. *After Phase 1.*
-- [ ] **Historical charts** — per region: every fire season since 1984, El Niño
+- [x] **Historical charts** — per region: every fire season since 1984, El Niño
       years highlighted, with an empty slot for 2027. Plotly for hover. This
-      is the key result. *After Phase 4.*
+      is the key result. *After Phase 4.* Built in session 11; ticked on the
+      owner's word, 2026-10-13 ("charts look good for starters so tick").
 - [ ] **Live 2026–27 tracker** — this winter's precipitation and snowpack so
       far against all past winters, El Niño winters highlighted, updated
       monthly through spring. *Oct 2026 → spring 2027* [mid-project: D46].

@@ -17,6 +17,50 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Owner's answers after the second upload; the pilot's start refused again
+
+- **Published the condensed ocean key (owner: "upload the ocean key to
+  the live site").** Second upload, 2026-10-12 23:50, from commit
+  b85d17e: 42 files, 8,660,026 bytes, 7 files changed, deployment
+  b467aad2. Checked in a browser at the live map page: the key shows,
+  the footer is there, no host contacted but the site.
+- **Ticked `ACTION_PLAN.md` "Historical charts" (owner: "charts look
+  good for starters so tick").** The owner also reported that the hover
+  boxes work on the Overview page's charts.
+- **The DeepSeek build pilot has the owner's yes ("deepseek can run
+  now") and was not started: Claude Code's permission check refused the
+  worker's start a second time** (the `--allow-bypass` flag, classed as
+  creating an unsafe agent). No call was made and nothing was sent. The
+  staged copy of 2026-10-12 is still valid: none of the eight modules,
+  `src/pin_inputs.py`, `src/later.py` or `src/fire.py` changed since
+  commit 2e5ab0b. An empty file a test had left under `data/` in the
+  staged copy was removed. The start is the owner's: the command in a
+  terminal, or a permission rule. Model for a start in peak hours
+  (06:00 to 10:00 UTC): `deepseek-flash`, the owner's stated leaning.
+- **Refusing AI-training crawlers at Cloudflare's edge is approved on a
+  condition (owner: "okayed if it doesn't mess up our backend
+  pipeline").** Assessed, not measured: the upload goes to Cloudflare's
+  API with wrangler and never passes through the site's address, and the
+  live checks use a real browser, so neither is touched. Two things it
+  does touch: the setting belongs to the whole domain, so every project
+  under dacekroberts.dev gets it; and Cloudflare's managed robots.txt,
+  if switched on with it, would add to or replace `site/robots.txt`.
+  The setting is the owner's to change in the dashboard (the token
+  cannot).
+- **Closed the open item "the Design System artifact carries no font
+  files": not a defect.** The three faces are hosted by Google Fonts,
+  and the Design System type's own rule is that a hosted face has no
+  file and is named in `type.families` only, which is how the tokens
+  stand.
+- **Noted for later, not built (owner, 2026-10-13):** figures keep a
+  light ground in dark mode, the first visual check to address, by
+  swapping a light and a dark drawing of each; an optional hover on the
+  map tied to the legend's description; on a phone, a tap that
+  highlights a bar or a map region, with its details in a fixed place
+  (the owner suggested bottom left) because hovering is hard there. The
+  link-station rights check is the owner's own project and is no longer
+  carried here.
+
 ### 2026-10-12 - Two handoffs to the prediction project: a site shell, and a delayed read of the retrospective
 
 - **Wrote `docs/handoff_site_shell.md` and sent its content to the
