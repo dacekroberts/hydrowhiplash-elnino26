@@ -78,6 +78,11 @@ data/             downloads and processed files (not committed)
 
 `DATA_SOURCES.md` lists every dataset with its licence.
 
+Header image: fire seasons since 1984 from MTBS, WFIGS and the Canadian
+National Fire Database; full notices on the site's
+[Methods and Limitations](https://hydrowhiplash.dacekroberts.dev/methods.html#data-sources-and-attribution)
+page.
+
 ## Running it
 
 The data is not in this repository. Each source has a download script in
