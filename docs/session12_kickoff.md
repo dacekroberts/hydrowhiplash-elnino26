@@ -112,8 +112,9 @@ checkout.
    The upload uses wrangler and a scoped token the owner sets
    as environment variables (`CLOUDFLARE_API_TOKEN`,
    `CLOUDFLARE_ACCOUNT_ID`); ask before every upload. The Pages project `hydrowhiplash` exists, empty (classic
-   Pages, created with `--force`). Open: the owner's wording, the
-   first upload, then the custom domain in the dashboard. plotly.js
+   Pages, created with `--force`). First published 2026-10-12 from commit bf8a9e7 at
+   hydrowhiplash.pages.dev. Open: the custom domain in the dashboard
+   (the owner's step), then the work-in-progress wording. plotly.js
    is bundled with the site.
    After the site is live: a full V1 retrospective (owner, 2026-10-12:
    "after site is live: do a full V1 Retrospective"). Its scope and

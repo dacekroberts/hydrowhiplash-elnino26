@@ -17,6 +17,25 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - First publication: all four pages, at hydrowhiplash.pages.dev
+
+- **Published the site for the first time, on the owner's word, from
+  commit bf8a9e7:** 42 files, 8,658,381 bytes, to the Cloudflare Pages
+  project `hydrowhiplash` (deployment b84e53cc). The owner started the
+  upload in a terminal that did not have the two token variables, so
+  nothing was sent; the same command was then run from the session, which
+  had them. The first public piece is all four pages: the home page with
+  approved wording, the map, tracker and methods pages marked as work in
+  progress.
+- **Checked on the live address:** the four pages, `robots.txt` and the
+  bundled plotly.js all answer; the footer and the rights tags are
+  present; both hover charts and the map (seven regions, two ocean
+  pictures) draw; no page asks any other host for anything.
+- **Not yet:** the custom domain hydrowhiplash.dacekroberts.dev, which
+  the owner adds in the Cloudflare dashboard. Until then the site is
+  reachable only at the pages.dev address, while `site-url`, the sitemap
+  and `robots.txt` already name the custom domain.
+
 ### 2026-10-12 - Crawlers limited; the footer's code line kept; when the repository goes public
 
 - **`site/robots.txt` asks crawlers that collect pages for AI training to
