@@ -140,6 +140,46 @@ checkout.
   (owner, 2026-10-13: 15 blocked, search and Claude-User allowed,
   domain-wide).
 
+**Small things left that are not on the calendar** (owner, 2026-10-13:
+"have these included in next session kickoff"):
+
+- The repository is still private; when it goes public, the AI use
+  section links "logged" to the decisions log.
+- The winter rainfall map in the action plan was never built.
+- The coverage chart (`headline4`) has no phone drawing.
+- The two remaining "Work in progress" notes (map, tracker) have a navy
+  title band in dark mode, the page framework's default.
+- Tapping has not been tried with a finger on a real phone.
+
+**Making the repository public** (owner, 2026-10-13: "we should look to
+publicize the github repo"). A readiness check was run that day; the
+visibility is unchanged. Ask the owner once more before the switch
+itself: the history goes public with it and cannot be rewritten without
+moving the tags.
+
+- Clean: no secret in any tracked file or in the history; nothing under
+  `data/` was ever committed; the Cloudflare reference file is ignored.
+- Settled: the owner accepts the Gmail address in the commit history
+  ("2. yes good call").
+- Waiting on the owner:
+  1. `docs/retrospective_v1.md` says "Private": publish it (and drop the
+     line) or take it out of the repository first.
+  2. The held-back seasons' tables under `results/tables/` would be
+     public, so the sibling's not reading them would rest on instruction
+     only.
+  3. `.wrangler/cache/pages.json` is tracked and holds the Cloudflare
+     account ID (an identifier, not a credential; it stays in history):
+     untrack and ignore it.
+  4. The sibling's repository name is in 7 files: keep, or reword.
+  5. `README.md` is stale ("roughly 10 to 13 El Niño years", the
+     Miniforge Prompt, no link to the site, no result): a draft for the
+     owner to edit. The GitHub description and homepage are empty.
+- Also exposed, judged fine to publish unless the owner says otherwise:
+  the daily logs, kickoff notes, audits and the two logs (they name other
+  projects' sessions in places); the DeepSeek handoff and efficiency
+  review; private artifact links (they open for no one else); the
+  owner's Windows username in file paths in 14 files.
+
 **Next work, in order:**
 
 1. Done on 2026-10-12 (the site was looked at in a browser, dark,
