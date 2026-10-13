@@ -242,11 +242,13 @@ view and the Methods item below).
 - [x] Supporting: lag test for the whiplash mechanism, autocorrelation check
       with block bootstrap, Holm/BH correction within each hypothesis's
       family (as defined in `ANALYSIS_PLAN.md`)
-- [ ] Write the **Methods and limitations** section as you go, including
+- [x] Write the **Methods and limitations** section as you go, including
       every null result. A full draft is in `site/methods.qmd`
       (2026-10-12), numbers read from `run1`; open until the owner has
       edited and approved the wording, the typed numbers have tables and
       the notices are confirmed.
+      Ticked on the owner's word, 2026-10-13 ("4 tick"), after the
+      wording was approved in five batches; the tone-guide pass follows.
 
 All functions are in `src/stats.py`, tested on synthetic data with known
 effects.
