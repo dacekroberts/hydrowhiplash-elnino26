@@ -160,6 +160,24 @@ def report_rebuild(paths) -> None:
         print("rebuilt files are byte-identical to their pins; no re-pin needed")
 
 
+def report_pinned(paths) -> None:
+    """report_rebuild for the written paths that are pinned inputs. A run
+    whose writes are not pinned inputs could not have replaced a pinned file,
+    so it prints nothing (a stamped rebuild, a download to a stamped folder)."""
+    pinned = {p.resolve() for p in pinned_files()}
+    hits = [Path(p) for p in paths if Path(p).resolve() in pinned]
+    if hits:
+        report_rebuild(hits)
+
+
+def report_folder(folder: Path) -> None:
+    """report_pinned for every file in a download folder, the files
+    guard_folder guards; a downloader calls it once its --rebuild run has
+    written them."""
+    report_pinned([p for p in folder.iterdir() if p.is_file()]
+                  if folder.is_dir() else [])
+
+
 def head_commit() -> str:
     return subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True,
                           text=True, check=True).stdout.strip()

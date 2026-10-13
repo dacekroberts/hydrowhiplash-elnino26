@@ -101,15 +101,18 @@ def download_stamped(stamp: str) -> Path:
 
 
 def main(rebuild: bool = False) -> None:
-    pin_inputs.guard_write([DATA_RAW / f"{ENSO_INDEX.lower()}.ascii.txt",
-                            DATA_PROCESSED / "enso_index.csv",
-                            DATA_PROCESSED / "el_nino_winters.csv"], rebuild)
+    index_path = DATA_RAW / f"{ENSO_INDEX.lower()}.ascii.txt"
+    index_csv = DATA_PROCESSED / "enso_index.csv"
+    winters_csv = DATA_PROCESSED / "el_nino_winters.csv"
+    # the three files this run rewrites are pinned inputs: refused without
+    # --rebuild, and reported on after the write
+    pin_inputs.guard_write([index_path, index_csv, winters_csv], rebuild)
     DATA_PROCESSED.mkdir(parents=True, exist_ok=True)
     index = parse(download(rebuild=rebuild))
-    index.to_csv(DATA_PROCESSED / "enso_index.csv", index=False, lineterminator="\n")
+    index.to_csv(index_csv, index=False, lineterminator="\n")
 
     winters = classify_winters(index, ENSO_INDEX)
-    winters.to_csv(DATA_PROCESSED / "el_nino_winters.csv", index=False, lineterminator="\n")
+    winters.to_csv(winters_csv, index=False, lineterminator="\n")
 
     nino = winters[winters["phase"] == "el_nino"]
     print(f"El Nino winters since {CLIMATE_FIRST_YEAR}-{CLIMATE_FIRST_YEAR + 1 - 1900:02d} "
@@ -119,6 +122,7 @@ def main(rebuild: bool = False) -> None:
         print(f"  {r['winter']}  {ENSO_INDEX} {r['enso_djf']:+.1f}{tag}")
     counts = winters["phase"].value_counts()
     print(f"\nTotals: {counts.to_dict()}")
+    pin_inputs.report_pinned([index_path, index_csv, winters_csv])
 
 
 if __name__ == "__main__":

@@ -578,10 +578,12 @@ def main(rebuild: bool = False) -> None:
                                            ordered=True)
     region_year = region_year.sort_values(["region", "year"]).reset_index(drop=True)
     region_year["region"] = region_year["region"].astype(str)
-    for path in (STATION_INDEX_TABLE, COMMITTED_INDEX):
+    written = [STATION_INDEX_TABLE, COMMITTED_INDEX]
+    for path in written:
         path.parent.mkdir(parents=True, exist_ok=True)
         region_year.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(region_year)} rows")
+    pin_inputs.report_pinned(written)
     print(f"{len(normals)} stations with a {STATION_NORMAL_YEARS} normal")
     print(agreement(region_year, normals, table).round(2).to_string(index=False))
 

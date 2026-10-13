@@ -89,9 +89,10 @@ checkout.
 - "What a fuller version would add" still calls a prediction model "the
   next step" and "planned"; versions 1 to 1c are merged and the work
   moved (D94).
-- The DeepSeek pilot has the owner's yes (2026-10-13); the worker's start was
-  refused by the permission check again, so the owner starts it (the
-  command, in `DECISIONS.md` 2026-10-13, or a permission rule).
+- The DeepSeek pilot ran and was merged on 2026-10-13 (`DECISIONS.md`
+  "The delegated-build pilot ran and was merged"); the owner starts the
+  worker in a terminal, since the session's start is refused. Still to
+  do: the efficiency review of the handoff's section 4.
 - `ACTION_PLAN.md` "Historical charts" is ticked (owner, 2026-10-13).
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.

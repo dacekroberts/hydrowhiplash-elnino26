@@ -111,6 +111,9 @@ def main(args: list[str] | None = None) -> None:
     print(f"  {target.stat().st_size:,} bytes, zip valid; manifest.json written")
     if stamp:
         later.record(out, stamp, MTBS_PERIMETER_URL)
+    else:
+        # the run rewrote a pinned folder: which of its files differ from their pins
+        pin_inputs.report_folder(out)
 
 
 if __name__ == "__main__":

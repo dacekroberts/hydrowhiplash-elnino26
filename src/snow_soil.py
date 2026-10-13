@@ -99,10 +99,12 @@ def main(rebuild: bool = False, stamp: str | None = None,
     table["region"] = pd.Categorical(table["region"], categories=list(REGIONS), ordered=True)
     table = table.sort_values(["region", "year"]).reset_index(drop=True)
     table["region"] = table["region"].astype(str)
-    for path in (ctx.processed(SNOW_SOIL_TABLE), ctx.table(COMMITTED)):
+    written = [ctx.processed(SNOW_SOIL_TABLE), ctx.table(COMMITTED)]
+    for path in written:
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(table)} rows, years {table['year'].min()}-{table['year'].max()}")
+    pin_inputs.report_pinned(written)
     print(table.groupby("region", sort=False)[["snowfall_frac", "soil_moisture"]].agg(
         ["mean", "min", "max"]).round(3).to_string())
     ctx.close("snow_soil")

@@ -46,17 +46,20 @@ def write_tables(table: pd.DataFrame, rebuild: bool = False, ctx=None) -> None:
     """Write the table to data/processed/ and its committed copy to
     results/tables/. The committed copy is a pinned input: refused without
     `rebuild`, whoever calls (a notebook cell included; cold check
-    2026-10-11 M1)."""
+    2026-10-11 M1). A --rebuild write prints the pin report; a stamped
+    rebuild writes beside the pinned copy and prints none (D88)."""
     from src import later, pin_inputs
 
     ctx = ctx or later.paths(None)
     if not ctx.stamp:  # a stamped rebuild writes beside the pinned copy (D88)
         pin_inputs.guard_write([COMMITTED], rebuild)
-    for path in (ctx.processed(OUT), ctx.table(COMMITTED)):
+    written = [ctx.processed(OUT), ctx.table(COMMITTED)]
+    for path in written:
         path.parent.mkdir(parents=True, exist_ok=True)
         table.to_csv(path, index=False, lineterminator="\n")
         print(f"wrote {path}: {len(table)} rows, {table['region'].nunique()} regions, "
               f"years {table['year'].min()}-{table['year'].max()}")
+    pin_inputs.report_pinned(written)
 
 
 def main(rebuild: bool = False, stamp: str | None = None,

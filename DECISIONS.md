@@ -17,6 +17,43 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The delegated-build pilot ran and was merged (D77)
+
+- **Merged the DeepSeek worker's build on the owner's word ("merge"):
+  eight modules now print the pin report after a guarded `--rebuild`
+  write** (`src/download_cnfdb.py`, `download_mtbs.py`,
+  `download_nbac.py`, `download_wfigs.py`, `download_oni.py`,
+  `phase2.py`, `snow_soil.py`, `stations.py`), through two new helpers
+  in `src/pin_inputs.py`: `report_pinned` (the report for those written
+  paths that are pinned inputs, nothing otherwise) and `report_folder`
+  (the same for a download folder's files). New
+  `tests/test_rebuild_report.py`, nine tests. 10 files, 465 lines added,
+  9 removed. No number, table or pinned input changes: the report is a
+  printed line after a write.
+- **The run:** started by the owner in a terminal (the session's start
+  was refused by the permission check), on the staged copy of
+  2026-10-12 (code only), `deepseek-flash`, effort high, peak hours,
+  07:32 to 07:49 UTC, 17 minutes, one run, no retry. The worker's commit
+  in the staged copy is 2358912.
+- **Verified by the session, not taken from the worker's report:** in
+  the staged copy the plan's test command gave 124 passed and the six
+  failures the plan named (115 passed before); only allowed files
+  changed; no em dashes, clean whitespace, LF endings; the source diff
+  read in full. After the merge the full suite in the main checkout:
+  447 passed (432 at the last full run, 3b14605).
+- **The five things the plan left unsaid on purpose, and what the
+  worker did:** a stamped run prints no report (found; the downloaders
+  report only when no stamp is given, and `report_pinned` prints nothing
+  for an unpinned path); `phase2`'s two guards give one report (found;
+  the report sits in `write_tables`); the lazy import in `stations`
+  (used as it stood); which files of a download folder are reported
+  (every file of the folder that is pinned); testing a `main` that
+  calls the network (every network call replaced in the tests).
+- **Rejected:** merging on the worker's report alone; a second run on
+  `deepseek-v4-pro` for comparison (one pilot was asked for). The
+  efficiency review the handoff asks for
+  (`docs/deepseek_handoff_2026-10-11.md` section 4) is still to do.
+
 ### 2026-10-13 - AI-training crawlers refused at Cloudflare's edge
 
 - **The owner blocked 15 crawlers in Cloudflare's AI crawler controls
