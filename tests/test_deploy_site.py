@@ -39,7 +39,21 @@ def test_limits_and_manifest(tmp_path, monkeypatch):
     assert record["files"]["sub/a.js"] == {"bytes": 5, "sha256": hashlib.sha256(b"12345").hexdigest()}
 
 
-def test_upload_is_not_configured_and_refuses_the_staging_flags(capsys):
-    assert deploy_site.UPLOAD is None
+def test_upload_refuses_the_staging_flags(capsys):
     assert deploy_site.main(["--upload", "--allow-drafts"]) == 1
     assert "cannot be combined" in capsys.readouterr().out
+
+
+def test_upload_command_names_what_is_missing_and_never_holds_the_token(monkeypatch):
+    for name in deploy_site.UPLOAD_ENV:
+        monkeypatch.delenv(name, raising=False)
+    monkeypatch.setattr(deploy_site.shutil, "which", lambda name: None)
+    command, missing = deploy_site.upload_command("abc1234")
+    assert len(missing) == 3 and "wrangler is not on the PATH" in missing[-1]
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "secret-value")
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "an-account")
+    monkeypatch.setattr(deploy_site.shutil, "which", lambda name: "C:/tools/wrangler.cmd")
+    command, missing = deploy_site.upload_command("abc1234")
+    assert missing == [] and command[:3] == ["C:/tools/wrangler.cmd", "pages", "deploy"]
+    assert command[command.index("--project-name") + 1] == "hydrowhiplash"
+    assert "abc1234" in command and "secret-value" not in " ".join(command)

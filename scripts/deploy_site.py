@@ -11,10 +11,16 @@ Steps, each of which stops the run when it fails:
   4. The build fits the host's limits (FILE_LIMIT_BYTES, FILE_COUNT_LIMIT).
   5. The build is staged in dist/site/ with dist/deploy_manifest.json beside
      it: the commit, the time, and the size and sha256 of every file.
-  6. Upload. NOT CONFIGURED: the Cloudflare details (project, domain, direct
-     upload or a build from the repository) were not settled when this was
-     written (2026-10-12). `--upload` stops with a message until UPLOAD is
-     filled in; nothing here contacts any host.
+  6. Upload, only with `--upload`: a direct upload of dist/site/ to the
+     Cloudflare Pages project PAGES_PROJECT with Cloudflare's `wrangler`
+     (owner, 2026-10-12: a scoped API token, not a stored browser sign-in).
+     It needs `wrangler` on the PATH and two environment variables the owner
+     sets outside the repository and outside any chat:
+       CLOUDFLARE_API_TOKEN   a token with the one permission
+                              "Account, Cloudflare Pages, Edit"
+       CLOUDFLARE_ACCOUNT_ID  the account's id
+     Without all three the run stops before anything is sent. The token can
+     publish to the Pages project and nothing else: no DNS, no file host.
 
 Nothing under data/ is read or staged: the site reads only results/.
 
@@ -47,7 +53,9 @@ FILE_LIMIT_BYTES = 25 * 1024 * 1024
 FILE_COUNT_LIMIT = 20_000
 # Where the site is published (owner, 2026-10-12); .dev is HTTPS only.
 SITE_URL = "https://hydrowhiplash.dacekroberts.dev"
-UPLOAD = None  # the upload command as a list of arguments, once the hosting details are settled
+PAGES_PROJECT = "hydrowhiplash"
+PAGES_BRANCH = "main"            # the project's production branch
+UPLOAD_ENV = ("CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ACCOUNT_ID")
 DRAFT_WORD = re.compile(r"\bdraft", re.IGNORECASE)
 
 _spec = importlib.util.spec_from_file_location("check_site", ROOT / "scripts" / "check_site.py")
@@ -126,6 +134,23 @@ def checkout_problems() -> list[str]:
     return problems
 
 
+def upload_command(commit: str) -> tuple[list[str], list[str]]:
+    """The upload as a list of arguments, and what is missing for it to run
+    (an empty list when it can). The token is read by wrangler from the
+    environment; it is never put on the command line or printed."""
+    import os
+
+    wrangler = shutil.which("wrangler")
+    missing = [f"environment variable {name} is not set" for name in UPLOAD_ENV
+               if not os.environ.get(name)]
+    if wrangler is None:
+        missing.append("wrangler is not on the PATH (npm install -g wrangler)")
+    command = [wrangler or "wrangler", "pages", "deploy", str(STAGED),
+               "--project-name", PAGES_PROJECT, "--branch", PAGES_BRANCH,
+               "--commit-hash", commit, "--commit-dirty=false"]
+    return command, missing
+
+
 def main(args: list[str]) -> int:
     allow_drafts, allow_dirty, upload = (f in args for f in ("--allow-drafts", "--allow-dirty", "--upload"))
     if upload and (allow_drafts or allow_dirty):
@@ -165,11 +190,13 @@ def main(args: list[str]) -> int:
     print(f"manifest: {MANIFEST} (commit {record['commit'][:7]})")
     if not upload:
         return 0
-    if UPLOAD is None:
-        print(f"upload is not configured: no Cloudflare Pages project for {SITE_URL} yet. "
-              "Nothing was sent.")
+    command, missing = upload_command(record["commit"])
+    if missing:
+        print("\n".join(missing))
+        print("Nothing was sent.")
         return 1
-    return subprocess.run(UPLOAD, cwd=ROOT).returncode
+    print(f"uploading to the Pages project {PAGES_PROJECT} ({SITE_URL})")
+    return subprocess.run(command, cwd=ROOT).returncode
 
 
 if __name__ == "__main__":

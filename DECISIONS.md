@@ -17,6 +17,20 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Upload authorised by a scoped token (owner: "i think C is best")
+
+- **The deploy step uploads with Cloudflare's `wrangler` and a scoped API
+  token.** Of three options put to the owner (the owner runs each upload;
+  a browser sign-in stored on the machine; a token limited to "Cloudflare
+  Pages: Edit"), the owner chose the token. Rejected by recommendation:
+  the stored sign-in, which covers the whole account, DNS and the file
+  host included. `scripts/deploy_site.py --upload` reads
+  `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` from the environment
+  (set by the owner, never in the repository or a chat), needs `wrangler`
+  on the PATH, and stops before sending anything when one is missing.
+  The Pages project is `hydrowhiplash`, production branch `main`. Nothing
+  has been uploaded; each upload is still asked for first.
+
 ### 2026-10-12 - The site's address: hydrowhiplash.dacekroberts.dev
 
 - **Owner: "subdomain: hydrowhiplash.dacekroberts.dev".** Set as
