@@ -9,23 +9,27 @@ is from the repository's own records (the decisions log, the deviations
 log, the daily logs, the audits, the run tables, git history) at commit
 b0b1724. Private: nothing here is published on the site.
 
+Revised 13 October 2026: read against my tone guide (the answer first,
+shorter sentences), and brought up to date where the day after launch
+closed something. The counts in section 3 are still those of 12 October.
+
 ## 1. In short
 
-I set out to answer one question: does a strong El Niño winter tell us
-anything about the fire season that follows it in western North America,
-and if so, what should we expect in 2027? In nine days I built the data
-pipeline, wrote 52 tests down before opening any fire data, ran them once,
-and put the result on a public site.
-
-The answer is mostly no. Of the 52 tests, 4 are significant after
+A strong El Niño winter tells us little about the fire season that follows
+it in western North America. Of 52 tests, 4 are significant after
 correcting for the number of tests, and none of the 4 links El Niño itself
-to burned area. What shows up is the step after it: winter moisture goes
-with burned area in Alberta and Northern California. These are
+to burned area. What shows up is the step after El Niño: winter moisture
+goes with burned area in Alberta and Northern California. These are
 associations over about 42 seasons, not causes.
 
-V1 is the analysis, the registered result and a four-page site. The
-forecast for 2027, the winter tracker and the check against what burns are
-not in V1: they arrive on dates already on the calendar.
+The question was whether such a winter says anything about the season
+after it, and what to expect in 2027. In nine days I built the data
+pipeline and wrote 52 tests down before opening any fire data. I ran them
+once and put the result on a public site.
+
+V1 is the analysis, the registered result and the site. The forecast for
+2027, the winter tracker and the check against what burns are not in V1.
+They arrive on dates already on the calendar.
 
 ## 2. What was planned
 
@@ -103,12 +107,11 @@ substantial and 16 not. By kind:
 - **Corrections to my own records.** D70, D71 and D72 each correct an
   earlier entry; D97 corrects D95; D55 supersedes D54 on the day it was written.
 
-The departure that mattered most was an early one, D19: El Niño winter
+The departure that mattered most was an early one, D19. El Niño winter
 drying in the Pacific Northwest and British Columbia is weaker than I had
-assumed (about 5% less December to February precipitation than in neutral
-winters, against 38% more in Southern California). The mechanism the
-northern half of the project was built on turned out to be faint in the
-first table I made.
+assumed: about 5% less December to February precipitation than in neutral
+winters. Southern California gets 38% more. The mechanism the northern
+half of the project was built on was faint in the first table I made.
 
 ## 5. What the findings are, and are not
 
@@ -168,9 +171,11 @@ Burned-area estimates are in log points.
 - **Private pages.** A roadmap, a data guide, a results page, a methods
   reading copy and a design system, each refreshed from the repository.
 - **A second model.** One read-only review of the run code by DeepSeek on
-  copies holding no data (D77). A harder pilot, a delegated build, was
-  prepared and never run: the assistant's permission check blocked the
-  worker, and I have not started it myself.
+  copies holding no data (D77). A harder pilot, a delegated build, ran on
+  13 October once I started the worker myself; the assistant's permission
+  check had blocked it twice. The build took 17 minutes and no defect was
+  found in it. Its cost is unknown, because the token counts were not
+  logged.
 - **The split.** Prediction work left for a sibling repository on 12
   October, with a one-time handover of code and tables. Three burned-area
   tables for seasons still open are held back and owed later.
@@ -178,9 +183,9 @@ Burned-area estimates are in log points.
 ## 8. What went wrong, or cost more than it should
 
 - **I trusted the mechanism before I had measured it.** D19 came in
-  Phase 1. The honest framing ("what do past El Niños suggest", not "what El
-  Niño does") followed, but the regions and hypotheses had been chosen
-  around a dipole that is weaker than the textbooks suggest.
+  Phase 1. The honest framing followed: "what do past El Niños suggest",
+  not "what El Niño does". But the regions and hypotheses had been chosen
+  around a dipole that was fainter in the first table than I had assumed.
 - **Records needed correcting more than once.** D69 was corrected by D71,
   and D71 by D72. Each correction was caught by an audit, which is the
   system working, and each was a claim written faster than it was
@@ -204,8 +209,9 @@ Burned-area estimates are in log points.
 - **First guesses on sources.** The sea-temperature data was first
   proposed as version 5; NOAA builds its index from version 6. The first
   ERA5-Land download estimate was off (D10, D21).
-- **Wording is still open.** Three of four pages went public marked as
-  work in progress, by my choice, so that the site could go up.
+- **Wording was open at launch.** Three of four pages went public marked
+  as work in progress, by my choice, so that the site could go up. It was
+  settled the next day, in five batches.
 
 ## 9. The final product
 
@@ -213,20 +219,28 @@ Burned-area estimates are in log points.
 2026, from commit bf8a9e7: 42 files, 8.7 MB, hosted on Cloudflare Pages by
 direct upload.
 
+The pages as they stand on 13 October, five with the flowchart:
+
 - **Overview.** The question, the data areas, the regions and the
-  hypotheses in one panel; the two-pathway diagram; two hover charts of
-  every winter and every fire season with El Niño years marked; dated
-  notes where the tracker and the verification will go. Wording approved.
+  hypotheses in one panel; the two-pathway diagram; two charts of every
+  winter and every fire season with El Niño years marked. A tap or a click
+  on a bar keeps its details on screen.
 - **Map.** Seven regions coloured against their own normal, four
-  datasets, every year from 1951, a strip of every winter's El Niño
-  class, and the Pacific's sea-surface temperature for that winter as a
-  picture only. Work in progress.
+  datasets, every year from 1951, and a strip of every winter's El Niño
+  class. The Pacific's sea-surface temperature for that winter is shown as
+  a picture only. Regions, the key and a readout are linked. Marked as a
+  first version until this winter's months join it.
 - **Tracker.** The timetable of every date the site is waiting for. Work
   in progress; the month tiles come with the first winter data.
-- **Methods and limitations.** The method, every test including the
+- **Methods and Limitations.** The method, every test including the
   nulls, what was filtered out, limits grouped by the claim each one
-  constrains, and source credits. Sections fold. Work in progress; the AI
-  use section is one placeholder line.
+  constrains, source credits, and how AI was used. Sections fold. Wording
+  approved.
+- **Flowchart.** The whole project from sources to pages, with the four
+  turns where the plan met the data.
+
+Every figure has a dark-theme drawing, and the three interval charts have
+a stacked drawing for a phone.
 
 **How it is protected.** A copyright line in every footer;
 machine-readable rights tags in every page's head; a credit inside each
@@ -238,14 +252,13 @@ Cloudflare's default analytics is off.
 **Crawlers.** `robots.txt` allows search engines and asks thirteen
 AI-training crawlers to stay out. That is a request they may ignore.
 So on 13 October I also had Cloudflare refuse them at its edge, which
-does not depend on their good behaviour: 15 crawlers it classes as AI
+does not depend on their good behaviour. The 15 crawlers it classes as AI
 crawlers are blocked for the whole domain. Search crawlers are not
 blocked, and neither is Claude-User, which fetches a page when a person
 asks for it.
 
 **What a visitor cannot yet see.** The 2027 forecast, this winter's
-months, the verification, three drafted methods items held in comments,
-and the code: the repository is private.
+months, the verification, and the code: the repository is private.
 
 ## 10. Where to go from here
 
@@ -262,15 +275,14 @@ and the code: the repository is private.
 | after 31 October 2027 | The northern fire seasons end; first verification |
 | after 31 January 2028 | California's 2027 season ends; verification complete |
 
-**Before the repository goes public:** resolve the work-in-progress
-wording on three pages, write the AI use section, decide the three held
-methods items, and audit code comments and site prose against my tone
-guide.
+**Before the repository goes public:** four things stood here at launch,
+and all were done on 13 October. They were the wording on every page, the
+AI use section, the three held methods items, and the audit of code
+comments and site prose against my tone guide. Left: make it public, then
+link the AI use section to the decisions log.
 
 **Open decisions:**
 
-- Whether the DeepSeek build pilot runs; if it does, its results go to
-  the sibling project.
 - Cloudflare's list of AI crawlers grows; new ones start unblocked, so
   the list needs a look now and then, as `robots.txt` does.
 - Whether to move from Cloudflare Pages to its Workers-based hosting
@@ -278,8 +290,10 @@ guide.
   would change.
 - The year in the ERA5-Land attribution line, to recheck at each
   publication.
-- Small type on the two-panel headline charts; figures keep a light
-  ground in the dark theme; the map's class cut-offs were chosen by eye.
+- Small type on the headline charts at a desktop's column width (a phone
+  now gets its own drawing); the coverage chart has no phone drawing; the
+  map's class cut-offs were chosen by eye.
+- The winter rainfall map in the action plan is not built.
 
 **Later extensions, still unbuilt by design:** La Niña, and anything
 predictive in this repository.
@@ -299,7 +313,7 @@ predictive in this repository.
 
 **Change:**
 
-- Measure the mechanism before choosing regions around it. A one-day
+- Measure the mechanism before choosing regions around it. One day on a
   pilot table would have shown D19 before the plan was written.
 - When a request names something that could be two things, ask which
   before building. The heading sizes cost three rounds.
