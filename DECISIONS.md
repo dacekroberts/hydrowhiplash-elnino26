@@ -17,6 +17,20 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The page name capitalised wherever the site uses it
+
+- **"Methods and Limitations" now reads the same in four more places
+  (owner: "address top bar ripple affect"):** the page's own title in
+  `site/methods.qmd`, the link text on the map page and on the flowchart
+  page, and the rights line in `site/_rights.html`. This supersedes the
+  line in "Dark-mode drawings of the static charts and the diagrams; a
+  navbar label" that said "The page's own title and the link text on the
+  map page are unchanged."
+- Left as written: the phrase used as a plain description, not as the
+  page's name (`ACTION_PLAN.md`, `docs/retrospective_v1.md`, older
+  entries here), and `docs/handoff_site_shell.md`, a blanked example
+  already sent to the sibling.
+
 ### 2026-10-13 - The project flowchart made readable and coloured by stream
 
 - **Enlarged the flowchart after the owner found it "hard to read" in

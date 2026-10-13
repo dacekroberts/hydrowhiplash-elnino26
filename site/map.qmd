@@ -42,6 +42,6 @@ So 1998 shows the 1997-98 El Niño winter and the fire season that followed
 it.
 
 **What the map does not show.** No trend and no test result: for those, see
-[Methods and limitations](methods.qmd). Each region is a whole state,
+[Methods and Limitations](methods.qmd). Each region is a whole state,
 province or territory, so one colour covers wet coasts and dry interiors
 alike.

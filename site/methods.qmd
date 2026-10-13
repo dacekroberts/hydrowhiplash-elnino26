@@ -1,5 +1,5 @@
 ---
-title: "Methods and limitations"
+title: "Methods and Limitations"
 body-classes: fold-sections
 ---
 

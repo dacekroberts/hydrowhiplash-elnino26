@@ -13,7 +13,7 @@ page-layout: full
 This page is new. Its wording is still to be settled.
 :::
 
-[WIP] How the project runs from its sources to these pages, and four places where the plan met the data and changed. The shorter chart of the method is on the [Methods and limitations](methods.qmd) page.
+[WIP] How the project runs from its sources to these pages, and four places where the plan met the data and changed. The shorter chart of the method is on the [Methods and Limitations](methods.qmd) page.
 
 :::: {.fig-wide}
 ::: {.fig-light}
