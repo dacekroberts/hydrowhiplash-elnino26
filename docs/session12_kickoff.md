@@ -108,8 +108,9 @@ checkout.
    only. `scripts/deploy_site.py` stages a checked build; its upload
    is empty until the Cloudflare Pages project and subdomain exist
    (reference: `handoff_cloudflare-setup_reference.md`, untracked, in
-   the repository root). Open: the subdomain, how the upload is
-   authorised, and plotly.js from a CDN on the home page.
+   the repository root). The address is hydrowhiplash.dacekroberts.dev (owner).
+   Open: the Pages project, how the upload is authorised, and
+   plotly.js from a CDN on the home page.
 3. The DeepSeek pilot, if the owner says so; then the efficiency review
    the handoff asks for (`docs/deepseek_handoff_2026-10-11.md` section
    4).

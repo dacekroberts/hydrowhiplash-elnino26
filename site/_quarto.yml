@@ -6,6 +6,7 @@ project:
 
 website:
   title: "El Niño and the 2027 fire season"
+  site-url: "https://hydrowhiplash.dacekroberts.dev"
   page-footer: "Text and figures © 2026 Dace Roberts, all rights reserved. Code: MIT licence."
   navbar:
     left:

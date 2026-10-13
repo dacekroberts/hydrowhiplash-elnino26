@@ -45,6 +45,8 @@ MANIFEST = DIST / "deploy_manifest.json"
 # file, 20,000 files a site on the free plan. Read the current figures when UPLOAD is set.
 FILE_LIMIT_BYTES = 25 * 1024 * 1024
 FILE_COUNT_LIMIT = 20_000
+# Where the site is published (owner, 2026-10-12); .dev is HTTPS only.
+SITE_URL = "https://hydrowhiplash.dacekroberts.dev"
 UPLOAD = None  # the upload command as a list of arguments, once the hosting details are settled
 DRAFT_WORD = re.compile(r"\bdraft", re.IGNORECASE)
 
@@ -164,7 +166,8 @@ def main(args: list[str]) -> int:
     if not upload:
         return 0
     if UPLOAD is None:
-        print("upload is not configured: the hosting details are not settled. Nothing was sent.")
+        print(f"upload is not configured: no Cloudflare Pages project for {SITE_URL} yet. "
+              "Nothing was sent.")
         return 1
     return subprocess.run(UPLOAD, cwd=ROOT).returncode
 

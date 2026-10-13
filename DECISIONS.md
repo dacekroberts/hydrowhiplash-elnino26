@@ -17,6 +17,15 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - The site's address: hydrowhiplash.dacekroberts.dev
+
+- **Owner: "subdomain: hydrowhiplash.dacekroberts.dev".** Set as
+  `site-url` in `site/_quarto.yml` (Quarto then writes a sitemap and
+  canonical links for that address) and as `SITE_URL` in
+  `scripts/deploy_site.py`. Nothing is deployed and no DNS record was
+  touched. Still open: the Cloudflare Pages project, the custom-domain
+  record for the subdomain, and how the upload is authorised.
+
 ### 2026-10-12 - Toward going live: a deploy step, the readiness check, the Cloudflare reference
 
 - **Built the deploy step now, without the upload (owner: "deploy step
