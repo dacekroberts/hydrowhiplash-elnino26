@@ -20,6 +20,7 @@ Run:  python -m src.interactive
 """
 from __future__ import annotations
 
+import re
 from pathlib import Path
 
 import numpy as np
@@ -42,6 +43,9 @@ def write_plotly_lib(out: Path = PLOTLY_LIB) -> Path:
     out.write_bytes(get_plotlyjs().encode("utf-8"))
     return out
 RAIN_VALUE = "precip_djf_mm"
+READOUT_HINT = "Tap or click a bar to keep its details here."
+# a picked bar stays as drawn; the panel's other bars fade to this
+UNPICKED_OPACITY = 0.3
 
 
 def theme_swaps() -> dict[str, dict[str, str]]:
@@ -64,15 +68,48 @@ def theme_swaps() -> dict[str, dict[str, str]]:
 # Draws the chart from the JSON beside it, in the page's theme, and again
 # when the theme changes. The JSON holds the first theme's colours; another
 # theme's are put in by replacing each six-digit hex colour in its text.
+# A click or a tap on a bar keeps its details in the readout under the
+# chart, which stays at the bottom left of the screen while the chart is in
+# view, and dims the panel's other bars (owner, 2026-10-13: hover is hard on
+# a phone). The same bar again, or the readout, lets go.
 _DRAW = """(function () {
   var el = document.getElementById(__ID__), swaps = __SWAPS__, shown = null;
+  var out = document.getElementById(__ID__ + "-readout"), hint = out.textContent, picked = null;
+  function plain(s) { return String(s).replace(/<[^>]*>/g, ""); }
+  function dim(on) {
+    if (picked && picked[2]) Plotly.restyle(el, {selectedpoints: [on ? [picked[1]] : null]}, [picked[0]]);
+  }
+  function release() {
+    dim(false);
+    picked = null;
+    out.textContent = hint;
+    out.classList.remove("on");
+  }
+  function pick(e) {
+    var pt = e.points && e.points[0];
+    var text = pt && (pt.hovertext || (pt.data.hovertext && pt.data.hovertext[pt.pointIndex]));
+    if (!text) return;
+    var same = picked && picked[0] === pt.curveNumber && picked[1] === pt.pointIndex;
+    release();
+    if (same) return;
+    picked = [pt.curveNumber, pt.pointIndex, pt.data.type === "bar"];
+    dim(true);
+    out.textContent = "";
+    [pt.data.name || ""].concat(String(text).split("<br>")).forEach(function (line, i) {
+      var part = document.createElement(i ? "span" : "strong");
+      part.textContent = plain(line);
+      out.appendChild(part);
+    });
+    out.classList.add("on");
+  }
+  out.addEventListener("click", release);
   var source = document.getElementById(__ID__ + "-figure").textContent;
   function scheme() {
     for (var name in swaps) if (document.body.classList.contains("quarto-" + name)) return name;
     return "";
   }
   function draw() {
-    var name = scheme();
+    var name = scheme(), first = shown === null;
     if (name === shown) return;
     shown = name;
     var text = !name ? source : source.replace(/#[0-9a-fA-F]{6}(?![0-9a-fA-F])/g, function (hex) {
@@ -80,6 +117,7 @@ _DRAW = """(function () {
     });
     var fig = JSON.parse(text);
     Plotly.react(el, fig.data, fig.layout, __CONFIG__);
+    if (first) el.on("plotly_click", pick); else dim(true);
   }
   draw();
   new MutationObserver(draw).observe(document.body, {attributes: true, attributeFilter: ["class"]});
@@ -95,10 +133,12 @@ def fragment(fig, div_id: str) -> str:
     draw = (_DRAW.replace("__ID__", json.dumps(div_id))
             .replace("__SWAPS__", json.dumps(theme_swaps()))
             .replace("__CONFIG__", json.dumps({"displayModeBar": False, "responsive": True})))
-    return (f'<div id="{div_id}" class="plotly-graph-div" '
+    # one box around the chart and its readout: the readout sticks inside it
+    return (f'<div class="chart-box">\n<div id="{div_id}" class="plotly-graph-div" '
             f'style="height:{int(fig.layout.height)}px; width:100%;"></div>\n'
+            f'<p id="{div_id}-readout" class="chart-readout" aria-live="polite">{READOUT_HINT}</p>\n'
             f'<script type="application/json" id="{div_id}-figure">{figure}</script>\n'
-            f'<script>{draw}</script>\n')
+            f'<script>{draw}</script>\n</div>\n')
 
 
 def winter_words(phase: str, strong: bool) -> str:
@@ -122,8 +162,11 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
                         subplot_titles=[g["title"] for g in groups])
     for row, g in enumerate(groups, start=1):
         lim = g["lim"]
+        name = re.sub(r"<[^>]*>", "", g["title"])  # the readout's first line
         fig.add_bar(x=g["years"], y=g["values"], marker_color=colour, marker_line_width=0,
-                    hovertext=g["hover"], hoverinfo="text", showlegend=False, row=row, col=1)
+                    hovertext=g["hover"], hoverinfo="text", showlegend=False, name=name,
+                    selected={"marker": {"opacity": 1}},
+                    unselected={"marker": {"opacity": UNPICKED_OPACITY}}, row=row, col=1)
         nino = g["nino"]
         for year in nino["year"]:
             fig.add_vrect(x0=year - 0.5, x1=year + 0.5, fillcolor=figures.ENSO_SOFT,
@@ -139,7 +182,7 @@ def panels(groups: list[dict], colour: str, bar_label: str, y_title: str, x_titl
             fig.add_scatter(x=missing, y=[-lim * 0.9] * len(missing), mode="markers",
                             marker={"symbol": "triangle-down", "size": 9, "color": figures.MUTED},
                             hovertext=g["missing_hover"], hoverinfo="text", showlegend=False,
-                            row=row, col=1)
+                            name=name, row=row, col=1)
         if slot_year is not None:
             fig.add_vrect(x0=slot_year - 0.5, x1=slot_year + 0.5, fillcolor="rgba(0,0,0,0)",
                           line={"width": 1, "dash": "dot", "color": figures.AXIS}, row=row, col=1)

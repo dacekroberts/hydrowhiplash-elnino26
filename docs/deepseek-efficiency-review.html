@@ -1,0 +1,138 @@
+<title>DeepSeek Efficiency Review</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; verdict first, then the run, the checks, findings and changes. */
+:root {
+  --bg: #f6f8f9; --surface: #ffffff; --ink: #17232b; --muted: #55656f; --rule: #d5dde2;
+  --accent: #0b6e7c; --good: #1d7a46; --warn: #a15c00; --good-bg: #e3f3ea; --warn-bg: #fbefd9;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #10181d; --surface: #18232a; --ink: #e6edf0; --muted: #9aabb5; --rule: #2c3b44;
+  --accent: #5cc4d2; --good: #6fd09a; --warn: #f0b760; --good-bg: #173326; --warn-bg: #3a2c12; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #10181d; --surface: #18232a; --ink: #e6edf0; --muted: #9aabb5; --rule: #2c3b44;
+  --accent: #5cc4d2; --good: #6fd09a; --warn: #f0b760; --good-bg: #173326; --warn-bg: #3a2c12; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.55; }
+.page { max-width: 46rem; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; display: flex; flex-direction: column; gap: 36px; }
+header { display: flex; flex-direction: column; gap: 8px; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+h1 { font-size: 1.9rem; line-height: 1.2; font-weight: 600; margin: 0; text-wrap: balance; }
+h2 { font-size: 1.15rem; font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
+p { margin: 0 0 12px; } p:last-child { margin-bottom: 0; }
+.verdict { background: var(--surface); border: 1px solid var(--rule); border-left: 4px solid var(--accent); padding: 18px 20px; }
+.verdict p { font-size: 1.05rem; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.93rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 500; color: var(--muted); font-size: 0.82rem; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+code { font-family: var(--mono); font-size: 0.88em; }
+.pill { display: inline-block; font-size: 0.78rem; font-weight: 500; padding: 1px 8px; border-radius: 999px; white-space: nowrap; }
+.pill.good { background: var(--good-bg); color: var(--good); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+ul { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 8px; }
+.note { color: var(--muted); font-size: 0.9rem; }
+</style>
+<div class="page">
+  <header>
+    <div class="eyebrow">hydrowhiplash-elnino26 · 13 October 2026 · Windows PC</div>
+    <h1>DeepSeek Efficiency Review</h1>
+    <p class="note">How the Claude-plans, DeepSeek-builds setup performed on one change to an existing codebase: eight modules print a report of the pinned input files they replaced after a guarded rebuild.</p>
+  </header>
+
+  <section class="verdict">
+    <p><strong>The build was correct on the first run. Getting it started cost more than the build did.</strong></p>
+    <p>One implement run on <code>deepseek-flash</code> changed 10 files in 17 minutes with no retry, stayed inside its allowed files, and passed every check Claude ran, including one the worker never saw. No defect was found. The 31 minutes between the owner's approval and the worker starting went on two refused starts and a failed shell command.</p>
+    <p>What this pilot cannot say is whether the setup saves money or time. The run's token counts were not logged, and Claude's own time on the plan and the checks is not measured.</p>
+  </section>
+
+  <section>
+    <h2>The runs</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Run</th><th>Model, effort</th><th class="num">Wall time</th><th>Tokens</th><th>Result</th><th>Rating</th></tr></thead>
+      <tbody>
+        <tr><td>Build (implement)</td><td><code>deepseek-flash</code>, high</td><td class="num">16 min 34 s</td><td>not recorded</td><td>65 turns. 10 files, 465 lines added, 9 removed. Merged.</td><td><span class="pill good">Good</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note" style="margin-top:12px">Peak hours (07:32 to 07:49 UTC, Tuesday), which is why <code>deepseek-flash</code> was used. There was no review run. From the first preflight command to the merge being recorded took about 73 minutes by the clock; the plan was written the day before and its time was not recorded.</p>
+  </section>
+
+  <section>
+    <h2>Quality of the build</h2>
+    <div class="scroll"><table>
+      <thead><tr><th>Check, run by Claude</th><th>Result</th></tr></thead>
+      <tbody>
+        <tr><td>Independent test of the two new helpers the worker never saw: 8 cases on temporary files (pinned, unpinned, text and relative paths, a folder, a subfolder, a missing folder, a file given as a folder)</td><td><span class="pill good">8 of 8</span></td></tr>
+        <tr><td>The plan's test command in the staged copy: 115 passed before, 124 after, with the same six failures the plan named (they need data the copy does not hold)</td><td><span class="pill good">As planned</span></td></tr>
+        <tr><td>Full suite in the main checkout after the merge: 447 passed (432 at the last full run)</td><td><span class="pill good">Pass</span></td></tr>
+        <tr><td>Scope: only the allowed files changed</td><td><span class="pill good">Pass</span></td></tr>
+        <tr><td>House rules: no em dashes in Python, clean whitespace, LF line endings</td><td><span class="pill good">Pass</span></td></tr>
+        <tr><td>Source diff read in full</td><td><span class="pill good">No defect</span></td></tr>
+        <tr><td>Worker's own report against the facts (files changed, test counts)</td><td><span class="pill good">Accurate</span></td></tr>
+        <tr><td>Defects that would change an output</td><td><span class="pill good">None</span></td></tr>
+        <tr><td>Minor defects</td><td><span class="pill good">None found</span></td></tr>
+        <tr><td>Rebuild from scratch</td><td>Not applicable: the change prints a line after a write and makes no output file</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <section>
+    <h2>Why it went the way it did, and what that hides</h2>
+    <ul>
+      <li>The plan was 640 words for 465 added lines, the lowest ratio of plan to code in the ledger. It was written as a goal with acceptance tests, and it left five things unsaid on purpose: that a stamped run prints nothing, that one module's two guards give one report, a lazy import, which files of a download folder count, and how to test a command that calls the network. The worker handled all five correctly.</li>
+      <li>The change itself is small and repetitive. 415 of the 465 added lines are one test file. The source change is about 50 lines: two short helpers and one call in each of eight modules. So "465 lines" overstates the difficulty.</li>
+      <li>It took 65 turns, the most in the ledger, for that small source change. The worker had to read eight modules to find where each write happens, which is the part the plan did not spell out.</li>
+      <li>This was not the pilot the handoff first described (one of the run safeguards, before the registered runs). The safeguards stayed with Claude; this task was chosen for after the runs. It tests reading an existing codebase, not code a result depends on: no number, table or pinned input can change through it.</li>
+      <li>Claude's time and tokens on the plan and the checks are not measured, so there is still no baseline for whether Claude alone would have been cheaper.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Where the system was inefficient</h2>
+    <ul>
+      <li><strong>The start was refused twice.</strong> Claude Code's permission check refused the session starting the worker, on 12 October and again on the 13th. The owner had to start it in a terminal. That is a deliberate guardrail and was not worked around, but it turned a one-step start into a handover.</li>
+      <li><strong>The first handover command failed.</strong> The command given to the owner used a shell redirect that PowerShell does not accept. A small launcher script, called through Git Bash by its full path, fixed it. Approval to start: 31 minutes (07:01 to 07:32 UTC).</li>
+      <li><strong>No token counts.</strong> This run's line in the run log has no token fields, so its cost is unknown. The line was written by the session after the owner-started run, not by the wrapper.</li>
+      <li><strong>The staged copy.</strong> The project's data must stay out of the worker's reach, so the build ran on a copy holding code only. Six existing tests fail there for want of data, so the check is a before-and-after count, not a green suite. One of them left an empty file under the copy's data folder.</li>
+      <li><strong>Turns against size.</strong> 65 turns and 17 minutes for about 50 lines of source is slow next to the earlier builds, though those ran on a different model.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Changes to make to the delegation skill</h2>
+    <ul>
+      <li>When the session cannot start the worker, have the skill write a launcher script and give the owner one command for their shell: on Windows, Git Bash by its full path. No redirects in a command meant for PowerShell.</li>
+      <li>Make the wrapper write the run-log line, tokens included, however the run is started. If the session has to add the line itself, it should take the token counts from the wrapper's output or write <code>unknown</code> in those fields.</li>
+      <li>Add to the plan template for a staged copy: the count of tests that pass and fail before the build, and which failures are expected, so the worker and the check use the same baseline.</li>
+      <li>Add a cleanup step: after the tests, list files created outside the allowed paths in the copy and remove them.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Compared with earlier reviews</h2>
+    <p>Six earlier rows, all builds on <code>deepseek-v4-pro</code>, all from this Windows PC. No rows from another machine were included.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Measure</th><th>This run</th><th>Earlier six</th></tr></thead>
+      <tbody>
+        <tr><td>Build minutes</td><td class="num">17</td><td>4.9 to 26</td></tr>
+        <tr><td>Turns</td><td class="num">65</td><td>19 to 53 (two not recorded)</td></tr>
+        <tr><td>Lines added</td><td class="num">465</td><td>262 to 860</td></tr>
+        <tr><td>Plan words per line added</td><td class="num">1.4</td><td>1.7 to 4.2</td></tr>
+        <tr><td>Runs needed</td><td class="num">1</td><td>1 each</td></tr>
+        <tr><td>Result defects</td><td class="num">0</td><td>0 to 7</td></tr>
+        <tr><td>Minor defects</td><td class="num">0</td><td>2 to 8</td></tr>
+        <tr><td>Cost</td><td>unknown</td><td>unknown, then 0.15 to 0.48 USD</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note" style="margin-top:12px">This is the first build on <code>deepseek-flash</code> and the first with no defect of either kind. One run is an anecdote: the task was mostly a test file, and the model, the repository and the plan style all differ from the earlier rows. The first review's recommendation to log cost was acted on in the wrapper, but the gap came back here because the run was started outside the session.</p>
+  </section>
+
+  <section>
+    <h2>Recommendation</h2>
+    <p>Keep the goal-plus-acceptance-tests plan style for changes of this kind. The worker found the five unstated points, and the checks stayed mechanical.</p>
+    <p>Fix the start first: a launcher script by default when the session's start is refused, and a run-log line with tokens whoever starts the run. Then the next review can give a cost.</p>
+    <p>Next test: a change where the source, not the test file, is most of the work, and one result-bearing check that a wrong build would fail.</p>
+  </section>
+</div>

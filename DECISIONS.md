@@ -17,6 +17,67 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - Tap and hover readouts; the pilot's efficiency review; ticks
+
+Owner, 2026-10-13: "effort save check for deepseek: run. right four
+turns. do visual checks. small type: elaborate. build the phone tapping
+and map hover. tick all".
+
+- **Charts: a click or a tap on a bar keeps its details in a readout
+  under the chart** (`src/interactive.py`: `_DRAW`, `fragment`,
+  `READOUT_HINT`, `UNPICKED_OPACITY` 0.3). The readout sticks to the
+  bottom left of the screen while the chart is in view, the picked bar
+  stays as drawn and the panel's other bars fade; the same bar again, or
+  the readout, lets go. Where the device has no hover (`hover: none`)
+  the readout is there from the start and Plotly's floating label is
+  hidden, since a finger covers it. Hover on a desktop is unchanged.
+  Rejected: moving Plotly's own label to a corner (it is placed per
+  point, with no fixed position); the readout at the chart's own bottom
+  (a seven-panel chart is taller than a phone screen, so it would be
+  off screen).
+- **Map: regions, the key and a readout are linked** (`src/map_page.py`
+  `SCRIPT`: `mark`, `watch`; `READOUT_HINT`). Pointing at a region or
+  its table row marks its class in the key and writes its value under
+  the map; pointing at a class in the key marks the regions in it; a
+  click, a tap or Enter keeps the mark, and the same again lets go. The
+  mark follows a change of year or dataset. Rejected: a label drawn on
+  the map at the pointer, for the same reason as on the charts.
+- **The committed map file is not yet redrawn.** `python -m
+  src.map_page` reads the region polygons, which needs the owner's yes.
+  The new script was tried in the local preview by putting it into a
+  copy of the committed fragment; the file in `results/figures/` was
+  restored from git and is unchanged. The two chart files are redrawn.
+- **Checked in the local preview at 375 px, with real clicks:** a bar in
+  the BC panel (readout "BC, winter 2023-24, 171 mm, 52% of the average
+  winter", the other bars faded) and Alaska on the map ("Alaska, 2016:
+  184,542 ha, 1.2 times a typical season, in the key: half to twice
+  typical"). A click in the emulated phone is a mouse click; a finger on
+  a real phone is not tried.
+- **The pilot's efficiency review is written**
+  (`docs/deepseek-efficiency-review.html`, published privately; one row
+  added to the owner's ledger outside the repo): build good, one run, 17
+  minutes, 65 turns, 640 plan words for 465 added lines, no defect
+  found, 8 of 8 on a check the worker never saw; cost unknown because
+  the run's token counts were not logged. No DeepSeek call was made for
+  it.
+- **The flowchart's four turns stand (owner: "right four turns").**
+- **Ticked in `ACTION_PLAN.md` on the owner's word:** the mechanism
+  diagram, the methods flowchart, the map page, the three methods-page
+  items (their wording stays open under the Phase 4 methods item).
+  **Not ticked: the winter rainfall map.** The session's list had called
+  it built; it is not: `djf_precip_1997_98_pct_normal.png` exists but no
+  page shows it, and the Overview page still holds its placeholder
+  comment. The map page's rainfall layer shows each winter by region,
+  which is not the gridded map the item describes.
+- **Visual checks on the live site, dark theme** (methods and tracker,
+  1,024 px and 375 px): the dark drawings show, no page scrolls
+  sideways, the wide results table scrolls in its own box. Two things
+  found, not fixed: the title band of every "Work in progress" note is
+  Bootstrap's navy (`rgb(4, 33, 76)`), not a colour of the theme; and
+  the headline charts' type is too small (the two-panel charts are
+  1,970 px wide and shown at 602 px on a desktop and 301 px on a phone,
+  so their 8 pt labels come out at about 7 px and 3 px).
+
 ### 2026-10-13 - The page name capitalised wherever the site uses it
 
 - **"Methods and Limitations" now reads the same in four more places

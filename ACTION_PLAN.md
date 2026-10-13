@@ -202,6 +202,9 @@ cold round with no high and no medium findings), tag
       DeepSeek was used. Review run 2026-10-12 on the four files and
       `src/run_hypotheses.py`: 8 findings, 2 fixed, 6 not taken
       (`DECISIONS.md` 2026-10-12); the after-the-runs parts stay open.
+      2026-10-13: the pilot ran and was merged, and its efficiency
+      review is written (`docs/deepseek-efficiency-review.html`). Open:
+      the methods-page line on where DeepSeek was used.
 - [x] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB
@@ -283,15 +286,19 @@ already makes, so add it when its phase is done; don't design ahead of results.
 [mid-project: D84] Decided 2026-10-12: hosted as the static Quarto build
 on the owner's own domain through Cloudflare, not on GitHub Pages.
 
-- [ ] **Mechanism diagram** — the pathways (PNW/BC/AB dry → low snowpack →
+- [x] **Mechanism diagram** — the pathways (PNW/BC/AB dry → low snowpack →
       long or early season; SoCal wet → grass → big grass fires). No data
-      needed, so it can go up first. *Any time.*
-- [ ] **Methods flowchart** [mid-project: D74]: sources, the variables made
+      needed, so it can go up first. *Any time.* On the Overview page,
+      light and dark, wide and narrow.
+      Ticked on the owner's word, 2026-10-13 ("tick all").
+- [x] **Methods flowchart** [mid-project: D74]: sources, the variables made
       from them, the region x year table, the pre-registered tests and the
       site's charts, in plain language for `site/methods.qmd`; drawn in
       code like the mechanism diagram (`src/diagrams.py` to
       `results/figures/`). Structure only, no numbers. No data needed, so a
-      worktree session can take it. *Any time.*
+      worktree session can take it. *Any time.* On the methods page;
+      its caption is still marked work in progress.
+      Ticked on the owner's word, 2026-10-13 ("tick all").
 - [ ] **Winter rainfall map** — the El Niño precipitation dipole, from
       Phase 1. Static cartopy is fine. *After Phase 1.*
 - [x] **Historical charts** — per region: every fire season since 1984, El Niño
@@ -319,7 +326,7 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       built by `src/rollout.py` from those settings and written to
       `results/tables/rollout_calendar.json`; the page's timetable and
       the scheduled reminders read that file.
-- [ ] **Map page** [mid-project: D85]: all seven regions with a toggle
+- [x] **Map page** [mid-project: D85]: all seven regions with a toggle
       per dataset (fire, snowpack, rainfall, temperature), each year's
       values read from the committed region x year tables and the region
       polygons; no trend statistic. *After the stamped download paths and
@@ -332,11 +339,16 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       ocean beside the regions, each winter's sea-surface temperature
       from NOAA ERSST v6) are being added: display only, read by no
       test.
-- [ ] **Three methods-page items** [mid-project: D96]: why regression
+      Ticked on the owner's word, 2026-10-13 ("tick all"). Its wording is still a draft, and this
+      winter's months still join it with the hard-line item.
+- [x] **Three methods-page items** [mid-project: D96]: why regression
       and not a trained model; who the forecast is for (a responsibility
       statement); where coverage is thin. Each is the owner's to word;
       drafts sit in `site/methods.qmd` as comments, shown to no reader.
       *After the runs.*
+      Ticked on the owner's word, 2026-10-13 ("tick all"). The drafts are
+      written; the owner's wording of them is tracked under "Write the
+      Methods and limitations section" in Phase 4, which stays open.
 - [ ] **Verification panel** — what actually happened in 2027 against the
       prediction. *Fall 2027* for PNW, BC, AB, AK and YT; *after January
       2028* for NorCal and SoCal, whose 2027 season runs to January 2028

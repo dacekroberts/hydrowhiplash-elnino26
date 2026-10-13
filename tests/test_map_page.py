@@ -206,3 +206,29 @@ def test_chart_fragment_carries_the_dark_colours_for_every_token_it_uses(tmp_pat
     assert text.count('id="winter-rain-history-figure"') == 1 and "Plotly.react" in text
     figure = text.split('id="winter-rain-history-figure">')[1].split("</script>")[0]
     assert "<" not in figure and light["surface"] in figure and dark["surface"] not in figure
+
+
+def test_chart_fragment_keeps_a_tapped_bar_in_a_readout(tmp_path):
+    out = interactive.winter_rain_html(tables()["climate_controls_region_year.csv"], tmp_path)
+    text = out.read_text("utf-8")
+    assert text.startswith('<div class="chart-box">') and text.rstrip().endswith("</div>")
+    assert text.count('id="winter-rain-history-readout"') == 1
+    assert interactive.READOUT_HINT in text and 'el.on("plotly_click", pick)' in text
+    figure = json.loads(text.split('id="winter-rain-history-figure">')[1].split("</script>")[0])
+    bars = [t for t in figure["data"] if t["type"] == "bar" and t.get("hovertext")]
+    assert len(bars) == len(REGIONS)
+    for bar in bars:
+        assert "<" not in bar["name"] and bar["name"].split(" ")[0] in REGIONS
+        assert bar["unselected"]["marker"]["opacity"] == interactive.UNPICKED_OPACITY
+        assert bar["selected"]["marker"]["opacity"] == 1
+
+
+def test_map_fragment_links_regions_the_key_and_a_readout(regions):
+    page = map_page.fragment(map_page.build(tables(), regions))
+    assert page.count('class="rmap-readout"') == 1 and map_page.READOUT_HINT in page
+    assert page.index('class="rmap-map"') < page.index('class="rmap-readout"') \
+        < page.index('class="rmap-side"')
+    for piece in ("function mark()", "function watch(el, what)", "li.dataset.klass = at",
+                  '"path[data-region], tr[data-region]"'):
+        assert piece in map_page.SCRIPT, piece
+    assert "function link(" not in map_page.SCRIPT

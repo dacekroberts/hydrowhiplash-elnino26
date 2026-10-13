@@ -91,8 +91,9 @@ checkout.
   moved (D94).
 - The DeepSeek pilot ran and was merged on 2026-10-13 (`DECISIONS.md`
   "The delegated-build pilot ran and was merged"); the owner starts the
-  worker in a terminal, since the session's start is refused. Still to
-  do: the efficiency review of the handoff's section 4.
+  worker in a terminal, since the session's start is refused. The
+  efficiency review is written (`docs/deepseek-efficiency-review.html`,
+  2026-10-13).
 - `ACTION_PLAN.md` "Historical charts" is ticked (owner, 2026-10-13).
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
@@ -102,9 +103,15 @@ checkout.
   `site/flowchart.qmd` (wording marked work in progress; one layout,
   coloured by stream, scrolls sideways on a narrow screen). The navbar reads "Methods and
   Limitations" (owner).
-- Owner's notes of 2026-10-13, not built: an optional hover on the map tied to
-  the legend; tap-to-highlight on a phone with the details in a fixed
-  place. Cloudflare's edge refusal of AI-training crawlers is set
+- Built 2026-10-13: a tap or click on a chart's bar keeps its details in a
+  readout at the bottom left; on the map, regions, the key and a readout
+  under the map are linked. **The map file is not yet redrawn**
+  (`python -m src.map_page` reads the region polygons: ask the owner),
+  and neither is uploaded. Not tried on a real phone. Found in the
+  dark-theme check, not fixed: the navy title band of the "Work in
+  progress" notes; the headline charts' small type (about 7 px on a
+  desktop, 3 px on a phone). `ACTION_PLAN.md`: four site items ticked;
+  the winter rainfall map is not built and not ticked. Cloudflare's edge refusal of AI-training crawlers is set
   (owner, 2026-10-13: 15 blocked, search and Claude-User allowed,
   domain-wide).
 

@@ -74,6 +74,7 @@ LAYER_TEXT = {
 }
 # One character per ocean cell: the value floored to SST_STEP_C and clipped
 # to SST_LIMIT_C either side of zero; the last character marks land or ice.
+READOUT_HINT = "Point at or tap a region, or a colour in the key, to read it here."
 SST_ALPHABET = string.digits + string.ascii_uppercase + string.ascii_lowercase
 SST_HALF = round(SST_LIMIT_C / SST_STEP_C)
 S0, S1 = SST_NORMAL_YEARS
@@ -455,11 +456,14 @@ SCRIPT = """
     q(".rmap-title").textContent = L.label + ", " + year;
     var legend = q(".rmap-legend");
     legend.innerHTML = "";
-    L.legend.concat([["", "no data"]]).forEach(function (item) {
+    L.legend.concat([["", "no data"]]).forEach(function (item, at) {
       var li = document.createElement("li"), sw = document.createElement("i");
       if (item[0]) sw.style.background = "var(--" + item[0] + ")"; else sw.className = "none";
       li.appendChild(sw);
       li.appendChild(document.createTextNode(item[1]));
+      li.dataset.klass = at;
+      li.tabIndex = 0;
+      watch(li, function () { return {klass: at}; });
       legend.appendChild(li);
     });
     Object.keys(D.names).forEach(function (r) {
@@ -467,6 +471,7 @@ SCRIPT = """
       var row = q("tr[data-region='" + r + "']");
       var text = cell ? cell[1] : (layer === "fire" && year < D.fire_first_year ?
         "the fire record starts in " + D.fire_first_year : "no data for this year");
+      texts[r] = text;
       path.style.fill = cell ? "var(--" + L.legend[cell[0]][0] + ")" : "";
       path.classList.toggle("none", !cell);
       path.querySelector("title").textContent = D.names[r] + ", " + year + ": " + text;
@@ -478,6 +483,66 @@ SCRIPT = """
       sw.style.background = cell ? "var(--" + L.legend[cell[0]][0] + ")" : "";
       sw.className = cell ? "sw" : "sw none";
       row.querySelector("td").textContent = text;
+    });
+    mark();
+  }
+  // A region and the key (owner, 2026-10-13). Pointing at a region, or at
+  // its table row, marks its class in the key and writes its value under
+  // the map; pointing at a class in the key marks the regions in it. A
+  // click or a tap keeps the mark, since a phone has no hover; the same
+  // click again lets go. `hot` is what is pointed at, `kept` what was
+  // clicked; each is {region: code} or {klass: index in the key}.
+  var hot = null, kept = null, texts = {}, readout = q(".rmap-readout"), hint = readout.textContent;
+  function klass(r) {
+    var cell = D.layers[layer].cells[r][year];
+    return cell ? cell[0] : D.layers[layer].legend.length;   // the last key entry: no data
+  }
+  function mark() {
+    var at = hot || kept, regions = Object.keys(D.names);
+    var k = !at ? -1 : (at.region ? klass(at.region) : at.klass);
+    regions.forEach(function (r) {
+      var on = !!at && (at.region ? at.region === r : klass(r) === k);
+      q("path[data-region='" + r + "']").classList.toggle("on", on);
+      q("tr[data-region='" + r + "']").classList.toggle("on", on);
+    });
+    root.querySelectorAll(".rmap-legend:not(.rmap-sea-legend) li").forEach(function (li) {
+      li.classList.toggle("on", Number(li.dataset.klass) === k);
+    });
+    var label = k < 0 ? "" : (D.layers[layer].legend[k] || ["", "no data"])[1];
+    var named = !at ? [] : (at.region ? [at.region] :
+      regions.filter(function (r) { return klass(r) === k; }));
+    readout.textContent = "";
+    readout.classList.toggle("on", !!at);
+    if (!at) { readout.textContent = hint; return; }
+    var head = document.createElement("strong"), rest = document.createElement("span");
+    if (at.region) {
+      head.textContent = D.names[at.region] + ", " + year;
+      rest.textContent = texts[at.region] + " · in the key: " + label;
+    } else {
+      head.textContent = label + ", " + year;
+      rest.textContent = named.length ? named.map(function (r) { return D.names[r]; }).join(", ") :
+        "no region this year";
+    }
+    readout.appendChild(head);
+    readout.appendChild(rest);
+  }
+  function same(a, b) { return !!a && !!b && a.region === b.region && a.klass === b.klass; }
+  function watch(el, what) {
+    ["mouseenter", "focus"].forEach(function (e) {
+      el.addEventListener(e, function () { hot = what(); mark(); });
+    });
+    ["mouseleave", "blur"].forEach(function (e) {
+      el.addEventListener(e, function () { hot = null; mark(); });
+    });
+    function keep() {
+      var it = what();
+      hot = null;   // a tap sends no mouseleave, so letting go has to clear this too
+      kept = same(kept, it) ? null : it;
+      mark();
+    }
+    el.addEventListener("click", keep);
+    el.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); keep(); }
     });
   }
   function go(y) { year = Math.min(hi, Math.max(lo, y)); draw(); }
@@ -510,19 +575,9 @@ SCRIPT = """
     m.addEventListener("click", function () { go(y); });
     marks.appendChild(m);
   });
-  function link(a, b) {
-    root.querySelectorAll(a).forEach(function (el) {
-      var other = function () { return q(b + "[data-region='" + el.dataset.region + "']"); };
-      ["mouseenter", "focus"].forEach(function (e) {
-        el.addEventListener(e, function () { other().classList.add("on"); el.classList.add("on"); });
-      });
-      ["mouseleave", "blur"].forEach(function (e) {
-        el.addEventListener(e, function () { other().classList.remove("on"); el.classList.remove("on"); });
-      });
-    });
-  }
-  link("path[data-region]", "tr");
-  link("tr[data-region]", "path");
+  root.querySelectorAll("path[data-region], tr[data-region]").forEach(function (el) {
+    watch(el, function () { return {region: el.dataset.region}; });
+  });
   draw();
 })();
 """
@@ -602,7 +657,10 @@ def fragment(payload: dict) -> str:
 <p class="rmap-when"><span class="rmap-chip"></span><span class="rmap-winter"></span></p>
 </div>
 <div class="rmap-body">
+<div class="rmap-left">
 <div class="rmap-map">{sea_canvas}<svg viewBox="0 0 {shape["width"]} {shape["height"]}" role="group" aria-label="Map of the seven regions">{land_path}{paths}{labels}</svg></div>
+<p class="rmap-readout" aria-live="polite">{esc(READOUT_HINT)}</p>
+</div>
 <div class="rmap-side">
 <p class="rmap-title"></p>
 <p class="rmap-what"></p>
