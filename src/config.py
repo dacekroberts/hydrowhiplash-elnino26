@@ -302,6 +302,15 @@ FIRE_REGION_TABLE_PARKS = DATA_PROCESSED / "fire_region_year_parks_nbac.csv"
 # D62 frozen-rules variant: summed clipped area, MTBS "Other" dropped, CNFDB
 # fires without a month dropped, the frozen years (src.fire.frozen_rules_table).
 FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
+# Burned area split by fire start month at three issue dates, built for the
+# sibling prediction project (its request of 2026-10-13; D103;
+# src.fire_after_date). Issue date label -> issue month: a fire is "after"
+# when its start month is the issue month or later. Written once to
+# results/tables/<AFTER_DATE_RUN>/ by run_guard.write_result; no registered
+# test reads it and it is not a pinned input.
+AFTER_DATE_ISSUE_MONTHS = {"1 June": 6, "1 July": 7, "1 August": 8}
+AFTER_DATE_RUN = "after_issue_date"
+AFTER_DATE_TABLE = "fire_after_issue_date_region_year.csv"
 # Checksums of every input the tests read (trap 7, session 7 kickoff): the
 # input tables in PINNED_RESULT_TABLES, the ENSO files, the fire downloads of
 # 2026-10-07 and NBAC of 2026-10-08; no re-download until the results are in

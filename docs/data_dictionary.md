@@ -598,6 +598,34 @@ the gap, `burn_ha` differs from the main table's in the last printed digit
 `with_park_area`; no value a test uses changes (audit round 5 L4, left as
 is so the pinned table is not rebuilt).
 
+**Start-month split table** (D103; `python -m src.fire_after_date
+--data-root <main checkout>`; built 2026-10-13 for the sibling prediction
+project): `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`
+with its `.provenance.json`, one row per region, season and issue date
+(291 region-seasons x 3 = 873 rows). Every rule is the main table's; only
+the grouping by start month is new. Read by no test here and not pinned.
+A held-back season's rows are built by the same function on its scoring
+day and not before (`scoring_day_seasons`; `DECISIONS.md` 2026-10-13).
+- `issue_date`: `1 June`, `1 July` or `1 August` (`AFTER_DATE_ISSUE_MONTHS`).
+- `after_ha`: area, ha, of the season's counted pieces whose fire started
+  in the issue month or later: unioned per source, sources summed, as
+  `burn_ha`. A January Y+1 fire of a NorCal or SoCal season Y is after
+  every date. `before_ha`: the same for pieces that started before the
+  issue month (0 at `1 June` in PNW, NorCal and SoCal, whose window opens
+  in June). `undated_ha`: the same for CNFDB pieces without a month (the
+  pieces behind `n_undated`).
+- `n_after`, `n_before`, `n_undated`: pieces in each group; they sum to
+  the main table's `n_fires`.
+- `burn_ha`: the season's whole area, equal to the main table's.
+- Traps: it is the area of fires that *started* after the date, not the
+  area that burned after it (a fire that started on 25 July and burned
+  into August is before 1 August, whole; no source carries growth by
+  day). The three unions can overlap one another, so the three areas can
+  sum to more than `burn_ha`. Start dates are MTBS `ig_date`, the WFIGS
+  discovery date as a local date, and CNFDB `YEAR` and `MONTH`, which can
+  be a report date. A CNFDB fire merged from several polygons has the
+  date of its earliest dated part (D67).
+
 **Later retrievals** (`data/raw/later/<stamp>/...`, never committed;
 D73, D88): a download run with `--stamp` writes to the stamped twin of
 its usual folder and closes it with `retrieval.json`: `stamp` (the

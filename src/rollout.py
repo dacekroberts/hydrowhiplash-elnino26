@@ -165,7 +165,11 @@ def items() -> list[dict]:
               "registered tests keep 1984 to 2024.",
               "Check the CNFDB release folder for new file dates. If released: download "
               "to a stamped path (D73), read the release notes, report beside (D57). "
-              "Reads polygons: ask the owner first.",
+              "For the sibling, the start-month split of the scored seasons is built "
+              "from the same pieces (src.fire_after_date.split_table, "
+              "scoring_day_seasons) and handed over with the outcome; reading a later "
+              "retrieval's fire files into pieces is still to build (DECISIONS "
+              "2026-10-13). Reads polygons: ask the owner first.",
               "ROLLOUT_WINDOWS; frozen plan deviations log (D57): about January 2027",
               reader=False, own_reminder=False,
               checked_at=[month_key[(2027, 1)], month_key[(2027, 2)], month_key[(2027, 3)]]),
@@ -175,7 +179,12 @@ def items() -> list[dict]:
               "provisional (WFIGS) and outside the tests.",
               "Download WFIGS again to a stamped path and redraw the 2026 season for "
               "PNW, AK, NorCal and SoCal: described only, provisional, outside the "
-              "tests (owner, 2026-10-12; D95). Reads polygons: ask the owner first.",
+              "tests (owner, 2026-10-12; D95). "
+              "For the sibling, the start-month split of the scored seasons is built "
+              "from the same pieces (src.fire_after_date.split_table, "
+              "scoring_day_seasons) and handed over with the outcome; reading a later "
+              "retrieval's fire files into pieces is still to build (DECISIONS "
+              "2026-10-13). Reads polygons: ask the owner first.",
               "FIRE_SEASON_MONTHS (D43); ANALYSIS_PLAN Execution details: 2026 is "
               "described only; D95",
               reader=False, own_reminder=False, checked_at=[month_key[(2027, 2)]]),
@@ -225,8 +234,12 @@ def items() -> list[dict]:
               "Download WFIGS to a stamped path and measure 2027 for PNW and AK "
               "(provisional). BC, AB and YT wait: their registered source, CNFDB, "
               "arrives about January 2029 on its release record, and NBAC stands in as "
-              "a provisional source from about May 2028 (D93). Reads polygons: ask the "
-              "owner first.",
+              "a provisional source from about May 2028 (D93). "
+              "For the sibling, the start-month split of the scored seasons is built "
+              "from the same pieces (src.fire_after_date.split_table, "
+              "scoring_day_seasons) and handed over with the outcome; reading a later "
+              "retrieval's fire files into pieces is still to build (DECISIONS "
+              "2026-10-13). Reads polygons: ask the owner first.",
               "FIRE_SEASON_MONTHS, FORECAST_YEAR (D46); D93"),
         _item("verify_california", "verification", california_end, california_end, "after",
               f"The 2027 fire season ends in {CALIFORNIA}",
@@ -260,8 +273,11 @@ def items() -> list[dict]:
               "the provisional NBAC ones, and the difference is reported.",
               "Check the CNFDB release folder for 2027. If released: download to a "
               "stamped path, measure BC, AB and YT, and report beside the NBAC figures "
-              "already published; neither replaces the other without a note. Reads "
-              "polygons: ask the owner first.",
+              "already published; neither replaces the other without a note. For the "
+              "sibling, the start-month split of BC, AB and YT 2027 is built from these "
+              "CNFDB pieces and handed over with this outcome, as for CNFDB 2025; no "
+              "split is built from NBAC, which has no ignition date (DECISIONS "
+              "2026-10-13). Reads polygons: ask the owner first.",
               "ROLLOUT_WINDOWS; CNFDB release record (D56); D93"),
     ]
     lead = timedelta(days=config.ROLLOUT_REMINDER_LEAD_DAYS)

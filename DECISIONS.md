@@ -17,6 +17,107 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - A table of burned area by fire start month, built for the sibling
+
+- **Built (owner, in the sibling's session: "parent route") one table
+  for the sibling: each region-season's burned area split by whether its
+  fires started before or after 1 June, 1 July and 1 August (D103).**
+  `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`:
+  the 291 region-seasons of the pinned `fire_region_year.csv` times three
+  issue dates, 873 rows, with `after_ha`, `before_ha`, `undated_ha`, their
+  piece counts and the season's `burn_ha`. The specification is the
+  sibling's `docs/parent_request_after_date.md`, carried here by the
+  owner; nothing in the sibling was changed. Rejected the sibling
+  building it from polygons: the raw fire downloads and
+  `fire_events.csv` are held back from it (entry of 2026-10-12, "One
+  large handover"), and it would be a second set of fire code.
+- **Rebuilt the fire-region pieces from the pinned downloads, since
+  `fire_events.csv` holds no geometry.** Each group's area is a union per
+  source with the sources summed, as `burn_ha` is, and a union needs the
+  polygons. Rejected summing `clipped_ha` from `fire_events.csv`: it
+  counts overlap twice (D61), so the groups would not follow the main
+  table's rule. New module `src/fire_after_date.py` calls `src.fire`'s
+  own steps (type filter, cutover, floor, clip, season windows,
+  `union_areas`); `src/fire.py` was not edited. The three downloads
+  (MTBS, WFIGS, CNFDB) were checked against `input_pins.csv` before the
+  read. No download was run and no pinned table was rebuilt or re-pinned.
+- **Decided the group of a piece by its start month alone: after when
+  the month is the issue month or later; in NorCal and SoCal a January
+  fire of season Y is after every date; a piece without a month is its
+  own group.** An undated CNFDB piece carries a placeholder date of 15
+  July (`src.fire.cnfdb_dates`), so the `undated` flag is read before the
+  month. Rejected placing undated pieces before or after: the sibling
+  decides what is done with them before it opens the table. A CNFDB fire
+  merged from several polygons has the date of its earliest dated part
+  (D67), so the whole fire falls in that part's group.
+- **Dropped the held-back seasons before any sum, and recorded no split
+  figure anywhere.** `select_pieces` keeps only the region-seasons asked
+  for, by default 1984 to each region's last test year
+  (`FIRE_LAST_YEAR_BY_REGION`), which removes 2026 and later everywhere
+  and 2025 in BC, AB and YT. The build prints the checks, the
+  row count, the path and the checksum only, and the registers hold no
+  `after_ha`, `before_ha` or `undated_ha` value: the sibling sets its
+  rules for undated fires and zero seasons first.
+- **Wrote the table once, through `run_guard.write_result`, in a run
+  folder of its own (`AFTER_DATE_RUN`), with a provenance record.** Not
+  added to `PINNED_RESULT_TABLES`: no registered test reads it. The five
+  checks of the request run inside the build and stop it before a file
+  is written: `burn_ha` equal to the pinned table to 1e-6 ha; the three
+  counts equal to `n_fires` and `n_undated` to the pinned column; the
+  three areas summing to at least `burn_ha`; `before_ha` 0 at 1 June in
+  PNW, NorCal and SoCal; no held-back row and 873 rows. All five passed.
+  Built at commit 3285b23 on a clean tree; table sha256
+  2978e3169917f65443063c003014c36f75d28cc93729579f5cf9a56cb19b137d.
+- **Fixed the scoring-day path today, to be run later (owner,
+  2026-10-13, in the sibling's request: "arranged now, run later");
+  commit 3285b23 is the version of `src/fire_after_date.py` frozen for
+  scoring.** `split_table` is the one function behind the development
+  table and behind a held-back season's rows: it takes the region-seasons
+  to build and drops every other piece first. A season after its
+  region's last test year raises `HeldBackSeasonError` unless it is also
+  named in `scoring_day_seasons`, which must name exactly the held-back
+  seasons asked for; that argument is not used before the season's
+  scoring day. On a scoring day the pieces come from that day's fire
+  rebuild (the one that makes the outcome numbers), `check_table` runs
+  against the outcome table, and the rows are written beside the outcome
+  numbers and handed over in the same approved read. Tested on made-up
+  pieces only; no held-back figure was produced. A change to the module
+  after 3285b23 is a decision logged here and told to the sibling before
+  the next scoring day. Not built today: the reading of a later
+  retrieval's fire files, which belongs to the outcome rebuild and does
+  not exist yet (`src.fire` reads the pinned downloads only). Rejected a
+  separate scoring-day function: two code paths could drift apart.
+- **Read the fire files from the main checkout, read-only, from a
+  worktree session (D\?b).** `CLAUDE.md` gives worktree sessions only
+  tasks that need no data; the owner's prompt for this task named the
+  main checkout's `data/` and asked for a stop if it could not be read
+  cleanly. `--data-root` re-roots the four input paths; nothing under
+  `data/` was written, copied or moved.
+- **Left open, on the rollout calendar: reading a later retrieval's
+  fire files into pieces for a scoring day.** The `prepare` text of the
+  three outcome items (`cnfdb_2025`, `season_2026_closes`,
+  `verify_north`; `src/rollout.py`, `rollout_calendar.json` rewritten)
+  now says the split is built from the same pieces and handed over with
+  the outcome, and that this reading is still to build. `cnfdb_2026` and
+  `verify_california` point back to those items.
+- **Settled (owner, 2026-10-13): no split is built from NBAC.** NBAC has
+  no ignition date, so a season measured from it has no start month. The
+  sibling's rule names CNFDB polygons as the outcome source for BC, AB
+  and YT, so a season's split arrives with its CNFDB outcome: 2027 with
+  CNFDB 2027 (about January 2029), stated in the `cnfdb_2027` item.
+- **Tagged the frozen commit locally: `after-date-split-frozen` at
+  3285b23 (owner, 2026-10-13), annotated like the repository's other
+  tags, not pushed.** The main session's merge squashes the branch, which
+  would leave 3285b23 off main; the tag keeps it reachable for the
+  sibling and for the table's provenance record. Rejected a merge
+  commit without the squash: a departure from `merge-side-pr` step 6 for
+  one branch.
+- **Agreed (owner, 2026-10-13): the merge's numbering of D103 edits one
+  token in the docstring of `src/fire_after_date.py` after the frozen
+  commit, and counts as a logged change.** No line of code differs. The
+  main session reports the commit that holds it, for the sibling.
+- Tests: 472 passed (10 new in `tests/test_fire_after_date.py`).
+
 ### 2026-10-13 - Motion: the card lines, the prompt and the dashboard's remaining lines approved
 
 - **The owner approved the eight card lines, the prompt, and the
