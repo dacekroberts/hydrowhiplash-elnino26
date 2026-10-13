@@ -89,6 +89,10 @@ SEA_TEXT = {
     "cells": "Each square is one 2° cell, about 200 km across, the grid the temperature was "
              "reconstructed on. This is the closer reading of the numbers: one value per "
              "square, nothing drawn between them.",
+    "mini": "Ocean: sea temperature that winter, a separate scale from the regions. "
+            "Full key under the map.",
+    "mini_alt": "Ocean colours, from over 1 °C cooler than average in purple to over 1 °C "
+                "warmer in amber",
     "caution": "The sea-surface temperature (NOAA ERSST v6) was added for these pictures. No "
                "test, no reported number and no forecast on this site reads it. The tests "
                "found no reliable link from El Niño itself to burned area, so a warm ocean "
@@ -410,7 +414,7 @@ SCRIPT = """
   function signed(x, digits) { return (x < 0 ? "−" : "+") + Math.abs(x).toFixed(digits); }
   function drawSea() {
     if (!S) return;
-    root.querySelectorAll(".rmap-sea, .rmap-ocean").forEach(function (el) { el.hidden = !seaOn; });
+    root.querySelectorAll(".rmap-sea, .rmap-ocean, .rmap-sea-mini").forEach(function (el) { el.hidden = !seaOn; });
     root.querySelectorAll("input[name=rmap-sea-style]").forEach(function (el) { el.disabled = !seaOn; });
     if (!seaOn) return;
     var w = D.years[year], box = S.nino34[year], rgb = palette();
@@ -533,7 +537,7 @@ def fragment(payload: dict) -> str:
     backdrop = payload.pop("land", None) or {}
     payload["land"] = bool(backdrop)       # the script needs to know only that it is there
     land_path = f'<path class="land" d="{backdrop["coast"]}"/>' if backdrop else ""
-    sea_controls = sea_canvas = sea_block = ""
+    sea_controls = sea_canvas = sea_block = sea_mini = ""
     if ocean:
         cw, ch = ocean["coast"]["canvas"]
         tw, th = ocean["tropics"]["canvas"]
@@ -548,6 +552,13 @@ def fragment(payload: dict) -> str:
             '<label><input type="radio" name="rmap-sea-style" value="cells">'
             '<span>2° cells, as measured</span></label></fieldset>')
         sea_canvas = f'<canvas class="rmap-sea" width="{cw}" height="{ch}" aria-hidden="true"></canvas>'
+        # a condensed key beside the map, where the ocean is first seen; the
+        # full one stays under the tropical panel (owner, 2026-10-12)
+        ramp = "".join(f'<i style="background: var(--{t})"></i>' for t, _ in ocean["legend"])
+        sea_mini = (f'<div class="rmap-sea-mini"><p>{esc(SEA_TEXT["mini"])}</p>'
+                    f'<div class="rmap-ramp" role="img" aria-label="{esc(SEA_TEXT["mini_alt"])}">'
+                    f'{ramp}</div><p class="rmap-ends"><span>cooler</span><span>average</span>'
+                    f'<span>warmer</span></p></div>')
         tropics_land = (f'<svg class="rmap-land" viewBox="0 0 {tw} {th}" preserveAspectRatio="none" '
                         f'aria-hidden="true"><path class="land" d="{backdrop["tropics"]}"/></svg>'
                         if backdrop.get("tropics") else "")
@@ -596,6 +607,7 @@ def fragment(payload: dict) -> str:
 <p class="rmap-title"></p>
 <p class="rmap-what"></p>
 <ul class="rmap-legend"></ul>
+{sea_mini}
 <table class="rmap-table" data-quarto-disable-processing="true"><tbody>{rows}</tbody></table>
 </div>
 </div>

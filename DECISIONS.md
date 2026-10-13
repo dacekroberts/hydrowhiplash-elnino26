@@ -17,6 +17,26 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - V1 retrospective written; a condensed ocean key beside the map
+
+- **Wrote `docs/retrospective_v1.md` on the owner's word, after an outline
+  the owner accepted:** eleven sections, from what was planned to what to
+  do differently, with the live site's address at the top. A draft in the
+  owner's first person for the owner to edit; where the assistant erred
+  it is named. Every number is from the repository's records at commit
+  b0b1724. Two choices made without an explicit answer and open to
+  change: the findings section is kept, short, and restates only what the
+  methods page says; logged hours are included (58.5 h, an undercount).
+  The Cloudflare edge option for AI-training crawlers is in its sections
+  on the final product and where to go from here, as the owner asked. A
+  private page is built from the file.
+- **Added a condensed ocean key beside the map (owner: the ocean's ramp
+  was explained only under the tropical panel, "confusing viewers when it
+  opens visible in the main diagram map").** Under the region legend: one
+  line, a five-step bar from cooler to warmer, and a pointer to the full
+  key, which stays under the tropical panel. Hidden with the ocean. Not
+  yet on the live site: it needs an upload.
+
 ### 2026-10-12 - The analytics script is gone; its cause, and a note sent to the other projects
 
 - **Cause: Cloudflare's "Real User Measurements (RUM)", on by default for

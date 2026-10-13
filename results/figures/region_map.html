@@ -20,6 +20,7 @@
 <p class="rmap-title"></p>
 <p class="rmap-what"></p>
 <ul class="rmap-legend"></ul>
+<div class="rmap-sea-mini"><p>Ocean: sea temperature that winter, a separate scale from the regions. Full key under the map.</p><div class="rmap-ramp" role="img" aria-label="Ocean colours, from over 1 °C cooler than average in purple to over 1 °C warmer in amber"><i style="background: var(--sea-cold-2)"></i><i style="background: var(--sea-cold-1)"></i><i style="background: var(--sea-mid)"></i><i style="background: var(--sea-warm-1)"></i><i style="background: var(--sea-warm-2)"></i></div><p class="rmap-ends"><span>cooler</span><span>average</span><span>warmer</span></p></div>
 <table class="rmap-table" data-quarto-disable-processing="true"><tbody><tr data-region="PNW" tabindex="0"><th scope="row">Pacific Northwest</th><td></td></tr><tr data-region="BC" tabindex="0"><th scope="row">British Columbia</th><td></td></tr><tr data-region="AB" tabindex="0"><th scope="row">Alberta</th><td></td></tr><tr data-region="AK" tabindex="0"><th scope="row">Alaska</th><td></td></tr><tr data-region="YT" tabindex="0"><th scope="row">Yukon</th><td></td></tr><tr data-region="NorCal" tabindex="0"><th scope="row">Northern California</th><td></td></tr><tr data-region="SoCal" tabindex="0"><th scope="row">Southern California</th><td></td></tr></tbody></table>
 </div>
 </div>
@@ -120,7 +121,7 @@
   function signed(x, digits) { return (x < 0 ? "−" : "+") + Math.abs(x).toFixed(digits); }
   function drawSea() {
     if (!S) return;
-    root.querySelectorAll(".rmap-sea, .rmap-ocean").forEach(function (el) { el.hidden = !seaOn; });
+    root.querySelectorAll(".rmap-sea, .rmap-ocean, .rmap-sea-mini").forEach(function (el) { el.hidden = !seaOn; });
     root.querySelectorAll("input[name=rmap-sea-style]").forEach(function (el) { el.disabled = !seaOn; });
     if (!seaOn) return;
     var w = D.years[year], box = S.nino34[year], rgb = palette();

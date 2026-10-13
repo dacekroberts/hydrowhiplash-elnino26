@@ -168,6 +168,7 @@ def test_ocean_panels_carry_cells_a_lookup_and_the_caution(regions):
     assert 0 < left < left + wide < 100 and 0 < top < top + tall < 100
     page = map_page.fragment(payload)
     assert page.count("<canvas") == 2 and 'name="rmap-sea"' in page
+    assert page.count('class="rmap-sea-mini"') == 1 and page.count('class="rmap-ramp"') == 1
     assert 'value="cells"' in page and "No test, no reported number and no forecast" in page
     plain = map_page.fragment(map_page.build(tables(), regions))
     assert "<canvas" not in plain and 'class="rmap-ocean"' not in plain and '"sea":null' in plain

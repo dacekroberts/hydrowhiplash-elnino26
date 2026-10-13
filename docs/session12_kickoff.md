@@ -116,7 +116,9 @@ checkout.
    hydrowhiplash.pages.dev. The custom domain is active (20:22). Cloudflare's
    analytics script (RUM, on by default) was found injected there and
    switched off by the owner for the whole domain; confirmed gone in a
-   browser. Open: the work-in-progress wording. plotly.js
+   browser. The V1 retrospective is written
+   (`docs/retrospective_v1.md`, a draft for the owner). Open: the
+   work-in-progress wording. plotly.js
    is bundled with the site.
    After the site is live: a full V1 retrospective (owner, 2026-10-12:
    "after site is live: do a full V1 Retrospective"). Its scope and

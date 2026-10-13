@@ -180,6 +180,12 @@ div.rmap .rmap-box span { position: absolute; left: 0; bottom: 100%; font-size: 
   font-weight: 600; color: var(--ink); background: var(--surface); padding: 0 4px;
   white-space: nowrap; }
 div.rmap ul.rmap-legend.rmap-sea-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+div.rmap .rmap-sea-mini { margin: 0 0 var(--space-3); padding-top: var(--space-2);
+  border-top: 1px solid var(--rule); font-size: 0.8rem; color: var(--ink-muted); }
+div.rmap .rmap-sea-mini p { margin: 0 0 4px; max-width: none; font-size: 0.8rem; }
+div.rmap .rmap-ramp { display: grid; grid-template-columns: repeat(5, 1fr); height: 12px;
+  border: 1px solid var(--rule-strong); border-radius: var(--radius-sm); overflow: hidden; }
+div.rmap p.rmap-ends { display: flex; justify-content: space-between; margin: 2px 0 0; }
 div.rmap p.rmap-caution { margin: var(--space-3) 0 0; max-width: none; font-size: 0.9rem;
   padding: var(--space-3) var(--space-4); background: var(--surface);
   border: 1px solid var(--rule-strong); border-left: 4px solid var(--enso);
