@@ -44,8 +44,8 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
    frozen plan untouched.
 
 4. **Number the deviations** (`merge-side-pr` step 5,
-   `scripts/merge_append_only.py`). Two placeholders: D?a (the table, a
-   scope addition) and D?b (a worktree session read the main checkout's
+   `scripts/merge_append_only.py`). Two placeholders: D103 (the table, a
+   scope addition) and D104 (a worktree session read the main checkout's
    fire files). With main still at D102 they become D103 and D104; take
    the numbers the script prints. References sit in `DECISIONS.md`,
    `docs/plan_deviations.md`, `docs/methods_register.md`,
@@ -103,14 +103,14 @@ Table: `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`,
 ```
 ### 13:30-15:20 · Claude Code (worktree: claude/sharp-jemison-a79067)
 - Built results/tables/after_issue_date/fire_after_issue_date_region_year.csv
-  for the sibling (D?a): 873 rows, five checks passed, sha256
+  for the sibling (D103): 873 rows, five checks passed, sha256
   2978e316...9b137d, built at 3285b23 on a clean tree.
 - New module src/fire_after_date.py and tests/test_fire_after_date.py (10
   tests; suite 472 passed). Scoring-day path fixed: held-back seasons are
   refused unless named in scoring_day_seasons; 3285b23 frozen for scoring.
 - Read the main checkout's pinned fire downloads read-only through
-  --data-root (D?b); nothing under data/ written.
-- Records: DECISIONS.md, plan_deviations (D?a, D?b), methods register, data
+  --data-root (D104); nothing under data/ written.
+- Records: DECISIONS.md, plan_deviations (D103, D104), methods register, data
   dictionary; open item added to four rollout calendar items; hand-off
   note docs/handoff_after_date_merge.md.
 - Tagged 3285b23 locally as after-date-split-frozen (owner's yes); nothing

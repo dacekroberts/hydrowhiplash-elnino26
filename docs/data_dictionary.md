@@ -598,7 +598,7 @@ the gap, `burn_ha` differs from the main table's in the last printed digit
 `with_park_area`; no value a test uses changes (audit round 5 L4, left as
 is so the pinned table is not rebuilt).
 
-**Start-month split table** (D?a; `python -m src.fire_after_date
+**Start-month split table** (D103; `python -m src.fire_after_date
 --data-root <main checkout>`; built 2026-10-13 for the sibling prediction
 project): `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`
 with its `.provenance.json`, one row per region, season and issue date

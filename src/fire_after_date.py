@@ -1,5 +1,5 @@
 """Burned area of each region and season, split by fire start month at three
-issue dates (the sibling prediction project's request of 2026-10-13; D?a).
+issue dates (the sibling prediction project's request of 2026-10-13; D103).
 
 One row per region, season and issue date: the 291 region-seasons of the
 pinned results/tables/fire_region_year.csv times AFTER_DATE_ISSUE_MONTHS.

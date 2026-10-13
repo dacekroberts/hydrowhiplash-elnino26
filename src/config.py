@@ -303,7 +303,7 @@ FIRE_REGION_TABLE_PARKS = DATA_PROCESSED / "fire_region_year_parks_nbac.csv"
 # fires without a month dropped, the frozen years (src.fire.frozen_rules_table).
 FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
 # Burned area split by fire start month at three issue dates, built for the
-# sibling prediction project (its request of 2026-10-13; D?a;
+# sibling prediction project (its request of 2026-10-13; D103;
 # src.fire_after_date). Issue date label -> issue month: a fire is "after"
 # when its start month is the issue month or later. Written once to
 # results/tables/<AFTER_DATE_RUN>/ by run_guard.write_result; no registered

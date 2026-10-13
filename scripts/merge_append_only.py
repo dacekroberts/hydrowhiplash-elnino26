@@ -103,11 +103,14 @@ DEVIATIONS = "docs/plan_deviations.md"
 # the "?", the Markdown way to mention the token literally.
 PLACEHOLDER = re.compile(r"(?<!\w)D\?[a-z]+(?!\w)")
 PLACEHOLDER_DEF = re.compile(r"^### (D\?[a-z]+)(?!\w)", re.M)
-# Files that describe the placeholder rule, so their tokens are examples.
+# Files that describe the placeholder rule, so their tokens are examples, and
+# the bundled plotly.js, whose minified code holds the same letters by chance
+# (found when PR #25 was merged, 2026-10-13).
 LITERAL_PLACEHOLDERS = (
     "scripts/merge_append_only.py", "scripts/prescreen_prs.py",
     "tests/test_merge_append_only.py", "tests/test_prescreen_prs.py",
     ".claude/skills/merge-side-pr/SKILL.md",
+    "site/libs/plotly.min.js",
 )
 
 

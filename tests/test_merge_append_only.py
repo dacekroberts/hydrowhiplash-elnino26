@@ -381,10 +381,12 @@ def test_stray_placeholder_in_code_notebook_or_plan_is_refused(tmp_path, capsys,
 
 def test_only_the_tooling_is_exempt():
     # Each exempt file really shows the syntax (else the exemption is unneeded),
-    # and nothing outside scripts/, tests/ and the merge skill is exempt.
+    # and nothing outside scripts/, tests/, the merge skill and the bundled
+    # libraries under site/libs/ (minified code, never a deviation) is exempt.
     for f in mao.LITERAL_PLACEHOLDERS:
         assert mao.PLACEHOLDER.search((ROOT / f).read_text(encoding="utf-8")), f
-        assert f.startswith(("scripts/", "tests/", ".claude/skills/merge-side-pr/")), f
+        assert f.startswith(("scripts/", "tests/", ".claude/skills/merge-side-pr/",
+                             "site/libs/")), f
 
 
 def test_check_log_refuses_a_leftover_placeholder(tmp_path, capsys):

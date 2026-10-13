@@ -50,7 +50,7 @@ closed the small things list.
   owner tried it with a finger ("looks good") and it was reworked the
   same day: a larger thumb, one coloured box per winter with a key, a
   fold button, live since the tenth upload (commit 4d89fee, deployment
-  f95a2d88). A finger has not tried the reworked one.
+  f95a2d88). The owner okayed the reworked one the same day.
 - **Private pages:** roadmap
   https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT, data guide
   https://claude.ai/artifact/3AYyz3EQbj3tyjTbPYdH8P, methods reading copy
@@ -63,15 +63,19 @@ closed the small things list.
 - Approved on 2026-10-13: the dashboard's and banners' line ("Does an
   El Niño winter say how much the next fire season will burn?"), the
   three Scene 4 lines on the dashboard (`scripts/build_dashboard.py`,
-  `SURVIVED`) and the slider's hint.
-- The two Overview captions gained a phone clause on the owner's word,
-  "; on a phone, slide to a year" (`site/index.qmd`); the clause is a
-  suggestion until the owner words it.
-- The social preview: upload `results/figures/banner_social_dark.png`
-  in the repository's Settings, Social preview (GitHub takes it by hand
-  only). Owner, 2026-10-13: "i will do soon".
-- The two agency links in "Who this forecast is for" are still to be
-  confirmed by the owner.
+  `SURVIVED`), the slider's hint and the phone clause in the two
+  Overview captions, "; on a phone, slide to a year" (`site/index.qmd`;
+  owner: "phone clause okay").
+- The social preview, moved to session 13 by the owner (2026-10-13):
+  upload `results/figures/banner_social_dark.png` in the repository's
+  Settings, Social preview (GitHub takes it by hand only).
+- The two agency links in "Who this forecast is for"
+  (`site/methods.qmd`), listed for the owner on 2026-10-13 and still to
+  be confirmed as the pages meant:
+  National Interagency Fire Center,
+  https://www.nifc.gov/nicc/predictive-services/outlooks ;
+  Natural Resources Canada,
+  https://cwfis.cfs.nrcan.gc.ca/en/forecast
 - **The pattern inside a region** (owner, 2026-10-13: "an item we can
   add to the site with existing data? to go on map or overview page?").
   A scope addition, not started. The ERA5-Land grid under `data/` holds
