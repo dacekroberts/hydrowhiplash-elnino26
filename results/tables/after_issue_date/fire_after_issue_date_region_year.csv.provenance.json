@@ -1,0 +1,25 @@
+{
+  "commit": "3285b235680112dba2ddc2933c103876efa30c8e",
+  "dirty": false,
+  "input_pins_sha256": "2b6e4e6862e67ba67b62a7899ced5d822c8d0fc00bf5b587f6519fbb62e16b81",
+  "test_size_sha256": "dbe7d0519c41c7211fd3b6d85782331d4ec5a9d3710738a094b5288b5cb2fd43",
+  "run_utc": "2026-10-13T21:42:12Z",
+  "seed": 2026,
+  "python": "3.12.14",
+  "packages": {
+    "statsmodels": "0.15.0",
+    "scipy": "1.18.1",
+    "numpy": "2.5.3",
+    "pandas": "3.0.6",
+    "patsy": "1.0.3"
+  },
+  "inputs": [
+    "data/processed/regions.geojson sha256 dd991b2faceec98edeab548ebc5db8fb0c58e39a5248568795dae3d43e5f4345",
+    "data/raw/fire/cnfdb/NFDB_poly.zip",
+    "data/raw/fire/mtbs/mtbs_perimeter_data.zip",
+    "data/raw/fire/wfigs/wfigs_perimeters.geojson",
+    "results/tables/fire_region_year.csv"
+  ],
+  "result": "fire_after_issue_date_region_year.csv",
+  "result_sha256": "2978e3169917f65443063c003014c36f75d28cc93729579f5cf9a56cb19b137d"
+}

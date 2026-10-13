@@ -27,6 +27,38 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-13
 
+### D\?b · A worktree session read the main checkout's fire files
+- **Plan:** `CLAUDE.md`, daily log exception: "Data lives only in the
+  main checkout (`data/` is never committed), so worktree sessions take
+  only tasks that need no data."
+- **Actual:** the worktree session that built the D\?a table read the
+  three pinned fire downloads and `regions.geojson` from the main
+  checkout's `data/`, read-only, through `--data-root` of
+  `src.fire_after_date`. Nothing under `data/` was written, copied or
+  moved; the downloads were checked against `input_pins.csv` first.
+- **Why:** the owner's prompt for the task named the main checkout's
+  `data/` and asked for a stop only if the build could not be pointed at
+  it cleanly.
+- **Recorded:** `DECISIONS.md` 2026-10-13 "A table of burned area by fire
+  start month, built for the sibling".
+- **Plan doc:** left as written.
+
+### D\?a · A burned-area table split by fire start month, for the sibling (scope addition)
+- **Plan:** `ACTION_PLAN.md` lists no such table. `DECISIONS.md`
+  2026-10-12 "This project supplies the sibling's held-back burned-area
+  numbers": "No new work is added here: each table is already a rollout
+  calendar item".
+- **Actual:** one new table,
+  `results/tables/after_issue_date/fire_after_issue_date_region_year.csv`
+  (873 rows: 291 region-seasons at 1 June, 1 July and 1 August), built
+  by the new module `src/fire_after_date.py` under the main fire table's
+  rules. No registered test reads it and it is not a pinned input; no
+  existing table was rebuilt.
+- **Why:** owner, 2026-10-13, in the sibling's session: "parent route".
+  The sibling asked for it in its `docs/parent_request_after_date.md`.
+- **Recorded:** `DECISIONS.md`, the same entry.
+- **Plan doc:** left as written.
+
 ### D102 · A year slider on the Overview charts, for a phone (scope addition)
 - **Plan:** `ACTION_PLAN.md` "Second goal", Historical charts: "Plotly for
   hover." Session 11 added a tap readout for phones.
