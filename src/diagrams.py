@@ -422,6 +422,9 @@ PROJECT_STREAMS = (
 # stream (rain and snowpack), none for the regions, the burned-area red.
 # The source box names each stream, so the colour is a second cue.
 PROJECT_STREAM_TOKENS = ("enso", "water", None, "fire")
+# The same colours as a short key across the top of the chart (owner,
+# 2026-10-13), in the order of the streams.
+PROJECT_KEY = (("enso", "El Niño index"), ("water", "Rain and snow"), ("fire", "Fire"))
 PROJECT_TABLE = "Region × year table\none row per region and season"
 PROJECT_PLAN = "Analysis plan, frozen\nbefore any fire data was read"
 PROJECT_SPINE = (("step", "Pre-registered tests,\nrun once"),
@@ -491,6 +494,7 @@ def project_labels() -> list[str]:
     for the page's alt text)."""
     labels = [text.replace("\n", " ") for stream in PROJECT_STREAMS for text in stream]
     labels += [PROJECT_TABLE.replace("\n", " "), PROJECT_PLAN.replace("\n", " ")]
+    labels += [label for _, label in PROJECT_KEY]
     return labels + [text.replace("\n", " ") for _, text in PROJECT_SPINE] + list(PROJECT_NOTES)
 
 
@@ -498,8 +502,11 @@ def _draw_project(lay: dict) -> Figure:
     note = "\n".join(_wrap(line, lay["wrap_foot"]) for line in PROJECT_NOTES)
     # Depths down from the top edge, in units; one unit is lay["unit"] inches
     # both ways, so shapes keep their proportions.
-    rows = {"source": 5.5, "step": 16, "turn": 31.5, "answer": 43.5, "fix": 53, "table": 67}
-    spine_first, spine_step = 80, 12.5
+    key_h = 5.0  # the colour key's band above the sources
+    rows = {name: depth + key_h for name, depth in
+            {"source": 5.5, "step": 16, "turn": 31.5, "answer": 43.5, "fix": 53,
+             "table": 67}.items()}
+    spine_first, spine_step = 80 + key_h, 12.5
     total = spine_first + spine_step * (len(PROJECT_SPINE) - 1) + 14
     fig = Figure(figsize=(lay["width"], total * lay["unit"]), facecolor=PAPER)
     ax = fig.add_axes((0, 0, 1, 1))
@@ -512,6 +519,16 @@ def _draw_project(lay: dict) -> Figure:
 
     w, font = lay["node_w"], lay["font"]
     values = theme.colours(figures.THEME)
+    # the key: one swatch and label per coloured stream, centred as a row
+    slot, side = 22.0, 2.0
+    start = 50 - slot * len(PROJECT_KEY) / 2
+    for i, (token, label) in enumerate(PROJECT_KEY):
+        left = start + i * slot + 2.5
+        ax.add_patch(FancyBboxPatch((left, at(2.6) - side / 2), side, side,
+                                    boxstyle="round,pad=0,rounding_size=0.4", linewidth=1.5,
+                                    edgecolor=values[token], facecolor=_tint(values[token], 0.12)))
+        ax.text(left + side + 1.2, at(2.6), label, ha="left", va="center_baseline",
+                fontsize=font, color=INK, fontfamily=FONT)
     for x, token, (source, step, turn, answer, fix) in zip(lay["cols"], PROJECT_STREAM_TOKENS,
                                                            PROJECT_STREAMS):
         colour = values[token] if token else None

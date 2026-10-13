@@ -44,6 +44,10 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   stream with rain).
 - Checked in the preview at desktop and phone widths: the page itself
   never scrolls sideways. Not uploaded.
+- **Added a short colour key across the top of the chart (owner: "short
+  color legend add at top as well"):** three swatches, "El Niño index",
+  "Rain and snow", "Fire", in the order of the streams. The line under
+  the chart that names the colours stays.
 
 ### 2026-10-13 - A flowchart of the whole project, on its own page
 
