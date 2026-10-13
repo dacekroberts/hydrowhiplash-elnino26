@@ -6,6 +6,16 @@ checkout.
 
 ## Part 1 · Handoff
 
+**Status at the end of 13 October 2026 (read this first; where a line
+below disagrees, this wins).** V1 is complete. The owner's wording is
+approved on every page and the tone-guide pass is done. The DeepSeek
+pilot ran and its efficiency review is written. The repository is public
+(github.com/dacekroberts/hydrowhiplash-elnino26; `DECISIONS.md`
+2026-10-13 "The repository made public"), the code stays MIT, and the
+site has had eight uploads (the last from commit 4a0dc39). What is left:
+the sample visuals, the small things list, the hard-line item on its
+date, and the Motion bundle when the owner starts it.
+
 **Where things stand.**
 
 - **Nothing in `results/tables/run1/` is edited, renamed or deleted.**
@@ -143,8 +153,8 @@ checkout.
 **Small things left that are not on the calendar** (owner, 2026-10-13:
 "have these included in next session kickoff"):
 
-- The repository is still private; when it goes public, the AI use
-  section links "logged" to the decisions log.
+- Done 2026-10-13: the repository is public and "logged" in the AI use
+  section links to the decisions log.
 - The winter rainfall map in the action plan was never built.
 - The coverage chart (`headline4`) has no phone drawing.
 - The two remaining "Work in progress" notes (map, tracker) have a navy
@@ -313,18 +323,20 @@ is at row 19.
 ## Part 2 · Prompt for session 12
 
 ```text
-Session 12 for hydrowhiplash-elnino26: the owner's wording on session
-11's drafts, the DeepSeek pilot, and readiness for the hard-line item.
+Session 12 for hydrowhiplash-elnino26: sample visuals (a dashboard, then
+a GitHub banner), the small things left, and readiness for the hard-line
+item.
 
-1. Orient: read CLAUDE.md, docs/session12_kickoff.md, logs/2026-10-12.md
-   (the session 11 block), the top of DECISIONS.md (2026-10-12 session
-   11 entries), docs/plan_deviations.md D93-D96,
-   docs/post_results_protocol.md, site/methods.qmd, site/index.qmd,
-   site/tracker.qmd, results/tables/rollout_calendar.json,
-   ANALYSIS_PLAN.md (frozen: never edit above the deviations log) and
-   ACTION_PLAN.md Phases 4 and 5 and "Second goal".
+1. Orient: read CLAUDE.md, docs/session12_kickoff.md (the status block
+   at the top of Part 1 first), logs/2026-10-13.md, the top of
+   DECISIONS.md (the 2026-10-13 entries), docs/post_results_protocol.md,
+   site/methods.qmd, site/index.qmd, src/theme.py,
+   results/tables/rollout_calendar.json and ACTION_PLAN.md Phases 4 and
+   5 and "Second goal". ANALYSIS_PLAN.md is frozen: never edit above its
+   deviations log.
    Read with the Artifact tool (action "read"):
    the roadmap, https://claude.ai/artifact/4jc6Gyofq9cVRYtRQiHQeT
+   the design system, https://claude.ai/artifact/JEsfHNH6vN7VknKmkVLP3M
    Tell me in 3-4 lines what this session covers. Main numbers its own
    deviations from D100.
 
@@ -337,23 +349,29 @@ Session 12 for hydrowhiplash-elnino26: the owner's wording on session
    docs/post_results_protocol.md first.
 
 4. If it is 4 November 2026 or later, read the hard-line item in Part 1
-   (item 4) before anything else, and tell me what the reminder found.
+   (item 4 of "Next work") before anything else, and tell me what the
+   reminder found.
 
-5. Build the site and look at it in the browser: the four headline
-   charts, the Plotly season history, light and dark. Tell me what you
-   see before changing anything.
+5. The repository is public now. Nothing private goes into a commit: no
+   keys, nothing under data/, not the retrospective, not the other
+   project's name.
 
-6. Then the list "Yours to word or decide": put each to me briefly, with
-   a recommendation where you have one. My prose is mine to write:
+6. Sample visuals ("Sample visuals" in Part 1). Ask me the styling
+   questions first, in detail, before drawing anything. Then a private
+   dashboard page, then a GitHub banner (social preview and README
+   header). Only committed tables under results/tables/, no held-back
+   seasons (2026, 2027; 2025 for BC, AB, YT), numbers from a script,
+   region shapes only after their sources' terms are checked. These
+   pieces are the ramp-up to the Claude Motion bundle; build nothing for
+   Motion itself unless I ask.
+
+7. Then "Small things left that are not on the calendar" in Part 1: put
+   each to me briefly with a recommendation. My prose is mine to write:
    suggest, don't rewrite.
 
-7. Then the work list in Part 1, in order. Ask me before any run that
-   reads polygons, and before every DeepSeek call. Flag scope additions
+8. Ask me before any run that reads polygons, before every DeepSeek
+   call, and before every upload of the site. Flag scope additions
    rather than building them.
-
-8. Then "Sample visuals" in Part 1: ask me the styling questions first,
-   in detail, then a dashboard, then a GitHub banner. Only committed
-   tables, no held-back seasons, numbers from a script.
 
 9. End of session: daily-log skill, python scripts/log.py list,
    python scripts/check_no_em_dashes.py, python scripts/check_plan_frozen.py,

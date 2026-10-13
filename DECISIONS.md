@@ -17,6 +17,29 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The repository made public
+
+- **Made `dacekroberts/hydrowhiplash-elnino26` public on the owner's
+  word ("let's make public", then "public").** Checked first: no secret
+  in any tracked file or in the history, and nothing under `data/` was
+  ever committed. Before the switch, `docs/retrospective_v1.md` and
+  `.wrangler/` were untracked and ignored, the sibling was reworded as
+  "a separate work-in-progress project" in four living documents, and
+  `README.md` was rewritten from a draft the owner approved.
+- **The history was left as it is.** Past commits still hold the
+  retrospective, a Cloudflare account ID (not a credential) and the
+  sibling's name. Rejected: rewriting the history, which would move the
+  tags `analysis-plan-frozen`, `registered-run1` and `prediction-handoff`
+  that date the plan, the run and the handover.
+- **Owner's choices:** the Gmail address stays as the commit author
+  ("Keep Gmail"); the held-back seasons' tables are public, with the
+  rule sent to the prediction session the same day; the code stays MIT
+  ("Keep MIT"; rejected: all rights reserved for the code, which would
+  have had to come before the switch). Old entries and logs that name
+  the sibling were not edited.
+- **After the switch:** the methods page's AI use section links "logged"
+  to this file; the GitHub description and homepage are set.
+
 ### 2026-10-13 - The map redrawn; stacked drawings of the ledger charts for a phone
 
 - **Redrew `results/figures/region_map.html` on the owner's yes** (the
