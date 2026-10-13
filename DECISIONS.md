@@ -17,6 +17,17 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Subsection headings raised to 22 px site-wide
+
+- **Raised subsection headings from 18 px (13.5 pt) to 22 px (16.5 pt) on
+  every page (owner: "subsection headings, raise to 16.5pt site-wide").**
+  These were the headings the owner had meant by "section headers" ("i
+  just wanted them bigger than previous"; "previous looked like 14pt
+  max"), not the 26 px section headings changed and restored in the two
+  entries below. The order of sizes holds: title 40 px, section 26 px,
+  subsection 22 px, body 16 px. Changed in `theme/tokens.json` (the
+  `subsection` style), `src/theme.py` and the private Design System page.
+
 ### 2026-10-12 - Methods page: section headings back to the site's size
 
 - **Put the methods page's section headings back to 26 px (19.5 pt), the
