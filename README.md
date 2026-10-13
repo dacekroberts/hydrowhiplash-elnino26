@@ -1,110 +1,106 @@
 # hydrowhiplash-elnino26
 
-Analog analysis of how strong El Niño winters affect hydroclimate whiplash and
-the following fire season in the Pacific Northwest, British Columbia and
-Alberta, plus Alaska and Yukon [mid-project: D20], contrasted with Northern and Southern
-California. The current target
-is the 2026–27 event, with the 2027 fire season as the outcome.
+A strong El Niño winter tells us little about the fire season that follows
+it in western North America. Of 52 tests fixed in advance, 4 are
+significant after correcting for the number of tests, and none of the 4
+links El Niño itself to burned area. What shows up is the step after it:
+winter moisture goes with burned area in Alberta and Northern California.
+These are associations over about 42 fire seasons, not causes.
+
+**Site:** https://hydrowhiplash.dacekroberts.dev (overview, map, tracker,
+methods and limitations, flowchart).
 
 Author: Dace Roberts.
 
-**Licensing:** code is MIT-licensed (`LICENSE`). Writing and figures are
-© 2026 Dace Roberts, all rights reserved (`LICENSE-CONTENT`). Third-party data
-stays under its publishers' terms (`DATA_SOURCES.md`).
+## What this is
 
-See `ACTION_PLAN.md` for the roadmap and `ANALYSIS_PLAN.md` for the
-pre-registered hypotheses and tests.
+An analog study: it asks what past El Niño winters were followed by, in
+seven regions. The regions are the Pacific Northwest (Washington, Oregon,
+Idaho), British Columbia, Alberta, Alaska, Yukon, Northern California and
+Southern California. Climate data runs from 1950 and fire data from 1984.
 
-## Statistical approach
+The target is the 2026-27 El Niño and the 2027 fire season. The forecast
+for 2027, this winter's months and the check against what burns are not
+here yet. They arrive on the dates listed on the site's tracker page.
 
-This project is built around inference, not just description. With roughly 10 to 13
-El Niño years in the fire record, every method is chosen for small,
-autocorrelated samples:
+## How it was kept honest
+
+- **The tests were written down first.** `ANALYSIS_PLAN.md` was committed
+  and tagged (`analysis-plan-frozen`) before any fire data was analysed.
+  A check in `scripts/` fails if the plan changes above its log of
+  deviations.
+- **The tests ran once.** The registered run is in `results/tables/run1/`
+  and is never edited.
+- **Every departure is logged.** `docs/plan_deviations.md` records where
+  the work left the plan, and `DECISIONS.md` gives the reasoning for each
+  judgment call.
+- **Nulls are reported.** The methods page lists every test, including
+  the 48 that are not significant after correction.
+
+## Method in one table
 
 | Question | Method |
 |---|---|
 | Do El Niño years differ from the rest? | Permutation test and bootstrap confidence interval |
-| Does ONI strength matter after controlling for temperature and the long-term trend? | Regression with controls and Newey-West standard errors |
-| Does El Niño affect the PNW, BC and Alberta (and Alaska and Yukon [mid-project: D20]) differently from California? | Pooled regression with an ONI × region interaction |
+| Does El Niño strength matter after controlling for temperature and the long-term trend? | Regression with controls and Newey-West standard errors |
+| Does El Niño affect the northern regions differently from California? | Pooled regression with an El Niño × region interaction |
 | Does a wet year raise fire risk afterwards (the whiplash mechanism)? | Lagged regression |
 | Are consecutive years independent? | Autocorrelation check and block bootstrap |
 | Are some results significant by chance? | Holm and Benjamini-Hochberg corrections |
-| How reliable is the 2027 forecast? | Leave-one-year-out prediction intervals with empirical coverage |
 
-Hypotheses and tests were committed in `ANALYSIS_PLAN.md` before the fire data
-was analysed; any changes are logged there with reasons.
+The fire record holds few El Niño years, so every method was chosen for
+small samples where one year resembles the next.
 
-## Setup (Windows)
+## What it doesn't show
 
-1. Install **Miniforge** from https://github.com/conda-forge/miniforge
-   (the Windows x86_64 installer). Use the **Miniforge Prompt** it adds to the
-   Start menu for the commands below.
+It doesn't show that El Niño causes or prevents fire anywhere. It doesn't
+yet hold a forecast. And about 42 seasons is a short record: an effect too
+small for these tests to find could still be real.
 
-2. Create the environment from the project folder:
-
-   ```bat
-   cd path\to\hydrowhiplash-elnino26
-   mamba env create -f environment.yml
-   conda activate whiplash
-   ```
-
-3. Copernicus CDS API key (for ERA5-Land). Log in at
-   https://cds.climate.copernicus.eu, copy your personal access token from
-   your profile page, and create a file called `.cdsapirc` in your home folder
-   (`C:\Users\<you>\.cdsapirc`, no file extension) containing:
-
-   ```
-   url: https://cds.climate.copernicus.eu/api
-   key: <your-personal-access-token>
-   ```
-
-   Notepad tends to add `.txt`; save with "All files" selected, or run
-   `notepad %USERPROFILE%\.cdsapirc` from the prompt. Also open the ERA5-Land
-   monthly dataset page once and accept its licence.
-
-4. In VS Code, pick the `whiplash` interpreter (Ctrl+Shift+P →
-   "Python: Select Interpreter") so notebooks use this environment.
-
-## Run order
-
-```bat
-:: ENSO index -> data\processed\enso_index.csv and el_nino_winters.csv
-python -m src.download_oni
-:: ERA5-Land monthly precip + temp -> data\raw\era5_land\
-python -m src.download_era5
-:: region polygons -> data\processed\regions.geojson
-python -m src.regions
-:: Phase 1 winter precipitation figures -> results\figures\
-python -m src.winter_figures
-:: Phase 2 figures from results\tables\ -> results\figures\
-python -m src.phase2_figures
-:: tests for the statistics, spatial and log helpers
-python -m pytest
-:: style check before committing
-python scripts\check_no_em_dashes.py
-:: start today's log (logs\YYYY-MM-DD.md)
-python scripts\log.py new
-:: logs -> logs\export\index.csv and all_logs.md
-python scripts\log.py export
-:: explainer site, live preview in the browser
-quarto preview site
-```
-
-## Layout
+## Where things are
 
 ```
-data/raw/         untouched downloads (not committed)
-data/processed/   cleaned, clipped outputs (not committed)
-notebooks/        exploration
 src/              reusable code; config.py holds every tunable value
-results/          figures and tables for the write-up and site
-site/             Quarto explainer site (published to GitHub Pages)
-tests/            pytest checks for src/stats.py, src/geo.py and scripts/log.py
-logs/             daily progress logs, one file per day (template inside)
-scripts/          daily-log helper and repo checks
-.claude/skills/   Claude Code skills (daily-log, read-licence, deploy-site and others)
-CLAUDE.md         project conventions for Claude Code
+tests/            pytest checks
+scripts/          repo checks, the log helper, the site upload
+notebooks/        exploration
+results/          figures and tables the site reads (run1/ is the registered run)
+site/             the Quarto site
+docs/             data dictionary, methods register, deviations, audits
+logs/             daily progress logs
+data/             downloads and processed files (not committed)
 ```
 
-Progress is logged daily in `logs/`. Data provenance and licences are tracked in `DATA_SOURCES.md`; judgment
-calls and their reasoning in `DECISIONS.md`.
+`DATA_SOURCES.md` lists every dataset with its licence.
+
+## Running it
+
+The data is not in this repository. Each source has a download script in
+`src/` and a row in `DATA_SOURCES.md`; ERA5-Land needs a free Copernicus
+account and its licence accepted.
+
+```bash
+mamba env create -f environment.yml
+```
+
+```bash
+conda activate whiplash
+```
+
+```bash
+python -m pytest
+```
+
+Modules run from the repository root as `python -m src.<module>`.
+
+## AI use
+
+I directed this project and made its key decisions. An AI assistant,
+Claude Code, wrote most of the code. The methods page says how, and
+`DECISIONS.md` logs it.
+
+## Licensing
+
+Code is MIT-licensed (`LICENSE`). Writing and figures are © 2026 Dace
+Roberts, all rights reserved (`LICENSE-CONTENT`). Third-party data stays
+under its publishers' terms (`DATA_SOURCES.md`).
