@@ -102,6 +102,14 @@ checkout.
   two agency links in "Who this forecast is for"; the retrospective. When the repository goes public (owner: "soon"), link
   "logged" in the AI use section to `DECISIONS.md`; the tone-guide pass
   was done on 2026-10-13 (code comments clean; five prose edits applied).
+- V1 is complete as of 2026-10-13 (owner's question at the session's end;
+  the answer given was yes, with the timetabled items and the list below
+  left). Left: make the repository public and link "logged"; the winter
+  rainfall map (not built); a phone drawing of the coverage chart; the
+  navy title band of the two remaining notes in the dark theme; a finger
+  on a real phone. The owner has put the project forward to the Seattle
+  Visual Session as a candidate for "a claude motion"; nothing is built
+  for it here, and it is a scope addition to shape with the owner.
 - Closed 2026-10-13: the Design System's empty `type.fonts` is right for
   faces hosted by Google Fonts.
 - Dark-mode drawings exist for the four PNG charts and the two diagrams
