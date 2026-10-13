@@ -30,5 +30,7 @@ format:
       light: theme/light.scss
       dark: theme/dark.scss
     respect-user-color-scheme: true
-    include-in-header: theme/fonts.html
+    include-in-header:
+      - theme/fonts.html
+      - _rights.html
     toc: true

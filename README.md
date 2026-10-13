@@ -102,7 +102,7 @@ site/             Quarto explainer site (published to GitHub Pages)
 tests/            pytest checks for src/stats.py, src/geo.py and scripts/log.py
 logs/             daily progress logs, one file per day (template inside)
 scripts/          daily-log helper and repo checks
-.claude/skills/   Claude Code skills (daily-log, read-licence)
+.claude/skills/   Claude Code skills (daily-log, read-licence, deploy-site and others)
 CLAUDE.md         project conventions for Claude Code
 ```
 

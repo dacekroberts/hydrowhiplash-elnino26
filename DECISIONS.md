@@ -17,6 +17,22 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-12 - Before the first upload: rights statements checked; the deploy check as a skill
+
+- **Checked the copyright statements on the staged site (owner: "have we
+  properly setup the appropriate copyright labels everywhere").** Found
+  in place: the footer line on all four pages, an author tag in each
+  page's head, `LICENSE-CONTENT`. Added: `site/_rights.html`, three
+  machine-readable rights tags in every page's head. Found and left for
+  the owner: the six figure files carry no credit inside the image, so a
+  saved image travels without one; `robots.txt` allows every crawler,
+  AI training crawlers included; the footer says "Code: MIT licence"
+  while the repository is private.
+- **Wrote the `deploy-site` skill (owner: "deploy check should be a
+  skill"):** the readiness rule, the credits, the rights and
+  outside-request checks, the domain rules, staging, the owner's yes
+  before each upload, the live check, and the traps met today.
+
 ### 2026-10-12 - Wording: home page approved; the other pages go out marked as work in progress
 
 - **Home page wording approved item by item.** Six draft items; three
