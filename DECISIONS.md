@@ -17,6 +17,17 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The social preview's empty slot labelled 2027 too
+
+- **All three banners name their empty slot.** Owner: "2027 on preview
+  yes as well". Supersedes "True for the README layout only" in the
+  entry below: the `slot_label` key came out of `src/banner.py` and the
+  label is drawn on every layout. `python -m src.banner` rewrote
+  `results/figures/banner_social_dark.png` and left the two README
+  banners byte for byte the same (`git status`). The file uploaded to
+  GitHub earlier the same day is the one without the label, so the
+  owner uploads it again.
+
 ### 2026-10-13 - The README banner's empty slot labelled 2027
 
 - **The two README banners name their empty slot.** Owner: "label 2027
