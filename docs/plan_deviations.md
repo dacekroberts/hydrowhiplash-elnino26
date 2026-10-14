@@ -27,6 +27,21 @@ additions stay distinguishable from the original plan.
 
 ## 2026-10-13
 
+### D107 · A link preview card for the site (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists the site's pieces and
+  names no link preview. `site/_quarto.yml` set no Open Graph tags, so a
+  pasted link showed the page title and a placeholder icon.
+- **Actual:** every page carries Open Graph and X card tags; the picture
+  is `site/preview.png`, a copy of the social banner written by
+  `python -m src.banner`; the home page's card title is the banner's
+  line. No favicon. Not live until the next upload.
+- **Why:** owner, 2026-10-13, with a picture of the link in iMessage:
+  "How do i change this visual on i message", then "Yes" to the banner
+  as the image and its line as the title.
+- **Recorded:** `DECISIONS.md` 2026-10-13 "A link preview card for the
+  site".
+- **Plan doc:** left as written.
+
 ### D106 · A ranked copy of the registered tests and a "close" tier, for the visuals (scope addition, after results)
 - **Plan:** `ANALYSIS_PLAN.md` reports each registered test with its
   Holm verdict and names no ranking and no tier between passing and not

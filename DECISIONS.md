@@ -17,6 +17,46 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - A link preview card for the site
+
+- **The site's pages carry Open Graph and X card tags, with the social
+  banner as the picture (D107).** Owner, with a picture of the site's
+  link in iMessage (page title cut off, a placeholder icon): "How do i
+  change this visual on i message", then "Yes" to the recommendation:
+  the banner as the image, the banner's line as the card title, no
+  favicon for now. `site/_quarto.yml`: `open-graph` and `twitter-card`
+  on, and `image: preview.png` with its alt text at the top level so
+  every page uses it. `site/index.qmd`: the card title is
+  `src.banner.QUESTION`; the page's own title is unchanged. Other pages
+  keep their page titles on the card.
+- **The picture is a copy inside `site/`, written by code.** Quarto
+  leaves out images linked from outside `site/` (the trap
+  `scripts/check_site.py` was written for), so `python -m src.banner`
+  also writes `site/preview.png`, byte for byte the social banner
+  (52,686 bytes). A test holds the two equal and holds the card title
+  equal to the banner's line. Rejected: a path into `results/figures/`
+  (not copied into the build); a hand copy (nothing under `site/` or
+  `results/` is made by hand).
+- **Found in the first render: Quarto took each page's first figure as
+  its card image.** With the image set under `website:` only, the
+  Overview, methods and flowchart pages pointed at an inline SVG, which
+  link previews do not draw. Moving `image` to the top level fixed all
+  five pages; read from a rendered copy, each page's `og:image` is
+  `https://hydrowhiplash.dacekroberts.dev/preview.png`, 1280 x 640.
+  Left as it is: `og:description` is empty on every page (no page has a
+  description; the wording is the owner's).
+- **A generic handoff for a Cloudflare session:
+  `docs/handoff_link_preview_card.md`.** Owner: "Create cloudflare chat
+  handoff", "For this item", "Generic", then "Gitignore this it's just
+  internal handoff": the file is ignored by git and stays on this
+  machine. It names no project: what a card
+  is made of, what to look at in Cloudflare (bot rules against preview
+  fetchers, `robots.txt`, the image in the build, caching, injected
+  scripts), six read-only checks and what to report. Its claims about
+  how fetchers behave are marked as general knowledge, unchecked.
+  Nothing uploaded: the card is live only after the next upload, which
+  needs the owner's yes.
+
 ### 2026-10-13 - The social preview's empty slot labelled 2027 too
 
 - **All three banners name their empty slot.** Owner: "2027 on preview

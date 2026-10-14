@@ -40,3 +40,5 @@ pinned_inputs_copy/
 # the Motion handoff folder (scripts/build_motion_handoff.py) is committed as
 # sent, except the private sample dashboard (owner, 2026-10-13)
 /motion_handoff/storyboard.html
+# internal handoff note for a Cloudflare session (owner, 2026-10-13)
+/docs/handoff_link_preview_card.md

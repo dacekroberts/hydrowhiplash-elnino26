@@ -5,10 +5,15 @@ project:
     - "fonts/*"
     - "libs/*"
     - "robots.txt"
+    - "preview.png"
 
 website:
   title: "El Niño and the 2027 fire season"
   site-url: "https://hydrowhiplash.dacekroberts.dev"
+  # The card a link to the site shows. preview.png is written by
+  # `python -m src.banner`, a copy of results/figures/banner_social_dark.png.
+  open-graph: true
+  twitter-card: true
   page-footer: "Text and figures © 2026 Dace Roberts, all rights reserved. Code: MIT licence."
   navbar:
     left:
@@ -24,6 +29,12 @@ website:
         text: Flowchart
 
 author: "Dace Roberts"
+
+# Every page's card shows the same picture. Without this, Quarto takes a
+# page's first figure, and three pages start with an SVG, which link
+# previews do not draw.
+image: preview.png
+image-alt: "Does an El Niño winter say how much the next fire season will burn? Seven rows of fire seasons since 1984, one per region, with the seasons after El Niño winters shaded."
 
 # theme/ is written by `python -m src.theme` from theme/tokens.json; edit the
 # tokens, not the files in it.

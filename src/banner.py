@@ -3,6 +3,8 @@
 Writes to results/figures/:
   banner_social_dark.png            1280 x 640, the repository's social preview
   banner_readme_<theme>.png         1280 x 320, the README header, one per theme
+and to site/preview.png a copy of the social preview, the picture a link to
+the site shows (og:image).
 
 Each is the question the project asks, the site's address and a motif: the
 seven regions' fire seasons since FIRE_FIRST_YEAR, stacked north to south
@@ -58,6 +60,10 @@ LAYOUTS = {
                "strip": (560, 40, 1240, 284), "label": 11},
 }
 BANNERS = (("social", "dark"), ("readme", "light"), ("readme", "dark"))
+# The site's link preview (og:image in site/_quarto.yml) is the social
+# banner. Quarto leaves out images linked from outside site/, so a copy is
+# written inside it, by this module only, never by hand.
+SITE_PREVIEW = (("social", "dark"), theme.SITE_FONTS_DIR.parent / "preview.png")
 
 
 def static_fonts(folder: Path) -> dict[str, FontProperties]:
@@ -155,7 +161,9 @@ def draw(table: pd.DataFrame, kind: str, theme_name: str, fonts: dict[str, FontP
     return fig
 
 
-def write(out_dir: Path = figures.FIGURES) -> list[Path]:
+def write(out_dir: Path = figures.FIGURES, preview: Path | None = SITE_PREVIEW[1]) -> list[Path]:
+    """The three banners into `out_dir`, and the site's copy of the social
+    one to `preview` (None to skip it)."""
     table, paths = seasons(), []
     # matplotlib keeps a drawn font file open, which blocks its removal on
     # Windows; the copies are then left for the system to clear.
@@ -165,6 +173,9 @@ def write(out_dir: Path = figures.FIGURES) -> list[Path]:
             path = out_dir / f"banner_{kind}_{theme_name}.png"
             draw(table, kind, theme_name, fonts).savefig(path, dpi=DPI)
             paths.append(path)
+            if preview is not None and (kind, theme_name) == SITE_PREVIEW[0]:
+                preview.write_bytes(path.read_bytes())
+                paths.append(preview)
     return paths
 
 
