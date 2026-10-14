@@ -107,6 +107,33 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   after the commit, push and upload. Owner: "and that can be the
   scaffold to compare against main page": the same captures are the
   reference if the map page later takes this treatment.
+- **Thirteenth upload, on the owner's word ("upload"): commit c63ff4f,
+  62 files, 10,591,275 bytes, 4 files uploaded and 58 already there,
+  deployment 2ab4d4c8.** It carried the map card. Checked on the live
+  site in a browser: `og:image` and `twitter:image` on the home page
+  point at `preview.png`, which is 1280 by 640 and shows the region
+  map; title and description as before; the footer draws; the page
+  asked no host but the site.
+- **Addendum 2 for Motion: five pictures of the card's map.**
+  `scripts/build_motion_addendum2.py` writes `motion_handoff_addendum2/`
+  (`addendum2.md` and `addendum2_map_<view>_dark.png` for whole, alaska,
+  panhandle, bc_coast, california). The whole map is the card's drawing
+  at 4 times; a closer view has shapes at 4 times and lines and labels
+  at 2 times (`CLOSE_LINES`), because a plain enlargement kept the
+  channels as narrow against the line as on the card. View windows
+  chosen by eye. No polygon opened. Not yet sent to the Motion chat.
+- **The fjord limit fixed, with a second polygon read.** At the closer
+  views small bright marks showed on Alaska panhandle islands, the
+  Kenai coast and Alaska's west coast: stretches deep inside the coarse
+  land outline, drawn as borders. Owner, asked whether to fix before
+  sending and told it needs a new read of the region polygons: "1 fix".
+  `map_page.card_shapes` now counts an inland stretch as a border only
+  on the outer ring of a region's largest part (no island, no lake) and
+  only as a run of at least `CARD_MAP_BORDER_MIN_KM` 150 km (60 left
+  one mark on Alaska's west coast). Borders shared between regions are
+  untouched. `card_map_shapes.json` rewritten (204,742 bytes), the card
+  and the five pictures redrawn; no mark remains at 4 times. The card
+  on the live site is the one before this fix until the next upload.
 - **The region codes are larger and in the site's text face.** Owner:
   "that way we can actually increase the font size for all other
   regions, clean up the font (match site or aesethically pleasing)".

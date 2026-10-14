@@ -41,7 +41,7 @@ import pandas as pd
 
 from src import geo
 from src.config import (ENSO_INDEX, FIRE_FIRST_YEAR, MAP_DISPLAY_CRS, MAP_LAYERS,
-                        CARD_MAP_INLAND_KM, CARD_MAP_MIN_PART_KM2, CARD_MAP_SIMPLIFY_KM,
+                        CARD_MAP_BORDER_MIN_KM, CARD_MAP_INLAND_KM, CARD_MAP_MIN_PART_KM2, CARD_MAP_SIMPLIFY_KM,
                         MAP_MIN_PART_KM2, MAP_NORMAL_YEARS, MAP_SIMPLIFY_KM, MAP_START_LAYER,
                         MAP_WIDTH, MIN_FIRE_HA, NATURAL_EARTH_LAND_RAW, NINO34_BOX, REGIONS,
                         RESULTS, SST_EDGES, SST_LAND_MIN_DEG2, SST_LAND_SIMPLIFY_DEG,
@@ -709,12 +709,14 @@ def card_shapes(regions, world) -> dict:
     """The link card's map: the regions cut at CARD_MAP_SIMPLIFY_KM with
     parts down to CARD_MAP_MIN_PART_KM2 kept, in the map page's own frame,
     with each region's boundary split into `border` (shared with another
-    region, or at least CARD_MAP_INLAND_KM inside Natural Earth's land) and
+    region, or a run of CARD_MAP_BORDER_MIN_KM on the outer ring of the
+    region's largest part, at least CARD_MAP_INLAND_KM inside Natural
+    Earth's land) and
     `coast` (the rest), as open SVG paths. Display only: nothing is
     measured from these shapes, and the map page's own are unchanged."""
     import geopandas as gpd
     from shapely.geometry import box
-    from shapely.ops import unary_union
+    from shapely.ops import linemerge, unary_union
 
     page = shapes(regions)
     left, top, scale = page["frame"]
@@ -743,7 +745,16 @@ def card_shapes(regions, world) -> dict:
     for region in REGIONS:
         edge = whole[region].boundary
         others = unary_union([whole[r] for r in REGIONS if r != region])
-        border = edge.intersection(unary_union([others.buffer(tolerance / 4), inland]))
+        # The inland rule holds on the outer ring of the region's largest
+        # part only, and for a run of at least CARD_MAP_BORDER_MIN_KM: an
+        # island or a lake has no land border, and a fjord head deep inside
+        # the coarse land outline was drawn as a bright mark.
+        main = max(getattr(whole[region], "geoms", [whole[region]]), key=lambda g: g.area)
+        deep = main.exterior.intersection(inland)
+        runs = linemerge(deep) if deep.geom_type == "MultiLineString" else deep
+        long = [g for g in getattr(runs, "geoms", [runs])
+                if g.geom_type == "LineString" and g.length >= CARD_MAP_BORDER_MIN_KM * 1000]
+        border = unary_union([edge.intersection(others.buffer(tolerance / 4)), *long])
         coast = edge.difference(border.buffer(1))
         solid = whole[region].simplify(tolerance, preserve_topology=True)
         out[region] = {"name": REGION_NAMES[region], "d": _rings(solid, point),

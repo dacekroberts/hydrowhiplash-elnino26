@@ -718,6 +718,11 @@ MAP_WIDTH = 640
 CARD_MAP_SIMPLIFY_KM = 2
 CARD_MAP_MIN_PART_KM2 = 100
 CARD_MAP_INLAND_KM = 15
+# A run of that inland boundary shorter than this is a fjord head or a
+# river mouth, not a land border, and is drawn as coast; so is any such run
+# on an island or a lake (by eye on the card, 2026-10-13: 60 left one mark
+# on Alaska's west coast).
+CARD_MAP_BORDER_MIN_KM = 150
 
 # Sea-surface temperature for the map page's ocean panels (D99). Display
 # only: no test, reported run or forecast reads it, and the files are not

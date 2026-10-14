@@ -1030,13 +1030,15 @@ per region `d` (closed rings to fill), `border` and `coast` (open
 lines) and `label` (the map page's label point). Finer than the map
 page's own shapes: simplified to 2 km (`CARD_MAP_SIMPLIFY_KM`), parts
 kept down to 100 km2 (`CARD_MAP_MIN_PART_KM2`); a boundary is a border
-where another region shares it or it lies 15 km or more inside
-Natural Earth's 1:50m land (`CARD_MAP_INLAND_KM`), otherwise coast.
+where another region shares it, or where it lies 15 km or more inside
+Natural Earth's 1:50m land (`CARD_MAP_INLAND_KM`) for a run of at
+least 150 km (`CARD_MAP_BORDER_MIN_KM`) on the outer ring of the
+region's largest part; otherwise coast.
 Display only. Traps: nothing may be measured from these shapes (area
 goes through `src.geo.area_ha` on the real polygons); the regions are
 drawn plain, with no year and no value; the border test uses coarser
-land than the outlines, so part of a deep fjord can come out as a
-border; the map page and `region_map.html` use their own, coarser
+land than the outlines, which is why a short inland run, an island and
+a lake never count as a border; the map page and `region_map.html` use their own, coarser
 shapes and are not changed by this file.
 
 **Ranked copy of the registered tests (2026-10-13, D106).**
