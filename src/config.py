@@ -709,6 +709,15 @@ MAP_DISPLAY_CRS = "+proj=aea +lat_1=38 +lat_2=64 +lat_0=50 +lon_0=-132 +datum=WG
 MAP_SIMPLIFY_KM = 6
 MAP_MIN_PART_KM2 = 800
 MAP_WIDTH = 640
+# The link card's map (site/preview.png, src.banner) is cut from the same
+# outlines at finer detail, so that an archipelago keeps its islands: a
+# picture only, in the map page's own frame. A boundary that another region
+# shares, or that lies at least CARD_MAP_INLAND_KM inside Natural Earth's
+# land, is drawn as a border; the rest is coast. Chosen by eye on the card
+# (owner, 2026-10-13: "try to realistically depict the islands").
+CARD_MAP_SIMPLIFY_KM = 2
+CARD_MAP_MIN_PART_KM2 = 100
+CARD_MAP_INLAND_KM = 15
 
 # Sea-surface temperature for the map page's ocean panels (D99). Display
 # only: no test, reported run or forecast reads it, and the files are not

@@ -188,21 +188,9 @@ def winters() -> list[dict]:
 def map_shapes() -> dict:
     """The seven region outlines and the coast behind them, as SVG path
     data in one box, read from the committed map page. Display only."""
-    from src.config import MAP_DISPLAY_CRS, MAP_SIMPLIFY_KM
+    from src import map_page
 
-    page = MAP_PAGE.read_text("utf-8")
-    payload = json.loads(re.search(r'<script type="application/json">(.*?)</script>',
-                                   page, re.S).group(1))
-    shape, coast = payload["shapes"], re.search(r'<path class="land" d="([^"]*)"', page)
-    if coast is None:
-        raise ValueError(f"{MAP_PAGE.name} holds no coast path.")
-    return {"width": shape["width"], "height": shape["height"], "projection": MAP_DISPLAY_CRS,
-            "simplified_km": MAP_SIMPLIFY_KM,
-            "note": "SVG path data; x to the right, y down, in a width by height box. "
-                    "label is a point inside the region's largest part.",
-            "regions": {code: {"name": payload["names"][code], **shape["regions"][code]}
-                        for code in shape["regions"]},
-            "coast": coast.group(1)}
+    return map_page.committed_shapes(MAP_PAGE)
 
 
 def notices() -> str:

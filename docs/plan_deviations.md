@@ -41,6 +41,12 @@ additions stay distinguishable from the original plan.
 - **Recorded:** `DECISIONS.md` 2026-10-13 "A link preview card for the
   site".
 - **Plan doc:** left as written.
+- **Later the same day:** the picture is no longer a copy of the social
+  banner. It is a map of the seven regions, drawn by the same command
+  from `results/figures/card_map_shapes.json`; the title and
+  description changed too (home page title "El Niño 2026–27 Winter
+  Eco-Cartographical Study", description the banner's line). Recorded:
+  `DECISIONS.md` 2026-10-13 "The site's link card shows the region map".
 
 ### D106 · A ranked copy of the registered tests and a "close" tier, for the visuals (scope addition, after results)
 - **Plan:** `ANALYSIS_PLAN.md` reports each registered test with its

@@ -1019,6 +1019,26 @@ as on the site's season chart. `scripts/build_motion_handoff.py` cuts
 the same numbers into `numbers.json`, `seasons.csv` and `timetable.csv`
 in `motion_handoff/` (not committed).
 
+**Link card and its map (2026-10-13, D107).** `site/preview.png`
+(1280 x 640), written by `python -m src.banner`: the picture a link to
+the site shows (`og:image`), the question and the address beside a map
+of the seven regions. Its outlines are
+`results/figures/card_map_shapes.json`, written by
+`python -m src.map_page --card` (reads the region polygons; run only
+to remake the file): SVG path data in the map page's 640 x 690.4 box,
+per region `d` (closed rings to fill), `border` and `coast` (open
+lines) and `label` (the map page's label point). Finer than the map
+page's own shapes: simplified to 2 km (`CARD_MAP_SIMPLIFY_KM`), parts
+kept down to 100 km2 (`CARD_MAP_MIN_PART_KM2`); a boundary is a border
+where another region shares it or it lies 15 km or more inside
+Natural Earth's 1:50m land (`CARD_MAP_INLAND_KM`), otherwise coast.
+Display only. Traps: nothing may be measured from these shapes (area
+goes through `src.geo.area_ha` on the real polygons); the regions are
+drawn plain, with no year and no value; the border test uses coarser
+land than the outlines, so part of a deep fjord can come out as a
+border; the map page and `region_map.html` use their own, coarser
+shapes and are not changed by this file.
+
 **Ranked copy of the registered tests (2026-10-13, D106).**
 `results/tables/registered_tests_ranked.csv`, written by
 `python scripts/rank_registered_tests.py` from

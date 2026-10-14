@@ -53,16 +53,23 @@ def test_banners_have_their_pixel_sizes(tmp_path: Path):
             assert image.size == banner.LAYOUTS[kind]["size"]
 
 
-def test_site_preview_is_the_social_banner_and_the_card_says_its_line(tmp_path: Path):
-    kind, theme_name = banner.SITE_PREVIEW[0]
+def test_site_preview_is_the_map_card_and_the_card_says_the_banner_line(tmp_path: Path):
+    kind, _ = banner.SITE_PREVIEW[0]
     preview = tmp_path / "preview.png"
     paths = banner.write(tmp_path, preview=preview)
-    assert preview in paths
-    assert preview.read_bytes() == (tmp_path / f"banner_{kind}_{theme_name}.png").read_bytes()
-    # The committed copy inside site/ is the committed social banner.
+    assert paths[-1] == preview
     committed = banner.SITE_PREVIEW[1]
-    assert committed.read_bytes() == (
-        banner.figures.FIGURES / f"banner_{kind}_{theme_name}.png").read_bytes()
+    for path in (preview, committed):
+        with Image.open(path) as image:
+            assert image.size == banner.LAYOUTS[kind]["size"]
+    # The map card draws every region, each with a fill and a border or a
+    # coast, and holds a credit for the map.
+    shapes = json.loads(banner.map_page.CARD_OUT.read_text("utf-8"))
+    assert set(shapes["regions"]) == set(banner.ROWS)
+    for shape in shapes["regions"].values():
+        assert shape["d"] and (shape["border"] or shape["coast"])
+    assert set(banner.LABEL_SHIFT) | set(banner.LABEL_CALLOUT) <= set(banner.ROWS)
+    assert "map" in banner.LAYOUTS[kind] and banner.MAP_CREDIT
     config = (committed.parent / "_quarto.yml").read_text("utf-8")
     assert f"image: {committed.name}" in config and f'- "{committed.name}"' in config
     # The card's description, on every page, is the banner's line.

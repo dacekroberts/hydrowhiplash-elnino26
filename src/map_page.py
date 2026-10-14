@@ -41,6 +41,7 @@ import pandas as pd
 
 from src import geo
 from src.config import (ENSO_INDEX, FIRE_FIRST_YEAR, MAP_DISPLAY_CRS, MAP_LAYERS,
+                        CARD_MAP_INLAND_KM, CARD_MAP_MIN_PART_KM2, CARD_MAP_SIMPLIFY_KM,
                         MAP_MIN_PART_KM2, MAP_NORMAL_YEARS, MAP_SIMPLIFY_KM, MAP_START_LAYER,
                         MAP_WIDTH, MIN_FIRE_HA, NATURAL_EARTH_LAND_RAW, NINO34_BOX, REGIONS,
                         RESULTS, SST_EDGES, SST_LAND_MIN_DEG2, SST_LAND_SIMPLIFY_DEG,
@@ -48,6 +49,7 @@ from src.config import (ENSO_INDEX, FIRE_FIRST_YEAR, MAP_DISPLAY_CRS, MAP_LAYERS
                         SST_TOKENS, SST_TROPICS_WIDTH)
 
 OUT = RESULTS / "figures" / "region_map.html"
+CARD_OUT = RESULTS / "figures" / "card_map_shapes.json"
 ENSO_TABLE = "climate_controls_region_year.csv"
 # Wording shown on the page: drafts for the owner (2026-10-12).
 REGION_NAMES = {"PNW": "Pacific Northwest", "BC": "British Columbia", "AB": "Alberta",
@@ -257,7 +259,8 @@ def _rings(shape, point) -> str:
 
 
 def land(world, frame: tuple[float, float, float], width: int, height: float,
-         tropics: dict | None = None) -> dict:
+         tropics: dict | None = None, simplify_km: float = MAP_SIMPLIFY_KM,
+         min_part_km2: float = MAP_MIN_PART_KM2) -> dict:
     """Land for the page's two pictures from Natural Earth's land polygons
     (`world`, EPSG:4326, split at the 180th meridian): a backdrop, so that
     the ocean stops at a coast and not at the edge of a 2 degree cell. Display
@@ -275,9 +278,9 @@ def land(world, frame: tuple[float, float, float], width: int, height: float,
     sides = gpd.GeoSeries([whole.intersection(box(-180, 5, -80, 89)),
                            whole.intersection(box(120, 5, 180, 89))], crs="EPSG:4326")
     flat = unary_union(list(sides.to_crs(MAP_DISPLAY_CRS))).intersection(view)
-    flat = flat.simplify(MAP_SIMPLIFY_KM * 1000, preserve_topology=True)
+    flat = flat.simplify(simplify_km * 1000, preserve_topology=True)
     parts = [p for p in getattr(flat, "geoms", [flat])
-             if p.geom_type == "Polygon" and p.area / 1e6 >= MAP_MIN_PART_KM2]
+             if p.geom_type == "Polygon" and p.area / 1e6 >= min_part_km2]
     out = {"coast": _rings(unary_union(parts), lambda x, y: (
         f"{(x - left) * scale:.1f} {(top - y) * scale:.1f}"))}
     if tropics:
@@ -680,12 +683,101 @@ def write(payload: dict, out: Path = OUT) -> Path:
     return out
 
 
+def committed_shapes(page: Path = OUT) -> dict:
+    """The seven region outlines and the land behind them, as SVG path data
+    in one box, read back from the committed map page. Display only: no
+    polygon file is opened, so a picture of the map can be drawn without
+    the region outlines under data/."""
+    import re
+
+    text = page.read_text("utf-8")
+    payload = json.loads(re.search(r'<script type="application/json">(.*?)</script>',
+                                   text, re.S).group(1))
+    shape, coast = payload["shapes"], re.search(r'<path class="land" d="([^"]*)"', text)
+    if coast is None:
+        raise ValueError(f"{page.name} holds no coast path.")
+    return {"width": shape["width"], "height": shape["height"], "projection": MAP_DISPLAY_CRS,
+            "simplified_km": MAP_SIMPLIFY_KM,
+            "note": "SVG path data; x to the right, y down, in a width by height box. "
+                    "label is a point inside the region's largest part.",
+            "regions": {code: {"name": payload["names"][code], **shape["regions"][code]}
+                        for code in shape["regions"]},
+            "coast": coast.group(1)}
+
+
+def card_shapes(regions, world) -> dict:
+    """The link card's map: the regions cut at CARD_MAP_SIMPLIFY_KM with
+    parts down to CARD_MAP_MIN_PART_KM2 kept, in the map page's own frame,
+    with each region's boundary split into `border` (shared with another
+    region, or at least CARD_MAP_INLAND_KM inside Natural Earth's land) and
+    `coast` (the rest), as open SVG paths. Display only: nothing is
+    measured from these shapes, and the map page's own are unchanged."""
+    import geopandas as gpd
+    from shapely.geometry import box
+    from shapely.ops import unary_union
+
+    page = shapes(regions)
+    left, top, scale = page["frame"]
+    width, height = page["width"], page["height"]
+    tolerance = CARD_MAP_SIMPLIFY_KM * 1000
+
+    def point(x, y):
+        return f"{(x - left) * scale:.1f} {(top - y) * scale:.1f}"
+
+    def lines(shape) -> str:
+        found = [] if shape.is_empty else getattr(shape, "geoms", [shape])
+        return "".join("M" + "L".join(point(x, y) for x, y in g.coords)
+                       for g in found if g.geom_type == "LineString" and len(g.coords) > 1)
+
+    parts = regions[["region", "geometry"]].explode(index_parts=False).reset_index(drop=True)
+    parts = parts[geo.area_ha(parts) / 100 >= CARD_MAP_MIN_PART_KM2]
+    flat = parts.to_crs(MAP_DISPLAY_CRS)
+    whole = {region: unary_union(list(flat.loc[flat["region"] == region, "geometry"]))
+             for region in REGIONS}
+    view = box(left, top - height / scale, left + width / scale, top)
+    sides = gpd.GeoSeries([unary_union(list(world.geometry)).intersection(box(-180, 5, -80, 89))],
+                          crs="EPSG:4326")
+    inland = unary_union(list(sides.to_crs(MAP_DISPLAY_CRS))).intersection(view.buffer(2e5))
+    inland = inland.buffer(-CARD_MAP_INLAND_KM * 1000)
+    out = {}
+    for region in REGIONS:
+        edge = whole[region].boundary
+        others = unary_union([whole[r] for r in REGIONS if r != region])
+        border = edge.intersection(unary_union([others.buffer(tolerance / 4), inland]))
+        coast = edge.difference(border.buffer(1))
+        solid = whole[region].simplify(tolerance, preserve_topology=True)
+        out[region] = {"name": REGION_NAMES[region], "d": _rings(solid, point),
+                       "border": lines(border.simplify(tolerance)),
+                       "coast": lines(coast.simplify(tolerance)),
+                       "label": page["regions"][region]["label"]}
+    backdrop = land(world, page["frame"], width, height, simplify_km=CARD_MAP_SIMPLIFY_KM,
+                    min_part_km2=CARD_MAP_MIN_PART_KM2)
+    return {"width": width, "height": height, "projection": MAP_DISPLAY_CRS,
+            "simplified_km": CARD_MAP_SIMPLIFY_KM, "min_part_km2": CARD_MAP_MIN_PART_KM2,
+            "note": "SVG path data; x to the right, y down, in a width by height box. d: "
+                    "closed rings to fill; border and coast: open lines; label: the map "
+                    "page's label point. Display only.",
+            "regions": out, "coast": backdrop["coast"]}
+
+
+def write_card(regions, world, out: Path = CARD_OUT) -> Path:
+    out.write_bytes(json.dumps(card_shapes(regions, world), ensure_ascii=False,
+                               separators=(",", ":")).encode("utf-8"))
+    return out
+
+
 def main() -> None:
+    import sys
+
     import geopandas as gpd
 
     from src import ocean, pin_inputs
     from src.regions import load_regions
 
+    if "--card" in sys.argv[1:]:  # the link card's shapes only; the page is not rewritten
+        out = write_card(load_regions(), gpd.read_file(NATURAL_EARTH_LAND_RAW))
+        print(f"wrote {out}: {out.stat().st_size:,} bytes")
+        return
     names = {spec[0] for spec in MAP_LAYERS.values()} | {ENSO_TABLE}
     tables = {name: pin_inputs.load_input(name) for name in names}
     world = gpd.read_file(NATURAL_EARTH_LAND_RAW)

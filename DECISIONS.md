@@ -17,6 +17,107 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The site's link card shows the region map
+
+- **Twelfth upload, on the owner's word ("yes"): commit 5f46791, 62
+  files, 10,541,687 bytes, 6 files uploaded and 56 already there,
+  deployment c9e9c0b0.** It carried the card wording of the entry
+  below. Checked on the live site in a browser: the home page's
+  `og:title` is "El Niño 2026–27 Winter Eco-Cartographical Study",
+  `og:description` on all five pages is the banner's line, the image is
+  unchanged, the page's own title is unchanged, two charts draw, no
+  console error.
+- **The card's picture is now a map of the seven regions, not the
+  season strips.** Owner: "to match the new headline we should take an
+  image of the map (el nino water or the region map [my pick]) and use
+  that as the imagery instead. everything else stays the same". Read
+  here as: the site's link card only; the question and the address stay
+  on the image; the GitHub social preview and the README banners keep
+  the season strips. `src/banner.py`: a `site` layout (1280 x 640, the
+  question on three lines at the left, the map at the right) and
+  `draw_map`; `python -m src.banner` writes it to `site/preview.png`,
+  dark, as before. Supersedes "byte for byte the social banner" in the
+  entry below.
+- **No polygon was read.** The outlines and the land come from the
+  committed map page, through `map_page.committed_shapes` (the reader
+  moved there from `scripts/build_motion_handoff.py`, which now calls
+  it; 7 regions, a 640 x 690.4 box). The regions are drawn plain, in the
+  frame's green, each with its code: no year and no value, so no data
+  credit is owed. The image carries "Map: Natural Earth": Natural Earth
+  asks for no credit, but the domain's rule is a credit wherever a map
+  appears. Rejected: the ocean picture (the owner's second choice; it
+  shows one winter's sea-surface temperature, so it would need a year
+  chosen and ERSST's acknowledgment in the image); colouring the regions
+  by a year's burned area (the same two needs). 20 passed in
+  `tests/test_sample_visuals.py` and `tests/test_map_page.py`. Not
+  uploaded yet.
+- **Three changes to the map card after the owner saw it ("you read
+  correctly").** (1) "center the ak label more over the mainland":
+  `LABEL_SHIFT` lifts Alaska's code from the map page's label point by
+  14 right and 42 up, in that page's box units. (2) "the sea between bc
+  and ak's panhandle is muddying the islands there, try re-rendering
+  the islands to be solid like the mainland": see the next bullet for
+  what was kept. Two tries on the map page's own shapes were dropped:
+  islands filled with no outline (dull blobs), and parts joined by a
+  buffer out and back in (Vancouver Island fused with the mainland,
+  which the owner's two reference pictures showed was not wanted). (3) NorCal and SoCal are too narrow for their codes. The
+  owner offered rotated labels or "pill labels from ocean with lines
+  drawing to land body", then "actually the pill option sounds better":
+  `LABEL_CALLOUT` puts each code in a pill over the ocean with a line
+  to a dot on the region. Rejected: rotated labels (monospaced type at
+  13 px turned 90 degrees is hard to read at thumbnail size).
+- **The card's map is cut from the region polygons at finer detail
+  (owner: "try to realistically depict the islands"; asked, "yes that
+  is okay", for the polygon read).** The map page's shapes are
+  simplified to 6 km with parts under 800 km2 dropped, which leaves the
+  Alaska panhandle a zigzag and Haida Gwaii a triangle. New:
+  `map_page.card_shapes`, written by `python -m src.map_page --card` to
+  `results/figures/card_map_shapes.json` (156,974 bytes), in the map
+  page's own frame: outlines simplified to `CARD_MAP_SIMPLIFY_KM` 2 km,
+  parts kept down to `CARD_MAP_MIN_PART_KM2` 100 km2, and each region's
+  boundary split into border (shared with another region, or at least
+  `CARD_MAP_INLAND_KM` 15 km inside Natural Earth's 1:50m land) and
+  coast (the rest). The card fills every part solid, draws the coast
+  thin and faint (0.5 px at 55%) and only the borders bright (1.3 px),
+  since bright lines on both sides of every channel were the noise. The
+  three values were chosen by eye on the card. Display only: nothing is
+  measured from these shapes; `region_map.html` was not rewritten and
+  the map page is unchanged. The owner's two reference pictures were a
+  guide to the look only: nothing from them is copied or kept. Known
+  limit: the land test uses coarser land than the outlines, so a
+  stretch of a deep fjord can be drawn as a border. `src/banner.py`
+  reads the committed file, so drawing the card opens no polygon.
+  Raised by the owner and not started: "applying the same treatment to
+  the site map just as a visual", a scope addition.
+- **BC's whole perimeter carries the bright line.** Owner: "redraw the
+  bc perimeter with the new islands (teal border)". `banner.FULL_PERIMETER`
+  names BC: its coast, islands included, is drawn at the border's width
+  and strength (1.3 px, full) and the other regions keep the thin coast.
+  Drawn across the shore, the fjords of the central coast merged into
+  a bright band (owner: "some just mesh together as green"). The line
+  is now drawn at twice `banner.COAST_INSIDE` (0.9 pt) and clipped to
+  the land, so all of it lies inside the shore and a narrow channel
+  stays water. Owner's alternative, a white outline, was drawn beside
+  it (`banner.COAST_TOKEN`); white read as BC singled out and showed
+  the fjord flaw as teal specks. Owner: "teal (top) is good".
+- **Motion gets pictures of the final map, not new shapes.** Owner: "the
+  motion can just necessary images (taken at different zooms) once we
+  finalize to get its illustrations right". The bundle already sent is
+  not rebuilt; captures at several zooms follow once the map is final,
+  after the commit, push and upload. Owner: "and that can be the
+  scaffold to compare against main page": the same captures are the
+  reference if the map page later takes this treatment.
+- **The region codes are larger and in the site's text face.** Owner:
+  "that way we can actually increase the font size for all other
+  regions, clean up the font (match site or aesethically pleasing)".
+  Public Sans at weight 600 and 19 px, from 13 px JetBrains Mono, the
+  pills included; the address and the map credit stay in the mono face.
+  The three GitHub banners came out byte for byte the same.
+- **A capture of the live map page with the ocean switched off was
+  taken for the owner** ("take a capture on map page with ocean off"):
+  the "Show the ocean" box unticked in the browser, 2016, burned area,
+  dark theme. Nothing on the site was changed by it.
+
 ### 2026-10-13 - A link preview card for the site
 
 - **The site's pages carry Open Graph and X card tags, with the social
