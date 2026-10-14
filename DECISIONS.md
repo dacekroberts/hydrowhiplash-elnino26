@@ -17,6 +17,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-13 - The README banner's empty slot labelled 2027
+
+- **The two README banners name their empty slot.** Owner: "label 2027
+  on the readme banner". `src/banner.py`: a `slot_label` layout key;
+  where it is true the year `FORECAST_YEAR` is written under the dotted
+  slot, in the muted ink so it does not read as one of the strong
+  El Niño years, which are labelled in the full ink. True for the README
+  layout only: the social preview was uploaded to GitHub by the owner
+  the same day and its file is byte for byte unchanged (`git status`).
+  No season is drawn in the slot. 6 passed in
+  `tests/test_sample_visuals.py`.
+
 ### 2026-10-13 - The 52 tests ranked; a beat for the four that came close
 
 - **Ranked the 52 registered tests by Holm-adjusted p and saved the

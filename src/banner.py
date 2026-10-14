@@ -50,12 +50,13 @@ ROWS = ("AK", "YT", "BC", "AB", "PNW", "NorCal", "SoCal")
 # (font file in site/fonts/, weight) by role.
 FACES = {"title": ("NationalPark-wght.ttf", 800), "label": ("JetBrainsMono-wght.ttf", 500)}
 # Pixel layouts. title: left, top of the first line, size, line step and the
-# number of lines the question is wrapped to; strip: left, top, right, bottom.
+# number of lines the question is wrapped to; strip: left, top, right, bottom;
+# slot_label: whether the empty FORECAST_YEAR slot carries its year.
 LAYOUTS = {
     "social": {"size": (1280, 640), "title": (64, 64, 58, 68, 2), "address": (64, 222, 20),
-               "strip": (64, 290, 1216, 584), "label": 13},
+               "strip": (64, 290, 1216, 584), "label": 13, "slot_label": False},
     "readme": {"size": (1280, 320), "title": (48, 48, 38, 46, 3), "address": (48, 216, 16),
-               "strip": (560, 40, 1240, 284), "label": 11},
+               "strip": (560, 40, 1240, 284), "label": 11, "slot_label": True},
 }
 BANNERS = (("social", "dark"), ("readme", "light"), ("readme", "dark"))
 
@@ -138,6 +139,10 @@ def draw(table: pd.DataFrame, kind: str, theme_name: str, fonts: dict[str, FontP
     ax.add_patch(Rectangle((x_of(FORECAST_YEAR) + 1, top + 1), slot - 2, bottom - foot - top - 2,
                            facecolor="none", edgecolor=c["rule-strong"], linewidth=1,
                            linestyle=(0, (2, 2))))
+    if lay["slot_label"]:  # the empty slot named, in the muted ink: no season is drawn there
+        ax.text(x_of(FORECAST_YEAR) + slot / 2, bottom, str(FORECAST_YEAR),
+                fontproperties=fonts["label"], fontsize=px(lay["label"]), color=c["ink-muted"],
+                va="bottom", ha="center")
     for i, region in enumerate(ROWS):
         mid = top + (i + 0.5) * row
         ax.plot([left + gutter, right], [mid, mid], color=c["rule-strong"], linewidth=0.8)
