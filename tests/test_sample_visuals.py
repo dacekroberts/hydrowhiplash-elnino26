@@ -65,8 +65,8 @@ def test_site_preview_is_the_social_banner_and_the_card_says_its_line(tmp_path: 
         banner.figures.FIGURES / f"banner_{kind}_{theme_name}.png").read_bytes()
     config = (committed.parent / "_quarto.yml").read_text("utf-8")
     assert f"image: {committed.name}" in config and f'- "{committed.name}"' in config
-    front = (committed.parent / "index.qmd").read_text("utf-8").split("---")[1]
-    assert front.count(f'title: "{banner.QUESTION}"') == 2  # open-graph and twitter-card
+    # The card's description, on every page, is the banner's line.
+    assert f'description: "{banner.QUESTION}"' in config
 
 
 def test_banner_draws_only_the_seasons_the_tests_use():

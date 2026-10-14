@@ -10,6 +10,8 @@ project:
 website:
   title: "El Niño and the 2027 fire season"
   site-url: "https://hydrowhiplash.dacekroberts.dev"
+  # The sentence under a card's headline, on every page: the banner's line.
+  description: "Does an El Niño winter say how much the next fire season will burn?"
   # The card a link to the site shows. preview.png is written by
   # `python -m src.banner`, a copy of results/figures/banner_social_dark.png.
   open-graph: true

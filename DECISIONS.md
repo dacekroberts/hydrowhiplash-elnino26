@@ -56,6 +56,31 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   how fetchers behave are marked as general knowledge, unchecked.
   Nothing uploaded: the card is live only after the next upload, which
   needs the owner's yes.
+- **Eleventh upload, on the owner's word ("upload"): commit b970015,
+  62 files, 10,541,043 bytes, 7 files uploaded and 55 already there,
+  deployment 80343f7d.** The owner declined a name on the banner first
+  ("No need to add name, link has already"). Checked on the live site in
+  a browser: all five pages serve `og:image`
+  `https://hydrowhiplash.dacekroberts.dev/preview.png` at 1280 x 640 and
+  `twitter:card` `summary_large_image`; the home page's `og:title` is
+  the banner's line; `preview.png` answers 200, `image/png`, 52,686
+  bytes; the footer is on every page, the Overview page draws its two
+  charts, no host was asked but the site and no console error. Not
+  checked: a card in iMessage itself, which keeps its own copy of a link
+  already sent.
+- **The card's wording changed after the upload, on the owner's words.**
+  Owner: "The description should be the current headline, and the
+  headline should be El Nino (proper accent) 2026-27 Winter
+  Eco-Cartographical Study". `site/index.qmd`: the home page's card
+  headline is "El Niño 2026–27 Winter Eco-Cartographical Study", with
+  the en dash the site's tracker title already uses in "2026–27" (the
+  owner typed a hyphen; this session's reading of "proper"). 
+  `site/_quarto.yml`: `website: description` is the banner's line, so
+  every page's card carries it under its headline; it also becomes each
+  page's search description. Supersedes "the home page's card title is
+  the banner's line" and "`og:description` is empty" above. The other
+  four pages keep their page titles as headlines. Read from a rendered
+  copy; 7 passed in `tests/test_sample_visuals.py`. Not uploaded yet.
 
 ### 2026-10-13 - The social preview's empty slot labelled 2027 too
 

@@ -1,11 +1,12 @@
 ---
 title: "What past El Niños suggest for the 2027 fire season"
-# The title on a link's card: the banner's line (src.banner.QUESTION), which
-# fits where the page title is cut off. Owner's yes, 2026-10-13.
+# A link's card. The headline is the owner's wording (2026-10-13); the
+# description is the banner's line (src.banner.QUESTION), set for every
+# page in _quarto.yml (website: description).
 open-graph:
-  title: "Does an El Niño winter say how much the next fire season will burn?"
+  title: "El Niño 2026–27 Winter Eco-Cartographical Study"
 twitter-card:
-  title: "Does an El Niño winter say how much the next fire season will burn?"
+  title: "El Niño 2026–27 Winter Eco-Cartographical Study"
 ---
 
 <!-- Skeleton for the explainer page. Fill each section as its phase finishes;
