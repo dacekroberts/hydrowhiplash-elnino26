@@ -3,7 +3,7 @@
   <img src="results/figures/banner_readme_light.png" alt="Does an El Niño winter say how much the next fire season will burn? Seven rows of fire seasons since 1984, one per region, with the seasons after El Niño winters shaded.">
 </picture>
 
-# hydrowhiplash-elnino26
+# Overview
 
 A strong El Niño winter tells us little about the fire season that follows
 it in western North America. Of 52 tests fixed in advance, 4 are
