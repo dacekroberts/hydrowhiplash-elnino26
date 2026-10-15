@@ -17,6 +17,72 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-14 - The Motion film goes on the home page
+
+- **The films checked and placed (D109).** Two exports came back,
+  dark (1280 x 720, 58,832,143 bytes) and light (1920 x 1080,
+  55,590,182 bytes), each 165.0 s at 30 fps, no sound, no return notes.
+  Stills every 3 s of the dark film and every 9 s of the light one
+  were read against the run: the 7 regional H2 estimates and intervals
+  (El Niño seasons against the rest), the 4 results that pass Holm and
+  the 4 close ones match `registered_tests.csv` and the ranked copy to
+  three decimals; 52, 4 and 0 of 25 match; the four closing dates match
+  `rollout_calendar.json`; the fire, ERA5-Land and map credits sit on
+  their scenes and the full notices on the closing card; the eight
+  card lines are the approved ones. Owner on the findings: the length
+  over the brief's 150 s, "override"; Motion's added scene title "What
+  El Niño does to winter rain" and its line, "Okay"; the light film in
+  the light theme, "sounds good"; a 1080 export of the dark film,
+  "working on"; it came the same day (1920 x 1080, 55,465,971 bytes,
+  165.0 s), and a still every 9 s and the closing card showed the same
+  film, so it replaced the 720 one (served: 12,543,904 bytes). Both films
+  were re-encoded to H.264 under the 25 MiB file limit (the 720
+  dark 12,894,167 bytes, light 12,669,688). They are served from
+  `site/film/`, written by `scripts/prepare_film.py`, because Quarto
+  leaves out files linked from outside `site/`; the record and the
+  transcript are in `results/film/`. The home page shows the film of
+  its theme above the Overview, click to play, with "The film in
+  words" (the card lines) and a credit line that points to the Methods
+  page. Checked in the local preview in dark, light (played 2.5 s) and
+  at phone width. The caption wording is a draft for the owner.
+- **Approved (owner): the final Motion film on the home page** (D109).
+  Owner: "yes to all", to five proposals: a scope addition with its
+  own deviation; above the Overview paragraph; click to play with
+  controls and a poster frame, no autoplay (a 150 s film of text cards
+  moving by itself is hard to read and pulls focus); the card wording
+  as a transcript that can be opened; the data credits under it.
+  Rejected: autoplay on loop; a hosted player (YouTube or Vimeo), since
+  the site asks no other host for anything. The film is dark only and
+  shows as a dark frame in both site themes.
+- **Prepared: `scripts/prepare_film.py` and a conda env `media` with
+  ffmpeg.** The script reads the export's size, frame rate and length
+  against the brief (1920 x 1080, 30 fps, 150 s at most), copies it, or
+  re-encodes it to H.264 without audio when it is over 90% of the
+  host's 25 MiB file limit, and writes `results/film/` (the film, a
+  poster frame at 6 s, `film.json` with the transcript from the brief's
+  card lines). ffmpeg sits in its own env so `whiplash` stays as
+  `environment.yml` describes it. Tried on a 4 s test pattern, not yet
+  on the film. Publication waits for the Motion check
+  (claude-motion-handoff) and the owner's yes for the upload.
+
+### 2026-10-14 - The Claude Code Project is dropped
+
+- **Dropped (owner): the Claude Code Project is not set up** (D108;
+  supersedes the "taken up again for site pages" part of D78). Owner:
+  "should we can the claude code project?", then "seems like we can
+  handle everything here". On standby since 2026-10-04, it was meant
+  for parallel threads; by now the registered runs, the site pages, the
+  link card and both Motion addenda were done in the main checkout. The
+  work left is sequential: the pattern inside a region (D105) reads the
+  region polygons and the hard-line item reads new data, and `data/`
+  lives only in the main checkout, where cloud threads cannot reach it.
+  Rejected: setting it up for the remaining site work (coordination
+  and PR review would cost more than the parallel time saves on two
+  sequential items). Kept: worktree side sessions and the
+  `merge-side-pr` skill for a small task that needs no data, and
+  `docs/claude_code_project_setup.md` as written, should the idea come
+  back.
+
 ### 2026-10-13 - The site's link card shows the region map
 
 - **Twelfth upload, on the owner's word ("yes"): commit 5f46791, 62
@@ -134,6 +200,12 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
   untouched. `card_map_shapes.json` rewritten (204,742 bytes), the card
   and the five pictures redrawn; no mark remains at 4 times. The card
   on the live site is the one before this fix until the next upload.
+- **Fourteenth upload, on the owner's word ("upload"): commit 7eaf4d6,
+  62 files, 10,590,423 bytes, 4 files uploaded and 58 already there,
+  deployment c207056d.** It carried the card after the fix. Checked on
+  the live site in a browser: the card picture served is 101,422 bytes,
+  the size of the committed `site/preview.png`; title unchanged; the
+  footer draws; the page asked no host but the site.
 - **The region codes are larger and in the site's text face.** Owner:
   "that way we can actually increase the font size for all other
   regions, clean up the font (match site or aesethically pleasing)".

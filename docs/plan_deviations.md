@@ -25,6 +25,41 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-10-14
+
+### D109 · The Motion film on the home page (scope addition)
+- **Plan:** `ACTION_PLAN.md` "Second goal" lists the site's pages and
+  names no video; the Motion film was planned as a separate piece.
+- **Actual:** to come. Planned: the dark film above the Overview
+  paragraph, click to play with controls and a poster frame, served
+  from the site, the card wording as an opening transcript under it,
+  and the data credits. Prepared by `scripts/prepare_film.py` into
+  `results/film/`.
+- **Why:** owner, 2026-10-14: "final motion incoming around 4pm, when it
+  lands let's prepare to fit it onto the opening page on live site",
+  then "yes to all" to the five proposals.
+- **Recorded:** `DECISIONS.md` 2026-10-14 "The Motion film goes on the
+  home page".
+- **Plan doc:** left as written.
+
+### D108 · The Claude Code Project is not set up (workflow)
+- **Plan:** `ACTION_PLAN.md` Phase 4, "Before starting": set up the
+  Claude Code Project "so H1-H5 and the site pages can run as parallel
+  threads"; D78 kept it back for the registered runs and said it "is
+  taken up again for site pages after the runs".
+- **Actual:** never set up. The runs, the site pages, the link card and
+  the Motion handoffs were all done in the main checkout, and the work
+  left (the pattern inside a region, D105, and the hard-line item) is
+  sequential and reads data that lives only there.
+- **Why:** owner, 2026-10-14, asked "should we can the claude code
+  project?", then "seems like we can handle everything here".
+- **Recorded:** `DECISIONS.md` 2026-10-14 "The Claude Code Project is
+  dropped".
+- **Plan doc:** left as written; this entry supersedes the Phase 4 line
+  and D78's "taken up again". `docs/claude_code_project_setup.md` and the
+  side-session rules in `CLAUDE.md` stay: worktree sessions still use
+  them.
+
 ## 2026-10-13
 
 ### D107 · A link preview card for the site (scope addition)

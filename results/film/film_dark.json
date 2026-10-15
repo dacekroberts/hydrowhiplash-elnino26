@@ -1,0 +1,36 @@
+{
+ "source": "hydrowhiplash-winter-to-fire-dark.mp4",
+ "given": {
+  "bytes": 55465971,
+  "seconds": 165.0,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30.0,
+  "codec": "h264",
+  "audio": false
+ },
+ "served": {
+  "bytes": 12543904,
+  "seconds": 165.0,
+  "width": 1920,
+  "height": 1080,
+  "fps": 30.0,
+  "codec": "h264",
+  "audio": false
+ },
+ "reencoded": true,
+ "problems": [
+  "165.0 s, brief says 150 s at most"
+ ],
+ "poster_at_seconds": 6.0,
+ "transcript": [
+  "Does an El Niño winter say how much the next fire season will burn?",
+  "Seven regions, from Alaska to Southern California.",
+  "The idea: after an El Niño winter the north runs milder and often drier, the south wetter.",
+  "I fixed 52 tests in writing before opening any fire data, then ran them once.",
+  "Every fire season since 1984. A shaded year follows an El Niño winter.",
+  "0 of the 25 tests that set El Niño against burned area are significant. Every interval crosses zero.",
+  "4 of 52 tests are significant after correcting for the number of tests. These are associations, not causes.",
+  "A forecast for 2027 goes up before the season and is checked against it afterwards."
+ ]
+}

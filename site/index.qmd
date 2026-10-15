@@ -34,6 +34,30 @@ n_sig = int((reg["significant"] == True).sum())
 n_regions = len(S["regions"])
 n_fire_years = int(reg[(reg["test"] == "H3a") & (reg["region"] == "PNW")]["n"].iloc[0])
 NEXT = next(row for row in CAL.values() if row["reader"] and not row["done"])
+FILM = json.loads(Path("../results/film/film_dark.json").read_text("utf-8"))
+```
+
+<!-- The Motion film (D109): one per site theme, click to play, no sound.
+     Written by scripts/prepare_film.py into film/; the transcript is read
+     from results/film/. -->
+
+```{python}
+#| echo: false
+#| output: asis
+from html import escape
+
+for theme in ("light", "dark"):
+    print(f'<div class="fig-{theme}">'
+          f'<video controls preload="none" playsinline width="100%" '
+          f'poster="film/opening_{theme}_poster.jpg" '
+          f'aria-label="Film: {escape(FILM["transcript"][0])}" '
+          f'style="display:block;aspect-ratio:16/9;border-radius:var(--radius-md);background:#000">'
+          f'<source src="film/opening_{theme}.mp4" type="video/mp4"></video></div>')
+lines = "".join(f"<li>{escape(line)}</li>" for line in FILM["transcript"])
+print(f'\n<details><summary>The film in words</summary><ol>{lines}</ol></details>\n')
+print('<p class="small">Film {:.0f} min {:.0f} s, no sound. Data credits are on the '
+      '<a href="methods.qmd#data-sources-and-attribution">Methods page</a>; map: '
+      'Natural Earth.</p>'.format(*divmod(FILM["served"]["seconds"], 60)))
 ```
 
 ## Overview
