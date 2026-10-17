@@ -1,7 +1,9 @@
 # Plan deviations
 
 Every place where what actually happened departed from what the planning
-documents said: estimates, assumptions, procedures, scope and workflow. Covers
+documents said: estimates, assumptions, procedures, scope and workflow. (D32
+to D34 were never assigned: the numbering skips from D31 to D35, and no
+entry by those numbers was ever committed; found 2026-10-17.) Covers
 `ACTION_PLAN.md`, `ANALYSIS_PLAN.md`, `README.md`, `CLAUDE.md`,
 `DATA_SOURCES.md`, the 2026-10-03 and 2026-10-04 planning entries in
 `DECISIONS.md`, and the scaffold code's built-in assumptions. Newest first;

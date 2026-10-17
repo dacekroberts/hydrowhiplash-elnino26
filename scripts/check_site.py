@@ -27,7 +27,7 @@ from urllib.parse import unquote, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 COPIED = ["site", "results"]
-LINK_ATTRS = {"src", "href"}
+LINK_ATTRS = {"src", "href", "poster"}
 
 
 class _LinkCollector(HTMLParser):

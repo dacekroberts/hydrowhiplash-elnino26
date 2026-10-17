@@ -44,3 +44,16 @@ def test_regional_mean_respects_mask():
                       dims=["latitude", "longitude"])
     mask = xr.DataArray([[True, False]], coords=da.coords, dims=da.dims)
     assert float(geo.regional_mean(da, mask)) == pytest.approx(1.0)
+
+
+def test_regional_mean_skips_missing_cells_inside_the_mask():
+    # Ocean or glacier cells inside a region are NaN; the mean must re-weight
+    # over the cells that hold data, not count the NaN cells as zero.
+    lat = np.array([0.0, 60.0])
+    lon = np.array([0.0, 1.0])
+    da = xr.DataArray([[1.0, np.nan], [3.0, 3.0]],
+                      coords={"latitude": lat, "longitude": lon},
+                      dims=["latitude", "longitude"])
+    mask = xr.ones_like(da, dtype=bool)
+    # weights 1 (one cell at 0N) and 0.5 + 0.5 (two cells at 60N)
+    assert float(geo.regional_mean(da, mask)) == pytest.approx((1 * 1 + 3 * 1) / 2)

@@ -343,3 +343,25 @@ def test_real_builders_refuse_to_overwrite_their_pinned_tables(monkeypatch):
         with pytest.raises(pin_inputs.PinnedInputError, match="Refusing to overwrite"):
             build()
     assert (ROOT / "results" / "tables" / "fire_region_year.csv").exists()
+
+
+def test_plan_check_reports_a_committed_log_row_edit(repo):
+    # Audit 2026-10-17: an edit committed without the check is still caught,
+    # against the commit that first held the row
+    plan = repo / "ANALYSIS_PLAN.md"
+    plan.write_bytes((PLAN_TEXT + "| 2026-10-08 | row one |\n").encode())
+    git(repo, "commit", "-q", "-am", "row one")
+    assert run_guard.plan_frozen_problems(repo) == []
+    plan.write_bytes((PLAN_TEXT + "| 2026-10-08 | row 1, reworded |\n").encode())
+    git(repo, "commit", "-q", "-am", "reworded and committed")
+    problems = run_guard.plan_frozen_problems(repo)
+    assert len(problems) == 1 and "edited or removed" in problems[0]
+
+
+def test_plan_check_skips_a_placeholder_row_the_first_row_replaces(repo):
+    plan = repo / "ANALYSIS_PLAN.md"
+    plan.write_bytes((PLAN_TEXT + "| | |\n").encode())
+    git(repo, "commit", "-q", "-am", "placeholder row")
+    plan.write_bytes((PLAN_TEXT + "| 2026-10-08 | row one |\n").encode())
+    git(repo, "commit", "-q", "-am", "row one")
+    assert run_guard.plan_frozen_problems(repo) == []

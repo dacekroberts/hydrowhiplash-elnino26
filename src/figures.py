@@ -27,7 +27,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Patch
 
 from src import theme
-from src.config import EL_NINO_THRESHOLD, FIGURE_CREDIT, RESULTS, STRONG_THRESHOLD
+from src.config import EL_NINO_THRESHOLD, FIGURE_CREDIT, MIN_FIRE_HA, RESULTS, STRONG_THRESHOLD
 
 FIGURES = RESULTS / "figures"
 # Module constant to colour token. The values are set by _set_theme: the
@@ -331,7 +331,8 @@ def fire_season_series(table: pd.DataFrame, index: str, out: Path) -> Path:
             _year_label(ax, str(int(r["year"])), r["year"], r["anomaly"], r["anomaly"] < 0)
         for _, r in g[g["anomaly"].isna()].iterrows():
             ax.plot(r["year"], -lim * 0.9, marker="v", color=MUTED, ms=5, zorder=4)
-            ax.annotate("no fire of 405 ha or more", (r["year"], -lim * 0.9), xytext=(6, 0),
+            ax.annotate(f"no fire of {MIN_FIRE_HA:,} ha or more", (r["year"], -lim * 0.9),
+                        xytext=(6, 0),
                         textcoords="offset points", va="center", fontsize=7, color=MUTED)
         typical = np.expm1(g.loc[g["anomaly"].notna(), "log_burn"].mean())
         _title(ax, f"{region} · typical season {typical:,.0f} ha")
@@ -453,7 +454,9 @@ def coverage_dots(table: pd.DataFrame, target: float, out: Path, narrow: bool = 
     ax.plot([], [], color=AXIS, lw=1.2, label=f"Target: {100 * target:.0f}%")
     ax.set_yticks(range(len(regions)), regions, fontsize=9, color=INK)
     ax.set_ylim(len(regions) - 0.4, -0.6)
-    ax.set_xlim(40, 100)
+    # 40 holds every run so far; a lower coverage widens the axis instead
+    # of falling off it.
+    ax.set_xlim(min(40, 10 * np.floor(10 * table["coverage"].min()) - 5), 100)
     ax.tick_params(axis="y", length=0)
     ax.tick_params(axis="x", labelsize=8)
     ax.spines["left"].set_visible(False)

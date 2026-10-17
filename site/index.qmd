@@ -57,7 +57,7 @@ lines = "".join(f"<li>{escape(line)}</li>" for line in FILM["transcript"])
 print(f'\n<details><summary>The film in words</summary><ol>{lines}</ol></details>\n')
 print('<p class="small">{:.0f} min {:.0f} sec, no sound. Data credits are on the '
       '<a href="methods.qmd#data-sources-and-attribution">Methods page</a>; map: '
-      'Natural Earth.</p>'.format(*divmod(FILM["served"]["seconds"], 60)))
+      'Natural Earth.</p>'.format(*divmod(round(FILM["served"]["seconds"]), 60)))
 ```
 
 ## Overview

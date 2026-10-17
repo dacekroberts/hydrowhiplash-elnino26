@@ -253,3 +253,14 @@ def test_year_slider_reads_every_trace_with_hover_text():
         assert piece in page, piece
     assert "__" not in page.split("<script>", 1)[1].split("</script>")[0]
 
+
+
+def test_every_legend_label_names_the_edges_either_side_of_it():
+    # The class labels are typed; an edge moved in MAP_LAYERS must move them too.
+    words = {0.1: ("tenth",), 0.5: ("half",), 2.0: ("twice", "2 "), 10.0: ("10",)}
+    for key, (_, _, measure, edges, _, _) in MAP_LAYERS.items():
+        labels = map_page.LAYER_TEXT[key][2]
+        for i, edge in enumerate(edges):
+            spell = words[edge] if measure == "ratio" else (f"{abs(edge):g}",)
+            for label in labels[i:i + 2]:
+                assert any(s in label for s in spell), (key, edge, label)

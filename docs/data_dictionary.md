@@ -406,7 +406,8 @@ stations and grid in mm is meaningless; compare % or z.
   region, °C, the mean of the three monthly means (months not weighted by
   length). Year Y = summer Y; 2026 empty (no August yet). The H3b control.
   Means 1951-2025: SoCal 27.0 (deserts included), NorCal 21.7, PNW 18.0,
-  AB 15.2, BC 11.4, YT 10.3, AK 10.3 °C.
+  AB 15.2, BC 11.4, YT 10.3, AK 10.2 °C (AK was given as 10.3 until
+  2026-10-17; the committed table gives 10.2466).
 - `precip_octmar_mm` and `precip_anom_lag0`, `precip_anom_lag1` (have,
   2026-10-08; defined 2026-10-05): October-March total precipitation per
   region (`PRECIP_ANOM_MONTHS`; year Y = October Y-1 to March Y), mm, and
@@ -548,7 +549,9 @@ rows; every rule and count in `docs/methods_register.md` "Fire").
   month, counted for season YEAR (D59). `n_unknown_type`: MTBS "Other"
   pieces (the plan's Unknown, D58). `source`: MTBS, WFIGS, CNFDB, or
   "MTBS+WFIGS" (SoCal and NorCal seasons that span the 2024-01-01
-  cutover), "none" for a zero-fire season.
+  cutover), "none" for a zero-fire season. In the committed table no row
+  is "MTBS+WFIGS": season 2023 in both regions is MTBS only, since no
+  counted WFIGS fire started in January 2024 (checked 2026-10-17).
 - `log_burn = ln(1 + burn_ha)`: natural log, unitless. Large fire years span
   orders of magnitude, and logging tames that. A coefficient b on `log_burn`
   is reported as a percent change, `100 × (exp(b) - 1)`. A region-year with
@@ -824,8 +827,10 @@ package versions); `conda_list_explicit.txt` is the full environment.
     for this kind of test, and which row of `test_size.csv` it came
     from. `plain_ols_p`, `plain_ols_size`: the same test with ordinary
     standard errors, and its size (D66, D68).
-  - `note`: the number of distinct permutations, or what a side row
-    changed.
+  - `note`: for H1, H2 and the strong-only rows, the number of distinct
+    bootstrap resamples of the El Niño group (`n_distinct_group`, C(2g-1, g);
+    10 for 3 winters), not a permutation count; elsewhere, what a side row
+    changed (corrected 2026-10-17).
 - **`validation.csv`** (39 rows): prediction checks per model and
   region. `method` is leave-one-year-out or expanding window;
   `coverage` is the share of years whose burned area fell inside the

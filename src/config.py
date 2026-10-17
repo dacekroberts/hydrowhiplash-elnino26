@@ -118,7 +118,7 @@ ALASKA_WEST_LON = -169
 # main: BC reaches about 139W at the Alaska panhandle and Haida Gwaii sits near
 # 131-133W; Alberta's eastern border is 110W and both provinces end at 60N.
 # Half a degree to a degree of buffer.
-# north (added 2026-10-04): Alaska east of ALASKA_WEST_LON (51.2-71.4N) and
+# north (added 2026-10-04): Alaska east of ALASKA_WEST_LON (52.86-71.41N after the clip) and
 # Yukon (60-69.65N, 141-123.8W). Overlaps main south of 60.5N, where cells
 # agree to float32 rounding (max relative difference 7e-7, measured 2026-10-04).
 ERA5_DOMAINS = {

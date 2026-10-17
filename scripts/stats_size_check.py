@@ -36,9 +36,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src import stats  # noqa: E402
-from src.config import H4_NORTH, H4_REGIONS, RANDOM_SEED, TEST_SIZE_TABLE  # noqa: E402
+from src.config import (ALPHA, FIRE_FIRST_YEAR, H4_NORTH, H4_REGIONS,  # noqa: E402
+                        POOLED_LAST_YEAR, RANDOM_SEED, TEST_SIZE_TABLE)
 
-YEARS = np.arange(1984, 2025)
+YEARS = np.arange(FIRE_FIRST_YEAR, POOLED_LAST_YEAR + 1)
 BOOT = 499
 LABEL_SCENARIO = "AR(1) 0.3, regions r 0.5"
 POOLED_SCENARIO = "AR(1) 0.3, pooled"
@@ -96,7 +97,7 @@ def null_series(rng, rho, n=42):
     """One region's null series: white ENSO, a control persistent at AR 0.5
     and correlated 0.4 with ENSO (temp_jja, H3b), a predictor at
     PREDICTOR_AR (H5, H6), centred year; errors AR(1) rho."""
-    years = np.arange(1984, 1984 + n)
+    years = np.arange(FIRE_FIRST_YEAR, FIRE_FIRST_YEAR + n)
     enso = rng.normal(0, 1, n)
     return pd.DataFrame({"year": years, "year_c": years - years.mean(), "enso_djf": enso,
                          "temp_jja": 0.4 * enso + np.sqrt(1 - 0.16) * ar1(rng, (n,), 0.5),
@@ -116,7 +117,7 @@ def main(reps: int = 1000, bootstrap: bool = False) -> pd.DataFrame:
         hits: dict[str, int] = {}
 
         def hit(name, p):
-            hits[name] = hits.get(name, 0) + (p < 0.05)
+            hits[name] = hits.get(name, 0) + (p < ALPHA)
 
         def coef(name, formula, data, term, alternative="two-sided", plain=False):
             fit = (stats.fit_ols_plain(formula, data) if plain
@@ -170,14 +171,14 @@ def main(reps: int = 1000, bootstrap: bool = False) -> pd.DataFrame:
               .agg(rejection_rate=("rejection_rate", "mean"), reps=("reps", "sum")).reset_index()
               .assign(scenario=POOLED_SCENARIO, label_scenario=True))
     table = pd.concat([table, pooled[table.columns]], ignore_index=True)
-    table["mc_se"] = np.sqrt(0.05 * 0.95 / table["reps"])
+    table["mc_se"] = np.sqrt(ALPHA * (1 - ALPHA) / table["reps"])
     table["measured"] = datetime.date.today().isoformat()
     TEST_SIZE_TABLE.parent.mkdir(parents=True, exist_ok=True)
     table.round(4).to_csv(TEST_SIZE_TABLE, index=False, lineterminator="\n")
     wide = table.pivot(index="shape", columns="scenario", values="rejection_rate")
-    print(f"share of {reps} null datasets with p < 0.05 (nominal 0.05; "
-          f"Monte Carlo SE {np.sqrt(0.05 * 0.95 / reps):.3f}, pooled "
-          f"{np.sqrt(0.05 * 0.95 / (2 * reps)):.3f})"
+    print(f"share of {reps} null datasets with p < {ALPHA} (nominal {ALPHA}; "
+          f"Monte Carlo SE {np.sqrt(ALPHA * (1 - ALPHA) / reps):.3f}, pooled "
+          f"{np.sqrt(ALPHA * (1 - ALPHA) / (2 * reps)):.3f})"
           + (f"; bootstrap {BOOT} draws" if bootstrap else ""))
     print(wide[list(SCENARIOS) + [POOLED_SCENARIO]].reindex([k for k in SHAPES if k in wide.index])
           .round(3).to_string())

@@ -58,7 +58,8 @@ from statsmodels.stats.multitest import multipletests
 from src.config import (ALPHA, BLOCK_LEN, CORRECTION_FAMILIES, ENSO_DECIMALS,
                         FORWARD_MIN_TRAIN_YEARS, STRONG_SENSITIVITY_BAND, STRONG_THRESHOLD,
                         H4_NORTH, H4_REFERENCE, H4_REGIONS, HAC_MAXLAGS, N_BOOTSTRAP,
-                        N_PERMUTATIONS, POOLED_DF_YEARS_MINUS, PREDICTION_ALPHA,
+                        N_PERMUTATIONS, POOLED_COV_TYPE, POOLED_DF_YEARS_MINUS,
+                        PREDICTION_ALPHA,
                         RANDOM_SEED, ROBUST_SMALL_SAMPLE_CORRECTION, TEST_DIRECTIONS, USE_T)
 
 DEFAULT_SEED = RANDOM_SEED
@@ -319,7 +320,7 @@ def fit_driscoll_kraay(formula: str, df: pd.DataFrame, maxlags: int = HAC_MAXLAG
     _no_dropped_rows(df, model, "fit_driscoll_kraay")
     years = _balanced_panel(df, unit_col, year_col)
     time = (df[year_col] - years.min()).to_numpy(dtype=int)
-    fit = model.fit(cov_type="hac-groupsum", use_t=True,
+    fit = model.fit(cov_type=POOLED_COV_TYPE, use_t=USE_T,
                     cov_kwds={"time": time, "maxlags": maxlags,
                               "use_correction": "cluster" if use_correction else False})
     fit.inference_df = float(len(years) - POOLED_DF_YEARS_MINUS)

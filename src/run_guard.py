@@ -118,6 +118,24 @@ def plan_frozen_problems(root: Path = ROOT, tag: str = FROZEN_TAG,
         head = _split_log(_git("show", f"HEAD:{PLAN}", root=root))
     except subprocess.CalledProcessError:
         head = None
+    # Against every commit since the tag that changed the plan, as well as
+    # HEAD: an edited row that was committed passes the HEAD check from then
+    # on (audit 2026-10-17). Empty placeholder rows ("| | | |"), replaced by
+    # the first real row, are skipped.
+    try:
+        commits = _git("rev-list", f"{tag}..HEAD", "--", PLAN, root=root).split()
+    except subprocess.CalledProcessError:
+        commits = []
+    for commit in commits:
+        past = _split_log(_git("show", f"{commit}:{PLAN}", root=root))
+        if past is None:
+            continue
+        rows = "\n".join(line for line in past[1].splitlines()
+                         if "|" not in line or line.replace("|", "").strip())
+        if not now[1].rstrip("\n").startswith(rows.rstrip("\n")):
+            problems.append(f"{PLAN}: the deviations log no longer starts with the log at "
+                            f"{commit[:7]} (a row was edited or removed; rows are only added)")
+            break
     if head is not None and not now[1].rstrip("\n").startswith(head[1].rstrip("\n")):
         problems.append(f"{PLAN}: the deviations log no longer starts with the log at HEAD "
                         "(a row was edited or removed; rows are only added)")
