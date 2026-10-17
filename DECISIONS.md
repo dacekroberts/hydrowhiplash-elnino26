@@ -17,8 +17,27 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-10-17 - Final audit
+
+- **Approved (owner): Motion's Scene 3 note stays as it stands**
+  (D109). Found in the 2026-10-17 audit: both films show, under the
+  mechanism diagram at about 48 to 56 s, "AK, YT and NorCal are filed
+  separately for not fitting cleanly into either group." The brief
+  asked for no footnotes in Scene 3 and no captions of Motion's own,
+  and the 2026-10-14 check record listed only the added scene title.
+  The site's own diagram gives the reason as the hypotheses not yet
+  being set. Owner: "x1 a approved as stands". Rejected: a re-export
+  of Scene 3 without the line.
+
 ### 2026-10-14 - The Motion film goes on the home page
 
+- **Fifteenth upload, on the owner's word ("upload"): commit 962977b,
+  66 files, 36,088,342 bytes, deployment 484fa646.** It carried the
+  film. Caption as approved by the owner ("remove film, s->sec,
+  caption is good"): "2 min 45 sec, no sound. Data credits are on the
+  Methods page; map: Natural Earth." Checked on the live site in a
+  browser: the dark film at 1920 wide played 3 s, the caption reads as
+  approved, and the page asked no host but the site.
 - **The films checked and placed (D109).** Two exports came back,
   dark (1280 x 720, 58,832,143 bytes) and light (1920 x 1080,
   55,590,182 bytes), each 165.0 s at 30 fps, no sound, no return notes.
