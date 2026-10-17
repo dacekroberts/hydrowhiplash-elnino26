@@ -12,14 +12,16 @@ The video goes under site/ because Quarto leaves out files linked from
 outside it (scripts/check_site.py), as src.banner writes site/preview.png.
 
 The transcript is the brief's card wording (build_motion_handoff.CARDS)
-filled from the numbers the film was given; the film's own wording is
-checked against it by hand before publication (claude-motion-handoff).
+filled from the numbers the film was given, with the lines Motion added on
+screen (ADDED) after their cards; the film's own wording is checked against
+it by hand before publication (claude-motion-handoff).
 
 ffmpeg comes from the separate conda env `media`, so the project env stays
 as environment.yml describes it.
 
 Usage, from the repo root:
     python scripts/prepare_film.py PATH_TO_EXPORT.mp4 --theme dark
+    python scripts/prepare_film.py --transcript   (rewrite only the transcripts)
 """
 from __future__ import annotations
 
@@ -47,6 +49,18 @@ TARGET_BYTES = int(FILE_LIMIT_BYTES * 0.9)
 # Where the poster frame is taken, in seconds: inside Scene 1, after its
 # title has settled (re-check against the film's scene table).
 POSTER_AT = 6.0
+# On-screen lines Motion added beyond the cards, as (index of the card they
+# follow, line). Read off the frames of both exports on 2026-10-17 and
+# approved by the owner (DECISIONS 2026-10-14 and 2026-10-17). The
+# diagram's and charts' own labels are figure content and stay out.
+ADDED = (
+    (2, "AK, YT and NorCal are filed separately for not fitting cleanly into either group."),
+    (3, "What El Niño does to winter rain. December to February precipitation, as a "
+        "share of each region’s average winter. Each row is scaled to its own largest "
+        "swing."),
+    (4, "Burned area, as a multiple of each region’s typical season, on a log scale. "
+        "Each row is scaled to its own largest swing."),
+)
 
 
 def probe(path: Path) -> dict:
@@ -88,7 +102,26 @@ def encode(src: Path, dst: Path, seconds: float) -> None:
 def transcript() -> list[str]:
     data = build_dashboard.payload()
     fill = {**data["counts"], **data["meta"], "title": data["text"]["title"]}
-    return [card.format(**fill) for card in handoff.CARDS]
+    lines = []
+    for index, card in enumerate(handoff.CARDS):
+        lines.append(card.format(**fill))
+        lines += [line for after, line in ADDED if after == index]
+    return lines
+
+
+def rewrite_transcripts(out: Path = OUT) -> list[Path]:
+    """Replace the transcript in each existing record, leaving the rest as
+    written when the film was prepared."""
+    done = []
+    for theme in THEMES:
+        path = out / f"film_{theme}.json"
+        if not path.exists():
+            continue
+        record = json.loads(path.read_text(encoding="utf-8"))
+        record["transcript"] = transcript()
+        path.write_bytes(json.dumps(record, ensure_ascii=False, indent=1).encode("utf-8"))
+        done.append(path)
+    return done
 
 
 def build(src: Path, theme: str, out: Path = OUT, served: Path = SERVED) -> dict:
@@ -114,9 +147,17 @@ def build(src: Path, theme: str, out: Path = OUT, served: Path = SERVED) -> dict
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("src", type=Path)
-    parser.add_argument("--theme", choices=THEMES, required=True)
+    parser.add_argument("src", type=Path, nargs="?")
+    parser.add_argument("--theme", choices=THEMES)
+    parser.add_argument("--transcript", action="store_true",
+                        help="rewrite only the transcripts of the existing records")
     args = parser.parse_args()
+    if args.transcript:
+        for path in rewrite_transcripts():
+            print(path.relative_to(ROOT))
+        return
+    if args.src is None or args.theme is None:
+        parser.error("give the export and --theme, or --transcript")
     record = build(args.src, args.theme)
     print(json.dumps({k: record[k] for k in ("given", "served", "reencoded", "problems")},
                      indent=1))

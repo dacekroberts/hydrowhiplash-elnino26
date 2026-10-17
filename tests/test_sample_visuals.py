@@ -97,3 +97,17 @@ def test_motion_brief_fits_the_film_and_the_map_has_every_region():
     shapes = handoff.map_shapes()
     assert list(shapes["regions"]) == list(REGIONS) and shapes["coast"].startswith("M")
     assert handoff.notices().startswith(handoff.NOTICES_HEADING)
+
+
+def test_film_transcript_holds_every_card_and_motion_lines_after_theirs():
+    import build_motion_handoff
+    import prepare_film
+    lines = prepare_film.transcript()
+    added = [line for _, line in prepare_film.ADDED]
+    cards = [line for line in lines if line not in added]
+    assert len(cards) == len(build_motion_handoff.CARDS)
+    for after, line in prepare_film.ADDED:
+        assert lines[lines.index(line) - 1] in (cards[after], *added)
+    for theme in prepare_film.THEMES:
+        record = json.loads((prepare_film.OUT / f"film_{theme}.json").read_text("utf-8"))
+        assert record["transcript"] == lines
