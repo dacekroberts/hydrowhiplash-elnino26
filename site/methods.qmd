@@ -9,12 +9,15 @@ body-classes: fold-sections
      possible. Numbers come from ../results/ via inline Python, never typed.
 
      DRAFT 2026-10-12 (session 9). The prose below was drafted by Claude for
-     the owner to edit and approve; none of it is approved yet. Every number
+     the owner to edit and approve. Sections marked "Approved by the owner"
+     are approved; the rest is a draft. Every number
      is read from results/tables/ (run1, site_settings.json and, since
      session 10, methods_numbers.csv for the eight measured numbers that
      were typed until then; python scripts/methods_numbers.py). Still
      typed: descriptive constants (the 9 km grid, 1,000 acres, the season
-     months, the number of regions). -->
+     months, the number of regions) and the coverage figure's alt text,
+     which a check in the setup cell holds to validation.csv (audit
+     2026-10-17). -->
 
 ```{python}
 #| echo: false
@@ -106,6 +109,19 @@ loyo = val[(val["method"] == "leave-one-year-out") & (val["model"] == "H3a")]["c
 fwd_cov = fwd[fwd["model"] == "H3a"]["coverage"]
 sizes = reg["size"].dropna()
 n_fire_years = int(pick("H3a", "PNW")["n"])
+_ab_gap = fire.loc[fire["parks_gap"] & (fire["region"] == "AB"), "year"]
+ab_gap_years = f"{_ab_gap.min()} to {_ab_gap.max()}"
+# The coverage figure's alt text types these values (fig-alt takes no
+# inline code); the build stops if the run no longer gives them.
+_fwd_pct = (100 * fwd_cov.values).round().astype(int)
+_loyo_pct = (100 * loyo.values).round().astype(int)
+_fwd_reg = fwd[fwd["model"] == "H3a"]["region"].values
+_loyo_reg = val[(val["method"] == "leave-one-year-out") & (val["model"] == "H3a")]["region"].values
+assert dict(zip(_fwd_reg, _fwd_pct))["BC"] == 57, "coverage alt text: BC"
+assert dict(zip(_loyo_reg, _loyo_pct))["SoCal"] == 95, "coverage alt text: SoCal"
+_rest = [p for r, p in zip(_fwd_reg, _fwd_pct) if r != "BC"] + \
+    [p for r, p in zip(_loyo_reg, _loyo_pct) if r != "SoCal"]
+assert min(_rest) == 77 and max(_rest) == 91, ("coverage alt text: 77 to 91", _rest)
 h2_ab = pick("H2", "AB")
 fam = reg.groupby("family").size()
 zero_rows = fire[fire["zero_fire"]]
@@ -663,7 +679,7 @@ not hold at all. I did not rerun the tests on NBAC; I report the gap.
 
 **Known holes in the Canadian record.** CNFDB holds no national-park fire
 of counted size in these regions for `{python} park_gap_years`, which matters for
-Alberta in 2016 to 2019 (Wood Buffalo).
+Alberta in `{python} ab_gap_years` (Wood Buffalo).
 The tests were repeated with the park area added from NBAC: Alberta's H3a
 slope is `{python} est("H3a", "AB", kind="parks_nbac")` against
 `{python} est("H3a", "AB")`. Fires on two military bases in Alberta are in
@@ -773,7 +789,7 @@ warm, wet Southern California winter.
 - Burned area is not fire risk to people. It says nothing about where fires
   burn, how severe they are, or what they destroy.
 - Seven large regions hide what happens within them.
-- Everything here is association over about 42 seasons. Nothing shows that
+- Everything here is association over about `{python} n_fire_years` seasons. Nothing shows that
   El Niño, or a dry winter, causes a given fire season.
 
 ## Data sources and attribution

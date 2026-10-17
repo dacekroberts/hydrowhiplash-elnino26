@@ -14,7 +14,8 @@ website:
   # The sentence under a card's headline, on every page: the banner's line.
   description: "Does an El Niño winter say how much the next fire season will burn?"
   # The card a link to the site shows. preview.png is written by
-  # `python -m src.banner`, a copy of results/figures/banner_social_dark.png.
+  # `python -m src.banner` (the "site" layout: the question beside the map
+  # of the seven regions).
   open-graph: true
   twitter-card: true
   page-footer: "Text and figures © 2026 Dace Roberts, all rights reserved. Code: MIT licence."
@@ -37,7 +38,7 @@ author: "Dace Roberts"
 # page's first figure, and three pages start with an SVG, which link
 # previews do not draw.
 image: preview.png
-image-alt: "Does an El Niño winter say how much the next fire season will burn? Seven rows of fire seasons since 1984, one per region, with the seasons after El Niño winters shaded."
+image-alt: "Does an El Niño winter say how much the next fire season will burn? A map of the seven study regions, from Alaska and Yukon down the coast to Southern California, beside the site's address."
 
 # theme/ is written by `python -m src.theme` from theme/tokens.json; edit the
 # tokens, not the files in it.
