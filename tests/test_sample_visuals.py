@@ -111,3 +111,14 @@ def test_film_transcript_holds_every_card_and_motion_lines_after_theirs():
     for theme in prepare_film.THEMES:
         record = json.loads((prepare_film.OUT / f"film_{theme}.json").read_text("utf-8"))
         assert record["transcript"] == lines
+
+
+def test_dashboard_typical_season_is_the_sites_whole_hectares():
+    # Audit 2026-10-17 E4: rounded once, as the site's season chart prints it
+    from src import figures, fire_figures, pin_inputs
+    table = figures.season_anomaly(fire_figures.test_seasons(
+        pin_inputs.load_input(build_dashboard.TABLES / "fire_region_year.csv")))
+    for region in _payload(build_dashboard.build())["regions"]:
+        g = table[(table["region"] == region["region"]) & table["anomaly"].notna()]
+        site = f"{float(__import__('numpy').expm1(g['log_burn'].mean())):,.0f}"
+        assert f"{region['typical']:,}" == site, region["region"]

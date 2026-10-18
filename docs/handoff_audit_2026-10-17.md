@@ -158,3 +158,19 @@ changed on 2026-10-17:
 
 55db3c2, 455f061, e4eccdf, 84f1c57, eae989e, 3fa841e, all pushed to
 origin `main`; this note and the upload's log line come after.
+
+## Addendum, 2026-10-18
+
+- **E4 fixed** (owner, on the Motion chat's reply): `scripts/build_dashboard.py`
+  rounds each region's typical season once, to whole hectares, as the
+  site's season chart prints it; BC is 39,775 ha everywhere. A test ties
+  the dashboard to the site's figure. `numbers.json` never held the
+  typical season (the Motion chat was right; the 2026-10-17 audit note
+  said otherwise); only `storyboard.html` and the dashboard carried it.
+- **Motion handoff folder rebuilt** with `--capture`: the same 44 files;
+  `numbers.json` differs only in `built_utc` (keys meta, counts, flow,
+  ledger, survived, next, film, mechanism); the three banners and four
+  live-site pictures are newer.
+- **Still for the main account:** rebuild and republish the private
+  dashboard (https://claude.ai/artifact/HmzF6jWNnpLdSa38k9vVR2) with
+  `python scripts/build_dashboard.py --out <file>`, so it shows 39,775.

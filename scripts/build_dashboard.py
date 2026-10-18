@@ -112,8 +112,12 @@ def seasons(settings: dict) -> list[dict]:
         if g["year"].max() > last:
             raise ValueError(f"{region} holds a season after {last}.")
         burned = g[g["anomaly"].notna()]
+        # Whole hectares, formatted as the site's season chart does
+        # (src.fire_figures): rounding to SIG_DIGITS first and again in the
+        # page gave BC 39,776 against the site's 39,775 (audit 2026-10-17 E4).
+        typical = int(f"{np.expm1(burned['log_burn'].mean()):.0f}")
         out.append({"region": region, "name": REGION_NAMES[region], "last": last,
-                    "typical": _clean(float(np.expm1(burned["log_burn"].mean()))),
+                    "typical": typical,
                     "seasons": _rows(g, ["year", "anomaly", "burn_ha", "phase", "strong",
                                          "enso_djf"])})
     return out

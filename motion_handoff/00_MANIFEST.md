@@ -1,6 +1,6 @@
 # Motion handoff: what is in this folder
 
-Built by scripts/build_motion_handoff.py from run run1 (commit 777eafd) on 2026-10-13 19:56 UTC.
+Built by scripts/build_motion_handoff.py from run run1 (commit 777eafd) on 2026-10-18 23:20 UTC.
 
 | File | Why it may leave the repository |
 |---|---|
