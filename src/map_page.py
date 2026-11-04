@@ -710,7 +710,7 @@ def fragment(payload: dict) -> str:
 <div class="rmap-left">
 <div class="rmap-map">{sea_canvas}<canvas class="rmap-cells" style="position:absolute;inset:0;width:100%;height:100%" width="{2 * shape["width"]}" height="{round(2 * shape["height"])}" aria-hidden="true" hidden></canvas><svg viewBox="0 0 {shape["width"]} {shape["height"]}" role="group" aria-label="Map of the seven regions">{land_path}{paths}{labels}</svg></div>
 <p class="rmap-readout" aria-live="polite">{esc(READOUT_HINT)}</p>
-<p class="rmap-what">Map: Natural Earth.</p>
+<p class="rmap-credit">Map: Natural Earth.</p>
 </div>
 <div class="rmap-side">
 <p class="rmap-title"></p>

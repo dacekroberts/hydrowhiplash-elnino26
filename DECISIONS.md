@@ -65,6 +65,13 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 - **Added: "Map: Natural Earth." under the map page**, the wording already
   approved on the link card, closing the 2026-10-17 audit's note. Owner:
   "tackle the other open items how you see fit and give me the calls".
+- **Seventeenth upload, run by the owner in the terminal (the permission check
+  refused it here): commit a967893, 67 files, 42,731,547 bytes, 7 sent,
+  deployment a5e828d9.** Checked live: the pattern draws (561 ms to first show),
+  the whiplash chart, the BC sentence, C5 and the size column are up; no host
+  but the site. Found live: the map credit used the class `rmap-what`, so the
+  script wrote the layer's description into it and left the side panel's blank.
+  Fixed with its own class, `rmap-credit`; needs the next upload.
 - **Calls settled (owner: "i agree with all calls").** C5: the methods page
   now reads "In the north only Alberta's interval excludes zero". E2: the
   results table has a Size column from `run1`'s `size`. C9 stays as it is, with
