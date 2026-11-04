@@ -65,6 +65,12 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 - **Added: "Map: Natural Earth." under the map page**, the wording already
   approved on the link card, closing the 2026-10-17 audit's note. Owner:
   "tackle the other open items how you see fit and give me the calls".
+- **Calls settled (owner: "i agree with all calls").** C5: the methods page
+  now reads "In the north only Alberta's interval excludes zero". E2: the
+  results table has a Size column from `run1`'s `size`. C9 stays as it is, with
+  an upload after each data arrival. D8, D10, B5, B3 and D9 stay open, no action.
+  The 4 November reminder moved to 7 November, the only one for the hard-line
+  item; a one-time reminder on 4 November asks about the Motion edits.
 - **Left open, each put to the owner:** C5, E2, C9 (site wording or
   behaviour); B5, D8, D10, B3, D9 (code or research with no effect on a
   registered number, none urgent).

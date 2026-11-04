@@ -366,7 +366,7 @@ the same slope read as a change in burned area.
   in El Niño winters by `{python} est("H1", "SoCal", 0)` mm, and that
   survives correction (Holm p `{python} pv("H1", "SoCal", "p_holm")`). This
   one is a check, not a finding: I had seen these values before the freeze.
-  In the north only Alberta is drier,
+  In the north only Alberta's interval excludes zero,
   `{python} est("H1", "AB", 0)` mm, and that does not survive correction
   (Holm p `{python} pv("H1", "AB", "p_holm")`).
 - **El Niño and burned area (H2, H3a, H3b, H4).** No test is significant in
@@ -579,17 +579,18 @@ Image(filename="../results/figures/headline4_interval_coverage_narrow_dark.png")
 #| echo: false
 #| output: asis
 ALT = {"greater": "> 0", "less": "< 0", "two-sided": "≠ 0"}
-lines = ["| Test | Region | Predicted | Estimate | 95% CI | Change | p | Holm p | After Holm |",
-         "|---|---|---|---:|---|---:|---:|---:|---|"]
+lines = ["| Test | Region | Predicted | Estimate | 95% CI | Change | p | Holm p | After Holm | Size |",
+         "|---|---|---|---:|---|---:|---:|---:|---|---:|"]
 for _, r in reg.iterrows():
     d = 1 if r["test"] == "H1" else 4 if r["test"] in ("C1", "C2") else 2
     change = "" if pd.isna(r["pct_change"]) else f"{num(r['pct_change'], 0)}%"
     p = "<0.001" if r["p"] < 0.001 else f"{r['p']:.3f}"
     ph = "<0.001" if r["p_holm"] < 0.001 else f"{r['p_holm']:.3f}"
     verdict = "**significant**" if r["significant"] == True else "not significant"
+    size = "" if pd.isna(r["size"]) else f"{100 * r['size']:.1f}%"
     lines.append(f"| {r['test'].replace('_', ' ')} | {r['region']} | {ALT[r['alternative']]} | "
                  f"{num(r['estimate'], d)} | {num(r['ci_low'], d)} to {num(r['ci_high'], d)} | "
-                 f"{change} | {p} | {ph} | {verdict} |")
+                 f"{change} | {p} | {ph} | {verdict} | {size} |")
 print("\n".join(lines))
 ```
 
