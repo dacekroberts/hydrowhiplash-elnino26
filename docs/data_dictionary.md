@@ -1207,3 +1207,16 @@ two new variants below them. Columns as in 8d except:
 - **Publication lags:** ERA5-Land monthly means about a week (D55;
   `ERA5_LAG_MONTHS` 3 is a download margin, 1 from the first tracker update);
   latest ENSO values revised for up to two months; MTBS about 2 years.
+
+**Rain pattern inside a region (2026-11-03, D105).** `site/map_cells/rain.json`,
+written by `python -m src.map_page`. Per ERA5-Land cell inside a region:
+position in the map's box (`x`, `y`, width `w`; `cell_h` is one height for all)
+and, per winter, one digit: the class of that cell's October to March total as a
+percent of its own 1991-2020 mean (rain layer cut-offs 60, 85, 115, 140; 5 is no
+value). Display only. Traps: a cell's class is against its own normal, so a dry
+cell can read as far above average on little rain; the regional class beside it
+is a different number and is the one the table lists.
+
+**Whiplash chart (2026-11-03, D111).** `results/figures/whiplash_history_roni.html`:
+the committed `whiplash` column, `spei3_jja` minus `spei3_djf`, in SD units.
+Descriptive; no test reads it.

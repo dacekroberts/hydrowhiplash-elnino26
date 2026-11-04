@@ -17,6 +17,62 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-11-03 - A reader's feedback and a whiplash section
+
+- **Recorded: a friend's feedback on the Overview, all open.** (1) The
+  graphs took time to read. (2) How the "average burns" were worked out is
+  not stated on the Overview, though every graph notes it. (3) Obvious
+  outliers could be parsed out and noted separately for averages. Owner's
+  reply to the friend: agrees with all three; a short write-up before the
+  graphs would help; outliers came up, but which fires stand out and why is
+  hard to source from data of this kind, and cross-referencing regional
+  history would take many secondary sources. No work started on them.
+- **Approved (owner): a whiplash section on the Overview** (D111), to talk
+  about its effect on the data separately from El Niño. Rejected: its own
+  page. The index stays descriptive; H5 is the tested version of the idea.
+- **Decided (owner): outliers stay in, with a sentence saying so.** Owner:
+  "point 3 1 sounds good". The Overview says the typical season limits how
+  much one huge year counts. Rejected: marking outlier seasons on the charts,
+  and an exploratory rerun without them.
+- **Applied to `site/index.qmd`, owner: "i approve of the drafts if they are
+  using the tone guide".** Changed from the drafts shown: the BC sentence split
+  to one figure each and every section ended on its limit (tone guide); "a bar
+  at 2" replaced, since the fire chart's scale steps by tens. Figures are
+  inline Python. No whiplash chart yet: `whiplash_series_roni.png` has no dark
+  or phone drawing, and redrawing it was not asked.
+- **A1 settled: the per-cell SPEI cache is refused when it does not match.**
+  `whiplash.cache_problems` compares months, grid, `clip`, `dist`,
+  `calibration` and cells; `domain_spei` raises and names the mismatch instead
+  of reusing the file. Against the real caches it reports nothing (main 33,867
+  cells, north 33,850), so no value changes. Without it the hard-line run,
+  which adds months, could have reused July's field silently. Stamped rebuilds
+  already keep their own file. Rejected: refitting automatically (about an
+  hour per domain, unasked).
+- **Built (owner): the pattern inside a region, every cell, every winter**
+  (D105). Owner: "5mb is small tradeoff let's do every winter (unless it's
+  really that much slower for less gain)". `map_page.rain_cells` writes
+  `site/map_cells/rain.json` (6,488,892 bytes): each cell's October to March
+  total as a percent of its own 1991-2020 mean, in the rain layer's classes.
+  It is not that much slower: the page fetches the file only when the box is
+  ticked (about 250 ms from the local preview, on a local server), a year
+  redraws in about 30 ms, and the page itself grew 2 KB. Rejected: a coarser
+  0.5 degree grid. Built before the hard-line item, against D105's order, on
+  the owner's word. `region_map.html` was byte-identical on a rebuild before
+  the change. Off by default; the regional classes stay what the table lists.
+- **Added: a whiplash chart on the Overview**, `whiplash_history_roni.html`,
+  in the site's hover format with dark and phone behaviour, from the committed
+  `whiplash_swe_region_year.csv`. Owner: "3. yes". Its caption is a draft.
+- **Added: "Map: Natural Earth." under the map page**, the wording already
+  approved on the link card, closing the 2026-10-17 audit's note. Owner:
+  "tackle the other open items how you see fit and give me the calls".
+- **Left open, each put to the owner:** C5, E2, C9 (site wording or
+  behaviour); B5, D8, D10, B3, D9 (code or research with no effect on a
+  registered number, none urgent).
+- **Parked (owner): the hard-line item, to be checked on 7 November.**
+- **Motion: no edit open on the record.** Owner: the edits were slight
+  improvements and may already be addressed; the render goes back to the
+  Teams account, whose chat holds the edit list.
+
 ### 2026-10-17 - Final audit
 
 - **Approved (owner): Motion's Scene 3 note stays as it stands**

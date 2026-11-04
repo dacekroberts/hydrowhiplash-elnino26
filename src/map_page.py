@@ -40,9 +40,10 @@ import numpy as np
 import pandas as pd
 
 from src import geo
+from src.era5 import LAT, LON
 from src.config import (ENSO_INDEX, FIRE_FIRST_YEAR, MAP_DISPLAY_CRS, MAP_LAYERS,
                         CARD_MAP_BORDER_MIN_KM, CARD_MAP_INLAND_KM, CARD_MAP_MIN_PART_KM2, CARD_MAP_SIMPLIFY_KM,
-                        MAP_MIN_PART_KM2, MAP_NORMAL_YEARS, MAP_SIMPLIFY_KM, MAP_START_LAYER,
+                        MAP_MIN_PART_KM2, MAP_NORMAL_YEARS, MAP_RAIN_CELLS, MAP_SIMPLIFY_KM, MAP_START_LAYER,
                         MAP_WIDTH, MIN_FIRE_HA, NATURAL_EARTH_LAND_RAW, NINO34_BOX, REGIONS,
                         RESULTS, SST_EDGES, SST_LAND_MIN_DEG2, SST_LAND_SIMPLIFY_DEG,
                         SST_LATTICE_PX, SST_LIMIT_C, SST_NORMAL_YEARS, SST_PANELS, SST_STEP_C,
@@ -52,6 +53,9 @@ OUT = RESULTS / "figures" / "region_map.html"
 CARD_OUT = RESULTS / "figures" / "card_map_shapes.json"
 ENSO_TABLE = "climate_controls_region_year.csv"
 # Wording shown on the page: drafts for the owner (2026-10-12).
+CELLS_TEXT = {"box": "Show the pattern inside each region",
+              "what": " With the pattern on, each 9 km cell is shaded against its own "
+                      "average. A picture only: the tests use whole regions."}
 REGION_NAMES = {"PNW": "Pacific Northwest", "BC": "British Columbia", "AB": "Alberta",
                 "AK": "Alaska", "YT": "Yukon", "NorCal": "Northern California",
                 "SoCal": "Southern California"}
@@ -444,9 +448,51 @@ SCRIPT = """
     new MutationObserver(function () { setTimeout(drawSea, 60); })
       .observe(document.body, {attributes: true, attributeFilter: ["class"]});
   }
+  // The pattern inside a region (D105): fetched on first use, since it is
+  // about 5 MB and most visits never ask for it.
+  var cellsBox = q("input[name=rmap-cells]"), cellsCanvas = q("canvas.rmap-cells"), C = null;
+  function cellsOn() { return layer === "rain" && cellsBox.checked && !!C; }
+  function drawCells() {
+    cellsCanvas.hidden = !cellsOn();
+    // The land backdrop sits in the SVG above this canvas, so it moves here
+    // while the pattern shows.
+    var landPath = q(".rmap-map svg path.land");
+    if (landPath) landPath.style.fill = cellsOn() ? "transparent" : "";
+    if (!cellsOn()) return;
+    var ctx = cellsCanvas.getContext("2d"), s = getComputedStyle(root), code = C.years[year];
+    ctx.clearRect(0, 0, cellsCanvas.width, cellsCanvas.height);
+    if (landPath) {
+      ctx.save();
+      ctx.scale(2, 2);
+      ctx.fillStyle = s.getPropertyValue("--surface-sunk");
+      ctx.fill(new Path2D(landPath.getAttribute("d")), "evenodd");
+      ctx.restore();
+    }
+    if (!code) return;
+    var fills = D.layers.rain.legend.map(function (e) { return s.getPropertyValue("--" + e[0]); });
+    var h = 2 * C.cell_h + 0.8;
+    for (var i = 0; i < C.x.length; i++) {
+      var k = code.charCodeAt(i) - 48;
+      if (k > 4) continue;
+      ctx.fillStyle = fills[k];
+      ctx.fillRect(2 * C.x[i] - C.w[i] - 0.4, 2 * C.y[i] - h / 2, 2 * C.w[i] + 0.8, h);
+    }
+  }
+  cellsBox.addEventListener("change", function () {
+    if (cellsBox.checked && !C) {
+      fetch("map_cells/rain.json").then(function (r) { return r.json(); })
+        .then(function (data) { C = data; draw(); })
+        .catch(function () { cellsBox.checked = false; });
+    }
+    draw();
+  });
+  new MutationObserver(function () { setTimeout(drawCells, 60); })
+    .observe(document.body, {attributes: true, attributeFilter: ["class"]});
   function draw() {
     var L = D.layers[layer], w = D.years[year];
     drawSea();
+    cellsBox.disabled = layer !== "rain";
+    drawCells();
     q(".rmap-y").textContent = year;
     slider.value = year;
     slider.setAttribute("aria-valuetext", year + ", " + words(w));
@@ -455,7 +501,7 @@ SCRIPT = """
     chip.className = "rmap-chip" + (w[1] === "el_nino" ? (w[2] ? " strong" : " nino") : "");
     q(".rmap-winter").textContent = "Winter " + w[0] + " · December to February " + D.index +
       " " + (w[3] < 0 ? "−" : "+") + Math.abs(w[3]).toFixed(2);
-    q(".rmap-what").textContent = L.what;
+    q(".rmap-what").textContent = L.what + (cellsOn() ? CELLS_WHAT : "");
     q(".rmap-title").textContent = L.label + ", " + year;
     var legend = q(".rmap-legend");
     legend.innerHTML = "";
@@ -475,7 +521,7 @@ SCRIPT = """
       var text = cell ? cell[1] : (layer === "fire" && year < D.fire_first_year ?
         "the fire record starts in " + D.fire_first_year : "no data for this year");
       texts[r] = text;
-      path.style.fill = cell ? "var(--" + L.legend[cell[0]][0] + ")" : "";
+      path.style.fill = cellsOn() ? "transparent" : (cell ? "var(--" + L.legend[cell[0]][0] + ")" : "");
       path.classList.toggle("none", !cell);
       path.querySelector("title").textContent = D.names[r] + ", " + year + ": " + text;
       var sw = row.querySelector(".sw");
@@ -646,6 +692,7 @@ def fragment(payload: dict) -> str:
     return f"""<div class="rmap" id="region-map">
 <script type="application/json">{data}</script>
 <fieldset class="rmap-layers"><legend>Show</legend>{radios}</fieldset>
+<fieldset class="rmap-layers rmap-sea-opts"><legend>Winter rain</legend><label><input type="checkbox" name="rmap-cells" disabled><span>{esc(CELLS_TEXT["box"])}</span></label></fieldset>
 {sea_controls}
 <div class="rmap-year">
 <div class="rmap-step">
@@ -661,8 +708,9 @@ def fragment(payload: dict) -> str:
 </div>
 <div class="rmap-body">
 <div class="rmap-left">
-<div class="rmap-map">{sea_canvas}<svg viewBox="0 0 {shape["width"]} {shape["height"]}" role="group" aria-label="Map of the seven regions">{land_path}{paths}{labels}</svg></div>
+<div class="rmap-map">{sea_canvas}<canvas class="rmap-cells" style="position:absolute;inset:0;width:100%;height:100%" width="{2 * shape["width"]}" height="{round(2 * shape["height"])}" aria-hidden="true" hidden></canvas><svg viewBox="0 0 {shape["width"]} {shape["height"]}" role="group" aria-label="Map of the seven regions">{land_path}{paths}{labels}</svg></div>
 <p class="rmap-readout" aria-live="polite">{esc(READOUT_HINT)}</p>
+<p class="rmap-what">Map: Natural Earth.</p>
 </div>
 <div class="rmap-side">
 <p class="rmap-title"></p>
@@ -672,7 +720,7 @@ def fragment(payload: dict) -> str:
 <table class="rmap-table" data-quarto-disable-processing="true"><tbody>{rows}</tbody></table>
 </div>
 </div>
-{sea_block}<script>{SCRIPT}</script>
+{sea_block}<script>{SCRIPT.replace("CELLS_WHAT", json.dumps(CELLS_TEXT["what"], ensure_ascii=False))}</script>
 </div>
 """
 
@@ -771,6 +819,51 @@ def card_shapes(regions, world) -> dict:
             "regions": out, "coast": backdrop["coast"]}
 
 
+def rain_cells(regions, frame: tuple[float, float, float]) -> dict:
+    """The rain layer per ERA5-Land cell: each cell's October to March total as
+    a percent of its own MAP_NORMAL_YEARS mean, classed by the layer's cut-offs
+    (a value on a cut-off goes to the class above, as in layer_cells). Each year
+    is one digit per cell; 5 is no value. Positions are in the map's own box.
+    Display only: no test and no table reads this."""
+    from pyproj import Transformer
+
+    from src.config import PRECIP_ANOM_MONTHS
+    from src.era5 import assign_domains, open_domains, region_masks, winter_total
+
+    edges = MAP_LAYERS["rain"][3]
+    domains = assign_domains(regions)
+    data = open_domains(sorted(set(domains)))
+    left, top, scale = frame
+    to_map = Transformer.from_crs("EPSG:4326", MAP_DISPLAY_CRS, always_xy=True)
+    xs, ys, ws, digits = [], [], [], {}
+    for name, ds in data.items():
+        sub = regions[regions["region"].map(domains) == name]
+        inside = region_masks(sub, ds).any("region")
+        total = winter_total(ds["tp"], PRECIP_ANOM_MONTHS).load()
+        total = total.sel(year=total["year"] >= 1951)
+        normal = total.sel(year=slice(*MAP_NORMAL_YEARS)).mean("year")
+        lat, lon = np.meshgrid(total[LAT].values, total[LON].values, indexing="ij")
+        keep = inside.values & normal.notnull().values & (normal.values > 0)
+        x, y = to_map.transform(lon[keep], lat[keep])
+        xs += np.round((x - left) * scale, 1).tolist()
+        ys += np.round((top - y) * scale, 1).tolist()
+        ws += np.round(0.1 * 111.32 * np.cos(np.radians(lat[keep])) * 1000 * scale, 2).tolist()
+        pct = (100 * total / normal).transpose("year", LAT, LON).values[:, keep]
+        classes = np.searchsorted(edges, pct, side="right")
+        classes[np.isnan(pct)] = 5
+        for at, year in enumerate(total["year"].values):
+            digits[str(int(year))] = (digits.get(str(int(year)), "")
+                                      + "".join(map(str, classes[at])))
+    return {"cell_h": round(0.1 * 111.32 * 1000 * scale, 2), "x": xs, "y": ys, "w": ws,
+            "years": digits}
+
+
+def write_rain_cells(regions, frame, out: Path = MAP_RAIN_CELLS) -> Path:
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_bytes(json.dumps(rain_cells(regions, frame), separators=(",", ":")).encode("utf-8"))
+    return out
+
+
 def write_card(regions, world, out: Path = CARD_OUT) -> Path:
     out.write_bytes(json.dumps(card_shapes(regions, world), ensure_ascii=False,
                                separators=(",", ":")).encode("utf-8"))
@@ -792,7 +885,10 @@ def main() -> None:
     names = {spec[0] for spec in MAP_LAYERS.values()} | {ENSO_TABLE}
     tables = {name: pin_inputs.load_input(name) for name in names}
     world = gpd.read_file(NATURAL_EARTH_LAND_RAW)
-    out = write(build(tables, load_regions(), ocean.winter_anomalies(), world))
+    regions = load_regions()
+    cells = write_rain_cells(regions, shapes(regions)["frame"])
+    print(f"wrote {cells}: {cells.stat().st_size:,} bytes")
+    out = write(build(tables, regions, ocean.winter_anomalies(), world))
     print(f"wrote {out}: {out.stat().st_size:,} bytes")
 
 

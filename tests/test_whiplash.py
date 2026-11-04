@@ -217,3 +217,38 @@ def test_whiplash_table_raises_on_a_year_without_enso():
     assert pending.loc[pending["year"] == 1953, "enso_djf"].isna().all()
     table = whiplash.whiplash_table(regional.sel(year=[1951, 1952]), winters)
     assert list(table.columns).count("enso_index") == 1 and len(table) == 2
+
+
+def _cached(path, months=24):
+    wb = grid(np.arange(months, dtype="float64"))
+    spei = wb.rename("spei3").assign_attrs(clip=SPEI_CLIP, dist=whiplash.SPEI_DIST,
+                                           calibration=f"{whiplash.SPEI_CAL_YEARS[0]}-"
+                                                       f"{whiplash.SPEI_CAL_YEARS[1]}")
+    spei.to_netcdf(path)
+    return wb.to_dataset(name="tp"), xr.ones_like(wb.isel({TIME: 0}, drop=True), dtype=bool)
+
+
+def test_cache_is_reused_only_when_it_matches(tmp_path):
+    path = tmp_path / "spei.nc"
+    ds, keep = _cached(path)
+    with whiplash.domain_spei("main", ds, keep, path=path) as got:
+        assert got.sizes[TIME] == 24
+
+
+def test_cache_refused_when_months_were_added(tmp_path):
+    path = tmp_path / "spei.nc"
+    _, keep = _cached(path)
+    longer = grid(np.arange(27, dtype="float64")).to_dataset(name="tp")
+    with pytest.raises(ValueError, match="months"):
+        whiplash.domain_spei("main", longer, keep, path=path)
+
+
+def test_cache_problems_names_grid_settings_and_cells(tmp_path):
+    path = tmp_path / "spei.nc"
+    ds, keep = _cached(path)
+    with xr.open_dataarray(path) as cached:
+        moved = ds.assign_coords({LAT: [46.0]})
+        assert any(LAT in p for p in whiplash.cache_problems(cached, moved, keep.assign_coords({LAT: [46.0]})))
+        other = cached.assign_attrs(dist="gamma")
+        assert any("dist" in p for p in whiplash.cache_problems(other, ds, keep))
+        assert whiplash.cache_problems(cached, ds, ~keep) == ["values in cells this run leaves out"]

@@ -702,6 +702,9 @@ MAP_LAYERS = {
              "temp_jja"),
 }
 MAP_START_LAYER = "fire"
+# The pattern inside a region (D105): the rain layer's cut-offs per ERA5-Land
+# cell, in a file the map page fetches only when asked. Display only.
+MAP_RAIN_CELLS = ROOT / "site" / "map_cells" / "rain.json"
 # The outlines are drawn in an Albers projection centred on the study area
 # (display only; areas are measured in CRS_EQUAL_AREA), with islands and
 # other parts under MAP_MIN_PART_KM2 left out and outlines simplified.

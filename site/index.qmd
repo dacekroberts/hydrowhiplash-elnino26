@@ -34,6 +34,16 @@ n_sig = int((reg["significant"] == True).sum())
 n_regions = len(S["regions"])
 n_fire_years = int(reg[(reg["test"] == "H3a") & (reg["region"] == "PNW")]["n"].iloc[0])
 NEXT = next(row for row in CAL.values() if row["reader"] and not row["done"])
+# The reading notes and the whiplash section (owner approved, 2026-11-03; D111).
+import numpy as np
+_fire = pd.read_csv(T / "fire_region_year.csv")
+_bc = _fire[(_fire["region"] == "BC") & (_fire["burn_ha"] > 0)]
+bc_typical = f"{np.expm1(_bc['log_burn'].mean()):,.0f}"
+bc_mean = f"{_bc['burn_ha'].mean():,.0f}"
+bc_top = int(_bc.loc[_bc["burn_ha"].idxmax(), "year"])
+_h5 = lambda t, r: reg[(reg["test"] == t) & (reg["region"] == r)].iloc[0]
+nc = _h5("H5_lag1", "NorCal")
+ab = _h5("H5_lag0", "AB")
 FILM = json.loads(Path("../results/film/film_dark.json").read_text("utf-8"))
 ```
 
@@ -160,6 +170,12 @@ SVG(filename="../results/figures/mechanism_narrow_dark.svg")
 
 ## What El Niño does to winter rain
 
+Each row is one region and each bar is one winter. A bar above the line was
+wetter than that region's average winter, and a bar below was drier. Each row
+has its own scale, so compare a region's winters with each other, not bar
+heights across regions. For an easier way in, the [map](map.qmd) shows one
+year at a time.
+
 <!-- plotly.js for the two hover charts below, served by the site itself
      (written by python -m src.interactive), not from a CDN. -->
 
@@ -185,6 +201,19 @@ one. Hover for the millimetres; on a phone, slide to a year.*
 
 ## What happened after past El Niño winters
 
+Each row is one region and each bar is one fire season. A bar above the line
+burned more than the region's typical season, and a bar below burned less. The
+scale goes up in steps of ten, so a small change in height is a large change
+in hectares; hover for the exact figure.
+
+"Typical" is a geometric mean, an average of ratios, so one huge year can't
+set it. British Columbia shows the gap. Its typical season is
+`{python} bc_typical` ha. Its plain average is `{python} bc_mean` ha, pulled
+up by years like `{python} bc_top`. I left seasons with no counted fire out of
+"typical", and I kept extreme seasons in the charts and the tests. A bar says
+how unusual a season was for its region, not how it compares with another
+region.
+
 <!-- Per region: every fire season since 1984, El Niño years highlighted,
      with an empty 2027 slot. Built 2026-10-12 (session 11) by
      python -m src.fire_figures: an HTML fragment read from results/ at
@@ -203,6 +232,36 @@ typical season. A shaded year follows an El Niño winter; a darker tick
 marks a strong one. Hover for the hectares; on a phone, slide to a year.
 The dotted slot is 2027.
 The [map](map.qmd) shows the same seasons region by region.*
+
+## Hydroclimate whiplash, apart from El Niño
+
+Hydroclimate whiplash is a swing between wet and dry from one season to the
+next. I tested the idea behind it separately from El Niño, by asking whether a
+wet winter changes how much burns.
+
+In Northern California, about `{python} f"{nc['pct_change']:.0f}"`% more burned
+the year after a wet winter (95% interval `{python} f"{nc['pct_low']:.0f}"`% to
+`{python} f"{nc['pct_high']:.0f}"`%, for a winter one standard deviation
+wetter). In Alberta, about `{python} f"{-ab['pct_change']:.0f}"`% less burned
+the same year (`{python} f"{-ab['pct_high']:.0f}"`% to
+`{python} f"{-ab['pct_low']:.0f}"`% less). Both pass the correction for the
+number of tests. These are associations, not causes.
+
+I also measure the swing itself, as summer water balance minus the winter
+before, using a drought index called SPEI. A negative value is a wet winter
+turning to a dry summer. That measure is description only and I did not test
+it, because summer falls inside the fire season it would have to predict.
+
+```{python}
+#| echo: false
+#| output: asis
+print("```{=html}\n" + Path("../results/figures/whiplash_history_roni.html").read_text("utf-8") + "\n```")
+```
+
+*Summer water balance minus the winter before, every year, by region. Bars
+below zero swing from wet to dry; in the north, a bar above zero can be a dry
+winter and a wetter summer. Shaded years had an El Niño winter. Hover for the
+winter and summer values; on a phone, slide to a year.*
 
 ## Tracking the 2026–27 winter
 

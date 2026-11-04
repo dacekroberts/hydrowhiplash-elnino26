@@ -7,6 +7,7 @@ project:
     - "robots.txt"
     - "preview.png"
     - "film/*"
+    - "map_cells/*"
 
 website:
   title: "El Niño and the 2027 fire season"

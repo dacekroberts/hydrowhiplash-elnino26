@@ -27,6 +27,30 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-11-03
+
+### D111 · A whiplash section on the Overview (scope addition)
+- **Plan:** `ANALYSIS_PLAN.md` keeps the whiplash index "Descriptive only,
+  reported but not tested"; `site/index.qmd` has no whiplash section.
+- **Actual:** approved, not built. A section on the Overview on hydroclimate
+  whiplash, apart from El Niño. No registered test changes; any new link
+  between the index and burned area would be exploratory and labelled so.
+- **Why:** owner, 2026-11-03: "we should flesh out hydroclimate whiplash more
+  in final product", then "whiplash section should go in overview".
+- **Recorded:** `DECISIONS.md` 2026-11-03 "A reader's feedback and a whiplash
+  section".
+- **Plan doc:** left as written.
+
+### D110 · The Motion film went live (supersedes D109's "Actual: to come")
+- **Plan:** D109, "Actual: to come".
+- **Actual:** live since 2026-10-14 (fifteenth upload, commit 962977b): one
+  film per site theme, 165 s, served from `site/film/`, with the record and
+  transcript in `results/film/`.
+- **Why:** the 2026-10-17 audit found the entry stale.
+- **Recorded:** `DECISIONS.md` 2026-10-14 "The Motion film goes on the home
+  page".
+- **Plan doc:** left as written.
+
 ## 2026-10-14
 
 ### D109 · The Motion film on the home page (scope addition)

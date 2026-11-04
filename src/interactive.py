@@ -390,3 +390,31 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def whiplash_html(table: pd.DataFrame, out_dir: Path = figures.FIGURES) -> Path:
+    """Every year's whiplash per region: SPEI-3 of June to August minus SPEI-3
+    of the winter before. Descriptive; no test reads it."""
+    order = {region: i for i, region in enumerate(REGIONS)}
+    table = table.dropna(subset=["whiplash"]).sort_values("year")
+    groups = []
+    for region in sorted(table["region"].unique(), key=order.get):
+        g = table[table["region"] == region]
+        lim = float(np.ceil(np.abs(g["whiplash"]).max() * 1.2))
+        ticks = [t for t in range(-int(lim), int(lim) + 1, 2) if abs(t) < lim]
+        hover = [f"<b>{int(y)}</b> · swing {v:+.2f} SD"
+                 f"<br>winter {w:+.2f}, summer {s:+.2f}"
+                 f"<br>{winter_words(ph, bool(st))} (DJF {ENSO_INDEX} {e:+.2f})"
+                 for y, v, w, s, ph, st, e in zip(g["year"], g["whiplash"], g["spei3_djf"],
+                                                  g["spei3_jja"], g["phase"], g["strong"],
+                                                  g["enso_djf"])]
+        groups.append({"title": f"<b>{region}</b>", "years": g["year"], "values": g["whiplash"],
+                       "hover": hover, "nino": g[g["phase"] == "el_nino"],
+                       "nina": g[g["phase"] == "la_nina"]["year"], "lim": lim, "tickvals": ticks,
+                       "ticktext": [f"{t:+d}" if t else "0" for t in ticks]})
+    years = table["year"]
+    return panels(groups, figures.FAMILIES["water"], "Summer minus winter water balance",
+                  "SD, summer minus winter",
+                  "Year; each bar is that year's winter and the summer after it",
+                  (int(years.min()) - 1, int(years.max()) + 1),
+                  out_dir / f"whiplash_history_{ENSO_INDEX.lower()}.html", "whiplash-history")

@@ -191,7 +191,7 @@ cold round with no high and no medium findings), tag
       `docs/post_results_protocol.md`, `src/run_guard.py`,
       `src/pin_inputs.py`, `pinned_inputs_copy/`; cold check 4 medium,
       8 low, all fixed.
-- [ ] **DeepSeek review of the safeguard code** [mid-project: D77]: a
+- [x] **DeepSeek review of the safeguard code** [mid-project: D77]: a
       read-only review of `src/run_guard.py`, `src/pin_inputs.py`,
       `scripts/preflight.py` and `scripts/check_plan_frozen.py` with the
       `deepseek-delegate` skill, an extra read outside the closed gate;
@@ -205,6 +205,7 @@ cold round with no high and no medium findings), tag
       2026-10-13: the pilot ran and was merged, and its efficiency
       review is written (`docs/deepseek-efficiency-review.html`). Open:
       the methods-page line on where DeepSeek was used.
+      2026-11-03: that line is on the methods page; closed.
 - [x] **Parks Canada sensitivity run** [mid-project: D69]: every
       burned-area test that uses AB (H2, H3a, H3b, H4, H5, H6, C2) rerun on
       `fire_region_year_parks_nbac.csv` (NBAC park area added for AB
@@ -345,11 +346,13 @@ on the owner's own domain through Cloudflare, not on GitHub Pages.
       ocean beside the regions, each winter's sea-surface temperature
       from NOAA ERSST v6) are being added: display only, read by no
       test.
-- [ ] **The pattern inside a region** [mid-project: D105]: a gridded
+- [x] **The pattern inside a region** [mid-project: D105]: a gridded
       layer for winter rain on the map page, each ERA5-Land cell shaded
       on its own; display only, read by no test. Approved by the owner
       on 2026-10-13 and put with the map page's other work after the
       hard-line item. Reads the region polygons: ask the owner first.
+      Built 2026-11-03, before the hard-line item, on the owner's word;
+      this winter's months join it with that item.
       Ticked on the owner's word, 2026-10-13 ("tick all"). Its wording is still a draft, and this
       winter's months still join it with the hard-line item.
 - [x] **Three methods-page items** [mid-project: D96]: why regression

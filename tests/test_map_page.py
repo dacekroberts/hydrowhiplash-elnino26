@@ -167,11 +167,11 @@ def test_ocean_panels_carry_cells_a_lookup_and_the_caution(regions):
     left, top, wide, tall = tropics["box"]
     assert 0 < left < left + wide < 100 and 0 < top < top + tall < 100
     page = map_page.fragment(payload)
-    assert page.count("<canvas") == 2 and 'name="rmap-sea"' in page
+    assert page.count("<canvas") == 3 and 'name="rmap-sea"' in page
     assert page.count('class="rmap-sea-mini"') == 1 and page.count('class="rmap-ramp"') == 1
     assert 'value="cells"' in page and "No test, no reported number and no forecast" in page
     plain = map_page.fragment(map_page.build(tables(), regions))
-    assert "<canvas" not in plain and 'class="rmap-ocean"' not in plain and '"sea":null' in plain
+    assert plain.count("<canvas") == 1 and 'class="rmap-cells"' in plain and 'class="rmap-ocean"' not in plain and '"sea":null' in plain
 
 
 def test_land_backdrop_is_cut_to_each_picture(regions):
@@ -264,3 +264,16 @@ def test_every_legend_label_names_the_edges_either_side_of_it():
             spell = words[edge] if measure == "ratio" else (f"{abs(edge):g}",)
             for label in labels[i:i + 2]:
                 assert any(s in label for s in spell), (key, edge, label)
+
+
+def test_committed_rain_cells_hold_one_digit_per_cell_for_every_winter():
+    import json
+
+    from src.config import MAP_RAIN_CELLS
+
+    cells = json.loads(MAP_RAIN_CELLS.read_text("utf-8"))
+    n = len(cells["x"])
+    assert n == len(cells["y"]) == len(cells["w"]) > 60000
+    assert "1951" in cells["years"] and "1998" in cells["years"]
+    for code in cells["years"].values():
+        assert len(code) == n and set(code) <= set("012345")

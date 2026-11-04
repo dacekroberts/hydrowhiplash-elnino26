@@ -223,6 +223,28 @@ def spei_cache_path(domain: str):
     return DATA_PROCESSED / f"spei3_cells_{domain}.nc"
 
 
+def cache_problems(cached: xr.DataArray, ds: xr.Dataset, keep: xr.DataArray) -> list[str]:
+    """Why a cached SPEI field cannot stand for this run: other months, other
+    cells, other settings, or values outside `keep`. Empty when it can. An hour
+    per domain is saved by the cache, and a silent mismatch would give wrong
+    SPEI (audit finding A1, 2026-10-17)."""
+    problems = []
+    if not np.array_equal(cached[TIME].values, ds[TIME].values):
+        problems.append(f"months {cached[TIME].values[[0, -1]].astype('M8[M]')} against "
+                        f"{ds[TIME].values[[0, -1]].astype('M8[M]')}, "
+                        f"{cached.sizes[TIME]} against {ds.sizes[TIME]}")
+    for axis in (LAT, LON):
+        if cached.sizes[axis] != ds.sizes[axis] or not np.allclose(cached[axis], ds[axis]):
+            problems.append(f"a different {axis} grid")
+    wanted = {"clip": SPEI_CLIP, "dist": SPEI_DIST,
+              "calibration": f"{SPEI_CAL_YEARS[0]}-{SPEI_CAL_YEARS[1]}"}
+    problems += [f"{key} {cached.attrs.get(key)!r} against {value!r}"
+                 for key, value in wanted.items() if cached.attrs.get(key) != value]
+    if not problems and bool((cached.notnull().any(TIME) & ~keep).any()):
+        problems.append("values in cells this run leaves out")
+    return problems
+
+
 def domain_spei(domain: str, ds: xr.Dataset, keep: xr.DataArray, refresh: bool = False,
                 path=None) -> xr.DataArray:
     """Per-cell SPEI-3 for one domain, cached as NetCDF (the fit takes about
@@ -230,7 +252,13 @@ def domain_spei(domain: str, ds: xr.Dataset, keep: xr.DataArray, refresh: bool =
     keeps its own, so a new retrieval is always refitted (D88)."""
     path = path or spei_cache_path(domain)
     if path.exists() and not refresh:
-        return xr.open_dataarray(path)
+        cached = xr.open_dataarray(path)
+        problems = cache_problems(cached, ds, keep)
+        if problems:
+            cached.close()
+            raise ValueError(f"{path} does not match this run: {'; '.join(problems)}. "
+                             "Rebuild it with refresh=True.")
+        return cached
     wb = water_balance(ds["tp"], pet_thornthwaite(ds["t2m"])).load()
     spei = spei_cells(wb, keep=keep)
     path.parent.mkdir(parents=True, exist_ok=True)
