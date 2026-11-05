@@ -17,6 +17,18 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-11-04 - The re-exported film goes up with two changes held
+
+- **Decided: publish the 180 s exports as they are and hold two changes for any
+  later Motion round (D112).** The first is the whiplash card line, "A wet winter
+  changes what burns in only some places", which reads as a cause and suggests
+  what burns rather than how much. The second is its percentages, shown to three
+  decimals (+47.443%). A re-export now was rejected as out of proportion for a
+  portfolio piece (owner). Both files decoded with no errors. The whiplash
+  figures match `addendum3_whiplash_tests.json`. Scene times, the finer coast at
+  full size and the other scenes' figures were not checked against Motion's
+  notes.
+
 ### 2026-11-03 - A reader's feedback and a whiplash section
 
 - **Recorded: a friend's feedback on the Overview, all open.** (1) The

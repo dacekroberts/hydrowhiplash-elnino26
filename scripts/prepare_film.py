@@ -60,6 +60,12 @@ ADDED = (
         "swing."),
     (4, "Burned area, as a multiple of each region’s typical season, on a log scale. "
         "Each row is scaled to its own largest swing."),
+    # Addendum 3, read off the frames of the v2 exports on 2026-11-04 (D112).
+    (6, "The whiplash index: each year’s summer water balance minus its winter water "
+        "balance. SPEI-3 JJA minus DJF, in standard deviations (SD). A description; it was "
+        "not tested."),
+    (6, "A wet winter changes what burns in only some places: more the next year in "
+        "Northern California, less the same year in Alberta."),
 )
 
 

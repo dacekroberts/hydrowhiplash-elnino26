@@ -27,6 +27,21 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-11-04
+
+### D112 · The film re-exported with a finer coast and a whiplash scene
+- **Plan:** D110, one film per site theme at 165 s; the handoff brief's limit
+  of 150 s.
+- **Actual:** 180 s, 1920 x 1080, 30 fps, both themes, from addendum 3
+  (`scripts/build_motion_addendum3.py`). The new scene's on-screen lines joined
+  the transcript. Two changes are held for any later Motion round: the card
+  line's wording, and fewer decimals on its percentages.
+- **Why:** owner, 2026-11-04: keep these exports "with those two changes noted
+  if more motion changes come up".
+- **Recorded:** `DECISIONS.md` 2026-11-04 "The re-exported film goes up with two
+  changes held".
+- **Plan doc:** left as written.
+
 ## 2026-11-03
 
 ### D111 · A whiplash section on the Overview (scope addition)

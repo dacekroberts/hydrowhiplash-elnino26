@@ -1,0 +1,33 @@
+{
+ "run": "run1",
+ "rows": [
+  {
+   "test": "H5_lag1",
+   "region": "NorCal",
+   "name": "Northern California",
+   "what": "burned area the year after a wet winter",
+   "unit": "log points per 1 SD",
+   "estimate": 0.388,
+   "ci_low": 0.188,
+   "ci_high": 0.589,
+   "pct_change": 47.443,
+   "pct_low": 20.667,
+   "pct_high": 80.16,
+   "p_holm": 0.004
+  },
+  {
+   "test": "H5_lag0",
+   "region": "AB",
+   "name": "Alberta",
+   "what": "burned area the same year as a wet winter",
+   "unit": "log points per 1 SD",
+   "estimate": -0.687,
+   "ci_low": -1.099,
+   "ci_high": -0.276,
+   "pct_change": -49.711,
+   "pct_low": -66.681,
+   "pct_high": -24.096,
+   "p_holm": 0.008
+  }
+ ]
+}

@@ -1,8 +1,8 @@
 {
- "source": "hydrowhiplash-winter-to-fire-light.mp4",
+ "source": "hydrowhiplash-winter-to-fire-light-v2.mp4",
  "given": {
-  "bytes": 55590182,
-  "seconds": 165.0,
+  "bytes": 59362997,
+  "seconds": 180.0,
   "width": 1920,
   "height": 1080,
   "fps": 30.0,
@@ -10,8 +10,8 @@
   "audio": false
  },
  "served": {
-  "bytes": 12669688,
-  "seconds": 165.0,
+  "bytes": 12759656,
+  "seconds": 180.0,
   "width": 1920,
   "height": 1080,
   "fps": 30.0,
@@ -20,7 +20,7 @@
  },
  "reencoded": true,
  "problems": [
-  "165.0 s, brief says 150 s at most"
+  "180.0 s, brief says 150 s at most"
  ],
  "poster_at_seconds": 6.0,
  "transcript": [
@@ -34,6 +34,8 @@
   "Burned area, as a multiple of each region’s typical season, on a log scale. Each row is scaled to its own largest swing.",
   "0 of the 25 tests that set El Niño against burned area are significant. Every interval crosses zero.",
   "4 of 52 tests are significant after correcting for the number of tests. These are associations, not causes.",
+  "The whiplash index: each year’s summer water balance minus its winter water balance. SPEI-3 JJA minus DJF, in standard deviations (SD). A description; it was not tested.",
+  "A wet winter changes what burns in only some places: more the next year in Northern California, less the same year in Alberta.",
   "A forecast for 2027 goes up before the season and is checked against it afterwards."
  ]
 }
