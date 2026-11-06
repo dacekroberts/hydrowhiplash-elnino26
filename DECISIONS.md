@@ -17,6 +17,24 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-11-06 - A scoring-day path for the unit fire tables
+
+- **Added `scoring_day_seasons` to `unit_table`, `unit_split_table` and
+  `check_tables` in `src/fire_units.py`, the same guard as
+  `src.fire_after_date` (owner, 2026-11-06: "do these extra items").** The
+  sibling's request has the unit numbers of an arriving season come with
+  its region numbers, by the same rules. A held-back region-season is built
+  only when asked for and named again for its scoring day, and the names
+  must match the seasons asked exactly. Check 2 allows only the named
+  seasons; the sum checks run against that day's outcome tables.
+  `build_unit_pieces` and `main` stay development-only: the scoring-day
+  pieces come from that day's fire rebuild, which is not built yet (the
+  same open item as the region split's). Tested on made-up pieces only (2
+  new tests; nothing for a real held-back season was built or read). The
+  committed tables are unaffected: they were built at f5615e9, and the
+  development path did not change. A later change to this module is told
+  to the sibling before the next scoring day.
+
 ### 2026-11-06 - Unit fire tables built on units_c, every check passed
 
 - **Built both unit fire tables on the sibling's `units_c.gpkg` (D113);

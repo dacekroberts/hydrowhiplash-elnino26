@@ -138,3 +138,40 @@ def test_unit_layer_checksum_and_repair(tmp_path, units):
     assert fixed.is_valid.all() and fixed.geom_type.isin(["Polygon", "MultiPolygon"]).all()
     with pytest.raises(fu.UnitsLayerError):
         fu.prepare_units(pd.concat([units, units.iloc[[0]]]).pipe(gpd.GeoDataFrame, crs=CRS_EQUAL_AREA))
+
+
+def test_scoring_day_path_on_made_up_pieces(regions, units):
+    # made-up fires only: PNW 2026 and BC 2025 stand in for scored seasons
+    scored = [("PNW", 2026), ("BC", 2025)]
+    pieces = fu.clip_to_units(fires(), units)
+    table = fu.unit_table(pieces, units, scored, LAST, scoring_day_seasons=scored)
+    split = fu.unit_split_table(pieces, units, scored, last_year=LAST, scoring_day_seasons=scored)
+    assert sorted(set(zip(table["region"], table["year"]))) == sorted(scored)
+    assert len(table) == 2 + 1 and len(split) == 3 * len(table)
+    # that day's outcome tables, by the region rules on the same made-up fires
+    region_pieces = fad.select_pieces(fire.clip_to_regions(fires(), regions), scored)
+    areas = fire.union_areas(region_pieces).groupby(["region", "season"])["union_ha"].sum()
+    outcome = pd.DataFrame([{"region": r, "year": y, "burn_ha": float(areas.get((r, y), 0.0))}
+                            for r, y in scored])
+    outcome_split = fad.split_table(fire.clip_to_regions(fires(), regions), scored,
+                                    last_year=LAST, scoring_day_seasons=scored)
+    checks = fu.check_tables(table, split, outcome, outcome_split, units, scored,
+                             last_year=LAST, scoring_day_seasons=scored)
+    assert all(c["ok"] for c in checks.values()), checks
+    assert table["burn_ha"].sum() > 0
+    # without the scoring-day names the same rows fail check 2
+    checks = fu.check_tables(table, split, outcome, outcome_split, units, scored, last_year=LAST)
+    assert not checks["2 no held-back or later season"]["ok"]
+
+
+def test_scoring_day_names_must_match_the_seasons_asked(units):
+    pieces = fu.clip_to_units(fires(), units)
+    with pytest.raises(fad.HeldBackSeasonError):
+        fu.unit_table(pieces, units, [("PNW", 2026)], LAST,
+                      scoring_day_seasons=[("PNW", 2026), ("BC", 2025)])
+    with pytest.raises(fad.HeldBackSeasonError):
+        fu.unit_split_table(pieces, units, [("PNW", 2026), ("BC", 2025)], last_year=LAST,
+                            scoring_day_seasons=[("PNW", 2026)])
+    # a development build never carries a held-back piece
+    dev = fu.unit_table(pieces, units, last_year=LAST)
+    assert not (dev["year"] > dev["region"].map(LAST)).any()

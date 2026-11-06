@@ -24,7 +24,21 @@ Every unit appears in every season of its region, zero seasons kept.
 Held-back seasons (2026 and later everywhere, 2025 in BC, AB and YT) are
 never built: the seasons are src.fire_after_date.development_seasons(),
 guarded by its guard_seasons(), and every other piece is dropped before
-anything is summed (select_pieces). This module has no scoring-day path.
+anything is summed (select_pieces).
+
+Scoring-day path (added 2026-11-06, run later; DECISIONS.md 2026-11-06). The
+request asks that on each scoring day the unit numbers for the arriving
+season come with the region numbers, by the same rules. unit_table(),
+unit_split_table() and check_tables() take `scoring_day_seasons`, used as in
+src.fire_after_date: a held-back region-season is built only when it is
+both asked for in `seasons` and named again in `scoring_day_seasons`, and
+`scoring_day_seasons` must name exactly the held-back seasons asked for, so
+a scoring-day build cannot take in any other. The pieces come from that
+day's fire rebuild (the one that makes the outcome numbers), clipped with
+clip_to_units; check_tables() runs against that day's outcome tables, and
+the rows go with the outcome numbers in the same approved read.
+build_unit_pieces() and main() stay development-only. Tested on made-up
+pieces only (tests/test_fire_units.py).
 
 check_tables() runs the request's checks: the unit and season set is exactly
 the layer's units times their region's seasons; no held-back or later row;
@@ -153,11 +167,13 @@ def unit_seasons(units: pd.DataFrame, seasons) -> list[tuple[str, str, int]]:
 
 
 def unit_table(pieces: gpd.GeoDataFrame, units: pd.DataFrame, seasons=None,
-               last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION) -> pd.DataFrame:
+               last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION, *,
+               scoring_day_seasons=()) -> pd.DataFrame:
     """fire_unit_year rows from clip_to_units pieces, for the region-seasons
-    in `seasons` (default development_seasons; a held-back one raises)."""
+    in `seasons` (default development_seasons). A held-back one raises
+    unless also named in `scoring_day_seasons` (its scoring day only)."""
     seasons = fad.guard_seasons(fad.development_seasons(last_year) if seasons is None
-                                else seasons, (), last_year)
+                                else seasons, scoring_day_seasons, last_year)
     pieces = fad.select_pieces(pieces, seasons)
     area = unit_union(pieces)
     count = pieces.groupby(["unit", "season"]).size()
@@ -170,11 +186,13 @@ def unit_table(pieces: gpd.GeoDataFrame, units: pd.DataFrame, seasons=None,
 
 def unit_split_table(pieces: gpd.GeoDataFrame, units: pd.DataFrame, seasons=None,
                      issue_months: dict[str, int] = AFTER_DATE_ISSUE_MONTHS,
-                     last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION) -> pd.DataFrame:
+                     last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION, *,
+                     scoring_day_seasons=()) -> pd.DataFrame:
     """fire_after_issue_date_unit_year rows: src.fire_after_date.split_table
-    per unit (its start_group, unions per unit)."""
+    per unit (its start_group, unions per unit). Held-back seasons as in
+    unit_table."""
     seasons = fad.guard_seasons(fad.development_seasons(last_year) if seasons is None
-                                else seasons, (), last_year)
+                                else seasons, scoring_day_seasons, last_year)
     pieces = fad.select_pieces(pieces, seasons)
     whole = unit_union(pieces)
     by_date = {}
@@ -213,12 +231,17 @@ def _gaps(table: pd.DataFrame, pinned: pd.DataFrame, keys: list[str], columns: l
 def check_tables(table: pd.DataFrame, split: pd.DataFrame, pinned: pd.DataFrame,
                  pinned_split: pd.DataFrame, units: pd.DataFrame, seasons=None,
                  issue_months: dict[str, int] = AFTER_DATE_ISSUE_MONTHS,
-                 last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION) -> dict[str, dict]:
+                 last_year: dict[str, int] = FIRE_LAST_YEAR_BY_REGION, *,
+                 scoring_day_seasons=()) -> dict[str, dict]:
     """The request's checks. Each entry: `ok`, `problems` (lines naming
     units, regions and seasons, never an area) and, for the sum checks,
-    `gaps` per column (largest gap in ha, where, how many over tolerance)."""
+    `gaps` per column (largest gap in ha, where, how many over tolerance).
+    On a scoring day, `pinned` and `pinned_split` are that day's outcome
+    tables and check 2 allows exactly the region-seasons named in
+    `scoring_day_seasons`; any other held-back or later row fails it."""
     seasons = (fad.development_seasons(last_year) if seasons is None
                else [(r, int(y)) for r, y in seasons])
+    scored = {(r, int(y)) for r, y in scoring_day_seasons}
     expected = set(unit_seasons(units, seasons))
     expected_split = {(u, r, y, d) for u, r, y in expected for d in issue_months}
     out = {}
@@ -236,7 +259,9 @@ def check_tables(table: pd.DataFrame, split: pd.DataFrame, pinned: pd.DataFrame,
         out[f"1 {name}: the unit and season set is exact"] = {"ok": not problems,
                                                              "problems": problems}
     late = pd.concat([table[["region", "year"]], split[["region", "year"]]])
-    late = late[late["year"] > late["region"].map(last_year)]
+    late = late[(late["year"] > late["region"].map(last_year))
+                & ~pd.Series([(r, int(y)) in scored for r, y in
+                              zip(late["region"], late["year"])], index=late.index, dtype=bool)]
     out["2 no held-back or later season"] = {
         "ok": late.empty,
         "problems": [f"{len(late)} rows after their region's last test year"] if len(late) else []}
