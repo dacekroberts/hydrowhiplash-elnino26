@@ -311,6 +311,17 @@ FIRE_REGION_TABLE_FROZEN = DATA_PROCESSED / "fire_region_year_frozen_rules.csv"
 AFTER_DATE_ISSUE_MONTHS = {"1 June": 6, "1 July": 7, "1 August": 8}
 AFTER_DATE_RUN = "after_issue_date"
 AFTER_DATE_TABLE = "fire_after_issue_date_region_year.csv"
+# Burned area per unit (the sibling's 129 ecoregion units), built for the
+# sibling's stage 6 (its request of 2026-11-06, route R1; D113;
+# src.fire_units). The unit layer is the sibling's units_b.geojson, read only
+# and refused unless its sha256 is UNITS_LAYER_SHA256. Same rules as
+# fire_region_year.csv, each kept fire clipped to the units of its region.
+# Written once to results/tables/<UNITS_FIRE_RUN>/ only if every check passes;
+# not a pinned input, read by no test here.
+UNITS_LAYER_SHA256 = "9818cdbb4213649cf545a49e35fe8eed7d52bf2a2f4909e8745aa68e6ac970cb"
+UNITS_FIRE_RUN = "fire_units"
+UNITS_FIRE_TABLE = "fire_unit_year.csv"
+UNITS_AFTER_DATE_TABLE = "fire_after_issue_date_unit_year.csv"
 # Checksums of every input the tests read (trap 7, session 7 kickoff): the
 # input tables in PINNED_RESULT_TABLES, the ENSO files, the fire downloads of
 # 2026-10-07 and NBAC of 2026-10-08; no re-download until the results are in

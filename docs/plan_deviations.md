@@ -27,6 +27,23 @@ enough to change the plans themselves (e.g. a scope change), the entry says
 changed spot carries the marker `[mid-project: Dnn]`, so mid-project
 additions stay distinguishable from the original plan.
 
+## 2026-11-06
+
+### D113 · Per-unit fire tables for the sibling (scope addition), not yet built
+- **Plan:** `ACTION_PLAN.md` and `CLAUDE.md` name no per-unit fire table;
+  the sibling's tables so far were per region (D103).
+- **Actual:** `src/fire_units.py`, its tests and three settings
+  (`UNITS_LAYER_SHA256`, `UNITS_FIRE_RUN`, two table names) added for the
+  sibling's request of 2026-11-06. One run on the pinned downloads failed
+  the two region-sum checks (largest gap 8,873 ha, NorCal 2024), because
+  the sibling's unit layer does not tile the parent's regions; no table
+  written.
+- **Why:** the sibling's stage 6, route R1, approved by the owner on
+  2026-11-06.
+- **Recorded:** `DECISIONS.md` 2026-11-06 "Unit fire tables for the
+  sibling: builder written, checks failed, no table".
+- **Plan doc:** left as written.
+
 ## 2026-11-04
 
 ### D112 · The film re-exported with a finer coast and a whiplash scene

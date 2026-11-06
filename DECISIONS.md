@@ -17,6 +17,47 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-11-06 - Unit fire tables for the sibling: builder written, checks failed, no table
+
+- **Built `src/fire_units.py` for the sibling's request of 2026-11-06
+  (route R1; copy in `docs/sibling_request_units.md`) and ran it once on the
+  pinned downloads; two checks failed, so no table was written (D113).**
+  The builder keeps every rule of `fire_region_year.csv` and clips each
+  kept fire to the units of its region's country instead of to the
+  regions, union per source within a unit, sources summed, the region's
+  season window. Seasons are `fire_after_date.development_seasons()`, so
+  no held-back season is built. Run results: 11,341 fire-unit pieces;
+  unit-season set exact on both tables (pass); no held-back or later row
+  (pass); split burn_ha and counts agree with the unit table (pass); units
+  summed to the pinned region burn_ha: 154 of 291 region-seasons over
+  1e-6 ha, largest gap 8,873 ha at NorCal 2024 (FAIL); split columns
+  summed to the pinned split table: largest gaps after_ha 8,873 ha (NorCal
+  2024, 1 June), before_ha 8,873 ha (NorCal 2024, 1 August), undated_ha
+  33.9 ha (AB 2015, 1 June), burn_ha 8,873 ha (NorCal 2024, 1 June)
+  (FAIL).
+- **Found: the cause is the unit layer, not the fire rules.** Both
+  repositories hold the same `regions.geojson` (sha256 dd991b2f...), but
+  `units_b.geojson` (sha256 9818cdbb...) does not tile it. Measured in
+  ESRI:102008 after repair: NorCal-03, -05, -06 and -07 hold 60,020,
+  18,508, 18,168 and 28,435 ha of the SoCal polygon (125,131 ha in all),
+  so SoCal's units miss 125,183 ha of SoCal and NorCal's units reach
+  125,143 ha outside NorCal. Smaller slivers on every other border: units
+  outside their region from 39 ha (SoCal) to 955 ha (YT), region area in
+  no unit from 48 ha (YT) to 1,404 ha (BC). Units overlap one another by
+  0.008 ha in AK, 0 elsewhere. Fire area in those strips is what the sum
+  checks catch.
+- **Rejected: clip the pinned region pieces to the units, or move strip
+  area to the unit that should hold it.** Either would change the
+  request's rule ("clipped to the units of its region") to make the check
+  pass, which the brief and the request rule out. The fix belongs in the
+  sibling's `src/units.py` (units cut to the parent's region polygons
+  exactly, no fill across a region border); the builder then reruns
+  unchanged on the new layer's checksum (`UNITS_LAYER_SHA256`).
+- **Decided: repair the unit geometries after projection (`make_valid`,
+  polygon parts kept).** `units_b` holds 23 invalid polygons in EPSG:4326
+  and 21 once projected; GEOS refuses to union them. The repair is the one
+  `src.fire.whole_fire_floor` applies to fires.
+
 ### 2026-11-04 - The re-exported film goes up with two changes held
 
 - **Decided: publish the 180 s exports as they are and hold two changes for any
