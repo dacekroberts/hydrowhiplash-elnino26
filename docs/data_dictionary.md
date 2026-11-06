@@ -629,6 +629,32 @@ day and not before (`scoring_day_seasons`; `DECISIONS.md` 2026-10-13).
   be a report date. A CNFDB fire merged from several polygons has the
   date of its earliest dated part (D67).
 
+**Unit fire tables** (D113; `python -m src.fire_units --units <units_c.gpkg>`;
+built 2026-11-06 for the sibling's stage 6): `results/tables/fire_units/`,
+each with its `.provenance.json`. The units are the sibling's 129
+ecoregion units (EPA Level III in PNW, AK, NorCal and SoCal; the National
+Ecological Framework for Canada's ecoregions in BC, AB and YT), in
+`units_c.gpkg`, ESRI:102008, checked by `UNITS_LAYER_SHA256`. Every rule is
+the main table's, except that each kept fire is clipped to the units of
+its region instead of to the region. Read by no test here and not pinned.
+- `fire_unit_year.csv`: `unit` (e.g. `PNW-01`), `region`, `year`,
+  `burn_ha` (union per source within the unit, sources summed, ha),
+  `n_fires` (fire-unit pieces), `n_undated` (CNFDB pieces without a
+  month). Every unit in every season of its region, zero seasons kept:
+  5,341 rows.
+- `fire_after_issue_date_unit_year.csv`: the start-month split above, per
+  unit: `unit`, `region`, `year`, `issue_date`, `after_ha`, `before_ha`,
+  `undated_ha`, `n_after`, `n_before`, `n_undated`, `burn_ha`; 16,023 rows.
+- Checked at build: units summed per region-season equal the pinned
+  `burn_ha` and each split area column within 1e-6 ha (largest gap
+  1.0e-8 ha); the unit-season set is exact; no held-back season.
+- Traps: a fire crossing a unit border is a piece in each unit it reaches,
+  so `n_fires` summed over a region's units exceeds the region's. The
+  405 ha floor is on the whole fire, so a unit can hold a piece of a few
+  hectares. A unit's season window is its region's. The units must tile
+  the regions as this project projects them (vertex-wise): the first layer,
+  `units_b`, cut along arcs, missed by up to 8,873 ha a season.
+
 **Later retrievals** (`data/raw/later/<stamp>/...`, never committed;
 D73, D88): a download run with `--stamp` writes to the stamped twin of
 its usual folder and closes it with `retrieval.json`: `stamp` (the

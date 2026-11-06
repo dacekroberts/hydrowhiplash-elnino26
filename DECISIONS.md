@@ -17,6 +17,32 @@ with counts. **Not:** copy edits, routine mechanics, open work (that's
 
 ## Changes
 
+### 2026-11-06 - Unit fire tables built on units_c, every check passed
+
+- **Built both unit fire tables on the sibling's `units_c.gpkg` (D113);
+  supersedes the layer, not the rules, of the entry below.** The sibling
+  found the cause of the first failure: `units_b` was cut against regions
+  densified to 0.01 degree, so along a two-vertex edge such as 35.5N its
+  units follow the arc, while the parent projects `regions.geojson`
+  vertex-wise, making that edge a chord. `units_c` (sibling commit 310a696,
+  ESRI:102008, 129 units, the same ids, regions and sources, sha256
+  5b77adb2...) is cut against the regions projected vertex-wise, and is
+  handed over already projected, because a round trip through degrees moves
+  a point on a chord about 1 mm. A test GeoPackage in ESRI:102008 passed
+  through the loader bit-identical (`to_crs` resolves to a no-op), so no
+  code changed but the checksum and wording (commit f5615e9). Run at
+  f5615e9: 11,345 pieces; all five checks passed; largest gaps against the
+  pinned tables 1.0e-8 ha (`burn_ha`, AB 2011), split after_ha 7.9e-9,
+  before_ha 7.2e-9, undated_ha 1.6e-10, burn_ha 1.0e-8 ha. 5,341 and
+  16,023 rows. Provenance records `dirty: true` for two untracked logs of
+  2026-11-04 and 2026-11-05 from earlier sessions; no tracked file differed.
+- **Read the terms of the three boundary sources before the first commit
+  (`DATA_SOURCES.md` rows and notices 15, 16).** EPA Level III, US and
+  Alaska: "Use constraints: None", permitted. National Ecological
+  Framework for Canada: Open Government Licence - Canada, permitted with
+  its attribution statement. The sibling had read the same terms the same
+  day; the parent's rule asks for its own read.
+
 ### 2026-11-06 - Unit fire tables for the sibling: builder written, checks failed, no table
 
 - **Built `src/fire_units.py` for the sibling's request of 2026-11-06
