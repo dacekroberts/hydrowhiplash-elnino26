@@ -32,7 +32,7 @@ additions stay distinguishable from the original plan.
 ### D113 · Per-unit fire tables for the sibling (scope addition), not yet built
 - **Plan:** `ACTION_PLAN.md` and `CLAUDE.md` name no per-unit fire table;
   the sibling's tables so far were per region (D103).
-- **Actual:** `src/fire_units.py`, its tests and three settings
+- **Actual:** `src/fire_units.py`, its tests and four settings
   (`UNITS_LAYER_SHA256`, `UNITS_FIRE_RUN`, two table names) added for the
   sibling's request of 2026-11-06. One run on the pinned downloads failed
   the two region-sum checks (largest gap 8,873 ha, NorCal 2024), because
