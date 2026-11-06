@@ -1,24 +1,25 @@
-<!-- Copy of climate-whiplash-prediction docs/parent_request_units.md at its commit 98a2468, taken 2026-11-06 for D113. Not edited; the sibling holds the master. -->
+<!-- Copy of climate-whiplash-prediction docs/parent_request_units.md at its commit c1a36b9, taken 2026-11-06 for D113 (replaces the copy of 98a2468). Not edited; the sibling holds the master. -->
 
 # Request to the parent: burned area by unit
 
-**Ready, 2026-11-06 (session 15), the unit layer updated to `units_b` the same day; not sent.** Route R1 was approved on
+**Ready, 2026-11-06 (session 15); sent the same day. The first run in the parent (its commits 32443c6 and 02bf98d) failed the region-sum check on `units_b`, cut along arcs; the layer is now `units_c` (`DECISIONS.md` 2026-11-06 "Units tile the regions as the parent projects them").** Route R1 was approved on
 2026-11-06 (`DECISIONS.md` "Stage 6 calls 4 to 9"). The owner carries
 this file and the unit layer to a session in the parent.
 
-**The unit layer:** `data/processed/units_b.geojson` in this repository
-(EPSG:4326, 129 units, 20,126,824 bytes, sha256
-`9818cdbb4213649cf545a49e35fe8eed7d52bf2a2f4909e8745aa68e6ac970cb`),
-built at 04e4e03 from EPA Level III ecoregions (US regions) and the
+**The unit layer:** `data/processed/units_c.gpkg` in this repository
+(GeoPackage, one layer, ESRI:102008, 129 units, 6,684,672 bytes, sha256
+`5b77adb2d3346d86e70dc933baa35cadcf78b85763f72ad6e313bdf0cd67aafa`),
+built at 310a696 from EPA Level III ecoregions (US regions) and the
 Ecological Framework of Canada's ecoregions (BC, AB, YT); its table is
-`results/tables/units_b/units.csv`. It replaces the 131-unit
-`units.geojson` of aa99cfd, where glacier cells counted toward the
-30-cell floor (`DECISIONS.md` 2026-11-06 "Units rebuilt"); the earlier
-layer is not to be used. Columns: `unit` (e.g. `PNW-01`), `region`,
-`sources`, `area_km2`, `n_cells` (non-glacier land cells), `undersized`,
-`geojson_sha256`. The units of a
-region tile it; project to ESRI:102008 before clipping, as for the
-regions. Boundary terms: EPA, no use constraints; Canada, Open
+`results/tables/units_c/units.csv`. Its units are `units_b`'s, unit for
+unit, cut against `regions.geojson` projected vertex-wise to
+ESRI:102008, as the parent clips its fires; projected that way, every
+region's units cover it with 0.0 ha left over or outside, and no unit
+is invalid. `units_b.geojson` (sha256 `9818cdbb...`) is not to be used
+for fire, nor the 131-unit `units.geojson` of aa99cfd. Columns: `unit`
+(e.g. `PNW-01`), `region`, `sources`, `area_km2`, `n_cells`
+(non-glacier land cells), `undersized`. Already in ESRI:102008: no
+reprojection through degrees. Boundary terms: EPA, no use constraints; Canada, Open
 Government Licence - Canada.
 
 Nothing in the parent is written from this repository: this file
@@ -29,7 +30,7 @@ by the owner, as `docs/parent_request_after_date.md` was.
 
 Two tables, built from the parent's own MTBS, WFIGS and CNFDB files by
 the builder of its `fire_region_year.csv`, with the unit layer this
-repository hands over (`units_b.geojson`, the output of `src/units.py`,
+repository hands over (`units_c.gpkg`, the output of `src/units.py`,
 with its checksum):
 
 1. `fire_unit_year.csv`: one row per unit and season, for the same

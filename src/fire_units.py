@@ -2,7 +2,7 @@
 sibling prediction project's stage 6 (its request of 2026-11-06,
 docs/sibling_request_units.md; route R1; D113).
 
-The units are the sibling's 129 ecoregion units (units_b.geojson, EPSG:4326),
+The units are the sibling's 129 ecoregion units (units_c.gpkg, ESRI:102008),
 read only from the path given and refused unless the file's sha256 is
 UNITS_LAYER_SHA256. Every fire rule is src.fire's own: the type filter, the
 MTBS/WFIGS cutover, the whole-fire floor of MIN_FIRE_HA before any clip,
@@ -33,7 +33,7 @@ and each split area column summed equals the pinned split table, to
 TOLERANCE_HA. A failed check stops the run before a file is written; the
 largest gap per column is printed (development seasons only).
 
-Run:  python -m src.fire_units --units <path to units_b.geojson>
+Run:  python -m src.fire_units --units <path to units_c.gpkg>
 
 The tables hold values derived from MTBS (public domain), WFIGS (NIFC; its
 disclaimer applies) and CNFDB (Open Government Licence - Canada), and unit
@@ -82,8 +82,10 @@ def polygonal(geom):
 
 def prepare_units(units: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     """unit, region and geometry in CRS_EQUAL_AREA, each geometry repaired
-    after projection (units_b holds 23 invalid polygons in EPSG:4326 and 21
-    once projected; overlay refuses invalid input). Raises for a duplicate
+    after projection (the superseded units_b held 23 invalid polygons in
+    EPSG:4326 and 21 once projected; overlay refuses invalid input). A layer
+    already in ESRI:102008 and valid passes through unchanged (measured
+    2026-11-06 on a GeoPackage: coordinates bit-identical). Raises for a duplicate
     unit or a region outside REGIONS."""
     units = units[["unit", "region", "geometry"]].to_crs(CRS_EQUAL_AREA)
     if units["unit"].duplicated().any():
@@ -302,7 +304,7 @@ def main(units_path: Path, data_root: Path = ROOT) -> None:
         raise FileExistsError("a unit fire table exists; they are written once.")
     inputs = fad.verify_downloads(data_root)
     units = load_units(units_path)
-    inputs.append(f"units_b.geojson (sibling) sha256 {UNITS_LAYER_SHA256}")
+    inputs.append(f"units_c.gpkg (sibling) sha256 {UNITS_LAYER_SHA256}")
     pinned = pin_inputs.load_input(FIRE_REGION_TABLE.name)
     pinned_split = load_pinned_split()
     inputs += [f"results/tables/{FIRE_REGION_TABLE.name}",
@@ -328,6 +330,6 @@ if __name__ == "__main__":
 
     _args = sys.argv[1:]
     if "--units" not in _args:
-        raise SystemExit("usage: python -m src.fire_units --units <units_b.geojson>")
+        raise SystemExit("usage: python -m src.fire_units --units <units_c.gpkg>")
     main(Path(_args[_args.index("--units") + 1]),
          Path(_args[_args.index("--data-root") + 1]) if "--data-root" in _args else ROOT)
